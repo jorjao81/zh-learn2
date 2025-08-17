@@ -1,0 +1,27 @@
+[
+  {
+    "name": "com.zhlearn.infrastructure.dummy.DummyPinyinProvider",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "com.zhlearn.infrastructure.dummy.DummyDefinitionProvider",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "com.zhlearn.infrastructure.dummy.DummyStructuralDecompositionProvider",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "com.zhlearn.infrastructure.dummy.DummyExampleProvider",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "com.zhlearn.infrastructure.dummy.DummyExplanationProvider",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  }
+]
