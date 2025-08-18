@@ -17,7 +17,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         java-version: '24'
-        distribution: 'oracle-graalvm'
+        distribution: 'graalvm'
         java-package: 'jdk'
         check-latest: true
 
