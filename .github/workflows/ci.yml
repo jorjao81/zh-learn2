@@ -1,0 +1,40 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Oracle GraalVM
+      uses: actions/setup-java@v4
+      with:
+        java-version: '24'
+        distribution: 'oracle-graalvm'
+        java-package: 'jdk'
+        check-latest: true
+
+    - name: Build and test
+      run: mvn -B clean install
+
+    - name: Run with modular JVM
+      run: ./zh-learn.sh word 学习
+
+    - name: Run with modular JVM (dummy provider)
+      run: ./zh-learn.sh word 汉语 --provider dummy-pinyin
+
+    - name: Build native image
+      run: ./build-native.sh
+
+    - name: Run native executable
+      run: ./zh-learn-cli/target/zh-learn word 学习
+
+    - name: Run native executable (dummy provider)
+      run: ./zh-learn-cli/target/zh-learn word 汉语 --provider dummy-pinyin
