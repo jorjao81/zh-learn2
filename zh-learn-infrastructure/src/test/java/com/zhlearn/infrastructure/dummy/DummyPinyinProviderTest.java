@@ -1,6 +1,6 @@
 package com.zhlearn.infrastructure.dummy;
 
-import com.zhlearn.domain.model.ChineseWord;
+import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +17,7 @@ class DummyPinyinProviderTest {
     
     @Test
     void shouldProvideDummyPinyin() {
-        ChineseWord word = new ChineseWord("汉语");
+        Hanzi word = new Hanzi("汉语");
         
         Pinyin pinyin = provider.getPinyin(word);
         
@@ -26,8 +26,8 @@ class DummyPinyinProviderTest {
     
     @Test
     void shouldHandleDifferentWords() {
-        ChineseWord word1 = new ChineseWord("学习");
-        ChineseWord word2 = new ChineseWord("中文");
+        Hanzi word1 = new Hanzi("学习");
+        Hanzi word2 = new Hanzi("中文");
         
         Pinyin pinyin1 = provider.getPinyin(word1);
         Pinyin pinyin2 = provider.getPinyin(word2);

@@ -2,7 +2,7 @@ package com.zhlearn.cli;
 
 import com.zhlearn.application.service.ProviderRegistry;
 import com.zhlearn.application.service.WordAnalysisServiceImpl;
-import com.zhlearn.domain.model.ChineseWord;
+import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.WordAnalysis;
 import com.zhlearn.infrastructure.dummy.*;
 import io.cucumber.java.en.Given;
@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class WordAnalysisStepDefinitions {
     
     private WordAnalysisServiceImpl wordAnalysisService;
-    private ChineseWord currentWord;
+    private Hanzi currentWord;
     private WordAnalysis currentAnalysis;
     private Exception lastException;
     
@@ -33,7 +33,7 @@ public class WordAnalysisStepDefinitions {
     @When("I analyze the word {string} using provider {string}")
     public void i_analyze_the_word_using_provider(String word, String provider) {
         try {
-            currentWord = new ChineseWord(word);
+            currentWord = new Hanzi(word);
             currentAnalysis = wordAnalysisService.getCompleteAnalysis(currentWord, provider);
             lastException = null;
         } catch (Exception e) {
@@ -44,7 +44,7 @@ public class WordAnalysisStepDefinitions {
     @When("I try to analyze the word {string} using provider {string}")
     public void i_try_to_analyze_the_word_using_provider(String word, String provider) {
         try {
-            currentWord = new ChineseWord(word);
+            currentWord = new Hanzi(word);
             currentAnalysis = wordAnalysisService.getCompleteAnalysis(currentWord, provider);
             lastException = null;
         } catch (Exception e) {
@@ -55,7 +55,7 @@ public class WordAnalysisStepDefinitions {
     @When("I try to analyze an empty word using provider {string}")
     public void i_try_to_analyze_an_empty_word_using_provider(String provider) {
         try {
-            currentWord = new ChineseWord("");
+            currentWord = new Hanzi("");
             currentAnalysis = wordAnalysisService.getCompleteAnalysis(currentWord, provider);
             lastException = null;
         } catch (Exception e) {
@@ -65,7 +65,7 @@ public class WordAnalysisStepDefinitions {
     
     @Given("I have a Chinese word {string}")
     public void i_have_a_chinese_word(String word) {
-        currentWord = new ChineseWord(word);
+        currentWord = new Hanzi(word);
     }
     
     @When("I perform a complete analysis using provider {string}")
@@ -80,7 +80,7 @@ public class WordAnalysisStepDefinitions {
     
     @Given("I have the word {string}")
     public void i_have_the_word(String word) {
-        currentWord = new ChineseWord(word);
+        currentWord = new Hanzi(word);
     }
     
     @When("I analyze it with provider {string}")

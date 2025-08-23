@@ -21,6 +21,10 @@
             <groupId>com.zhlearn</groupId>
             <artifactId>zh-learn-domain</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.zhlearn</groupId>
+            <artifactId>zh-learn-infrastructure</artifactId>
+        </dependency>
 
         <!-- Testing -->
         <dependency>

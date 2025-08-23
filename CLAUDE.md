@@ -1,0 +1,5 @@
+- never add fallbacks unless explicitly told to do so
+- never catch exceptions unless explicitly told to do so. let them bubble up and crash the application.
+- if you cannot implement something like instructed, don't implement it differently, let me know
+- we are using java modules, remeber that you might need to export and import symbols
+- NEVER disable or bypass Java modules to try to make something work. We added modules for a reason.
