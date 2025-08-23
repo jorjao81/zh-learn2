@@ -1,10 +1,8 @@
 package com.zhlearn.infrastructure.dummy;
 
-import com.zhlearn.domain.model.ChineseWord;
+import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.StructuralDecomposition;
 import com.zhlearn.domain.provider.StructuralDecompositionProvider;
-
-import java.util.List;
 
 public class DummyStructuralDecompositionProvider implements StructuralDecompositionProvider {
     
@@ -14,7 +12,7 @@ public class DummyStructuralDecompositionProvider implements StructuralDecomposi
     }
     
     @Override
-    public StructuralDecomposition getStructuralDecomposition(ChineseWord word) {
+    public StructuralDecomposition getStructuralDecomposition(Hanzi word) {
         return new StructuralDecomposition(
             "Dummy structural decomposition for " + word.characters() + ": Component breakdown with radicals and meanings."
         );
