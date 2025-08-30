@@ -1,6 +1,6 @@
 package com.zhlearn.infrastructure.dummy;
 
-import com.zhlearn.domain.model.ChineseWord;
+import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.provider.PinyinProvider;
 
@@ -12,7 +12,7 @@ public class DummyPinyinProvider implements PinyinProvider {
     }
     
     @Override
-    public Pinyin getPinyin(ChineseWord word) {
+    public Pinyin getPinyin(Hanzi word) {
         return new Pinyin("dummy-pinyin-" + word.characters());
     }
 }

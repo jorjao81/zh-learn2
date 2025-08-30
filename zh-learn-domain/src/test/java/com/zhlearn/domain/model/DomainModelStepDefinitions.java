@@ -1,9 +1,7 @@
 package com.zhlearn.domain.model;
 
-import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.junit.jupiter.api.Assertions;
 
 import java.util.List;
 
@@ -11,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DomainModelStepDefinitions {
     
-    private ChineseWord chineseWord;
+    private Hanzi hanzi;
     private Pinyin pinyin;
     private Definition definition;
     private Explanation explanation;
@@ -24,13 +22,13 @@ public class DomainModelStepDefinitions {
     // ChineseWord step definitions
     @When("I create a ChineseWord with characters {string}")
     public void i_create_a_chinese_word_with_characters(String characters) {
-        chineseWord = new ChineseWord(characters);
+        hanzi = new Hanzi(characters);
     }
 
     @When("I try to create a ChineseWord with null characters")
     public void i_try_to_create_a_chinese_word_with_null_characters() {
         try {
-            chineseWord = new ChineseWord(null);
+            hanzi = new Hanzi(null);
         } catch (Exception e) {
             thrownException = e;
         }
@@ -39,7 +37,7 @@ public class DomainModelStepDefinitions {
     @When("I try to create a ChineseWord with characters {string}")
     public void i_try_to_create_a_chinese_word_with_characters(String characters) {
         try {
-            chineseWord = new ChineseWord(characters);
+            hanzi = new Hanzi(characters);
         } catch (Exception e) {
             thrownException = e;
         }
@@ -47,12 +45,12 @@ public class DomainModelStepDefinitions {
 
     @Then("the ChineseWord should be created successfully")
     public void the_chinese_word_should_be_created_successfully() {
-        assertNotNull(chineseWord);
+        assertNotNull(hanzi);
     }
 
     @Then("the ChineseWord characters should be {string}")
     public void the_chinese_word_characters_should_be(String expectedCharacters) {
-        assertEquals(expectedCharacters, chineseWord.characters());
+        assertEquals(expectedCharacters, hanzi.characters());
     }
 
     // Pinyin step definitions

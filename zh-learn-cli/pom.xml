@@ -40,6 +40,18 @@
             <artifactId>helidon-logging-jul</artifactId>
         </dependency>
 
+        <!-- Terminal formatting -->
+        <dependency>
+            <groupId>org.fusesource.jansi</groupId>
+            <artifactId>jansi</artifactId>
+        </dependency>
+
+        <!-- HTML parsing -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+        </dependency>
+
         <!-- Testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

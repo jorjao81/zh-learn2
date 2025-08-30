@@ -3,6 +3,15 @@
     "includes": [
       {
         "pattern": "META-INF/services/.*"
+      },
+      {
+        "pattern": ".*\\.properties"
+      },
+      {
+        "pattern": ".*\\.md"
+      },
+      {
+        "pattern": ".*\\.html"
       }
     ]
   },
