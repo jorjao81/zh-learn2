@@ -1,6 +1,7 @@
 package com.zhlearn.infrastructure.common;
 
 import com.zhlearn.domain.model.Hanzi;
+import com.zhlearn.infrastructure.cache.CachedChatModel;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import org.slf4j.Logger;
@@ -32,7 +33,7 @@ public class GenericChatModelProvider<T> {
     
     private ChatModel createChatModel(ProviderConfig<T> config) {
         var builder = OpenAiChatModel.builder()
-                .baseUrl(config.getBaseUrl() + "/v1")
+                .baseUrl(config.getBaseUrl())
                 .apiKey(config.getApiKey())
                 .modelName(config.getModelName());
                 
@@ -44,7 +45,8 @@ public class GenericChatModelProvider<T> {
             builder.maxTokens(config.getMaxTokens());
         }
         
-        return builder.build();
+        ChatModel baseChatModel = builder.build();
+        return new CachedChatModel(baseChatModel, config);
     }
     
     public String getName() {

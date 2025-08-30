@@ -7,8 +7,13 @@ import com.zhlearn.domain.model.ProviderConfiguration;
 import com.zhlearn.domain.model.WordAnalysis;
 import com.zhlearn.infrastructure.anki.AnkiCard;
 import com.zhlearn.infrastructure.anki.AnkiCardParser;
+import com.zhlearn.infrastructure.deepseek.DeepSeekExampleProvider;
 import com.zhlearn.infrastructure.deepseek.DeepSeekExplanationProvider;
+import com.zhlearn.infrastructure.deepseek.DeepSeekStructuralDecompositionProvider;
 import com.zhlearn.infrastructure.dummy.*;
+import com.zhlearn.infrastructure.gpt5nano.GPT5NanoExampleProvider;
+import com.zhlearn.infrastructure.gpt5nano.GPT5NanoExplanationProvider;
+import com.zhlearn.infrastructure.gpt5nano.GPT5NanoStructuralDecompositionProvider;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,9 +29,16 @@ public class ZhLearnApplication {
         registry.registerDefinitionProvider(new DummyDefinitionProvider());
         registry.registerExampleProvider(new DummyExampleProvider());
         registry.registerExplanationProvider(new DummyExplanationProvider());
-        registry.registerExplanationProvider(new DeepSeekExplanationProvider());
         registry.registerPinyinProvider(new DummyPinyinProvider());
         registry.registerStructuralDecompositionProvider(new DummyStructuralDecompositionProvider());
+
+        registry.registerExampleProvider(new DeepSeekExampleProvider());
+        registry.registerExplanationProvider(new DeepSeekExplanationProvider());
+        registry.registerStructuralDecompositionProvider(new DeepSeekStructuralDecompositionProvider());
+
+        registry.registerExampleProvider(new GPT5NanoExampleProvider());
+        registry.registerExplanationProvider(new GPT5NanoExplanationProvider());
+        registry.registerStructuralDecompositionProvider(new GPT5NanoStructuralDecompositionProvider());
 
         this.wordAnalysisService = new WordAnalysisServiceImpl(registry);
     }

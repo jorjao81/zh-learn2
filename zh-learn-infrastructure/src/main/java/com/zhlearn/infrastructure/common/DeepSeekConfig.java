@@ -5,13 +5,17 @@ import com.zhlearn.domain.model.Explanation;
 import com.zhlearn.domain.model.StructuralDecomposition;
 
 public class DeepSeekConfig {
-    
+
+    public static final String BASE_URL = "https://api.deepseek.com/v1";
+    public static final String MODEL_NAME = "deepseek-chat";
+    public static final String API_KEY_ENVIRONMENT_VARIABLE = "DEEPSEEK_API_KEY";
+
     public static ProviderConfig<Explanation> forExplanation() {
-        return forExplanation(System.getenv("DEEPSEEK_API_KEY"), "https://api.deepseek.com", "deepseek-chat");
+        return forExplanation(System.getenv(API_KEY_ENVIRONMENT_VARIABLE), BASE_URL, MODEL_NAME);
     }
     
     public static ProviderConfig<Explanation> forExplanation(String apiKey) {
-        return forExplanation(apiKey, "https://api.deepseek.com", "deepseek-chat");
+        return forExplanation(apiKey, BASE_URL, MODEL_NAME);
     }
     
     public static ProviderConfig<Explanation> forExplanation(String apiKey, String baseUrl, String modelName) {
@@ -30,11 +34,11 @@ public class DeepSeekConfig {
     }
     
     public static ProviderConfig<StructuralDecomposition> forStructuralDecomposition() {
-        return forStructuralDecomposition(System.getenv("DEEPSEEK_API_KEY"), "https://api.deepseek.com", "deepseek-chat");
+        return forStructuralDecomposition(System.getenv(API_KEY_ENVIRONMENT_VARIABLE), BASE_URL, MODEL_NAME);
     }
     
     public static ProviderConfig<StructuralDecomposition> forStructuralDecomposition(String apiKey) {
-        return forStructuralDecomposition(apiKey, "https://api.deepseek.com", "deepseek-chat");
+        return forStructuralDecomposition(apiKey, BASE_URL, MODEL_NAME);
     }
     
     public static ProviderConfig<StructuralDecomposition> forStructuralDecomposition(String apiKey, String baseUrl, String modelName) {
@@ -53,11 +57,11 @@ public class DeepSeekConfig {
     }
     
     public static ProviderConfig<Example> forExamples() {
-        return forExamples(System.getenv("DEEPSEEK_API_KEY"), "https://api.deepseek.com", "deepseek-chat");
+        return forExamples(System.getenv(API_KEY_ENVIRONMENT_VARIABLE), BASE_URL, MODEL_NAME);
     }
     
     public static ProviderConfig<Example> forExamples(String apiKey) {
-        return forExamples(apiKey, "https://api.deepseek.com", "deepseek-chat");
+        return forExamples(apiKey, BASE_URL, MODEL_NAME);
     }
     
     public static ProviderConfig<Example> forExamples(String apiKey, String baseUrl, String modelName) {
