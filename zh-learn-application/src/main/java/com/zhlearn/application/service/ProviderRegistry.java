@@ -1,7 +1,12 @@
 package com.zhlearn.application.service;
 
 import com.zhlearn.domain.provider.*;
-
+import com.zhlearn.infrastructure.deepseek.DeepSeekExampleProvider;
+import com.zhlearn.infrastructure.deepseek.DeepSeekExplanationProvider;
+import com.zhlearn.infrastructure.deepseek.DeepSeekStructuralDecompositionProvider;
+import com.zhlearn.infrastructure.gpt5nano.GPT5NanoExampleProvider;
+import com.zhlearn.infrastructure.gpt5nano.GPT5NanoExplanationProvider;
+import com.zhlearn.infrastructure.gpt5nano.GPT5NanoStructuralDecompositionProvider;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,7 +42,41 @@ public class ProviderRegistry {
     }
     
     private void registerDummyProviders() {
-
+        try {
+            if (configurations.containsKey("DEEPSEEK_API_KEY")) {
+                String apiKey = configurations.get("DEEPSEEK_API_KEY");
+                String baseUrl = configurations.getOrDefault("DEEPSEEK_BASE_URL", "https://api.deepseek.com");
+                
+                var deepSeekExplanationProvider = new DeepSeekExplanationProvider(apiKey, baseUrl, "deepseek-chat");
+                registerExplanationProvider(deepSeekExplanationProvider);
+                
+                var deepSeekStructuralDecompositionProvider = new DeepSeekStructuralDecompositionProvider(apiKey, baseUrl, "deepseek-chat");
+                registerStructuralDecompositionProvider(deepSeekStructuralDecompositionProvider);
+                
+                var deepSeekExampleProvider = new DeepSeekExampleProvider(apiKey, baseUrl, "deepseek-chat");
+                registerExampleProvider(deepSeekExampleProvider);
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to register DeepSeek providers: " + e.getMessage());
+        }
+        
+        try {
+            if (configurations.containsKey("OPENAI_API_KEY")) {
+                String apiKey = configurations.get("OPENAI_API_KEY");
+                String baseUrl = configurations.getOrDefault("OPENAI_BASE_URL", "https://api.openai.com");
+                
+                var gpt5NanoExplanationProvider = new GPT5NanoExplanationProvider(apiKey, baseUrl, "gpt-5-nano");
+                registerExplanationProvider(gpt5NanoExplanationProvider);
+                
+                var gpt5NanoStructuralDecompositionProvider = new GPT5NanoStructuralDecompositionProvider(apiKey, baseUrl, "gpt-5-nano");
+                registerStructuralDecompositionProvider(gpt5NanoStructuralDecompositionProvider);
+                
+                var gpt5NanoExampleProvider = new GPT5NanoExampleProvider(apiKey, baseUrl, "gpt-5-nano");
+                registerExampleProvider(gpt5NanoExampleProvider);
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to register GPT-5 Nano providers: " + e.getMessage());
+        }
     }
     
     private void registerAvailableAiProviders() {
@@ -137,7 +176,6 @@ public class ProviderRegistry {
     }
     
     public Optional<PinyinProvider> getPinyinProvider(String name) {
-        System.out.println(pinyinProviders);
         return Optional.ofNullable(pinyinProviders.get(name));
     }
     

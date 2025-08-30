@@ -35,6 +35,23 @@
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-google-ai-gemini</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+        </dependency>
+
+        <!-- Jackson YAML for parsing example responses -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+        </dependency>
+
+        <!-- Apache Commons CSV for robust CSV/TSV parsing -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.10.0</version>
+        </dependency>
 
         <!-- Testing -->
         <dependency>
@@ -57,5 +74,71 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
+        
+        <!-- Cucumber for BDD testing -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                        <configuration>
+                            <compilerArgs>
+                                <arg>--add-modules</arg>
+                                <arg>com.zhlearn.domain,com.zhlearn.infrastructure</arg>
+                                <arg>--add-reads</arg>
+                                <arg>com.zhlearn.infrastructure=com.zhlearn.domain</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>
+                        --add-modules ALL-MODULE-PATH
+                        --add-opens com.zhlearn.infrastructure/com.zhlearn.infrastructure.dictionary=ALL-UNNAMED
+                        --add-opens com.zhlearn.infrastructure/com.zhlearn.infrastructure.anki=ALL-UNNAMED
+                        --add-opens com.zhlearn.infrastructure/com.zhlearn.infrastructure.dummy=ALL-UNNAMED
+                        --add-opens com.zhlearn.infrastructure/com.zhlearn.infrastructure.deepseek=ALL-UNNAMED
+                        --add-opens com.zhlearn.infrastructure/com.zhlearn.infrastructure.gpt5nano=ALL-UNNAMED
+                        --add-opens com.zhlearn.infrastructure/com.zhlearn.infrastructure.common=ALL-UNNAMED
+                        --add-opens com.zhlearn.domain/com.zhlearn.domain.model=ALL-UNNAMED
+                        --add-opens com.zhlearn.domain/com.zhlearn.domain.provider=ALL-UNNAMED
+                        --add-opens com.zhlearn.domain/com.zhlearn.domain.dictionary=ALL-UNNAMED
+                    </argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
