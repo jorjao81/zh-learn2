@@ -19,8 +19,11 @@ public class ExampleResponseMapper implements Function<String, Example> {
     @Override
     public Example apply(String yamlResponse) {
         try {
+            // Strip markdown code blocks if present
+            String cleanedYaml = stripMarkdownCodeBlocks(yamlResponse);
+            
             // Parse YAML response
-            Map<String, Object> response = yamlMapper.readValue(yamlResponse, Map.class);
+            Map<String, Object> response = yamlMapper.readValue(cleanedYaml, Map.class);
             List<Map<String, Object>> responseList = (List<Map<String, Object>>) response.get("response");
             
             if (responseList == null || responseList.isEmpty()) {
@@ -57,5 +60,39 @@ public class ExampleResponseMapper implements Function<String, Example> {
             // Return empty example on parse failure
             return new Example(List.of());
         }
+    }
+    
+    private String stripMarkdownCodeBlocks(String input) {
+        if (input == null) {
+            return null;
+        }
+        
+        String trimmed = input.trim();
+        
+        // Check if the input starts with ```yaml or ``` and ends with ```
+        if (trimmed.startsWith("```yaml") && trimmed.endsWith("```")) {
+            // Remove ```yaml from the start and ``` from the end
+            int startIndex = trimmed.indexOf('\n', 7); // Find first newline after ```yaml
+            if (startIndex == -1) {
+                startIndex = 7; // No newline found, start after ```yaml
+            } else {
+                startIndex++; // Move past the newline
+            }
+            int endIndex = trimmed.lastIndexOf("```");
+            return trimmed.substring(startIndex, endIndex).trim();
+        } else if (trimmed.startsWith("```") && trimmed.endsWith("```")) {
+            // Generic code block without yaml specifier
+            int startIndex = trimmed.indexOf('\n', 3); // Find first newline after ```
+            if (startIndex == -1) {
+                startIndex = 3; // No newline found, start after ```
+            } else {
+                startIndex++; // Move past the newline
+            }
+            int endIndex = trimmed.lastIndexOf("```");
+            return trimmed.substring(startIndex, endIndex).trim();
+        }
+        
+        // No markdown code blocks found, return as is
+        return input;
     }
 }
