@@ -26,6 +26,7 @@ module com.zhlearn.infrastructure {
     exports com.zhlearn.infrastructure.common;
     exports com.zhlearn.infrastructure.anki;
     exports com.zhlearn.infrastructure.dictionary;
+    exports com.zhlearn.infrastructure.cache;
     
     provides com.zhlearn.domain.provider.PinyinProvider 
         with com.zhlearn.infrastructure.dummy.DummyPinyinProvider;
