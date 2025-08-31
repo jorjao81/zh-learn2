@@ -16,6 +16,11 @@ public class DictionaryStructuralDecompositionProvider implements StructuralDeco
     public String getName() {
         return "dictionary-decomposition-" + dictionary.getName();
     }
+    
+    @Override
+    public String getDescription() {
+        return "Dictionary-based structural decomposition provider using " + dictionary.getName() + " dictionary data";
+    }
 
     @Override
     public StructuralDecomposition getStructuralDecomposition(Hanzi word) {

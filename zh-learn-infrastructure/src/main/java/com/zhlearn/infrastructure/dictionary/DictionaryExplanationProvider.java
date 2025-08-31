@@ -16,6 +16,11 @@ public class DictionaryExplanationProvider implements ExplanationProvider {
     public String getName() {
         return "dictionary-explanation-" + dictionary.getName();
     }
+    
+    @Override
+    public String getDescription() {
+        return "Dictionary-based explanation provider using " + dictionary.getName() + " dictionary data";
+    }
 
     @Override
     public Explanation getExplanation(Hanzi word) {

@@ -16,6 +16,11 @@ public class DummyExplanationProvider implements ExplanationProvider {
     }
     
     @Override
+    public String getDescription() {
+        return "Test provider that returns dummy explanations for development and testing";
+    }
+    
+    @Override
     public Explanation getExplanation(Hanzi word) {
         try {
             String htmlContent = loadExampleHtml();

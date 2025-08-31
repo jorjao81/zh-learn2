@@ -16,6 +16,11 @@ public class DictionaryDefinitionProvider implements DefinitionProvider {
     public String getName() {
         return "dictionary-definition-" + dictionary.getName();
     }
+    
+    @Override
+    public String getDescription() {
+        return "Dictionary-based definition provider using " + dictionary.getName() + " dictionary data";
+    }
 
     @Override
     public Definition getDefinition(Hanzi word) {

@@ -18,6 +18,11 @@ public class DictionaryExampleProvider implements ExampleProvider {
     public String getName() {
         return "dictionary-example-" + dictionary.getName();
     }
+    
+    @Override
+    public String getDescription() {
+        return "Dictionary-based example provider using " + dictionary.getName() + " dictionary data";
+    }
 
     @Override
     public Example getExamples(Hanzi word, Optional<String> definition) {

@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface ExampleProvider {
     String getName();
+    String getDescription();
     Example getExamples(Hanzi word, Optional<String> definition);
 }

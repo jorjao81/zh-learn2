@@ -28,6 +28,11 @@ public class GPT5NanoStructuralDecompositionProvider implements StructuralDecomp
     }
     
     @Override
+    public String getDescription() {
+        return "OpenAI GPT-5 Nano AI-powered provider for analyzing character structure and radical decomposition";
+    }
+    
+    @Override
     public StructuralDecomposition getStructuralDecomposition(Hanzi word) {
         return provider.process(word);
     }
