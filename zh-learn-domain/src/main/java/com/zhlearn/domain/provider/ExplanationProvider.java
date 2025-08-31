@@ -5,5 +5,6 @@ import com.zhlearn.domain.model.Explanation;
 
 public interface ExplanationProvider {
     String getName();
+    String getDescription();
     Explanation getExplanation(Hanzi word);
 }

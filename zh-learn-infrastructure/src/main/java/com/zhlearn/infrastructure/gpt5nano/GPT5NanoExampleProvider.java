@@ -30,6 +30,11 @@ public class GPT5NanoExampleProvider implements ExampleProvider {
     }
     
     @Override
+    public String getDescription() {
+        return "OpenAI GPT-5 Nano AI-powered provider for generating contextual usage examples";
+    }
+    
+    @Override
     public Example getExamples(Hanzi word, Optional<String> definition) {
         return provider.process(word, definition);
     }

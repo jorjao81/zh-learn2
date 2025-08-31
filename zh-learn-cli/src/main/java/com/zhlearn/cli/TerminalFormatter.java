@@ -44,6 +44,8 @@ public class TerminalFormatter {
         public static final String MAGENTA = "\u001B[35m";
         public static final String BLUE = "\u001B[34m";
         public static final String BLACK = "\u001B[30m";
+        public static final String GREEN = "\u001B[32m";
+        public static final String RED = "\u001B[31m";
     }
     
     // Helper class to track active ANSI formatting state
@@ -606,5 +608,27 @@ public class TerminalFormatter {
         if (codePoint >= 0xFFE0 && codePoint <= 0xFFE6) return true;
         
         return false;
+    }
+    
+    // New formatting methods for providers command
+    
+    public static String formatBoldLabel(String label) {
+        return Ansi.ansi().bold().a(label).boldOff().toString();
+    }
+    
+    public static String formatSupportedCapability(String capability) {
+        return Ansi.ansi().fg(Ansi.Color.GREEN).a("✓ ").reset().a(capability).toString();
+    }
+    
+    public static String formatUnsupportedCapability(String capability) {
+        return Ansi.ansi().fg(Ansi.Color.RED).a("✗ ").reset().a(capability).toString();
+    }
+    
+    public static String formatWarning(String message) {
+        return Ansi.ansi().fg(Ansi.Color.YELLOW).a("⚠ ").reset().a(message).toString();
+    }
+    
+    public static String formatProviderDescription(String description) {
+        return formatBoldLabel("Description: ") + description;
     }
 }
