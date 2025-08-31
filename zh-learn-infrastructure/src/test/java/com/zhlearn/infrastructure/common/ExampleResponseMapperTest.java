@@ -74,4 +74,50 @@ class ExampleResponseMapperTest {
         
         assertThat(result.usages()).isEmpty();
     }
+    
+    @Test
+    void shouldHandleYamlWrappedInMarkdownCodeBlocks() {
+        String yamlWithMarkdown = """
+            ```yaml
+            response:
+              - meaning: "to like"
+                examples:
+                  - hanzi: "我很喜欢这部电影"
+                    pinyin: "wǒ hěn xǐhuān zhè bù diànyǐng"
+                    translation: "I really like this movie"
+            ```
+            """;
+        
+        Example result = mapper.apply(yamlWithMarkdown);
+        
+        assertThat(result.usages()).hasSize(1);
+        Example.Usage usage = result.usages().get(0);
+        assertThat(usage.sentence()).isEqualTo("我很喜欢这部电影");
+        assertThat(usage.pinyin()).isEqualTo("wǒ hěn xǐhuān zhè bù diànyǐng");
+        assertThat(usage.translation()).isEqualTo("I really like this movie");
+        assertThat(usage.context()).isEqualTo("to like");
+    }
+    
+    @Test
+    void shouldHandleGenericMarkdownCodeBlocks() {
+        String yamlWithGenericMarkdown = """
+            ```
+            response:
+              - meaning: "to prefer"
+                examples:
+                  - hanzi: "我更喜欢茶"
+                    pinyin: "wǒ gèng xǐhuān chá"
+                    translation: "I prefer tea"
+            ```
+            """;
+        
+        Example result = mapper.apply(yamlWithGenericMarkdown);
+        
+        assertThat(result.usages()).hasSize(1);
+        Example.Usage usage = result.usages().get(0);
+        assertThat(usage.sentence()).isEqualTo("我更喜欢茶");
+        assertThat(usage.pinyin()).isEqualTo("wǒ gèng xǐhuān chá");
+        assertThat(usage.translation()).isEqualTo("I prefer tea");
+        assertThat(usage.context()).isEqualTo("to prefer");
+    }
 }
