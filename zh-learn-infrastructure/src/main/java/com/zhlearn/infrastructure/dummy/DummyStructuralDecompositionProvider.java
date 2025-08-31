@@ -12,6 +12,11 @@ public class DummyStructuralDecompositionProvider implements StructuralDecomposi
     }
     
     @Override
+    public String getDescription() {
+        return "Test provider that returns dummy structural decomposition for development and testing";
+    }
+    
+    @Override
     public StructuralDecomposition getStructuralDecomposition(Hanzi word) {
         return new StructuralDecomposition(
             "Dummy structural decomposition for " + word.characters() + ": Component breakdown with radicals and meanings."

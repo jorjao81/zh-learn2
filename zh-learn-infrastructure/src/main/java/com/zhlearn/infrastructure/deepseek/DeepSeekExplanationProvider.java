@@ -28,6 +28,11 @@ public class DeepSeekExplanationProvider implements ExplanationProvider {
     }
     
     @Override
+    public String getDescription() {
+        return "DeepSeek AI-powered explanation provider for generating detailed word explanations";
+    }
+    
+    @Override
     public Explanation getExplanation(Hanzi word) {
         return provider.process(word);
     }

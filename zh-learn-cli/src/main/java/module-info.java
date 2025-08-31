@@ -7,6 +7,7 @@ module com.zhlearn.cli {
     requires java.base;
     requires org.fusesource.jansi;
     requires org.jsoup;
+    requires info.picocli;
     
     uses com.zhlearn.domain.provider.PinyinProvider;
     uses com.zhlearn.domain.provider.DefinitionProvider;
@@ -16,4 +17,5 @@ module com.zhlearn.cli {
     uses com.zhlearn.domain.dictionary.Dictionary;
     
     exports com.zhlearn.cli;
+    opens com.zhlearn.cli to info.picocli;
 }

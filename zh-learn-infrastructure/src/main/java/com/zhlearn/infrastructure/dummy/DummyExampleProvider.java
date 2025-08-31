@@ -15,6 +15,11 @@ public class DummyExampleProvider implements ExampleProvider {
     }
     
     @Override
+    public String getDescription() {
+        return "Test provider that returns dummy usage examples for development and testing";
+    }
+    
+    @Override
     public Example getExamples(Hanzi word, Optional<String> definition) {
         String contextSuffix = definition.map(def -> " (meaning: " + def + ")").orElse("");
         

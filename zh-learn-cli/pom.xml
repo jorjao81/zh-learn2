@@ -52,6 +52,12 @@
             <artifactId>jsoup</artifactId>
         </dependency>
 
+        <!-- CLI framework -->
+        <dependency>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli</artifactId>
+        </dependency>
+
         <!-- Testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -105,6 +111,18 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>info.picocli</groupId>
+                            <artifactId>picocli-codegen</artifactId>
+                            <version>4.7.7</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <compilerArgs>
+                        <arg>-Aproject=${project.groupId}/${project.artifactId}</arg>
+                    </compilerArgs>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -114,6 +132,7 @@
                         <include>**/*Test.java</include>
                         <include>**/RunCucumberTest.java</include>
                     </includes>
+                    <argLine>--enable-native-access=org.fusesource.jansi,ALL-UNNAMED</argLine>
                     <properties>
                         <configurationParameters>
                             cucumber.junit-platform.naming-strategy=long

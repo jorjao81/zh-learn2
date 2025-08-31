@@ -5,5 +5,6 @@ import com.zhlearn.domain.model.Pinyin;
 
 public interface PinyinProvider {
     String getName();
+    String getDescription();
     Pinyin getPinyin(Hanzi word);
 }
