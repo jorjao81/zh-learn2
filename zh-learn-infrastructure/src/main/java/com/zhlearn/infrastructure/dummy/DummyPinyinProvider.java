@@ -12,6 +12,11 @@ public class DummyPinyinProvider implements PinyinProvider {
     }
     
     @Override
+    public String getDescription() {
+        return "Test provider that returns dummy pinyin for development and testing";
+    }
+    
+    @Override
     public Pinyin getPinyin(Hanzi word) {
         return new Pinyin("dummy-pinyin-" + word.characters());
     }

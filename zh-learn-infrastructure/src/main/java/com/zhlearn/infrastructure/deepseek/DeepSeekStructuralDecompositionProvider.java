@@ -28,6 +28,11 @@ public class DeepSeekStructuralDecompositionProvider implements StructuralDecomp
     }
     
     @Override
+    public String getDescription() {
+        return "DeepSeek AI-powered provider for analyzing character structure and radical decomposition";
+    }
+    
+    @Override
     public StructuralDecomposition getStructuralDecomposition(Hanzi word) {
         return provider.process(word);
     }

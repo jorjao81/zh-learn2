@@ -12,6 +12,11 @@ public class DummyDefinitionProvider implements DefinitionProvider {
     }
     
     @Override
+    public String getDescription() {
+        return "Test provider that returns dummy definitions for development and testing";
+    }
+    
+    @Override
     public Definition getDefinition(Hanzi word) {
         return new Definition(
             "Dummy meaning for " + word.characters(),

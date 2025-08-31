@@ -16,6 +16,11 @@ public class DictionaryPinyinProvider implements PinyinProvider {
     public String getName() {
         return "dictionary-pinyin-" + dictionary.getName();
     }
+    
+    @Override
+    public String getDescription() {
+        return "Dictionary-based pinyin provider using " + dictionary.getName() + " dictionary data";
+    }
 
     @Override
     public Pinyin getPinyin(Hanzi word) {

@@ -28,6 +28,11 @@ public class GPT5NanoExplanationProvider implements ExplanationProvider {
     }
     
     @Override
+    public String getDescription() {
+        return "OpenAI GPT-5 Nano AI-powered provider for generating detailed word explanations";
+    }
+    
+    @Override
     public Explanation getExplanation(Hanzi word) {
         return provider.process(word);
     }

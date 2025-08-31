@@ -5,5 +5,6 @@ import com.zhlearn.domain.model.Definition;
 
 public interface DefinitionProvider {
     String getName();
+    String getDescription();
     Definition getDefinition(Hanzi word);
 }
