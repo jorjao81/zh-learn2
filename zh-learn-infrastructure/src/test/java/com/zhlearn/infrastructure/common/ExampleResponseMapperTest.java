@@ -13,18 +13,23 @@ class ExampleResponseMapperTest {
         String yamlResponse = """
             response:
               - meaning: "to like"
+                pinyin: "xǐhuān"
                 examples:
-                  - hanzi: "我很喜欢这部电影"
-                    pinyin: "wǒ hěn xǐhuān zhè bù diànyǐng"
-                    translation: "I really like this movie"
-                  - hanzi: "她喜欢听音乐"
-                    pinyin: "tā xǐhuān tīng yīnyuè"
-                    translation: "She likes listening to music"
+                  - hanzi: "喜欢"
+                    pinyin: "xǐhuān"
+                    translation: "to like; to love"
+                    breakdown: "To like (喜) and be happy (欢) about something."
+                  - hanzi: "喜爱"
+                    pinyin: "xǐài"
+                    translation: "to love; to like"
+                    breakdown: "To like (喜) and love (爱) someone or something."
               - meaning: "to prefer"
+                pinyin: "gèng xǐhuān"
                 examples:
-                  - hanzi: "我更喜欢茶"
-                    pinyin: "wǒ gèng xǐhuān chá"
-                    translation: "I prefer tea"
+                  - hanzi: "更喜欢"
+                    pinyin: "gèng xǐhuān"
+                    translation: "to prefer"
+                    breakdown: "More (更) liking (喜欢) one thing over another."
             """;
         
         Example result = mapper.apply(yamlResponse);
@@ -32,13 +37,15 @@ class ExampleResponseMapperTest {
         assertThat(result.usages()).hasSize(3);
         
         Example.Usage firstUsage = result.usages().get(0);
-        assertThat(firstUsage.sentence()).isEqualTo("我很喜欢这部电影");
-        assertThat(firstUsage.pinyin()).isEqualTo("wǒ hěn xǐhuān zhè bù diànyǐng");
-        assertThat(firstUsage.translation()).isEqualTo("I really like this movie");
-        assertThat(firstUsage.context()).isEqualTo("to like");
+        assertThat(firstUsage.sentence()).isEqualTo("喜欢");
+        assertThat(firstUsage.pinyin()).isEqualTo("xǐhuān");
+        assertThat(firstUsage.translation()).isEqualTo("to like; to love");
+        assertThat(firstUsage.context()).isEqualTo("to like (xǐhuān)");
+        assertThat(firstUsage.breakdown()).isEqualTo("To like (喜) and be happy (欢) about something.");
         
         Example.Usage lastUsage = result.usages().get(2);
-        assertThat(lastUsage.context()).isEqualTo("to prefer");
+        assertThat(lastUsage.context()).isEqualTo("to prefer (gèng xǐhuān)");
+        assertThat(lastUsage.breakdown()).isEqualTo("More (更) liking (喜欢) one thing over another.");
     }
     
     @Test
@@ -81,10 +88,12 @@ class ExampleResponseMapperTest {
             ```yaml
             response:
               - meaning: "to like"
+                pinyin: "xǐhuān"
                 examples:
-                  - hanzi: "我很喜欢这部电影"
-                    pinyin: "wǒ hěn xǐhuān zhè bù diànyǐng"
-                    translation: "I really like this movie"
+                  - hanzi: "喜欢"
+                    pinyin: "xǐhuān"
+                    translation: "to like; to love"
+                    breakdown: "To like (喜) and be happy (欢) about something."
             ```
             """;
         
@@ -92,10 +101,11 @@ class ExampleResponseMapperTest {
         
         assertThat(result.usages()).hasSize(1);
         Example.Usage usage = result.usages().get(0);
-        assertThat(usage.sentence()).isEqualTo("我很喜欢这部电影");
-        assertThat(usage.pinyin()).isEqualTo("wǒ hěn xǐhuān zhè bù diànyǐng");
-        assertThat(usage.translation()).isEqualTo("I really like this movie");
-        assertThat(usage.context()).isEqualTo("to like");
+        assertThat(usage.sentence()).isEqualTo("喜欢");
+        assertThat(usage.pinyin()).isEqualTo("xǐhuān");
+        assertThat(usage.translation()).isEqualTo("to like; to love");
+        assertThat(usage.context()).isEqualTo("to like (xǐhuān)");
+        assertThat(usage.breakdown()).isEqualTo("To like (喜) and be happy (欢) about something.");
     }
     
     @Test
@@ -104,10 +114,12 @@ class ExampleResponseMapperTest {
             ```
             response:
               - meaning: "to prefer"
+                pinyin: "gèng xǐhuān"
                 examples:
-                  - hanzi: "我更喜欢茶"
-                    pinyin: "wǒ gèng xǐhuān chá"
-                    translation: "I prefer tea"
+                  - hanzi: "更喜欢"
+                    pinyin: "gèng xǐhuān"
+                    translation: "to prefer"
+                    breakdown: "More (更) liking (喜欢) one thing over another."
             ```
             """;
         
@@ -115,9 +127,10 @@ class ExampleResponseMapperTest {
         
         assertThat(result.usages()).hasSize(1);
         Example.Usage usage = result.usages().get(0);
-        assertThat(usage.sentence()).isEqualTo("我更喜欢茶");
-        assertThat(usage.pinyin()).isEqualTo("wǒ gèng xǐhuān chá");
-        assertThat(usage.translation()).isEqualTo("I prefer tea");
-        assertThat(usage.context()).isEqualTo("to prefer");
+        assertThat(usage.sentence()).isEqualTo("更喜欢");
+        assertThat(usage.pinyin()).isEqualTo("gèng xǐhuān");
+        assertThat(usage.translation()).isEqualTo("to prefer");
+        assertThat(usage.context()).isEqualTo("to prefer (gèng xǐhuān)");
+        assertThat(usage.breakdown()).isEqualTo("More (更) liking (喜欢) one thing over another.");
     }
 }

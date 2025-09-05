@@ -25,16 +25,18 @@ public class DummyExampleProvider implements ExampleProvider {
         
         var usages = List.of(
             new Example.Usage(
-                "这是一个包含 " + word.characters() + " 的句子。",
-                "zhè shì yīgè bāohán " + word.characters() + " de jùzi",
-                "This is a sentence containing " + word.characters() + ".",
-                "dummy context" + contextSuffix
+                word.characters() + "计",
+                word.characters() + "jì",
+                "to estimate; calculation",
+                "dummy context" + contextSuffix,
+                "Breakdown: " + word.characters() + " + 计 (calculation)"
             ),
             new Example.Usage(
-                "另一个 " + word.characters() + " 的例子。",
-                "lìng yīgè " + word.characters() + " de lìzi",
-                "Another example with " + word.characters() + ".",
-                "dummy context 2" + contextSuffix
+                word.characters() + "价",
+                word.characters() + "jià", 
+                "to appraise; valuation",
+                "dummy context 2" + contextSuffix,
+                "Breakdown: " + word.characters() + " + 价 (price/value)"
             )
         );
         return new Example(usages);
