@@ -188,8 +188,8 @@ public class DomainModelStepDefinitions {
     // Example step definitions
     @When("I create an Example with valid usages")
     public void i_create_an_example_with_valid_usages() {
-        var usage1 = new Example.Usage("你好", "nǐ hǎo", "hello", "greeting");
-        var usage2 = new Example.Usage("再见", "zài jiàn", "goodbye", "parting");
+        var usage1 = new Example.Usage("你好", "nǐ hǎo", "hello", "greeting", "Test breakdown for hello");
+        var usage2 = new Example.Usage("再见", "zài jiàn", "goodbye", "parting", "Test breakdown for goodbye");
         example = new Example(List.of(usage1, usage2));
     }
 
@@ -219,13 +219,13 @@ public class DomainModelStepDefinitions {
     @When("I create a Usage with sentence {string}, pinyin {string}, translation {string}, and context {string}")
     public void i_create_a_usage_with_sentence_pinyin_translation_and_context(
             String sentence, String pinyin, String translation, String context) {
-        usage = new Example.Usage(sentence, pinyin, translation, context);
+        usage = new Example.Usage(sentence, pinyin, translation, context, "Test breakdown");
     }
 
     @When("I try to create a Usage with null sentence")
     public void i_try_to_create_a_usage_with_null_sentence() {
         try {
-            usage = new Example.Usage(null, "pinyin", "translation", "context");
+            usage = new Example.Usage(null, "pinyin", "translation", "context", "breakdown");
         } catch (Exception e) {
             thrownException = e;
         }
@@ -234,7 +234,7 @@ public class DomainModelStepDefinitions {
     @When("I try to create a Usage with sentence {string} and null translation")
     public void i_try_to_create_a_usage_with_sentence_and_null_translation(String sentence) {
         try {
-            usage = new Example.Usage(sentence, "pinyin", null, "context");
+            usage = new Example.Usage(sentence, "pinyin", null, "context", "breakdown");
         } catch (Exception e) {
             thrownException = e;
         }

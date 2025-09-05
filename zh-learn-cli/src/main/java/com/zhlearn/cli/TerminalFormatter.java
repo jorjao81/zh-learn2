@@ -1,5 +1,6 @@
 package com.zhlearn.cli;
 
+import com.zhlearn.domain.model.Example;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 import org.jsoup.Jsoup;
@@ -262,6 +263,56 @@ public class TerminalFormatter {
             result.append("\n");
             result.append(Ansi.ansi().fgBright(Colors.PROVIDER).a("Context: ").a(context).reset());
         }
+        return result.toString();
+    }
+    
+    public static String formatGroupedExamples(java.util.List<Example.Usage> usages) {
+        if (usages == null || usages.isEmpty()) {
+            return "";
+        }
+        
+        StringBuilder result = new StringBuilder();
+        
+        // Group examples by context (meaning + pinyin combination)
+        java.util.Map<String, java.util.List<Example.Usage>> groupedUsages = new java.util.LinkedHashMap<>();
+        for (Example.Usage usage : usages) {
+            String context = usage.context();
+            if (context == null) context = "";
+            groupedUsages.computeIfAbsent(context, k -> new java.util.ArrayList<>()).add(usage);
+        }
+        
+        boolean firstGroup = true;
+        for (java.util.Map.Entry<String, java.util.List<Example.Usage>> entry : groupedUsages.entrySet()) {
+            if (!firstGroup) {
+                result.append("\n\n");
+            }
+            firstGroup = false;
+            
+            String context = entry.getKey();
+            java.util.List<Example.Usage> examples = entry.getValue();
+            
+            // Format header like: "to estimate, assess (gū)"
+            if (!context.isEmpty()) {
+                result.append(Ansi.ansi().bold().fg(Colors.HEADER).a(context).reset()).append("\n");
+            }
+            
+            // Format examples in list format
+            for (Example.Usage example : examples) {
+                result.append("• ");
+                result.append(Ansi.ansi().bold().fg(Colors.CHINESE).a(example.sentence()).reset());
+                result.append(" ");
+                result.append(Ansi.ansi().fg(Colors.PINYIN).a(example.pinyin()).reset());
+                result.append(" ");
+                result.append(Ansi.ansi().fg(Colors.ENGLISH).a(example.translation()).reset());
+                
+                if (example.breakdown() != null && !example.breakdown().isEmpty()) {
+                    result.append("\n  ");
+                    result.append(Ansi.ansi().fgBright(Colors.PROVIDER).a("Breakdown: ").a(example.breakdown()).reset());
+                }
+                result.append("\n");
+            }
+        }
+        
         return result.toString();
     }
     

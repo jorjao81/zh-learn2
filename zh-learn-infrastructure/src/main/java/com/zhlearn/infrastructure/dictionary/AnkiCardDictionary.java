@@ -120,7 +120,8 @@ public class AnkiCardDictionary implements Dictionary {
             examplesText.trim(),
             "", // No pinyin in AnkiCard examples
             "Example usage", // Generic translation
-            "anki-card" // Context
+            "anki-card", // Context
+            "" // No breakdown available in AnkiCard
         );
         
         return new Example(List.of(usage));
