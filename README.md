@@ -26,11 +26,9 @@ cd zh-learn-cli && mvn native:compile-no-fork -Pnative
 ```
 
 ### Audio lookup (Existing Anki Pronunciation)
-- Ensure a TSV export of your Anki collection is present at `Chinese.txt` in the project root. The file must have the first column as the Note Type and only rows with Note Type `Chinese` or `Chinese 2` are considered. The observed column order is:
-  - 0: Note Type (e.g., `Chinese`)
-  - 1: Pinyin (with tone marks, e.g., `xuéxí`)
-  - 2: Simplified (e.g., `学习`)
-  - 3: Pronunciation field (e.g., `[sound:xuéxí.mp3]`)
+- Ensure a TSV export of your Anki collection is present at `Chinese.txt` in the project root. The file must have the first column as the Note Type and only rows with Note Type `Chinese` or `Chinese 2` are considered. Column order depends on the Note Type:
+  - `Chinese`: 0 Note Type, 1 Pinyin, 2 Simplified, 3 Pronunciation
+  - `Chinese 2`: 0 Note Type, 1 Simplified, 2 Pinyin, 3 Pronunciation
 
 ```bash
 # Query an existing pronunciation by exact pinyin match
