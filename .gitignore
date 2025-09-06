@@ -24,3 +24,6 @@ Thumbs.db
 
 # Large local data files
 Chinese.txt
+
+# Local selection dump
+SelectedNotes.txt
