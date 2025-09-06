@@ -39,30 +39,20 @@ Feature: Domain Model Creation
     And the error message should contain "Pinyin cannot be null or empty"
 
   Scenario: Create a valid Definition
-    When I create a Definition with meaning "hello" and partOfSpeech "interjection"
+    When I create a Definition with meaning "hello"
     Then the Definition should be created successfully
     And the Definition meaning should be "hello"
-    And the Definition partOfSpeech should be "interjection"
 
   Scenario: Reject Definition with null meaning
-    When I try to create a Definition with null meaning and partOfSpeech "noun"
+    When I try to create a Definition with null meaning
     Then an IllegalArgumentException should be thrown
     And the error message should contain "Definition meaning cannot be null or empty"
 
   Scenario: Reject Definition with empty meaning
-    When I try to create a Definition with meaning "" and partOfSpeech "noun"
+    When I try to create a Definition with meaning ""
     Then an IllegalArgumentException should be thrown
     And the error message should contain "Definition meaning cannot be null or empty"
 
-  Scenario: Reject Definition with null partOfSpeech
-    When I try to create a Definition with meaning "hello" and null partOfSpeech
-    Then an IllegalArgumentException should be thrown
-    And the error message should contain "Part of speech cannot be null or empty"
-
-  Scenario: Reject Definition with empty partOfSpeech
-    When I try to create a Definition with meaning "hello" and partOfSpeech ""
-    Then an IllegalArgumentException should be thrown
-    And the error message should contain "Part of speech cannot be null or empty"
 
   Scenario: Create a valid Explanation
     When I create an Explanation with text "This greeting is commonly used in daily conversations"

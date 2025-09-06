@@ -2,6 +2,7 @@ package com.zhlearn.infrastructure.anki;
 
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
+import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.AudioProvider;
 
 import java.io.IOException;
@@ -76,6 +77,9 @@ public class ExistingAnkiPronunciationProvider implements AudioProvider {
 
     @Override
     public String getDescription() { return DESCRIPTION; }
+    
+    @Override
+    public ProviderType getType() { return ProviderType.DICTIONARY; }
 
     @Override
     public Optional<String> getPronunciation(Hanzi word, Pinyin pinyin) {

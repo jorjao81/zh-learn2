@@ -2,6 +2,7 @@ package com.zhlearn.infrastructure.dummy;
 
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Explanation;
+import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.ExplanationProvider;
 
 import java.io.IOException;
@@ -19,6 +20,9 @@ public class DummyExplanationProvider implements ExplanationProvider {
     public String getDescription() {
         return "Test provider that returns dummy explanations for development and testing";
     }
+    
+    @Override
+    public ProviderType getType() { return ProviderType.DUMMY; }
     
     @Override
     public Explanation getExplanation(Hanzi word) {

@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 )
 public class ProvidersCommand implements Runnable {
     
-    @Option(names = {"--type", "-t"}, description = "Filter by provider type: AI, DICTIONARY, DUMMY")
+    @Option(names = {"--type", "-t"}, description = "Filter by provider type: AI, DICTIONARY, LOCAL, DUMMY")
     private ProviderType filterType;
     
     @Option(names = {"--class", "-c"}, description = "Filter by provider class: PINYIN, DEFINITION, STRUCTURAL_DECOMPOSITION, EXAMPLE, EXPLANATION")

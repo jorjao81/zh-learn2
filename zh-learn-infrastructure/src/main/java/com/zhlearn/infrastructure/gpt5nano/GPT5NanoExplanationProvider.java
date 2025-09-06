@@ -2,6 +2,7 @@ package com.zhlearn.infrastructure.gpt5nano;
 
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Explanation;
+import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.ExplanationProvider;
 import com.zhlearn.infrastructure.common.GenericChatModelProvider;
 import com.zhlearn.infrastructure.common.OpenAIConfig;
@@ -31,6 +32,9 @@ public class GPT5NanoExplanationProvider implements ExplanationProvider {
     public String getDescription() {
         return "OpenAI GPT-5 Nano AI-powered provider for generating detailed word explanations";
     }
+    
+    @Override
+    public ProviderType getType() { return ProviderType.AI; }
     
     @Override
     public Explanation getExplanation(Hanzi word) {

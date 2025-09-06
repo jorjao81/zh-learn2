@@ -236,7 +236,7 @@ public class ProviderRegistry {
         
         // Collect all providers with their supported classes
         pinyinProviders.forEach((name, provider) -> {
-            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription());
+            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription(), provider.getType());
             ProviderInfo infoWithPinyin = new ProviderInfo(
                 baseInfo.name(),
                 baseInfo.description(),
@@ -253,7 +253,7 @@ public class ProviderRegistry {
         });
         
         definitionProviders.forEach((name, provider) -> {
-            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription());
+            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription(), provider.getType());
             ProviderInfo infoWithDefinition = new ProviderInfo(
                 baseInfo.name(),
                 baseInfo.description(),
@@ -270,7 +270,7 @@ public class ProviderRegistry {
         });
         
         decompositionProviders.forEach((name, provider) -> {
-            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription());
+            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription(), provider.getType());
             ProviderInfo infoWithDecomposition = new ProviderInfo(
                 baseInfo.name(),
                 baseInfo.description(),
@@ -287,7 +287,7 @@ public class ProviderRegistry {
         });
         
         exampleProviders.forEach((name, provider) -> {
-            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription());
+            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription(), provider.getType());
             ProviderInfo infoWithExample = new ProviderInfo(
                 baseInfo.name(),
                 baseInfo.description(),
@@ -304,7 +304,7 @@ public class ProviderRegistry {
         });
         
         explanationProviders.forEach((name, provider) -> {
-            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription());
+            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription(), provider.getType());
             ProviderInfo infoWithExplanation = new ProviderInfo(
                 baseInfo.name(),
                 baseInfo.description(),
@@ -321,7 +321,7 @@ public class ProviderRegistry {
         });
         
         audioProviders.forEach((name, provider) -> {
-            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription());
+            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription(), provider.getType());
             ProviderInfo infoWithAudio = new ProviderInfo(
                 baseInfo.name(),
                 baseInfo.description(),
@@ -360,20 +360,11 @@ public class ProviderRegistry {
             .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
     
-    private ProviderInfo createBaseProviderInfo(String name, String description) {
-        ProviderType type = determineProviderType(name);
+    private ProviderInfo createBaseProviderInfo(String name, String description, ProviderType type) {
         return new ProviderInfo(name, description, type, new HashSet<>());
     }
-    
-    private ProviderType determineProviderType(String providerName) {
-        if (providerName.equals("dummy")) {
-            return ProviderType.DUMMY;
-        } else if (providerName.startsWith("dictionary-")) {
-            return ProviderType.DICTIONARY;
-        } else {
-            return ProviderType.AI;
-        }
-    }
+
+    // determineProviderType removed: provider now declares its own type via getType()
     
     private Set<ProviderClass> addToSet(Set<ProviderClass> existing, ProviderClass newClass) {
         Set<ProviderClass> result = new HashSet<>(existing);

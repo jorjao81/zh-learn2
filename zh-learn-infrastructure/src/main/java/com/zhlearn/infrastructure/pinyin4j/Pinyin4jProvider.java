@@ -8,6 +8,7 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
+import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.PinyinProvider;
 
 public class Pinyin4jProvider implements PinyinProvider {
@@ -30,6 +31,9 @@ public class Pinyin4jProvider implements PinyinProvider {
     public String getDescription() {
         return "Pure Java pinyin provider using Pinyin4j library";
     }
+    
+    @Override
+    public ProviderType getType() { return ProviderType.LOCAL; }
 
     @Override
     public Pinyin getPinyin(Hanzi word) {
@@ -79,4 +83,3 @@ public class Pinyin4jProvider implements PinyinProvider {
             || block == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS_SUPPLEMENT;
     }
 }
-

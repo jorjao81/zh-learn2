@@ -60,12 +60,7 @@ public class AnkiNoteDictionary implements Dictionary {
             decomposition,
             examples,
             explanation,
-            DICTIONARY_NAME,
-            DICTIONARY_NAME + "-pinyin",
-            DICTIONARY_NAME + "-definition",
-            DICTIONARY_NAME + "-decomposition",
-            DICTIONARY_NAME + "-example",
-            DICTIONARY_NAME + "-explanation"
+            java.util.Optional.empty() // no pronunciation available from dictionary
         );
     }
 
@@ -77,11 +72,8 @@ public class AnkiNoteDictionary implements Dictionary {
 
     private Definition createDefinition(AnkiNote n) {
         String definitionText = n.definition();
-        if (definitionText == null || definitionText.trim().isEmpty()) return new Definition("unknown", "unknown");
-        String[] parts = definitionText.split("[;,]", 2);
-        String meaning = parts[0].trim();
-        String partOfSpeech = parts.length > 1 ? parts[1].trim() : "unknown";
-        return new Definition(meaning.isEmpty() ? "unknown" : meaning, partOfSpeech.isEmpty() ? "unknown" : partOfSpeech);
+        if (definitionText == null || definitionText.trim().isEmpty()) return new Definition("unknown");
+        return new Definition(definitionText.trim().isEmpty() ? "unknown" : definitionText.trim());
     }
 
     private StructuralDecomposition createStructuralDecomposition(AnkiNote n) {
@@ -92,7 +84,7 @@ public class AnkiNoteDictionary implements Dictionary {
 
     private Example createExample(AnkiNote n) {
         String examplesText = n.examples();
-        if (examplesText == null || examplesText.trim().isEmpty()) return new Example(List.of());
+        if (examplesText == null || examplesText.trim().isEmpty()) return new Example(List.of(), List.of());
         Example.Usage usage = new Example.Usage(
             examplesText.trim(),
             "",
@@ -100,7 +92,7 @@ public class AnkiNoteDictionary implements Dictionary {
             DICTIONARY_NAME,
             ""
         );
-        return new Example(List.of(usage));
+        return new Example(List.of(usage), List.of());
     }
 
     private Explanation createExplanation(AnkiNote n) {
@@ -109,4 +101,3 @@ public class AnkiNoteDictionary implements Dictionary {
         return new Explanation(etymologyText.trim());
     }
 }
-

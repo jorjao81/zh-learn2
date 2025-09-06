@@ -2,10 +2,13 @@ package com.zhlearn.domain.model;
 
 import java.util.List;
 
-public record Example(List<Usage> usages) {
+public record Example(List<Usage> usages, List<SeriesItem> phoneticSeries) {
     public Example {
         if (usages == null) {
             throw new IllegalArgumentException("Example usages cannot be null");
+        }
+        if (phoneticSeries == null) {
+            throw new IllegalArgumentException("Phonetic series cannot be null (use empty list if none)");
         }
     }
 
@@ -19,4 +22,17 @@ public record Example(List<Usage> usages) {
             }
         }
     }
+
+    public record SeriesItem(String hanzi, String pinyin, String meaning) {
+        public SeriesItem {
+            if (hanzi == null || hanzi.trim().isEmpty()) {
+                throw new IllegalArgumentException("Series item hanzi cannot be null or empty");
+            }
+            if (meaning == null) {
+                meaning = "";
+            }
+        }
+    }
+
+    // No standalone sentence support
 }

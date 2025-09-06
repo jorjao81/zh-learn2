@@ -3,6 +3,7 @@ package com.zhlearn.infrastructure.dictionary;
 import com.zhlearn.domain.dictionary.Dictionary;
 import com.zhlearn.domain.model.Example;
 import com.zhlearn.domain.model.Hanzi;
+import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.ExampleProvider;
 
 import java.util.Optional;
@@ -23,6 +24,9 @@ public class DictionaryExampleProvider implements ExampleProvider {
     public String getDescription() {
         return "Dictionary-based example provider using " + dictionary.getName() + " dictionary data";
     }
+    
+    @Override
+    public ProviderType getType() { return ProviderType.DICTIONARY; }
 
     @Override
     public Example getExamples(Hanzi word, Optional<String> definition) {

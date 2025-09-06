@@ -1,5 +1,7 @@
 package com.zhlearn.domain.model;
 
+import java.util.Optional;
+
 public record WordAnalysis(
     Hanzi word,
     Pinyin pinyin,
@@ -7,12 +9,7 @@ public record WordAnalysis(
     StructuralDecomposition structuralDecomposition,
     Example examples,
     Explanation explanation,
-    String providerName,
-    String pinyinProvider,
-    String definitionProvider,
-    String decompositionProvider,
-    String exampleProvider,
-    String explanationProvider
+    Optional<String> pronunciation
 ) {
     public WordAnalysis {
         if (word == null) {
@@ -33,23 +30,8 @@ public record WordAnalysis(
         if (explanation == null) {
             throw new IllegalArgumentException("Explanation cannot be null");
         }
-        if (providerName == null || providerName.trim().isEmpty()) {
-            throw new IllegalArgumentException("Provider name cannot be null or empty");
-        }
-        if (pinyinProvider == null || pinyinProvider.trim().isEmpty()) {
-            throw new IllegalArgumentException("Pinyin provider cannot be null or empty");
-        }
-        if (definitionProvider == null || definitionProvider.trim().isEmpty()) {
-            throw new IllegalArgumentException("Definition provider cannot be null or empty");
-        }
-        if (decompositionProvider == null || decompositionProvider.trim().isEmpty()) {
-            throw new IllegalArgumentException("Decomposition provider cannot be null or empty");
-        }
-        if (exampleProvider == null || exampleProvider.trim().isEmpty()) {
-            throw new IllegalArgumentException("Example provider cannot be null or empty");
-        }
-        if (explanationProvider == null || explanationProvider.trim().isEmpty()) {
-            throw new IllegalArgumentException("Explanation provider cannot be null or empty");
+        if (pronunciation == null) {
+            throw new IllegalArgumentException("Pronunciation cannot be null");
         }
     }
 }

@@ -2,6 +2,7 @@ package com.zhlearn.infrastructure.gpt5nano;
 
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.StructuralDecomposition;
+import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.StructuralDecompositionProvider;
 import com.zhlearn.infrastructure.common.GenericChatModelProvider;
 import com.zhlearn.infrastructure.common.OpenAIConfig;
@@ -31,6 +32,9 @@ public class GPT5NanoStructuralDecompositionProvider implements StructuralDecomp
     public String getDescription() {
         return "OpenAI GPT-5 Nano AI-powered provider for analyzing character structure and radical decomposition";
     }
+    
+    @Override
+    public ProviderType getType() { return ProviderType.AI; }
     
     @Override
     public StructuralDecomposition getStructuralDecomposition(Hanzi word) {

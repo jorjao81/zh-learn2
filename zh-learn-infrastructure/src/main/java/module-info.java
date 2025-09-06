@@ -22,6 +22,8 @@ module com.zhlearn.infrastructure {
     
     // Pinyin4j for Chinese to Pinyin conversion
     requires pinyin4j;
+    // Internal pinyin utilities (tone converter)
+    requires com.zhlearn.pinyin;
 
     exports com.zhlearn.infrastructure.dummy;
     exports com.zhlearn.infrastructure.deepseek;
@@ -31,6 +33,8 @@ module com.zhlearn.infrastructure {
     exports com.zhlearn.infrastructure.dictionary;
     exports com.zhlearn.infrastructure.cache;
     exports com.zhlearn.infrastructure.pinyin4j;
+    // pinyin utility moved to separate module com.zhlearn.pinyin
+    exports com.zhlearn.infrastructure.pleco;
     
     provides com.zhlearn.domain.provider.PinyinProvider
         with com.zhlearn.infrastructure.pinyin4j.Pinyin4jProvider;

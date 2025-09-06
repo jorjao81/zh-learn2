@@ -58,46 +58,41 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
 
     @Override
     public java.util.Optional<String> getPronunciation(Hanzi word, Pinyin pinyin, String providerName) {
+        if (providerName == null || providerName.isBlank()) {
+            return java.util.Optional.empty();
+        }
         return providerRegistry.getAudioProvider(providerName)
-            .orElseThrow(() -> new IllegalArgumentException("Audio provider not found: " + providerName))
-            .getPronunciation(word, pinyin);
+            .map(p -> p.getPronunciation(word, pinyin))
+            .orElse(java.util.Optional.empty());
     }
     
     @Override
     public WordAnalysis getCompleteAnalysis(Hanzi word, String providerName) {
         Definition definition = getDefinition(word, providerName);
+        Pinyin pinyin = getPinyin(word, providerName);
         return new WordAnalysis(
             word,
-            getPinyin(word, providerName),
+            pinyin,
             definition,
             getStructuralDecomposition(word, providerName),
             getExamples(word, providerName, definition.meaning()),
             getExplanation(word, providerName),
-            providerName,
-            providerName, // pinyinProvider
-            providerName, // definitionProvider
-            providerName, // decompositionProvider
-            providerName, // exampleProvider
-            providerName  // explanationProvider
+            getPronunciation(word, pinyin, providerName)
         );
     }
-    
+
     @Override
     public WordAnalysis getCompleteAnalysis(Hanzi word, ProviderConfiguration config) {
         Definition definition = getDefinition(word, config.getDefinitionProvider());
+        Pinyin pinyin = getPinyin(word, config.getPinyinProvider());
         return new WordAnalysis(
             word,
-            getPinyin(word, config.getPinyinProvider()),
+            pinyin,
             definition,
             getStructuralDecomposition(word, config.getDecompositionProvider()),
             getExamples(word, config.getExampleProvider(), definition.meaning()),
             getExplanation(word, config.getExplanationProvider()),
-            config.getDefaultProvider(),
-            config.getPinyinProvider(),
-            config.getDefinitionProvider(),
-            config.getDecompositionProvider(),
-            config.getExampleProvider(),
-            config.getExplanationProvider()
+            getPronunciation(word, pinyin, config.getAudioProvider())
         );
     }
 

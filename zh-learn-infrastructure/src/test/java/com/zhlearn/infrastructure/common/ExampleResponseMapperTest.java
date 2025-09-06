@@ -11,7 +11,7 @@ class ExampleResponseMapperTest {
     @Test
     void shouldParseValidYamlResponse() {
         String yamlResponse = """
-            response:
+            words:
               - meaning: "to like"
                 pinyin: "xǐhuān"
                 examples:
@@ -51,7 +51,7 @@ class ExampleResponseMapperTest {
     @Test
     void shouldHandleEmptyResponse() {
         String yamlResponse = """
-            response: []
+            words: []
             """;
         
         Example result = mapper.apply(yamlResponse);
@@ -86,7 +86,7 @@ class ExampleResponseMapperTest {
     void shouldHandleYamlWrappedInMarkdownCodeBlocks() {
         String yamlWithMarkdown = """
             ```yaml
-            response:
+            words:
               - meaning: "to like"
                 pinyin: "xǐhuān"
                 examples:
@@ -112,7 +112,7 @@ class ExampleResponseMapperTest {
     void shouldHandleGenericMarkdownCodeBlocks() {
         String yamlWithGenericMarkdown = """
             ```
-            response:
+            words:
               - meaning: "to prefer"
                 pinyin: "gèng xǐhuān"
                 examples:
@@ -133,4 +133,33 @@ class ExampleResponseMapperTest {
         assertThat(usage.context()).isEqualTo("to prefer (gèng xǐhuān)");
         assertThat(usage.breakdown()).isEqualTo("More (更) liking (喜欢) one thing over another.");
     }
+
+    @Test
+    void shouldParseOptionalPhoneticSeries() {
+        String yaml = """
+            words:
+              - meaning: "to learn"
+                pinyin: "xué"
+                examples:
+                  - hanzi: "学习"
+                    pinyin: "xuéxí"
+                    translation: "to study"
+                    breakdown: "study (学) + practice (习)"
+            phonetic_series:
+              - hanzi: "觉"
+                pinyin: "jué"
+                meaning: "to feel; sense"
+              - hanzi: "较"
+                pinyin: "jiào"
+                meaning: "compare; fairly"
+            """;
+
+        Example result = mapper.apply(yaml);
+        assertThat(result.phoneticSeries()).hasSize(2);
+        assertThat(result.phoneticSeries().get(0).hanzi()).isEqualTo("觉");
+        assertThat(result.phoneticSeries().get(0).pinyin()).isEqualTo("jué");
+        assertThat(result.phoneticSeries().get(0).meaning()).isEqualTo("to feel; sense");
+    }
+
+    // No standalone sentence support
 }
