@@ -1,6 +1,6 @@
 package com.zhlearn.infrastructure.pleco;
 
-import com.zhlearn.infrastructure.pinyin.PinyinToneConverter;
+import com.zhlearn.pinyin.PinyinToneConverter;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;

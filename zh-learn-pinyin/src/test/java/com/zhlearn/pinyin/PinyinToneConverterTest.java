@@ -1,4 +1,4 @@
-package com.zhlearn.infrastructure.pinyin;
+package com.zhlearn.pinyin;
 
 import org.junit.jupiter.api.Test;
 
