@@ -6,8 +6,7 @@ import com.zhlearn.domain.model.ProviderConfiguration;
 import com.zhlearn.domain.model.WordAnalysis;
 import com.zhlearn.infrastructure.dictionary.PlecoExportDictionary;
 import com.zhlearn.infrastructure.dictionary.DictionaryDefinitionProvider;
-import com.zhlearn.infrastructure.dictionary.DictionaryExplanationProvider;
-import com.zhlearn.infrastructure.dictionary.DictionaryStructuralDecompositionProvider;
+import com.zhlearn.infrastructure.dictionary.DictionaryPinyinProvider;
 import com.zhlearn.infrastructure.pleco.PlecoEntry;
 import com.zhlearn.infrastructure.pleco.PlecoExportParser;
 
@@ -75,8 +74,7 @@ public class ParsePlecoCommand implements Runnable {
             // Register dictionary-backed providers so users can opt-in via --*-provider flags
             var registry = parent.getProviderRegistry();
             registry.registerDefinitionProvider(new DictionaryDefinitionProvider(dictionary));
-            registry.registerExplanationProvider(new DictionaryExplanationProvider(dictionary));
-            registry.registerStructuralDecompositionProvider(new DictionaryStructuralDecompositionProvider(dictionary));
+            registry.registerPinyinProvider(new DictionaryPinyinProvider(dictionary));
             
             // Set up word analysis service
             WordAnalysisServiceImpl wordAnalysisService = new WordAnalysisServiceImpl(parent.getProviderRegistry());

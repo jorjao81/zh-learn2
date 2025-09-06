@@ -14,7 +14,8 @@ public class DictionaryDefinitionProvider implements DefinitionProvider {
 
     @Override
     public String getName() {
-        return "dictionary-definition-" + dictionary.getName();
+        // Use the dictionary's name directly (e.g., "pleco-export")
+        return dictionary.getName();
     }
     
     @Override
