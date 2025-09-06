@@ -32,7 +32,8 @@ public class ProviderConfiguration {
     }
     
     public String getPinyinProvider() {
-        return pinyinProvider != null ? pinyinProvider : defaultProvider;
+        // Always default to pinyin4j unless explicitly set
+        return pinyinProvider != null ? pinyinProvider : "pinyin4j";
     }
     
     public String getDefinitionProvider() {

@@ -28,10 +28,10 @@ public class WordCommand implements Runnable {
     @Parameters(index = "0", description = "The Chinese word to analyze")
     private String chineseWord;
     
-    @Option(names = {"--provider"}, description = "Set default provider for all services (default: dummy). Available: dummy, gpt-5-nano, deepseek-chat")
+    @Option(names = {"--provider"}, description = "Set default provider for all services (default: pinyin4j for pinyin, dummy for others). Available: dummy, pinyin4j, gpt-5-nano, deepseek-chat")
     private String defaultProvider = "dummy";
     
-    @Option(names = {"--pinyin-provider"}, description = "Set specific provider for pinyin. Available: dummy")
+    @Option(names = {"--pinyin-provider"}, description = "Set specific provider for pinyin. Available: pinyin4j, dummy")
     private String pinyinProvider;
     
     @Option(names = {"--definition-provider"}, description = "Set specific provider for definition. Available: dummy")
