@@ -142,6 +142,7 @@ public class ProvidersCommand implements Runnable {
             case STRUCTURAL_DECOMPOSITION -> "Decomposition";
             case EXAMPLE -> "Examples";
             case EXPLANATION -> "Explanation";
+            case AUDIO -> "Audio";
         };
     }
     

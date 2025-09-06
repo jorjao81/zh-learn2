@@ -18,7 +18,7 @@ import picocli.CommandLine.ScopeType;
 @Command(name = "zh-learn",
         mixinStandardHelpOptions = true,
         version = "1.0.0-SNAPSHOT",
-        subcommands = { WordCommand.class, ProvidersCommand.class, ParseAnkiCommand.class, picocli.CommandLine.HelpCommand.class },
+        subcommands = { WordCommand.class, ProvidersCommand.class, ParseAnkiCommand.class, AudioCommand.class, picocli.CommandLine.HelpCommand.class },
         scope = ScopeType.INHERIT)
 public class MainCommand implements Runnable {
 
@@ -40,6 +40,13 @@ public class MainCommand implements Runnable {
         providerRegistry.registerExampleProvider(new GPT5NanoExampleProvider());
         providerRegistry.registerExplanationProvider(new GPT5NanoExplanationProvider());
         providerRegistry.registerStructuralDecompositionProvider(new GPT5NanoStructuralDecompositionProvider());
+
+        // Audio providers
+        try {
+            providerRegistry.registerAudioProvider(new com.zhlearn.infrastructure.anki.ExistingAnkiPronunciationProvider());
+        } catch (Exception ignored) {
+            // If collection is not available, provider will simply return empty
+        }
     }
 
     public ProviderRegistry getProviderRegistry() {

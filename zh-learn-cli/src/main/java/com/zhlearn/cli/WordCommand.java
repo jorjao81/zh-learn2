@@ -69,7 +69,8 @@ public class WordCommand implements Runnable {
                 definitionProvider,
                 decompositionProvider,
                 exampleProvider,
-                explanationProvider
+                explanationProvider,
+                null // audio provider (default)
             );
             
             Hanzi word = new Hanzi(chineseWord);

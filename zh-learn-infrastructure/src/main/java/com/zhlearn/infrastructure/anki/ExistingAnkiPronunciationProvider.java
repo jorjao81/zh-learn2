@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -21,6 +22,17 @@ public class ExistingAnkiPronunciationProvider implements AudioProvider {
     private static final String DESCRIPTION = "Reuses existing pronunciations from local Anki collection (Chinese.txt) by exact pinyin match.";
 
     private final Map<String, String> pinyinToPronunciation;
+
+    public ExistingAnkiPronunciationProvider() {
+        this.pinyinToPronunciation = new HashMap<>();
+        AnkiCollectionParser parser = new AnkiCollectionParser();
+        try {
+            List<AnkiCollectionNote> notes = parser.parseFile(Paths.get("Chinese.txt"));
+            index(notes);
+        } catch (IOException e) {
+            // Swallow and keep empty index; provider will just return empty results
+        }
+    }
 
     public ExistingAnkiPronunciationProvider(Path collectionPath, AnkiCollectionParser parser) {
         this.pinyinToPronunciation = new HashMap<>();
@@ -75,4 +87,3 @@ public class ExistingAnkiPronunciationProvider implements AudioProvider {
 
     private static String safe(String s) { return s == null ? "" : s.trim(); }
 }
-
