@@ -31,6 +31,8 @@ module com.zhlearn.infrastructure {
     exports com.zhlearn.infrastructure.dictionary;
     exports com.zhlearn.infrastructure.cache;
     exports com.zhlearn.infrastructure.pinyin4j;
+    exports com.zhlearn.infrastructure.pinyin;
+    exports com.zhlearn.infrastructure.pleco;
     
     provides com.zhlearn.domain.provider.PinyinProvider
         with com.zhlearn.infrastructure.pinyin4j.Pinyin4jProvider;
