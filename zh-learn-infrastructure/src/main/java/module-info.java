@@ -19,6 +19,9 @@ module com.zhlearn.infrastructure {
     
     // Apache Commons CSV for Anki parsing
     requires org.apache.commons.csv;
+    
+    // Pinyin4j for Chinese to Pinyin conversion
+    requires pinyin4j;
 
     exports com.zhlearn.infrastructure.dummy;
     exports com.zhlearn.infrastructure.deepseek;
@@ -27,9 +30,10 @@ module com.zhlearn.infrastructure {
     exports com.zhlearn.infrastructure.anki;
     exports com.zhlearn.infrastructure.dictionary;
     exports com.zhlearn.infrastructure.cache;
+    exports com.zhlearn.infrastructure.pinyin4j;
     
-    provides com.zhlearn.domain.provider.PinyinProvider 
-        with com.zhlearn.infrastructure.dummy.DummyPinyinProvider;
+    provides com.zhlearn.domain.provider.PinyinProvider
+        with com.zhlearn.infrastructure.pinyin4j.Pinyin4jProvider;
     
     provides com.zhlearn.domain.provider.DefinitionProvider 
         with com.zhlearn.infrastructure.dummy.DummyDefinitionProvider;

@@ -7,7 +7,7 @@ import com.zhlearn.infrastructure.deepseek.DeepSeekStructuralDecompositionProvid
 import com.zhlearn.infrastructure.dummy.DummyDefinitionProvider;
 import com.zhlearn.infrastructure.dummy.DummyExampleProvider;
 import com.zhlearn.infrastructure.dummy.DummyExplanationProvider;
-import com.zhlearn.infrastructure.dummy.DummyPinyinProvider;
+import com.zhlearn.infrastructure.pinyin4j.Pinyin4jProvider;
 import com.zhlearn.infrastructure.dummy.DummyStructuralDecompositionProvider;
 import com.zhlearn.infrastructure.gpt5nano.GPT5NanoExampleProvider;
 import com.zhlearn.infrastructure.gpt5nano.GPT5NanoExplanationProvider;
@@ -30,7 +30,7 @@ public class MainCommand implements Runnable {
         providerRegistry.registerDefinitionProvider(new DummyDefinitionProvider());
         providerRegistry.registerExampleProvider(new DummyExampleProvider());
         providerRegistry.registerExplanationProvider(new DummyExplanationProvider());
-        providerRegistry.registerPinyinProvider(new DummyPinyinProvider());
+        providerRegistry.registerPinyinProvider(new Pinyin4jProvider());
         providerRegistry.registerStructuralDecompositionProvider(new DummyStructuralDecompositionProvider());
 
         providerRegistry.registerExampleProvider(new DeepSeekExampleProvider());
