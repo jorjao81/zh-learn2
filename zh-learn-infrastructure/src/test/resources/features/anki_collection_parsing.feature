@@ -6,10 +6,10 @@ Feature: Anki Collection Parsing
       """
       #separator:tab
       #html:true
-      CustomType	词	cí	[sound:ci.mp3]	definition
-      Chinese	学	xué	[sound:xue.mp3]	definition
-      Chinese 2	习	xí	[sound:xi.mp3]	definition
-      Other	x	y	[sound:z.mp3]	def
+      CustomType	cí	词	[sound:ci.mp3]	definition
+      Chinese	xué	学	[sound:xue.mp3]	definition
+      Chinese 2	xí	习	[sound:xi.mp3]	definition
+      Other	y	x	[sound:z.mp3]	def
       """
     When I parse the collection
     Then the parser should return 2 collection notes
@@ -19,11 +19,10 @@ Feature: Anki Collection Parsing
   Scenario: Handle empty pronunciation
     Given an Anki collection file:
       """
-      Chinese	学	xué		def
-      Chinese	习	xí	[sound:xi.mp3]	def
+      Chinese	xué	学		def
+      Chinese	xí	习	[sound:xi.mp3]	def
       """
     When I parse the collection
     Then the parser should return 2 collection notes
     And the first collection note pronunciation should be ""
     And the second collection note pronunciation should be "[sound:xi.mp3]"
-

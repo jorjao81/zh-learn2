@@ -23,7 +23,6 @@ public class AnkiCollectionParser {
         .builder()
         .setDelimiter('\t')
         .setQuote('"')
-        .setRecordSeparator('\n')
         .setIgnoreEmptyLines(false)
         .setTrim(false)
         .build();
@@ -43,13 +42,14 @@ public class AnkiCollectionParser {
                 String first = record.get(0);
                 if (shouldSkipLine(first)) continue;
 
-                // Expect: 0=noteType, 1=simplified, 2=pinyin, 3=pronunciation, 4=definition,
+                // Observed format in Chinese.txt:
+                // 0=noteType, 1=pinyin, 2=simplified, 3=pronunciation, 4=definition,
                 // 5=examples, 6=etymology, 7=components ... (rest ignored)
                 String noteType = get(record, 0);
                 if (!isChineseType(noteType)) continue;
 
-                String simplified = get(record, 1);
-                String pinyin = get(record, 2);
+                String pinyin = get(record, 1);
+                String simplified = get(record, 2);
                 String pronunciation = get(record, 3);
                 String definition = get(record, 4);
                 String examples = get(record, 5);
@@ -81,7 +81,9 @@ public class AnkiCollectionParser {
     }
 
     private static boolean isChineseType(String noteType) {
-        return "Chinese".equals(noteType) || "Chinese 2".equals(noteType);
+        if (noteType == null) return false;
+        String t = noteType.trim();
+        return "Chinese".equals(t) || "Chinese 2".equals(t);
     }
 
     private static String simplified(String s) {
@@ -92,4 +94,3 @@ public class AnkiCollectionParser {
         return s == null ? "" : s.trim();
     }
 }
-

@@ -10,6 +10,7 @@ import java.io.StringReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.text.Normalizer;
 
 /**
  * Audio provider that reuses pronunciations already present in the user's
@@ -28,9 +29,14 @@ public class ExistingAnkiPronunciationProvider implements AudioProvider {
         AnkiCollectionParser parser = new AnkiCollectionParser();
         try {
             List<AnkiCollectionNote> notes = parser.parseFile(Paths.get("Chinese.txt"));
+            int before = pinyinToPronunciation.size();
             index(notes);
+            int after = pinyinToPronunciation.size();
+            if (after == 0) {
+                System.err.println("[existing-anki-pronunciation] Info: parsed " + notes.size() + " notes, indexed 0 pronunciations.");
+            }
         } catch (IOException e) {
-            // Swallow and keep empty index; provider will just return empty results
+            System.err.println("[existing-anki-pronunciation] Warning: could not parse Chinese.txt: " + e.getMessage());
         }
     }
 
@@ -61,7 +67,7 @@ public class ExistingAnkiPronunciationProvider implements AudioProvider {
 
     private void index(List<AnkiCollectionNote> notes) {
         for (AnkiCollectionNote n : notes) {
-            String p = safe(n.pinyin());
+            String p = normalizePinyin(safe(n.pinyin()));
             String pron = safe(n.pronunciation());
             if (!p.isEmpty() && !pron.isEmpty()) {
                 // Keep first non-empty pronunciation for a given pinyin
@@ -79,11 +85,16 @@ public class ExistingAnkiPronunciationProvider implements AudioProvider {
     @Override
     public Optional<String> getPronunciation(Hanzi word, Pinyin pinyin) {
         if (pinyin == null || pinyin.pinyin() == null) return Optional.empty();
-        String key = pinyin.pinyin().trim();
+        String key = normalizePinyin(pinyin.pinyin().trim());
         if (key.isEmpty()) return Optional.empty();
         String result = pinyinToPronunciation.get(key);
         return (result == null || result.isEmpty()) ? Optional.empty() : Optional.of(result);
     }
 
     private static String safe(String s) { return s == null ? "" : s.trim(); }
+    private static String normalizePinyin(String s) {
+        if (s == null) return "";
+        String t = s.trim();
+        return Normalizer.normalize(t, Normalizer.Form.NFC);
+    }
 }
