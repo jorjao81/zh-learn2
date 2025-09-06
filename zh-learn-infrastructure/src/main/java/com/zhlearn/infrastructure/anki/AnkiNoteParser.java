@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * Parser for the Anki collection TSV export (Chinese.txt).
- * Only rows with note type "Chinese" or "Chinese 2" are returned.
+ * Only rows with note type "Chinese 2" are returned.
  */
 public class AnkiNoteParser {
 
@@ -39,28 +39,14 @@ public class AnkiNoteParser {
                 if (record.size() == 0) continue;
                 String first = record.get(0);
                 if (shouldSkipLine(first)) continue;
-
                 String noteType = first != null ? first.trim() : "";
-                if (!isChineseType(noteType)) continue;
+                if (!isChinese2Type(noteType)) continue;
 
                 String col1 = get(record, 1);
                 String col2 = get(record, 2);
-                String pinyin;
-                String simplified;
-                // Column order depends on note type
-                if ("Chinese".equals(noteType)) {
-                    // 1=pinyin, 2=simplified
-                    pinyin = col1;
-                    simplified = col2;
-                } else if ("Chinese 2".equals(noteType)) {
-                    // 1=simplified, 2=pinyin
-                    simplified = col1;
-                    pinyin = col2;
-                } else {
-                    // Should not reach here due to filtering, but default to (pinyin, simplified)
-                    pinyin = col1;
-                    simplified = col2;
-                }
+                // For "Chinese 2": 1=simplified, 2=pinyin
+                String simplified = col1;
+                String pinyin = col2;
                 String pronunciation = get(record, 3);
                 String definition = get(record, 4);
                 String examples = get(record, 5);
@@ -86,10 +72,10 @@ public class AnkiNoteParser {
         return firstColumn == null || firstColumn.trim().isEmpty() || firstColumn.startsWith("#");
     }
 
-    private static boolean isChineseType(String noteType) {
+    private static boolean isChinese2Type(String noteType) {
         if (noteType == null) return false;
         String t = noteType.trim();
-        return "Chinese".equals(t) || "Chinese 2".equals(t);
+        return "Chinese 2".equals(t);
     }
 
 }

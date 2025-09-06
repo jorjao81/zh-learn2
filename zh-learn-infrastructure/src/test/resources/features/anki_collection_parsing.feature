@@ -1,5 +1,5 @@
 Feature: Anki Collection Parsing
-  Parse the full Anki collection (Chinese.txt) and keep only Chinese note types.
+  Parse the full Anki collection (Chinese.txt) and keep only Chinese 2 note types.
 
   Scenario: Skip non-Chinese note types and headers
     Given an Anki collection file:
@@ -7,7 +7,7 @@ Feature: Anki Collection Parsing
       #separator:tab
       #html:true
       CustomType	cí	词	[sound:ci.mp3]	definition
-      Chinese	xué	学	[sound:xue.mp3]	definition
+      Chinese 2	学	xué	[sound:xue.mp3]	definition
       Chinese 2	xí	习	[sound:xi.mp3]	definition
       Other	y	x	[sound:z.mp3]	def
       """
@@ -19,8 +19,8 @@ Feature: Anki Collection Parsing
   Scenario: Handle empty pronunciation
     Given an Anki collection file:
       """
-      Chinese	xué	学		def
-      Chinese	xí	习	[sound:xi.mp3]	def
+      Chinese 2	学	xué		def
+      Chinese 2	xí	习	[sound:xi.mp3]	def
       """
     When I parse the collection
     Then the parser should return 2 collection notes

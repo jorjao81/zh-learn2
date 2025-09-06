@@ -31,7 +31,7 @@ public class ExistingAnkiPronunciationProvider implements AudioProvider {
             List<AnkiNote> notes = parser.parseFile(Paths.get("Chinese.txt"));
             index(notes);
         } catch (IOException e) {
-            // Keep empty index; provider will just return empty results
+            throw new IllegalStateException("Failed to parse Anki collection: " + e.getMessage(), e);
         }
     }
 

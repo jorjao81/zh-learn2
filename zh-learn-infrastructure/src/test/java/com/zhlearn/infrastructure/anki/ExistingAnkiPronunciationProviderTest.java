@@ -14,7 +14,7 @@ class ExistingAnkiPronunciationProviderTest {
     @Test
     void returnsPronunciationForExactPinyinMatch() {
         String content = """
-            Chinese\t学\txué\t[sound:xue.mp3]\tdef
+            Chinese 2\t学\txué\t[sound:xue.mp3]\tdef
             Chinese 2\t习\txí\t[sound:xi.mp3]\tdef
             Other\t词\tcí\t[sound:ci.mp3]\tdef
             """;
