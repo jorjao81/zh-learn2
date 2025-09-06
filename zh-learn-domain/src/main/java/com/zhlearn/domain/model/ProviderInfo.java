@@ -30,7 +30,8 @@ public record ProviderInfo(
         DEFINITION("Word definitions"),
         STRUCTURAL_DECOMPOSITION("Character structure analysis"),
         EXAMPLE("Usage examples"),
-        EXPLANATION("Detailed explanations");
+        EXPLANATION("Detailed explanations"),
+        AUDIO("Pronunciation audio");
         
         private final String description;
         
