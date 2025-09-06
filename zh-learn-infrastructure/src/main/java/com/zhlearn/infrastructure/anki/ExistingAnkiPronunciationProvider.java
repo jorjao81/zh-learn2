@@ -29,14 +29,9 @@ public class ExistingAnkiPronunciationProvider implements AudioProvider {
         AnkiNoteParser parser = new AnkiNoteParser();
         try {
             List<AnkiNote> notes = parser.parseFile(Paths.get("Chinese.txt"));
-            int before = pinyinToPronunciation.size();
             index(notes);
-            int after = pinyinToPronunciation.size();
-            if (after == 0) {
-                System.err.println("[existing-anki-pronunciation] Info: parsed " + notes.size() + " notes, indexed 0 pronunciations.");
-            }
         } catch (IOException e) {
-            System.err.println("[existing-anki-pronunciation] Warning: could not parse Chinese.txt: " + e.getMessage());
+            // Keep empty index; provider will just return empty results
         }
     }
 
