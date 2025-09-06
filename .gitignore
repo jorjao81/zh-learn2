@@ -21,3 +21,6 @@ Thumbs.db
 
 # Local caches
 .zh-learn-cache/
+
+# Large local data files
+Chinese.txt
