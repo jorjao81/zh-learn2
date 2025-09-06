@@ -52,4 +52,7 @@ module com.zhlearn.infrastructure {
         with com.zhlearn.infrastructure.dummy.DummyExplanationProvider,
              com.zhlearn.infrastructure.deepseek.DeepSeekExplanationProvider,
              com.zhlearn.infrastructure.gpt5nano.GPT5NanoExplanationProvider;
+
+    provides com.zhlearn.domain.provider.AudioProvider
+        with com.zhlearn.infrastructure.anki.ExistingAnkiPronunciationProvider;
 }

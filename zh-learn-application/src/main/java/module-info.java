@@ -3,4 +3,5 @@ module com.zhlearn.application {
     requires com.zhlearn.infrastructure;
     
     exports com.zhlearn.application.service;
+    uses com.zhlearn.domain.provider.AudioProvider;
 }

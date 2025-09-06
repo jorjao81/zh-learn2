@@ -14,6 +14,7 @@ module com.zhlearn.cli {
     uses com.zhlearn.domain.provider.StructuralDecompositionProvider;
     uses com.zhlearn.domain.provider.ExampleProvider;
     uses com.zhlearn.domain.provider.ExplanationProvider;
+    uses com.zhlearn.domain.provider.AudioProvider;
     uses com.zhlearn.domain.dictionary.Dictionary;
     
     exports com.zhlearn.cli;

@@ -77,13 +77,6 @@
     "allPublicMethods": true
   },
   {
-    "name": "com.zhlearn.infrastructure.anki.AnkiCardParserImpl",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true
-  },
-  {
     "name": "org.apache.commons.csv.CSVFormat",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -105,7 +98,14 @@
     "allPublicMethods": true
   },
   {
-    "name": "com.zhlearn.infrastructure.dictionary.AnkiCardDictionary",
+    "name": "com.zhlearn.infrastructure.anki.AnkiNoteParser",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "com.zhlearn.infrastructure.dictionary.AnkiNoteDictionary",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

@@ -1,0 +1,47 @@
+package com.zhlearn.cli;
+
+import com.zhlearn.application.service.WordAnalysisServiceImpl;
+import com.zhlearn.domain.model.Hanzi;
+import com.zhlearn.domain.model.Pinyin;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
+
+import java.util.Optional;
+
+@Command(name = "audio", description = "Lookup pronunciation audio by pinyin from existing Anki collection")
+public class AudioCommand implements Runnable {
+
+    @Parameters(index = "0", description = "Chinese word (for context only)")
+    private String chineseWord;
+
+    @Parameters(index = "1", description = "Exact pinyin to match (with tone marks)")
+    private String pinyin;
+
+    @Option(names = {"--audio-provider"}, description = "Audio provider name (default: existing-anki-pronunciation)")
+    private String audioProvider = "existing-anki-pronunciation";
+
+    @picocli.CommandLine.ParentCommand
+    private MainCommand parent;
+
+    @Override
+    public void run() {
+        try {
+            WordAnalysisServiceImpl service = new WordAnalysisServiceImpl(parent.getProviderRegistry());
+
+            Hanzi word = new Hanzi(chineseWord);
+            Pinyin p = new Pinyin(pinyin);
+
+            Optional<String> result = service.getPronunciation(word, p, audioProvider);
+            if (result.isPresent()) {
+                System.out.println(result.get());
+            } else {
+                System.out.println("(no pronunciation)");
+            }
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+            System.exit(1);
+        }
+    }
+}
+
