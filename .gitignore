@@ -1,7 +1,23 @@
-.idea/
+# Build outputs
 target/
-.DS_Store
 *.class
-*.log
-*.lst
 *.jar
+*.war
+*.ear
+*.lst
+*.log
+
+# IDE / editor
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.run/
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Local caches
+.zh-learn-cache/
