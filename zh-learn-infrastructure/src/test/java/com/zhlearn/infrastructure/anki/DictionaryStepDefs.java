@@ -7,7 +7,7 @@ import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.WordAnalysis;
 import com.zhlearn.domain.provider.DefinitionProvider;
 import com.zhlearn.domain.provider.PinyinProvider;
-import com.zhlearn.infrastructure.dictionary.AnkiCardDictionary;
+import com.zhlearn.infrastructure.dictionary.AnkiNoteDictionary;
 import com.zhlearn.infrastructure.dictionary.DictionaryDefinitionProvider;
 import com.zhlearn.infrastructure.dictionary.DictionaryPinyinProvider;
 import io.cucumber.datatable.DataTable;
@@ -31,28 +31,29 @@ public class DictionaryStepDefs {
     private Optional<WordAnalysis> wordAnalysis;
     private Optional<Pinyin> pinyin;
     private Optional<Definition> definition;
-    private List<AnkiCard> ankiCards;
+    private List<AnkiNote> ankiNotes;
     private Optional<Pinyin> providerReturn;
 
     @Given("I have a Dictionary from AnkiCard data:")
     public void i_have_the_following_anki_card_data(DataTable dataTable) throws Exception {
         List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
 
-        ankiCards = rows.stream()
-                .map(row -> AnkiCard.of(
-                        row.get("simplified"),
+        ankiNotes = rows.stream()
+                .map(row -> AnkiNote.ofCollection(
+                        "Chinese",
                         row.get("pinyin"),
-                        row.get("pronunciation"),
+                        row.get("simplified"),
+                        row.getOrDefault("pronunciation", ""),
                         row.get("definition"),
-                        row.get("examples"),
-                        row.get("etymology"),
-                        row.get("components"),
-                        row.get("similar"),
-                        row.get("similar"),
-                        row.get("passive"),
-                        row.get("alternatePronunciations"),
-                        row.get("noHearing"))).toList();
-        dictionary = new AnkiCardDictionary(ankiCards);
+                        row.getOrDefault("examples", ""),
+                        row.getOrDefault("etymology", ""),
+                        row.getOrDefault("components", ""),
+                        row.getOrDefault("similar", ""),
+                        row.getOrDefault("passive", ""),
+                        row.getOrDefault("alternatePronunciations", ""),
+                        row.getOrDefault("noHearing", "")))
+                .toList();
+        dictionary = new AnkiNoteDictionary(ankiNotes);
     }
 
     @When("I lookup the word {string}")

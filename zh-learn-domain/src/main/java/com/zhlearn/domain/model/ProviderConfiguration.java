@@ -8,9 +8,10 @@ public class ProviderConfiguration {
     private final String decompositionProvider;
     private final String exampleProvider;
     private final String explanationProvider;
+    private final String audioProvider;
     
     public ProviderConfiguration(String defaultProvider) {
-        this(defaultProvider, null, null, null, null, null);
+        this(defaultProvider, null, null, null, null, null, null);
     }
     
     public ProviderConfiguration(
@@ -19,13 +20,15 @@ public class ProviderConfiguration {
             String definitionProvider, 
             String decompositionProvider,
             String exampleProvider,
-            String explanationProvider) {
+            String explanationProvider,
+            String audioProvider) {
         this.defaultProvider = defaultProvider != null ? defaultProvider : "dummy";
         this.pinyinProvider = pinyinProvider;
         this.definitionProvider = definitionProvider;
         this.decompositionProvider = decompositionProvider;
         this.exampleProvider = exampleProvider;
         this.explanationProvider = explanationProvider;
+        this.audioProvider = audioProvider;
     }
     
     public String getPinyinProvider() {
@@ -49,6 +52,10 @@ public class ProviderConfiguration {
         return explanationProvider != null ? explanationProvider : defaultProvider;
     }
     
+    public String getAudioProvider() {
+        return audioProvider != null ? audioProvider : defaultProvider;
+    }
+
     public String getDefaultProvider() {
         return defaultProvider;
     }
@@ -62,6 +69,7 @@ public class ProviderConfiguration {
                 ", decomposition=" + getDecompositionProvider() +
                 ", example=" + getExampleProvider() +
                 ", explanation=" + getExplanationProvider() +
+                ", audio=" + getAudioProvider() +
                 '}';
     }
 }
