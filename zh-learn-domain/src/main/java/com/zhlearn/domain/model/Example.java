@@ -9,7 +9,7 @@ public record Example(List<Usage> usages) {
         }
     }
 
-    public record Usage(String sentence, String pinyin, String translation, String context) {
+    public record Usage(String sentence, String pinyin, String translation, String context, String breakdown) {
         public Usage {
             if (sentence == null || sentence.trim().isEmpty()) {
                 throw new IllegalArgumentException("Usage sentence cannot be null or empty");

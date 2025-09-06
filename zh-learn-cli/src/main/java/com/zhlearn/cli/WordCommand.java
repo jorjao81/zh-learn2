@@ -171,23 +171,10 @@ public class WordCommand implements Runnable {
         System.out.println(TerminalFormatter.createBox("Structural Decomposition", decompositionContent, width));
         System.out.println();
         
-        // Examples section
-        StringBuilder exampleContent = new StringBuilder();
-        var usages = analysis.examples().usages();
-        for (int i = 0; i < usages.size(); i++) {
-            var usage = usages.get(i);
-            if (i > 0) {
-                exampleContent.append("\n\n");
-            }
-            exampleContent.append(TerminalFormatter.formatExample(
-                usage.sentence(), 
-                usage.pinyin(), 
-                usage.translation(), 
-                usage.context()
-            ));
-        }
-        exampleContent.append("\n").append(TerminalFormatter.formatProvider(analysis.exampleProvider()));
-        System.out.println(TerminalFormatter.createBox("Examples", exampleContent.toString(), width));
+        // Examples section - use new grouped formatting
+        String groupedExamples = TerminalFormatter.formatGroupedExamples(analysis.examples().usages());
+        String exampleContent = groupedExamples + "\n" + TerminalFormatter.formatProvider(analysis.exampleProvider());
+        System.out.println(TerminalFormatter.createBox("Examples", exampleContent, width));
         System.out.println();
         
         // Explanation section with HTML conversion

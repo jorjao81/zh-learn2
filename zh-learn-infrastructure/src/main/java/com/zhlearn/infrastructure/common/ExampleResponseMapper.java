@@ -36,16 +36,23 @@ public class ExampleResponseMapper implements Function<String, Example> {
             // Process each meaning group
             for (Map<String, Object> meaningGroup : responseList) {
                 String meaning = (String) meaningGroup.get("meaning");
+                String groupPinyin = (String) meaningGroup.get("pinyin");
                 List<Map<String, Object>> examples = (List<Map<String, Object>>) meaningGroup.get("examples");
+                
+                // Create context by combining meaning and pinyin: "to estimate, assess (gū)"
+                String context = meaning;
+                if (groupPinyin != null && !groupPinyin.isEmpty()) {
+                    context = meaning + " (" + groupPinyin + ")";
+                }
                 
                 if (examples != null) {
                     for (Map<String, Object> example : examples) {
                         String hanzi = (String) example.get("hanzi");
                         String pinyin = (String) example.get("pinyin");
                         String translation = (String) example.get("translation");
+                        String breakdown = (String) example.get("breakdown");
                         
-                        // Use meaning as context to preserve the grouping information
-                        Example.Usage usage = new Example.Usage(hanzi, pinyin, translation, meaning);
+                        Example.Usage usage = new Example.Usage(hanzi, pinyin, translation, context, breakdown);
                         allUsages.add(usage);
                     }
                 }
