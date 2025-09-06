@@ -21,6 +21,7 @@ public class ProviderRegistry {
     private final Map<String, StructuralDecompositionProvider> decompositionProviders = new ConcurrentHashMap<>();
     private final Map<String, ExampleProvider> exampleProviders = new ConcurrentHashMap<>();
     private final Map<String, ExplanationProvider> explanationProviders = new ConcurrentHashMap<>();
+    private final Map<String, AudioProvider> audioProviders = new ConcurrentHashMap<>();
     
     private final Map<String, String> configurations = new ConcurrentHashMap<>();
     
@@ -178,6 +179,10 @@ public class ProviderRegistry {
         explanationProviders.put(provider.getName(), provider);
     }
     
+    public void registerAudioProvider(AudioProvider provider) {
+        audioProviders.put(provider.getName(), provider);
+    }
+    
     public Optional<PinyinProvider> getPinyinProvider(String name) {
         return Optional.ofNullable(pinyinProviders.get(name));
     }
@@ -198,6 +203,10 @@ public class ProviderRegistry {
         return Optional.ofNullable(explanationProviders.get(name));
     }
     
+    public Optional<AudioProvider> getAudioProvider(String name) {
+        return Optional.ofNullable(audioProviders.get(name));
+    }
+    
     public Set<String> getAvailablePinyinProviders() {
         return new HashSet<>(pinyinProviders.keySet());
     }
@@ -216,6 +225,10 @@ public class ProviderRegistry {
     
     public Set<String> getAvailableExplanationProviders() {
         return new HashSet<>(explanationProviders.keySet());
+    }
+    
+    public Set<String> getAvailableAudioProviders() {
+        return new HashSet<>(audioProviders.keySet());
     }
     
     public List<ProviderInfo> getAllProviderInfo() {
@@ -304,6 +317,23 @@ public class ProviderRegistry {
                     existing.description(),
                     existing.type(),
                     addToSet(existing.supportedClasses(), ProviderClass.EXPLANATION)
+                ));
+        });
+        
+        audioProviders.forEach((name, provider) -> {
+            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription());
+            ProviderInfo infoWithAudio = new ProviderInfo(
+                baseInfo.name(),
+                baseInfo.description(),
+                baseInfo.type(),
+                Set.of(ProviderClass.AUDIO)
+            );
+            providerInfoMap.merge(name, infoWithAudio,
+                (existing, newInfo) -> new ProviderInfo(
+                    existing.name(),
+                    existing.description(),
+                    existing.type(),
+                    addToSet(existing.supportedClasses(), ProviderClass.AUDIO)
                 ));
         });
         

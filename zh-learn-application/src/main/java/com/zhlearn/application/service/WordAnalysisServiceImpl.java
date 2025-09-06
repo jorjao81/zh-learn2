@@ -1,10 +1,7 @@
 package com.zhlearn.application.service;
 
 import com.zhlearn.domain.model.*;
-import com.zhlearn.domain.provider.DefinitionProvider;
-import com.zhlearn.domain.provider.ExplanationProvider;
-import com.zhlearn.domain.provider.PinyinProvider;
-import com.zhlearn.domain.provider.StructuralDecompositionProvider;
+import com.zhlearn.domain.provider.*;
 import com.zhlearn.domain.service.WordAnalysisService;
 
 import java.util.Optional;
@@ -57,6 +54,13 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
         return providerRegistry.getExplanationProvider(providerName)
             .orElseThrow(() -> new IllegalArgumentException("Explanation provider not found: " + providerName))
             .getExplanation(word);
+    }
+
+    @Override
+    public java.util.Optional<String> getPronunciation(Hanzi word, Pinyin pinyin, String providerName) {
+        return providerRegistry.getAudioProvider(providerName)
+            .orElseThrow(() -> new IllegalArgumentException("Audio provider not found: " + providerName))
+            .getPronunciation(word, pinyin);
     }
     
     @Override
@@ -115,5 +119,10 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
     @Override
     public void addExplanationProvider(String name, ExplanationProvider provider) {
         providerRegistry.registerExplanationProvider(provider);
+    }
+
+    @Override
+    public void addAudioProvider(String name, AudioProvider provider) {
+        providerRegistry.registerAudioProvider(provider);
     }
 }

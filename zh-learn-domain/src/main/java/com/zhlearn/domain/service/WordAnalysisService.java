@@ -11,6 +11,7 @@ public interface WordAnalysisService {
     Example getExamples(Hanzi word, String providerName);
     Example getExamples(Hanzi word, String providerName, String definition);
     Explanation getExplanation(Hanzi word, String providerName);
+    java.util.Optional<String> getPronunciation(Hanzi word, Pinyin pinyin, String providerName);
     
     WordAnalysis getCompleteAnalysis(Hanzi word, String providerName);
     WordAnalysis getCompleteAnalysis(Hanzi word, ProviderConfiguration config);
@@ -19,5 +20,6 @@ public interface WordAnalysisService {
     void addDefinitionProvider(String name, DefinitionProvider provider);
     void addStructuralDecompositionProvider(String name, StructuralDecompositionProvider provider);
     void addExplanationProvider(String name, ExplanationProvider provider);
+    void addAudioProvider(String name, com.zhlearn.domain.provider.AudioProvider provider);
 
 }
