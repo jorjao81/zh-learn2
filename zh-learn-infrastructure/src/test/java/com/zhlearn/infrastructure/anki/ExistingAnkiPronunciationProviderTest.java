@@ -19,7 +19,7 @@ class ExistingAnkiPronunciationProviderTest {
             Other\t词\tcí\t[sound:ci.mp3]\tdef
             """;
         ExistingAnkiPronunciationProvider provider =
-            ExistingAnkiPronunciationProvider.fromString(content, new AnkiCollectionParser());
+            ExistingAnkiPronunciationProvider.fromString(content);
 
         Optional<String> result = provider.getPronunciation(new Hanzi("学"), new Pinyin("xué"));
         assertThat(result).contains("[sound:xue.mp3]");
@@ -33,10 +33,10 @@ class ExistingAnkiPronunciationProviderTest {
 
     @Test
     void ignoresEmptyPronunciationAndKeepsFirstNonEmpty() {
-        List<AnkiCollectionNote> notes = List.of(
-            new AnkiCollectionNote("Chinese", "学", "xué", "", "", "", "", ""),
-            new AnkiCollectionNote("Chinese", "学", "xué", "[sound:xue-2.mp3]", "", "", "", ""),
-            new AnkiCollectionNote("Chinese", "学", "xué", "[sound:xue-3.mp3]", "", "", "", "")
+        List<AnkiNote> notes = List.of(
+            AnkiNote.ofCollection("Chinese", "xué", "学", "", "", "", "", "", "", "", "", ""),
+            AnkiNote.ofCollection("Chinese", "xué", "学", "[sound:xue-2.mp3]", "", "", "", "", "", "", "", ""),
+            AnkiNote.ofCollection("Chinese", "xué", "学", "[sound:xue-3.mp3]", "", "", "", "", "", "", "", "")
         );
 
         ExistingAnkiPronunciationProvider provider = new ExistingAnkiPronunciationProvider(notes);
@@ -46,8 +46,8 @@ class ExistingAnkiPronunciationProviderTest {
 
     @Test
     void returnsEmptyWhenNoPronunciationFound() {
-        List<AnkiCollectionNote> notes = List.of(
-            new AnkiCollectionNote("Chinese", "学", "xué", "", "", "", "", "")
+        List<AnkiNote> notes = List.of(
+            AnkiNote.ofCollection("Chinese", "xué", "学", "", "", "", "", "", "", "", "", "")
         );
 
         ExistingAnkiPronunciationProvider provider = new ExistingAnkiPronunciationProvider(notes);
@@ -55,4 +55,3 @@ class ExistingAnkiPronunciationProviderTest {
         assertThat(result).isEmpty();
     }
 }
-

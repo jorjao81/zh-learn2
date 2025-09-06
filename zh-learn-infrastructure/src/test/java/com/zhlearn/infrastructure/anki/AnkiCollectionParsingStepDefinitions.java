@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AnkiCollectionParsingStepDefinitions {
 
     private String content;
-    private List<AnkiCollectionNote> notes;
+    private List<AnkiNote> notes;
     private Exception error;
 
     @Given("an Anki collection file:")
@@ -24,7 +24,7 @@ public class AnkiCollectionParsingStepDefinitions {
     @When("I parse the collection")
     public void iParseTheCollection() {
         try {
-            AnkiCollectionParser parser = new AnkiCollectionParser();
+            AnkiNoteParser parser = new AnkiNoteParser();
             this.notes = parser.parseFromReader(new StringReader(content));
         } catch (IOException e) {
             this.error = e;
@@ -56,4 +56,3 @@ public class AnkiCollectionParsingStepDefinitions {
         assertThat(notes.get(0).pronunciation()).isEqualTo(expected);
     }
 }
-

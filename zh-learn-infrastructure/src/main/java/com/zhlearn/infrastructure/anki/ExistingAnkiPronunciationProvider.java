@@ -26,9 +26,9 @@ public class ExistingAnkiPronunciationProvider implements AudioProvider {
 
     public ExistingAnkiPronunciationProvider() {
         this.pinyinToPronunciation = new HashMap<>();
-        AnkiCollectionParser parser = new AnkiCollectionParser();
+        AnkiNoteParser parser = new AnkiNoteParser();
         try {
-            List<AnkiCollectionNote> notes = parser.parseFile(Paths.get("Chinese.txt"));
+            List<AnkiNote> notes = parser.parseFile(Paths.get("Chinese.txt"));
             int before = pinyinToPronunciation.size();
             index(notes);
             int after = pinyinToPronunciation.size();
@@ -40,33 +40,33 @@ public class ExistingAnkiPronunciationProvider implements AudioProvider {
         }
     }
 
-    public ExistingAnkiPronunciationProvider(Path collectionPath, AnkiCollectionParser parser) {
+    public ExistingAnkiPronunciationProvider(Path collectionPath, AnkiNoteParser parser) {
         this.pinyinToPronunciation = new HashMap<>();
         try {
-            List<AnkiCollectionNote> notes = parser.parseFile(collectionPath);
+            List<AnkiNote> notes = parser.parseFile(collectionPath);
             index(notes);
         } catch (IOException e) {
             throw new IllegalStateException("Failed to parse Anki collection: " + e.getMessage(), e);
         }
     }
 
-    public ExistingAnkiPronunciationProvider(List<AnkiCollectionNote> notes) {
+    public ExistingAnkiPronunciationProvider(List<AnkiNote> notes) {
         this.pinyinToPronunciation = new HashMap<>();
         index(notes);
     }
 
-    public static ExistingAnkiPronunciationProvider fromString(String tsvContent, AnkiCollectionParser parser) {
+    public static ExistingAnkiPronunciationProvider fromString(String tsvContent) {
         try {
             Reader r = new StringReader(tsvContent);
-            List<AnkiCollectionNote> notes = parser.parseFromReader(r);
+            List<AnkiNote> notes = new AnkiNoteParser().parseFromReader(r);
             return new ExistingAnkiPronunciationProvider(notes);
         } catch (IOException e) {
             throw new IllegalStateException("Failed to parse content: " + e.getMessage(), e);
         }
     }
 
-    private void index(List<AnkiCollectionNote> notes) {
-        for (AnkiCollectionNote n : notes) {
+    private void index(List<AnkiNote> notes) {
+        for (AnkiNote n : notes) {
             String p = normalizePinyin(safe(n.pinyin()));
             String pron = safe(n.pronunciation());
             if (!p.isEmpty() && !pron.isEmpty()) {
