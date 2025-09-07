@@ -2,6 +2,7 @@ package com.zhlearn.cli;
 
 import com.zhlearn.application.service.WordAnalysisServiceImpl;
 import com.zhlearn.application.service.ParallelWordAnalysisService;
+import com.zhlearn.application.service.AnkiExporter;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.ProviderConfiguration;
 import com.zhlearn.domain.model.WordAnalysis;
@@ -23,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 /**
@@ -70,6 +72,9 @@ public class ParsePlecoCommand implements Runnable {
     
     @Option(names = {"--disable-parallelism"}, description = "Disable parallel processing, use sequential processing instead")
     private boolean disableParallelism = false;
+    
+    @Option(names = {"--export-anki"}, description = "Export results to Anki-compatible TSV file (Chinese 2 format)")
+    private String ankiExportFile;
 
     @picocli.CommandLine.ParentCommand
     private MainCommand parent;
@@ -129,17 +134,25 @@ public class ParsePlecoCommand implements Runnable {
                 .limit(maxToProcess)
                 .collect(Collectors.toList());
             
+            // Thread-safe collection to store successful analyses for export
+            List<WordAnalysis> successfulAnalyses = new CopyOnWriteArrayList<>();
+            
             if (disableParallelism) {
                 // Sequential processing
-                processWordsSequentially(entriesToProcess, wordAnalysisService, config, maxToProcess);
+                processWordsSequentially(entriesToProcess, wordAnalysisService, config, maxToProcess, successfulAnalyses);
             } else {
                 // Parallel word-level processing
-                processWordsInParallel(entriesToProcess, wordAnalysisService, config, maxToProcess, parallelThreads);
+                processWordsInParallel(entriesToProcess, wordAnalysisService, config, maxToProcess, parallelThreads, successfulAnalyses);
                 
                 // Shutdown the parallel service
                 if (parallelService != null) {
                     parallelService.shutdown();
                 }
+            }
+            
+            // Export to Anki file if requested
+            if (ankiExportFile != null && !ankiExportFile.trim().isEmpty()) {
+                exportToAnkiFile(successfulAnalyses, ankiExportFile.trim());
             }
             
         } catch (Exception e) {
@@ -149,7 +162,7 @@ public class ParsePlecoCommand implements Runnable {
     }
     
     private void processWordsSequentially(List<PlecoEntry> entries, WordAnalysisService wordAnalysisService, 
-                                        ProviderConfiguration config, int maxToProcess) {
+                                        ProviderConfiguration config, int maxToProcess, List<WordAnalysis> successfulAnalyses) {
         int processedCount = 0;
         
         for (PlecoEntry entry : entries) {
@@ -158,6 +171,7 @@ public class ParsePlecoCommand implements Runnable {
                 WordAnalysis analysis = wordAnalysisService.getCompleteAnalysis(word, config);
                 
                 printWordAnalysis(analysis, processedCount + 1, maxToProcess);
+                successfulAnalyses.add(analysis); // Collect for export
                 processedCount++;
                 
             } catch (Exception e) {
@@ -169,7 +183,7 @@ public class ParsePlecoCommand implements Runnable {
     }
     
     private void processWordsInParallel(List<PlecoEntry> entries, WordAnalysisService wordAnalysisService,
-                                      ProviderConfiguration config, int maxToProcess, int threadCount) {
+                                      ProviderConfiguration config, int maxToProcess, int threadCount, List<WordAnalysis> successfulAnalyses) {
         ExecutorService executor = Executors.newFixedThreadPool(threadCount);
         
         // Thread-safe counters for progress tracking
@@ -215,6 +229,9 @@ public class ParsePlecoCommand implements Runnable {
                             }
                             
                             System.out.println();
+                            
+                            // Collect for export
+                            successfulAnalyses.add(result.analysis);
                         } else {
                             errorCount.incrementAndGet();
                             System.err.printf("Error analyzing word '%s' (%.2fs): %s%n", 
@@ -265,6 +282,22 @@ public class ParsePlecoCommand implements Runnable {
             this.analysis = analysis;
             this.error = error;
             this.duration = duration;
+        }
+    }
+    
+    /**
+     * Export the successful WordAnalysis results to an Anki-compatible TSV file.
+     */
+    private void exportToAnkiFile(List<WordAnalysis> analyses, String filename) {
+        try {
+            AnkiExporter exporter = new AnkiExporter();
+            exporter.exportToFile(analyses, filename);
+            
+            System.out.println("=".repeat(80));
+            System.out.printf("Exported %d words to %s (Anki Chinese 2 format)%n", analyses.size(), filename);
+            
+        } catch (Exception e) {
+            System.err.println("Error exporting to Anki file: " + e.getMessage());
         }
     }
     
