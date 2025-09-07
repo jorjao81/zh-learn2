@@ -24,7 +24,7 @@ public final class AnalysisPrinter {
         System.out.println();
 
         String defContent = TerminalFormatter.formatDefinition(
-                analysis.definition().meaning(), analysis.definition().partOfSpeech()) + "\n" +
+                analysis.definition().meaning()) + "\n" +
                 TerminalFormatter.formatProvider(analysis.definitionProvider());
         System.out.println(TerminalFormatter.createBox("Definition", defContent, width));
         System.out.println();
@@ -58,7 +58,6 @@ public final class AnalysisPrinter {
         System.out.println();
 
         System.out.println("Definition: " + analysis.definition().meaning());
-        System.out.println("Part of Speech: " + analysis.definition().partOfSpeech());
         System.out.println("  Provider: " + analysis.definitionProvider());
         System.out.println();
 

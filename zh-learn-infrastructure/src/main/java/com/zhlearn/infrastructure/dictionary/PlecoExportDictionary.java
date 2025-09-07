@@ -77,7 +77,7 @@ public class PlecoExportDictionary implements Dictionary {
     private WordAnalysis convertToWordAnalysis(PlecoEntry entry) {
         Hanzi hanzi = new Hanzi(entry.hanzi());
         Pinyin pinyin = new Pinyin(entry.pinyin());
-        Definition definition = new Definition(entry.definitionText(), "unknown");
+        Definition definition = new Definition(entry.definitionText());
         StructuralDecomposition decomposition = new StructuralDecomposition("unknown");
         Example examples = new Example(List.of());
         Explanation explanation = new Explanation(entry.definitionText());

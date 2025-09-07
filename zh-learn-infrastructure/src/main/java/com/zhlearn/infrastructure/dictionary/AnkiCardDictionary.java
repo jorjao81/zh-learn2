@@ -90,15 +90,10 @@ public class AnkiCardDictionary implements Dictionary {
     private Definition createDefinition(AnkiCard card) {
         String definitionText = card.definition();
         if (definitionText == null || definitionText.trim().isEmpty()) {
-            return new Definition("unknown", "unknown");
+            return new Definition("unknown");
         }
-        // Simple parsing - split on first semicolon or comma if present
-        String[] parts = definitionText.split("[;,]", 2);
-        String meaning = parts[0].trim();
-        String partOfSpeech = parts.length > 1 ? parts[1].trim() : "unknown";
         
-        return new Definition(meaning.isEmpty() ? "unknown" : meaning, 
-                              partOfSpeech.isEmpty() ? "unknown" : partOfSpeech);
+        return new Definition(definitionText.trim().isEmpty() ? "unknown" : definitionText.trim());
     }
 
     private StructuralDecomposition createStructuralDecomposition(AnkiCard card) {

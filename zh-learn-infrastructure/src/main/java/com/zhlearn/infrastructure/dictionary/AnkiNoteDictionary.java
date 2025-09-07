@@ -77,11 +77,8 @@ public class AnkiNoteDictionary implements Dictionary {
 
     private Definition createDefinition(AnkiNote n) {
         String definitionText = n.definition();
-        if (definitionText == null || definitionText.trim().isEmpty()) return new Definition("unknown", "unknown");
-        String[] parts = definitionText.split("[;,]", 2);
-        String meaning = parts[0].trim();
-        String partOfSpeech = parts.length > 1 ? parts[1].trim() : "unknown";
-        return new Definition(meaning.isEmpty() ? "unknown" : meaning, partOfSpeech.isEmpty() ? "unknown" : partOfSpeech);
+        if (definitionText == null || definitionText.trim().isEmpty()) return new Definition("unknown");
+        return new Definition(definitionText.trim().isEmpty() ? "unknown" : definitionText.trim());
     }
 
     private StructuralDecomposition createStructuralDecomposition(AnkiNote n) {

@@ -18,9 +18,6 @@ public class DummyDefinitionProvider implements DefinitionProvider {
     
     @Override
     public Definition getDefinition(Hanzi word) {
-        return new Definition(
-            "Dummy meaning for " + word.characters(),
-            "noun"
-        );
+        return new Definition("Dummy meaning for " + word.characters());
     }
 }

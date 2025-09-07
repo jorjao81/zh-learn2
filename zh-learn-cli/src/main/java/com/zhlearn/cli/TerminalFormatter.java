@@ -244,14 +244,8 @@ public class TerminalFormatter {
                 .toString();
     }
     
-    public static String formatDefinition(String meaning, String partOfSpeech) {
-        StringBuilder result = new StringBuilder();
-        result.append(Ansi.ansi().fg(Colors.ENGLISH).a(meaning).reset());
-        if (partOfSpeech != null && !partOfSpeech.isEmpty()) {
-            result.append("\n");
-            result.append(Ansi.ansi().fgBright(Colors.PROVIDER).a("Part of Speech: ").a(partOfSpeech).reset());
-        }
-        return result.toString();
+    public static String formatDefinition(String meaning) {
+        return Ansi.ansi().fg(Colors.ENGLISH).a(meaning).reset().toString();
     }
     
     public static String formatExample(String chinese, String pinyin, String english, String context) {

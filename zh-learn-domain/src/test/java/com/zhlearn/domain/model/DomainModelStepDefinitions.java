@@ -88,37 +88,29 @@ public class DomainModelStepDefinitions {
     }
 
     // Definition step definitions
-    @When("I create a Definition with meaning {string} and partOfSpeech {string}")
-    public void i_create_a_definition_with_meaning_and_part_of_speech(String meaning, String partOfSpeech) {
-        definition = new Definition(meaning, partOfSpeech);
+    @When("I create a Definition with meaning {string}")
+    public void i_create_a_definition_with_meaning(String meaning) {
+        definition = new Definition(meaning);
     }
 
-    @When("I try to create a Definition with null meaning and partOfSpeech {string}")
-    public void i_try_to_create_a_definition_with_null_meaning_and_part_of_speech(String partOfSpeech) {
+    @When("I try to create a Definition with null meaning")
+    public void i_try_to_create_a_definition_with_null_meaning() {
         try {
-            definition = new Definition(null, partOfSpeech);
+            definition = new Definition(null);
         } catch (Exception e) {
             thrownException = e;
         }
     }
 
-    @When("I try to create a Definition with meaning {string} and partOfSpeech {string}")
-    public void i_try_to_create_a_definition_with_meaning_and_part_of_speech(String meaning, String partOfSpeech) {
+    @When("I try to create a Definition with meaning {string}")
+    public void i_try_to_create_a_definition_with_meaning(String meaning) {
         try {
-            definition = new Definition(meaning, partOfSpeech);
+            definition = new Definition(meaning);
         } catch (Exception e) {
             thrownException = e;
         }
     }
 
-    @When("I try to create a Definition with meaning {string} and null partOfSpeech")
-    public void i_try_to_create_a_definition_with_meaning_and_null_part_of_speech(String meaning) {
-        try {
-            definition = new Definition(meaning, null);
-        } catch (Exception e) {
-            thrownException = e;
-        }
-    }
 
     @Then("the Definition should be created successfully")
     public void the_definition_should_be_created_successfully() {
@@ -130,10 +122,6 @@ public class DomainModelStepDefinitions {
         assertEquals(expectedMeaning, definition.meaning());
     }
 
-    @Then("the Definition partOfSpeech should be {string}")
-    public void the_definition_part_of_speech_should_be(String expectedPartOfSpeech) {
-        assertEquals(expectedPartOfSpeech, definition.partOfSpeech());
-    }
 
     // Explanation step definitions
     @When("I create an Explanation with text {string}")
