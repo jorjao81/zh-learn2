@@ -66,38 +66,44 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
     @Override
     public WordAnalysis getCompleteAnalysis(Hanzi word, String providerName) {
         Definition definition = getDefinition(word, providerName);
+        Pinyin pinyin = getPinyin(word, providerName);
         return new WordAnalysis(
             word,
-            getPinyin(word, providerName),
+            pinyin,
             definition,
             getStructuralDecomposition(word, providerName),
             getExamples(word, providerName, definition.meaning()),
             getExplanation(word, providerName),
+            getPronunciation(word, pinyin, providerName),
             providerName,
             providerName, // pinyinProvider
             providerName, // definitionProvider
             providerName, // decompositionProvider
             providerName, // exampleProvider
-            providerName  // explanationProvider
+            providerName, // explanationProvider
+            providerName  // audioProvider
         );
     }
     
     @Override
     public WordAnalysis getCompleteAnalysis(Hanzi word, ProviderConfiguration config) {
         Definition definition = getDefinition(word, config.getDefinitionProvider());
+        Pinyin pinyin = getPinyin(word, config.getPinyinProvider());
         return new WordAnalysis(
             word,
-            getPinyin(word, config.getPinyinProvider()),
+            pinyin,
             definition,
             getStructuralDecomposition(word, config.getDecompositionProvider()),
             getExamples(word, config.getExampleProvider(), definition.meaning()),
             getExplanation(word, config.getExplanationProvider()),
+            getPronunciation(word, pinyin, config.getAudioProvider()),
             config.getDefaultProvider(),
             config.getPinyinProvider(),
             config.getDefinitionProvider(),
             config.getDecompositionProvider(),
             config.getExampleProvider(),
-            config.getExplanationProvider()
+            config.getExplanationProvider(),
+            config.getAudioProvider()
         );
     }
 

@@ -43,7 +43,7 @@ public record AnkiExportEntry(
             "Chinese 2",
             analysis.word().characters(),
             analysis.pinyin().pinyin(),
-            "", // pronunciation - leave blank for now
+            analysis.pronunciation().orElse(""), // use actual pronunciation from audio provider
             analysis.definition().meaning(),
             formatExamples(analysis.examples()),
             analysis.explanation().explanation(),

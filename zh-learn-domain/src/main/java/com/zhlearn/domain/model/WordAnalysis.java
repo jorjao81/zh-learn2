@@ -1,5 +1,7 @@
 package com.zhlearn.domain.model;
 
+import java.util.Optional;
+
 public record WordAnalysis(
     Hanzi word,
     Pinyin pinyin,
@@ -7,12 +9,14 @@ public record WordAnalysis(
     StructuralDecomposition structuralDecomposition,
     Example examples,
     Explanation explanation,
+    Optional<String> pronunciation,
     String providerName,
     String pinyinProvider,
     String definitionProvider,
     String decompositionProvider,
     String exampleProvider,
-    String explanationProvider
+    String explanationProvider,
+    String audioProvider
 ) {
     public WordAnalysis {
         if (word == null) {
@@ -33,6 +37,9 @@ public record WordAnalysis(
         if (explanation == null) {
             throw new IllegalArgumentException("Explanation cannot be null");
         }
+        if (pronunciation == null) {
+            throw new IllegalArgumentException("Pronunciation cannot be null");
+        }
         if (providerName == null || providerName.trim().isEmpty()) {
             throw new IllegalArgumentException("Provider name cannot be null or empty");
         }
@@ -50,6 +57,9 @@ public record WordAnalysis(
         }
         if (explanationProvider == null || explanationProvider.trim().isEmpty()) {
             throw new IllegalArgumentException("Explanation provider cannot be null or empty");
+        }
+        if (audioProvider == null || audioProvider.trim().isEmpty()) {
+            throw new IllegalArgumentException("Audio provider cannot be null or empty");
         }
     }
 }

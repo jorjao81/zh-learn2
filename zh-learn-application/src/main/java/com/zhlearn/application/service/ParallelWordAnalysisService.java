@@ -75,9 +75,10 @@ public class ParallelWordAnalysisService implements WordAnalysisService {
         boolean isDecompositionAI = isAIProvider(config.getDecompositionProvider());
         boolean isExampleAI = isAIProvider(config.getExampleProvider());
         boolean isExplanationAI = isAIProvider(config.getExplanationProvider());
+        boolean isAudioAI = isAIProvider(config.getAudioProvider());
 
         // If no AI providers, call everything synchronously
-        if (!isDecompositionAI && !isExampleAI && !isExplanationAI) {
+        if (!isDecompositionAI && !isExampleAI && !isExplanationAI && !isAudioAI) {
             return delegate.getCompleteAnalysis(word, config);
         }
 
@@ -85,6 +86,7 @@ public class ParallelWordAnalysisService implements WordAnalysisService {
         CompletableFuture<StructuralDecomposition> decompositionFuture;
         CompletableFuture<Example> examplesFuture;
         CompletableFuture<Explanation> explanationFuture;
+        CompletableFuture<java.util.Optional<String>> pronunciationFuture;
 
         if (isDecompositionAI) {
             decompositionFuture = CompletableFuture.supplyAsync(() -> 
@@ -110,9 +112,17 @@ public class ParallelWordAnalysisService implements WordAnalysisService {
                 getExplanation(word, config.getExplanationProvider()));
         }
 
+        if (isAudioAI) {
+            pronunciationFuture = CompletableFuture.supplyAsync(() -> 
+                getPronunciation(word, pinyin, config.getAudioProvider()), executorService);
+        } else {
+            pronunciationFuture = CompletableFuture.completedFuture(
+                getPronunciation(word, pinyin, config.getAudioProvider()));
+        }
+
         // Wait for all AI providers to complete
         try {
-            CompletableFuture.allOf(decompositionFuture, examplesFuture, explanationFuture).join();
+            CompletableFuture.allOf(decompositionFuture, examplesFuture, explanationFuture, pronunciationFuture).join();
 
             return new WordAnalysis(
                 word,
@@ -121,12 +131,14 @@ public class ParallelWordAnalysisService implements WordAnalysisService {
                 decompositionFuture.get(),
                 examplesFuture.get(),
                 explanationFuture.get(),
+                pronunciationFuture.get(),
                 config.getDefaultProvider(),
                 config.getPinyinProvider(),
                 config.getDefinitionProvider(),
                 config.getDecompositionProvider(),
                 config.getExampleProvider(),
-                config.getExplanationProvider()
+                config.getExplanationProvider(),
+                config.getAudioProvider()
             );
         } catch (Exception e) {
             throw new RuntimeException("Error in parallel word analysis: " + e.getMessage(), e);

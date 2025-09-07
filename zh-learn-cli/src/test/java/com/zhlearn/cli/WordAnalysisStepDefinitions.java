@@ -26,6 +26,7 @@ public class WordAnalysisStepDefinitions {
         registry.registerExplanationProvider(new DummyExplanationProvider());
         registry.registerPinyinProvider(new DummyPinyinProvider());
         registry.registerStructuralDecompositionProvider(new DummyStructuralDecompositionProvider());
+        registry.registerAudioProvider(new DummyAudioProvider());
         
         this.wordAnalysisService = new WordAnalysisServiceImpl(registry);
     }
