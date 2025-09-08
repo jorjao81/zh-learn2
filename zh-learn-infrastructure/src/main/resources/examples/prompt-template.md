@@ -9,7 +9,7 @@ Please provide examples grouped by different meanings or usages of this characte
 Return your response as YAML in the following structure:
 
 ```yaml
-response:
+words:
   - meaning: "description of meaning 1"
     pinyin: "pronunciation for this meaning"
     examples:
@@ -28,6 +28,18 @@ response:
         pinyin: "phonetic transcription"
         translation: "English translation"
         breakdown: "Explanation of how the character contributes to the word's meaning"
+
+# Optional: include only if the character is the phonetic component in a phonetic series
+# Otherwise output an empty list: phonetic_series: []
+phonetic_series:
+  - hanzi: "related character in the phonetic series"
+    pinyin: "its pinyin"
+    meaning: "brief gloss/explanation"
+  - hanzi: "..."
+    pinyin: "..."
+    meaning: "..."
+
+ 
 ```
 
 
@@ -40,6 +52,8 @@ response:
 - Provide clear English translations
 - Include breakdown explanations showing how the character contributes to each word
 - If the word has only one main meaning, provide one meaning group
+- If the character belongs to a phonetic series, include a top-level `phonetic_series` list with items (hanzi, pinyin, meaning). Otherwise set `phonetic_series: []`.
+  
 - The response must be valid YAML
 
 ## Examples

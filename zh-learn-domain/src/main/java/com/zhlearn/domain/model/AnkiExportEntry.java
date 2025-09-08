@@ -61,10 +61,11 @@ public record AnkiExportEntry(
      */
     private static String formatExamples(Example examples) {
         if (examples == null || examples.usages() == null || examples.usages().isEmpty()) {
-            return "";
+            // Still include phonetic series if present
+            return formatPhoneticSeriesOnly(examples);
         }
 
-        return examples.usages().stream()
+        String examplesText = examples.usages().stream()
             .map(usage -> {
                 String sentence = usage.sentence() != null ? usage.sentence() : "";
                 String translation = usage.translation() != null ? usage.translation() : "";
@@ -75,5 +76,34 @@ public record AnkiExportEntry(
             .filter(s -> !s.isEmpty())
             .reduce((a, b) -> a + "; " + b)
             .orElse("");
+
+        String seriesText = formatPhoneticSeriesOnly(examples);
+        if (seriesText != null && !seriesText.isBlank()) {
+            if (examplesText.isBlank()) {
+                examplesText = "Phonetic series:\n" + seriesText;
+            } else {
+                examplesText = examplesText + "\n\nPhonetic series:\n" + seriesText;
+            }
+        }
+        return examplesText;
     }
+
+    private static String formatPhoneticSeriesOnly(Example examples) {
+        if (examples == null || examples.phoneticSeries() == null || examples.phoneticSeries().isEmpty()) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (Example.SeriesItem item : examples.phoneticSeries()) {
+            String hanzi = item.hanzi() == null ? "" : item.hanzi();
+            String pinyin = item.pinyin() == null || item.pinyin().isBlank() ? "" : (" (" + item.pinyin() + ")");
+            String meaning = item.meaning() == null || item.meaning().isBlank() ? "" : (": " + item.meaning());
+            if (!hanzi.isBlank()) {
+                if (sb.length() > 0) sb.append("\n");
+                sb.append("- ").append(hanzi).append(pinyin).append(meaning);
+            }
+        }
+        return sb.toString();
+    }
+
+    // No standalone sentences support
 }

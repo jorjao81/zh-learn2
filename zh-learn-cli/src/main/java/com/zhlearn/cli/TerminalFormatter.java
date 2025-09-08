@@ -309,6 +309,33 @@ public class TerminalFormatter {
         
         return result.toString();
     }
+
+    public static String formatExamples(Example example) {
+        StringBuilder sb = new StringBuilder();
+        String grouped = formatGroupedExamples(example.usages());
+        if (!grouped.isEmpty()) {
+            sb.append(grouped);
+        }
+        if (example.phoneticSeries() != null && !example.phoneticSeries().isEmpty()) {
+            if (!grouped.isEmpty()) sb.append("\n\n");
+            sb.append(Ansi.ansi().bold().fg(Colors.HEADER).a("Phonetic series").reset()).append("\n");
+            for (Example.SeriesItem item : example.phoneticSeries()) {
+                sb.append("• ");
+                sb.append(Ansi.ansi().bold().fg(Colors.CHINESE).a(item.hanzi()).reset());
+                if (item.pinyin() != null && !item.pinyin().isBlank()) {
+                    sb.append(" ");
+                    sb.append(Ansi.ansi().fg(Colors.PINYIN).a(item.pinyin()).reset());
+                }
+                if (item.meaning() != null && !item.meaning().isBlank()) {
+                    sb.append(" ");
+                    sb.append(Ansi.ansi().fg(Colors.ENGLISH).a(item.meaning()).reset());
+                }
+                sb.append("\n");
+            }
+        }
+        // No standalone sentence section
+        return sb.toString();
+    }
     
     public static String formatStructuralDecomposition(String html) {
         if (html == null || html.isEmpty()) {

@@ -79,7 +79,7 @@ public class PlecoExportDictionary implements Dictionary {
         Pinyin pinyin = new Pinyin(entry.pinyin());
         Definition definition = new Definition(entry.definitionText());
         StructuralDecomposition decomposition = new StructuralDecomposition("unknown");
-        Example examples = new Example(List.of());
+        Example examples = new Example(List.of(), List.of());
         Explanation explanation = new Explanation(entry.definitionText());
         
         return new WordAnalysis(

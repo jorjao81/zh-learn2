@@ -109,7 +109,7 @@ public class AnkiCardDictionary implements Dictionary {
     private Example createExample(AnkiCard card) {
         String examplesText = card.examples();
         if (examplesText == null || examplesText.trim().isEmpty()) {
-            return new Example(List.of());
+            return new Example(List.of(), List.of());
         }
         
         // Simple parsing - create one usage from the examples field
@@ -121,7 +121,7 @@ public class AnkiCardDictionary implements Dictionary {
             "" // No breakdown available in AnkiCard
         );
         
-        return new Example(List.of(usage));
+        return new Example(List.of(usage), List.of());
     }
 
     private Explanation createExplanation(AnkiCard card) {

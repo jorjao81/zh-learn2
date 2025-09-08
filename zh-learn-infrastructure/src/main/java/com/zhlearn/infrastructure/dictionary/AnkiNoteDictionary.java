@@ -91,7 +91,7 @@ public class AnkiNoteDictionary implements Dictionary {
 
     private Example createExample(AnkiNote n) {
         String examplesText = n.examples();
-        if (examplesText == null || examplesText.trim().isEmpty()) return new Example(List.of());
+        if (examplesText == null || examplesText.trim().isEmpty()) return new Example(List.of(), List.of());
         Example.Usage usage = new Example.Usage(
             examplesText.trim(),
             "",
@@ -99,7 +99,7 @@ public class AnkiNoteDictionary implements Dictionary {
             DICTIONARY_NAME,
             ""
         );
-        return new Example(List.of(usage));
+        return new Example(List.of(usage), List.of());
     }
 
     private Explanation createExplanation(AnkiNote n) {
@@ -108,4 +108,3 @@ public class AnkiNoteDictionary implements Dictionary {
         return new Explanation(etymologyText.trim());
     }
 }
-

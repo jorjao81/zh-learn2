@@ -178,13 +178,13 @@ public class DomainModelStepDefinitions {
     public void i_create_an_example_with_valid_usages() {
         var usage1 = new Example.Usage("你好", "nǐ hǎo", "hello", "greeting", "Test breakdown for hello");
         var usage2 = new Example.Usage("再见", "zài jiàn", "goodbye", "parting", "Test breakdown for goodbye");
-        example = new Example(List.of(usage1, usage2));
+        example = new Example(List.of(usage1, usage2), List.of());
     }
 
     @When("I try to create an Example with null usages")
     public void i_try_to_create_an_example_with_null_usages() {
         try {
-            example = new Example(null);
+            example = new Example(null, List.of());
         } catch (Exception e) {
             thrownException = e;
         }

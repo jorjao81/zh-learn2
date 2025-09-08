@@ -1,5 +1,6 @@
 package com.zhlearn.cli;
 
+import com.zhlearn.application.format.ExamplesHtmlFormatter;
 import com.zhlearn.domain.model.WordAnalysis;
 
 /**
@@ -35,8 +36,9 @@ public final class AnalysisPrinter {
         System.out.println(TerminalFormatter.createBox("Structural Decomposition", decompositionContent, width));
         System.out.println();
 
-        String groupedExamples = TerminalFormatter.formatGroupedExamples(analysis.examples().usages());
-        String exampleContent = groupedExamples + "\n" + TerminalFormatter.formatProvider(analysis.exampleProvider());
+        String examplesHtml = ExamplesHtmlFormatter.format(analysis.examples());
+        String formattedExamples = TerminalFormatter.convertHtmlToAnsi(examplesHtml);
+        String exampleContent = formattedExamples + "\n" + TerminalFormatter.formatProvider(analysis.exampleProvider());
         System.out.println(TerminalFormatter.createBox("Examples", exampleContent, width));
         System.out.println();
 
@@ -74,6 +76,15 @@ public final class AnalysisPrinter {
                 System.out.println("  Context: " + usage.context());
             }
         }
+        // No standalone sentences section
+        if (analysis.examples().phoneticSeries() != null && !analysis.examples().phoneticSeries().isEmpty()) {
+            System.out.println("  Phonetic series:");
+            for (var item : analysis.examples().phoneticSeries()) {
+                String pinyin = item.pinyin() == null ? "" : (" " + item.pinyin());
+                String meaning = item.meaning() == null || item.meaning().isBlank() ? "" : (" " + item.meaning());
+                System.out.println("    • " + item.hanzi() + pinyin + meaning);
+            }
+        }
         System.out.println("  Provider: " + analysis.exampleProvider());
         System.out.println();
 
@@ -81,4 +92,3 @@ public final class AnalysisPrinter {
         System.out.println("  Provider: " + analysis.explanationProvider());
     }
 }
-

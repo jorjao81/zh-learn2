@@ -39,6 +39,6 @@ public class DummyExampleProvider implements ExampleProvider {
                 "Breakdown: " + word.characters() + " + 价 (price/value)"
             )
         );
-        return new Example(usages);
+        return new Example(usages, List.of());
     }
 }
