@@ -236,7 +236,7 @@ public class ProviderRegistry {
         
         // Collect all providers with their supported classes
         pinyinProviders.forEach((name, provider) -> {
-            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription());
+            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription(), determineProviderType(provider, name));
             ProviderInfo infoWithPinyin = new ProviderInfo(
                 baseInfo.name(),
                 baseInfo.description(),
@@ -253,7 +253,7 @@ public class ProviderRegistry {
         });
         
         definitionProviders.forEach((name, provider) -> {
-            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription());
+            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription(), determineProviderType(provider, name));
             ProviderInfo infoWithDefinition = new ProviderInfo(
                 baseInfo.name(),
                 baseInfo.description(),
@@ -270,7 +270,7 @@ public class ProviderRegistry {
         });
         
         decompositionProviders.forEach((name, provider) -> {
-            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription());
+            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription(), determineProviderType(provider, name));
             ProviderInfo infoWithDecomposition = new ProviderInfo(
                 baseInfo.name(),
                 baseInfo.description(),
@@ -287,7 +287,7 @@ public class ProviderRegistry {
         });
         
         exampleProviders.forEach((name, provider) -> {
-            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription());
+            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription(), determineProviderType(provider, name));
             ProviderInfo infoWithExample = new ProviderInfo(
                 baseInfo.name(),
                 baseInfo.description(),
@@ -304,7 +304,7 @@ public class ProviderRegistry {
         });
         
         explanationProviders.forEach((name, provider) -> {
-            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription());
+            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription(), determineProviderType(provider, name));
             ProviderInfo infoWithExplanation = new ProviderInfo(
                 baseInfo.name(),
                 baseInfo.description(),
@@ -321,7 +321,7 @@ public class ProviderRegistry {
         });
         
         audioProviders.forEach((name, provider) -> {
-            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription());
+            ProviderInfo baseInfo = createBaseProviderInfo(name, provider.getDescription(), determineProviderType(provider, name));
             ProviderInfo infoWithAudio = new ProviderInfo(
                 baseInfo.name(),
                 baseInfo.description(),
@@ -360,19 +360,33 @@ public class ProviderRegistry {
             .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
     
-    private ProviderInfo createBaseProviderInfo(String name, String description) {
-        ProviderType type = determineProviderType(name);
+    private ProviderInfo createBaseProviderInfo(String name, String description, ProviderType type) {
         return new ProviderInfo(name, description, type, new HashSet<>());
     }
-    
-    private ProviderType determineProviderType(String providerName) {
-        if (providerName.equals("dummy")) {
-            return ProviderType.DUMMY;
-        } else if (providerName.startsWith("dictionary-")) {
+
+    private ProviderType determineProviderType(Object provider, String providerName) {
+        // Classify by implementation where possible; fall back to name heuristics
+        try {
+            // Dummy providers
+            if (provider.getClass().getName().startsWith("com.zhlearn.infrastructure.dummy")) {
+                return ProviderType.DUMMY;
+            }
+            // Dictionary-backed providers
+            if (provider.getClass().getName().startsWith("com.zhlearn.infrastructure.dictionary")) {
+                return ProviderType.DICTIONARY;
+            }
+            // Existing Anki pronunciation provider behaves like data/dictionary
+            if (provider.getClass().getName().equals("com.zhlearn.infrastructure.anki.ExistingAnkiPronunciationProvider")) {
+                return ProviderType.DICTIONARY;
+            }
+        } catch (Throwable ignored) { }
+
+        // Name-based fallback
+        if ("dummy".equals(providerName)) return ProviderType.DUMMY;
+        if (providerName.contains("pleco") || providerName.contains("anki") || providerName.startsWith("dictionary-")) {
             return ProviderType.DICTIONARY;
-        } else {
-            return ProviderType.AI;
         }
+        return ProviderType.AI;
     }
     
     private Set<ProviderClass> addToSet(Set<ProviderClass> existing, ProviderClass newClass) {

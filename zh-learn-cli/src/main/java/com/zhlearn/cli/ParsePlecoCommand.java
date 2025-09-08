@@ -41,7 +41,7 @@ public class ParsePlecoCommand implements Runnable {
     private String filePath;
     
     @Option(names = {"--provider"}, description = "Set default provider for all services (parse-pleco defaults: pleco-export for definition/pinyin, deepseek-chat for analysis, existing-anki-pronunciation for audio). Available: dummy, pinyin4j, gpt-5-nano, deepseek-chat, pleco-export, existing-anki-pronunciation")
-    private String defaultProvider = "dummy";
+    private String defaultProvider = "custom";
     
     @Option(names = {"--pinyin-provider"}, description = "Set specific provider for pinyin (default: pleco-export). Available: pinyin4j, dummy, pleco-export")
     private String pinyinProvider;
@@ -118,8 +118,11 @@ public class ParsePlecoCommand implements Runnable {
             String effectiveExplanationProvider = explanationProvider != null ? explanationProvider : "deepseek-chat";
             String effectiveAudioProvider = audioProvider != null ? audioProvider : "existing-anki-pronunciation";
             
+            // Use a representative label for mixed providers unless overridden via --provider
+            String effectiveDefaultProvider = (defaultProvider == null || defaultProvider.isBlank()) ? "custom" : defaultProvider;
+
             ProviderConfiguration config = new ProviderConfiguration(
-                defaultProvider,
+                effectiveDefaultProvider,
                 effectivePinyinProvider,
                 effectiveDefinitionProvider,
                 effectiveDecompositionProvider,
@@ -127,6 +130,20 @@ public class ParsePlecoCommand implements Runnable {
                 effectiveExplanationProvider,
                 effectiveAudioProvider
             );
+
+            // Validate all providers before processing
+            String validationError = validateProviders(parent.getProviderRegistry(),
+                    effectiveDefaultProvider,
+                    effectivePinyinProvider,
+                    effectiveDefinitionProvider,
+                    effectiveDecompositionProvider,
+                    effectiveExampleProvider,
+                    effectiveExplanationProvider,
+                    effectiveAudioProvider);
+            if (validationError != null) {
+                System.err.println(validationError);
+                System.exit(1);
+            }
             
             // Process words through the analysis pipeline
             int maxToProcess = limit != null ? limit : entries.size();
@@ -302,4 +319,57 @@ public class ParsePlecoCommand implements Runnable {
     }
     
     // Printing is delegated to AnalysisPrinter to match 'word' command output
+
+    private String validateProviders(
+            com.zhlearn.application.service.ProviderRegistry registry,
+            String defaultProv,
+            String pinyinProv,
+            String definitionProv,
+            String decompositionProv,
+            String exampleProv,
+            String explanationProv,
+            String audioProv) {
+        String[] providers = { defaultProv, pinyinProv, definitionProv, decompositionProv, exampleProv, explanationProv, audioProv };
+        String[] providerTypes = { "default", "pinyin", "definition", "decomposition", "example", "explanation", "audio" };
+
+        for (int i = 0; i < providers.length; i++) {
+            String provider = providers[i];
+            String type = providerTypes[i];
+            if (provider != null && !isProviderAvailable(registry, provider)) {
+                return createProviderNotFoundError(registry, provider, type);
+            }
+        }
+        return null;
+    }
+
+    private boolean isProviderAvailable(com.zhlearn.application.service.ProviderRegistry registry, String providerName) {
+        return registry.getPinyinProvider(providerName).isPresent() ||
+               registry.getDefinitionProvider(providerName).isPresent() ||
+               registry.getStructuralDecompositionProvider(providerName).isPresent() ||
+               registry.getExampleProvider(providerName).isPresent() ||
+               registry.getExplanationProvider(providerName).isPresent() ||
+               registry.getAudioProvider(providerName).isPresent();
+    }
+
+    private String createProviderNotFoundError(com.zhlearn.application.service.ProviderRegistry registry, String requestedProvider, String providerType) {
+        StringBuilder error = new StringBuilder();
+        error.append("Provider '").append(requestedProvider).append("' not found");
+        if (!providerType.equals("default")) {
+            error.append(" for ").append(providerType);
+        }
+        error.append(".\n\n");
+
+        // Find similar providers
+        java.util.List<String> similarProviders = registry.findSimilarProviders(requestedProvider);
+        if (!similarProviders.isEmpty()) {
+            error.append("Did you mean one of these?\n");
+            for (String similar : similarProviders) {
+                error.append("  - ").append(similar).append("\n");
+            }
+            error.append("\n");
+        }
+
+        error.append("Use 'zh-learn providers' to see all available providers.");
+        return error.toString();
+    }
 }

@@ -5,13 +5,6 @@ import com.zhlearn.application.service.WordAnalysisServiceImpl;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.ProviderConfiguration;
 import com.zhlearn.domain.model.WordAnalysis;
-import com.zhlearn.infrastructure.deepseek.DeepSeekExampleProvider;
-import com.zhlearn.infrastructure.deepseek.DeepSeekExplanationProvider;
-import com.zhlearn.infrastructure.deepseek.DeepSeekStructuralDecompositionProvider;
-import com.zhlearn.infrastructure.dummy.*;
-import com.zhlearn.infrastructure.gpt5nano.GPT5NanoExampleProvider;
-import com.zhlearn.infrastructure.gpt5nano.GPT5NanoExplanationProvider;
-import com.zhlearn.infrastructure.gpt5nano.GPT5NanoStructuralDecompositionProvider;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
