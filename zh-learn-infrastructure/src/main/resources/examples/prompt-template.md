@@ -52,8 +52,8 @@ phonetic_series:
 - Provide clear English translations
 - Include breakdown explanations showing how the character contributes to each word
 - If the word has only one main meaning, provide one meaning group
-- If the character belongs to a phonetic series, include a top-level `phonetic_series` list with items (hanzi, pinyin, meaning). Otherwise set `phonetic_series: []`.
-  
+- If other characters use this character as their phonetic component, include a top-level `phonetic_series` list with those characters (including hanzi, pinyin, meaning). Otherwise set `phonetic_series: []`.
+- if A is our character under analysis, only add to the phonetic_series characters X where A is the phonetic omponent of X
 - The response must be valid YAML
 
 ## Examples

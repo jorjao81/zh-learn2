@@ -494,13 +494,33 @@ public class TerminalFormatter {
                             result.append(Ansi.ansi().bold().fg(Colors.CHINESE)
                                     .a(childElement.text()).reset().toString());
                         } else if ("pinyin".equals(className)) {
+                            result.append(" ");
                             result.append(Ansi.ansi().fg(Colors.PINYIN)
+                                    .a(childElement.text()).reset().toString());
+                        } else if ("translation".equals(className)) {
+                            result.append(" ");
+                            result.append(Ansi.ansi().fg(Colors.ENGLISH)
+                                    .a(childElement.text()).reset().toString());
+                        } else if ("breakdown".equals(className)) {
+                            result.append("\n  ");
+                            result.append(Ansi.ansi().fgBright(Colors.PROVIDER)
                                     .a(childElement.text()).reset().toString());
                         } else {
                             convertElementToAnsi(childElement, result);
                         }
                     }
                     case "br" -> result.append("\n");
+                    case "ul" -> {
+                        result.append("\n");
+                        convertElementToAnsi(childElement, result);
+                        result.append("\n");
+                    }
+                    case "li" -> {
+                        // Render list items with bullet and newline
+                        result.append("• ");
+                        convertElementToAnsi(childElement, result);
+                        result.append("\n");
+                    }
                     case "div" -> {
                         result.append("\n");
                         convertElementToAnsi(childElement, result);
