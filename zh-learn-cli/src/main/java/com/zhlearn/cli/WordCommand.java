@@ -39,6 +39,9 @@ public class WordCommand implements Runnable {
     @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation. Available: dummy, gpt-5-nano, deepseek-chat")
     private String explanationProvider;
     
+    @Option(names = {"--audio-provider"}, description = "Set specific provider for audio pronunciation. Available: existing-anki-pronunciation")
+    private String audioProvider;
+    
     @Option(names = {"--raw", "--raw-output"}, description = "Display raw HTML content instead of formatted output")
     private boolean rawOutput = false;
 
@@ -56,6 +59,13 @@ public class WordCommand implements Runnable {
                 System.exit(1);
             }
             
+            // Choose audio provider: prefer user-provided; else use existing-anki-pronunciation when available; else omit
+            String effectiveAudioProvider = audioProvider;
+            if (effectiveAudioProvider == null || effectiveAudioProvider.isBlank()) {
+                effectiveAudioProvider = parent.getProviderRegistry().getAudioProvider("existing-anki-pronunciation").isPresent()
+                    ? "existing-anki-pronunciation" : null;
+            }
+
             ProviderConfiguration config = new ProviderConfiguration(
                 defaultProvider,
                 pinyinProvider,
@@ -63,7 +73,7 @@ public class WordCommand implements Runnable {
                 decompositionProvider,
                 exampleProvider,
                 explanationProvider,
-                null // audio provider (default)
+                effectiveAudioProvider
             );
             
             Hanzi word = new Hanzi(chineseWord);
@@ -87,11 +97,13 @@ public class WordCommand implements Runnable {
         // Check each provider
         String[] providers = {
             defaultProvider, pinyinProvider, definitionProvider, 
-            decompositionProvider, exampleProvider, explanationProvider
+            decompositionProvider, exampleProvider, explanationProvider,
+            audioProvider
         };
         String[] providerTypes = {
             "default", "pinyin", "definition", 
-            "decomposition", "example", "explanation"
+            "decomposition", "example", "explanation",
+            "audio"
         };
         
         for (int i = 0; i < providers.length; i++) {
@@ -111,7 +123,8 @@ public class WordCommand implements Runnable {
                registry.getDefinitionProvider(providerName).isPresent() ||
                registry.getStructuralDecompositionProvider(providerName).isPresent() ||
                registry.getExampleProvider(providerName).isPresent() ||
-               registry.getExplanationProvider(providerName).isPresent();
+               registry.getExplanationProvider(providerName).isPresent() ||
+               registry.getAudioProvider(providerName).isPresent();
     }
     
     private String createProviderNotFoundError(ProviderRegistry registry, String requestedProvider, String providerType) {

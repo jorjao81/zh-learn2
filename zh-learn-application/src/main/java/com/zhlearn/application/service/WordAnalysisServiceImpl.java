@@ -58,9 +58,12 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
 
     @Override
     public java.util.Optional<String> getPronunciation(Hanzi word, Pinyin pinyin, String providerName) {
+        if (providerName == null || providerName.isBlank()) {
+            return java.util.Optional.empty();
+        }
         return providerRegistry.getAudioProvider(providerName)
-            .orElseThrow(() -> new IllegalArgumentException("Audio provider not found: " + providerName))
-            .getPronunciation(word, pinyin);
+            .map(p -> p.getPronunciation(word, pinyin))
+            .orElse(java.util.Optional.empty());
     }
     
     @Override
