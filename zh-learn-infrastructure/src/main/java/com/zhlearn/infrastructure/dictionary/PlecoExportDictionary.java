@@ -81,7 +81,7 @@ public class PlecoExportDictionary implements Dictionary {
         StructuralDecomposition decomposition = new StructuralDecomposition("unknown");
         Example examples = new Example(List.of(), List.of());
         Explanation explanation = new Explanation(entry.definitionText());
-        
+
         return new WordAnalysis(
             hanzi,
             pinyin,
@@ -89,14 +89,7 @@ public class PlecoExportDictionary implements Dictionary {
             decomposition,
             examples,
             explanation,
-            java.util.Optional.empty(), // no pronunciation available from dictionary
-            DICTIONARY_NAME,
-            DICTIONARY_NAME,
-            DICTIONARY_NAME,
-            DICTIONARY_NAME,
-            DICTIONARY_NAME,
-            DICTIONARY_NAME,
-            DICTIONARY_NAME
+            java.util.Optional.empty() // no pronunciation available from dictionary
         );
     }
 }

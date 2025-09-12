@@ -23,7 +23,6 @@ class PlecoExportDictionaryTest {
         assertEquals("瞬", wa.word().characters());
         assertEquals("shùn", wa.pinyin().pinyin());
         assertEquals("verb wink; twinkle", wa.definition().meaning());
-        assertEquals("pleco-export", wa.providerName());
     }
 
     @Test

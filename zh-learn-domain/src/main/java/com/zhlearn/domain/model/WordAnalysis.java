@@ -9,14 +9,7 @@ public record WordAnalysis(
     StructuralDecomposition structuralDecomposition,
     Example examples,
     Explanation explanation,
-    Optional<String> pronunciation,
-    String providerName,
-    String pinyinProvider,
-    String definitionProvider,
-    String decompositionProvider,
-    String exampleProvider,
-    String explanationProvider,
-    String audioProvider
+    Optional<String> pronunciation
 ) {
     public WordAnalysis {
         if (word == null) {
@@ -39,27 +32,6 @@ public record WordAnalysis(
         }
         if (pronunciation == null) {
             throw new IllegalArgumentException("Pronunciation cannot be null");
-        }
-        if (providerName == null || providerName.trim().isEmpty()) {
-            throw new IllegalArgumentException("Provider name cannot be null or empty");
-        }
-        if (pinyinProvider == null || pinyinProvider.trim().isEmpty()) {
-            throw new IllegalArgumentException("Pinyin provider cannot be null or empty");
-        }
-        if (definitionProvider == null || definitionProvider.trim().isEmpty()) {
-            throw new IllegalArgumentException("Definition provider cannot be null or empty");
-        }
-        if (decompositionProvider == null || decompositionProvider.trim().isEmpty()) {
-            throw new IllegalArgumentException("Decomposition provider cannot be null or empty");
-        }
-        if (exampleProvider == null || exampleProvider.trim().isEmpty()) {
-            throw new IllegalArgumentException("Example provider cannot be null or empty");
-        }
-        if (explanationProvider == null || explanationProvider.trim().isEmpty()) {
-            throw new IllegalArgumentException("Explanation provider cannot be null or empty");
-        }
-        if (audioProvider == null || audioProvider.trim().isEmpty()) {
-            throw new IllegalArgumentException("Audio provider cannot be null or empty");
         }
     }
 }

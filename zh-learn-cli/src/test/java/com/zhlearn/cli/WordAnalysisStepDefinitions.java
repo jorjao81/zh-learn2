@@ -154,16 +154,13 @@ public class WordAnalysisStepDefinitions {
         var rows = dataTable.asLists(String.class);
         for (var row : rows) {
             if (row.size() != 2) continue;
-            
+
             String field = row.get(0);
             String expectedValue = row.get(1);
-            
+
             switch (field) {
                 case "word":
                     assertEquals(expectedValue, currentAnalysis.word().characters());
-                    break;
-                case "provider_name":
-                    assertEquals(expectedValue, currentAnalysis.providerName());
                     break;
                 case "pinyin_available":
                     assertEquals(Boolean.parseBoolean(expectedValue), currentAnalysis.pinyin() != null);
@@ -188,12 +185,6 @@ public class WordAnalysisStepDefinitions {
     public void the_analysis_should_be_successful() {
         assertNull(lastException);
         assertNotNull(currentAnalysis);
-    }
-    
-    @Then("the provider name should be {string}")
-    public void the_provider_name_should_be(String expectedProvider) {
-        assertNotNull(currentAnalysis);
-        assertEquals(expectedProvider, currentAnalysis.providerName());
     }
     
     @Then("the pinyin should be {string}")

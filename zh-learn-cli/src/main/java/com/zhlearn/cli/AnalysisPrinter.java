@@ -14,37 +14,31 @@ public final class AnalysisPrinter {
         int width = TerminalFormatter.getTerminalWidth();
 
         String wordContent = TerminalFormatter.formatChineseWord(
-                analysis.word().characters(), analysis.pinyin().pinyin()) + "\n" +
-                TerminalFormatter.formatProvider("Default: " + analysis.providerName());
+                analysis.word().characters(), analysis.pinyin().pinyin());
         System.out.println(TerminalFormatter.createBox("Chinese Word", wordContent, width));
         System.out.println();
 
-        String pinyinContent = TerminalFormatter.formatChineseWord("拼音", analysis.pinyin().pinyin()) + "\n" +
-                TerminalFormatter.formatProvider(analysis.pinyinProvider());
+        String pinyinContent = TerminalFormatter.formatChineseWord("拼音", analysis.pinyin().pinyin());
         System.out.println(TerminalFormatter.createBox("Pinyin", pinyinContent, width));
         System.out.println();
 
         String defContent = TerminalFormatter.formatDefinition(
-                analysis.definition().meaning()) + "\n" +
-                TerminalFormatter.formatProvider(analysis.definitionProvider());
+                analysis.definition().meaning());
         System.out.println(TerminalFormatter.createBox("Definition", defContent, width));
         System.out.println();
 
         String decompositionContent = TerminalFormatter.formatStructuralDecomposition(
-                analysis.structuralDecomposition().decomposition()) + "\n" +
-                TerminalFormatter.formatProvider(analysis.decompositionProvider());
+                analysis.structuralDecomposition().decomposition());
         System.out.println(TerminalFormatter.createBox("Structural Decomposition", decompositionContent, width));
         System.out.println();
 
         String examplesHtml = ExamplesHtmlFormatter.format(analysis.examples());
         String formattedExamples = TerminalFormatter.convertHtmlToAnsi(examplesHtml);
-        String exampleContent = formattedExamples + "\n" + TerminalFormatter.formatProvider(analysis.exampleProvider());
-        System.out.println(TerminalFormatter.createBox("Examples", exampleContent, width));
+        System.out.println(TerminalFormatter.createBox("Examples", formattedExamples, width));
         System.out.println();
 
         String explanationContent = TerminalFormatter.convertHtmlToAnsi(
-                analysis.explanation().explanation()) + "\n" +
-                TerminalFormatter.formatProvider(analysis.explanationProvider());
+                analysis.explanation().explanation());
         System.out.println(TerminalFormatter.createBox("Explanation", explanationContent, width));
 
         Runtime.getRuntime().addShutdownHook(new Thread(TerminalFormatter::shutdown));
@@ -52,19 +46,15 @@ public final class AnalysisPrinter {
 
     public static void printRaw(WordAnalysis analysis) {
         System.out.println("Chinese Word: " + analysis.word().characters());
-        System.out.println("Default Provider: " + analysis.providerName());
         System.out.println();
 
         System.out.println("Pinyin: " + analysis.pinyin().pinyin());
-        System.out.println("  Provider: " + analysis.pinyinProvider());
         System.out.println();
 
         System.out.println("Definition: " + analysis.definition().meaning());
-        System.out.println("  Provider: " + analysis.definitionProvider());
         System.out.println();
 
         System.out.println("Structural Decomposition: " + analysis.structuralDecomposition().decomposition());
-        System.out.println("  Provider: " + analysis.decompositionProvider());
         System.out.println();
 
         System.out.println("Examples:");
@@ -85,10 +75,8 @@ public final class AnalysisPrinter {
                 System.out.println("    • " + item.hanzi() + pinyin + meaning);
             }
         }
-        System.out.println("  Provider: " + analysis.exampleProvider());
         System.out.println();
 
         System.out.println("Explanation: " + analysis.explanation().explanation());
-        System.out.println("  Provider: " + analysis.explanationProvider());
     }
 }

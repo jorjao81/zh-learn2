@@ -77,17 +77,10 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
             getStructuralDecomposition(word, providerName),
             getExamples(word, providerName, definition.meaning()),
             getExplanation(word, providerName),
-            getPronunciation(word, pinyin, providerName),
-            providerName,
-            providerName, // pinyinProvider
-            providerName, // definitionProvider
-            providerName, // decompositionProvider
-            providerName, // exampleProvider
-            providerName, // explanationProvider
-            providerName  // audioProvider
+            getPronunciation(word, pinyin, providerName)
         );
     }
-    
+
     @Override
     public WordAnalysis getCompleteAnalysis(Hanzi word, ProviderConfiguration config) {
         Definition definition = getDefinition(word, config.getDefinitionProvider());
@@ -99,14 +92,7 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
             getStructuralDecomposition(word, config.getDecompositionProvider()),
             getExamples(word, config.getExampleProvider(), definition.meaning()),
             getExplanation(word, config.getExplanationProvider()),
-            getPronunciation(word, pinyin, config.getAudioProvider()),
-            config.getDefaultProvider(),
-            config.getPinyinProvider(),
-            config.getDefinitionProvider(),
-            config.getDecompositionProvider(),
-            config.getExampleProvider(),
-            config.getExplanationProvider(),
-            config.getAudioProvider()
+            getPronunciation(word, pinyin, config.getAudioProvider())
         );
     }
 

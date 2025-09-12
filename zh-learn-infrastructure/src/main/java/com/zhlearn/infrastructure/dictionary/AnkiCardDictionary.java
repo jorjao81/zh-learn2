@@ -70,14 +70,7 @@ public class AnkiCardDictionary implements Dictionary {
             decomposition,
             examples,
             explanation,
-            java.util.Optional.empty(), // no pronunciation available from dictionary
-            DICTIONARY_NAME,
-            DICTIONARY_NAME + "-pinyin",
-            DICTIONARY_NAME + "-definition",
-            DICTIONARY_NAME + "-decomposition",
-            DICTIONARY_NAME + "-example",
-            DICTIONARY_NAME + "-explanation",
-            DICTIONARY_NAME + "-audio" // placeholder audio provider
+            java.util.Optional.empty() // no pronunciation available from dictionary
         );
     }
 

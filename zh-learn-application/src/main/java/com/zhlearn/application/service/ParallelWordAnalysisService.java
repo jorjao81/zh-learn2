@@ -131,14 +131,7 @@ public class ParallelWordAnalysisService implements WordAnalysisService {
                 decompositionFuture.get(),
                 examplesFuture.get(),
                 explanationFuture.get(),
-                pronunciationFuture.get(),
-                config.getDefaultProvider(),
-                config.getPinyinProvider(),
-                config.getDefinitionProvider(),
-                config.getDecompositionProvider(),
-                config.getExampleProvider(),
-                config.getExplanationProvider(),
-                config.getAudioProvider()
+                pronunciationFuture.get()
             );
         } catch (Exception e) {
             throw new RuntimeException("Error in parallel word analysis: " + e.getMessage(), e);
