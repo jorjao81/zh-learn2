@@ -30,6 +30,7 @@ module com.zhlearn.infrastructure {
     exports com.zhlearn.infrastructure.common;
     exports com.zhlearn.infrastructure.anki;
     exports com.zhlearn.infrastructure.dictionary;
+    exports com.zhlearn.infrastructure.fixture;
     exports com.zhlearn.infrastructure.cache;
     exports com.zhlearn.infrastructure.pinyin4j;
     // pinyin utility moved to separate module com.zhlearn.pinyin
@@ -57,5 +58,7 @@ module com.zhlearn.infrastructure {
              com.zhlearn.infrastructure.gpt5nano.GPT5NanoExplanationProvider;
 
     provides com.zhlearn.domain.provider.AudioProvider
-        with com.zhlearn.infrastructure.anki.ExistingAnkiPronunciationProvider;
+        with com.zhlearn.infrastructure.anki.ExistingAnkiPronunciationProvider,
+             com.zhlearn.infrastructure.fixture.FixtureAudioProvider,
+             com.zhlearn.infrastructure.fixture.FixtureAudioProvider2;
 }

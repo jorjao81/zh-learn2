@@ -1,1 +1,3 @@
 com.zhlearn.infrastructure.anki.ExistingAnkiPronunciationProvider
+com.zhlearn.infrastructure.fixture.FixtureAudioProvider
+com.zhlearn.infrastructure.fixture.FixtureAudioProvider2

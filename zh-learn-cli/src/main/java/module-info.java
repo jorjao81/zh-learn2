@@ -7,6 +7,8 @@ module com.zhlearn.cli {
     requires org.fusesource.jansi;
     requires org.jsoup;
     requires info.picocli;
+    requires org.jline.reader;
+    requires org.jline.terminal;
     
     uses com.zhlearn.domain.provider.PinyinProvider;
     uses com.zhlearn.domain.provider.DefinitionProvider;
