@@ -2,6 +2,7 @@ package com.zhlearn.infrastructure.deepseek;
 
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.StructuralDecomposition;
+import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.StructuralDecompositionProvider;
 import com.zhlearn.infrastructure.common.DeepSeekConfig;
 import com.zhlearn.infrastructure.common.GenericChatModelProvider;
@@ -31,6 +32,9 @@ public class DeepSeekStructuralDecompositionProvider implements StructuralDecomp
     public String getDescription() {
         return "DeepSeek AI-powered provider for analyzing character structure and radical decomposition";
     }
+    
+    @Override
+    public ProviderType getType() { return ProviderType.AI; }
     
     @Override
     public StructuralDecomposition getStructuralDecomposition(Hanzi word) {

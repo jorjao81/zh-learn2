@@ -24,7 +24,7 @@ public class DeepSeekConfig {
             baseUrl,
             modelName,
             0.3, // temperature
-            1000, // maxTokens
+            8000, // maxTokens
             "/explanation/prompt-template.md",
             "/explanation/examples/",
             Explanation::new,
@@ -47,7 +47,7 @@ public class DeepSeekConfig {
             baseUrl,
             modelName,
             0.3, // temperature
-            1000, // maxTokens
+            8000, // maxTokens
             "/structural-decomposition/prompt-template.md",
             "/structural-decomposition/examples/",
             StructuralDecomposition::new,
@@ -70,7 +70,7 @@ public class DeepSeekConfig {
             baseUrl,
             modelName,
             0.3, // temperature
-            1000, // maxTokens
+            8000, // maxTokens
             "/examples/prompt-template.md",
             "/examples/examples/",
             new ExampleResponseMapper(),

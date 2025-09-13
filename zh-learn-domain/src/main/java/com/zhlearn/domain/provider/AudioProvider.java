@@ -2,6 +2,7 @@ package com.zhlearn.domain.provider;
 
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
+import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 
 import java.util.Optional;
 
@@ -12,6 +13,6 @@ import java.util.Optional;
 public interface AudioProvider {
     String getName();
     String getDescription();
+    ProviderType getType();
     Optional<String> getPronunciation(Hanzi word, Pinyin pinyin);
 }
-

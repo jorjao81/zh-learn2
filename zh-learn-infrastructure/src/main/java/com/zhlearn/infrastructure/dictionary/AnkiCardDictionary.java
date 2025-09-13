@@ -70,12 +70,7 @@ public class AnkiCardDictionary implements Dictionary {
             decomposition,
             examples,
             explanation,
-            DICTIONARY_NAME,
-            DICTIONARY_NAME + "-pinyin",
-            DICTIONARY_NAME + "-definition",
-            DICTIONARY_NAME + "-decomposition",
-            DICTIONARY_NAME + "-example",
-            DICTIONARY_NAME + "-explanation"
+            java.util.Optional.empty() // no pronunciation available from dictionary
         );
     }
 
@@ -90,15 +85,10 @@ public class AnkiCardDictionary implements Dictionary {
     private Definition createDefinition(AnkiCard card) {
         String definitionText = card.definition();
         if (definitionText == null || definitionText.trim().isEmpty()) {
-            return new Definition("unknown", "unknown");
+            return new Definition("unknown");
         }
-        // Simple parsing - split on first semicolon or comma if present
-        String[] parts = definitionText.split("[;,]", 2);
-        String meaning = parts[0].trim();
-        String partOfSpeech = parts.length > 1 ? parts[1].trim() : "unknown";
         
-        return new Definition(meaning.isEmpty() ? "unknown" : meaning, 
-                              partOfSpeech.isEmpty() ? "unknown" : partOfSpeech);
+        return new Definition(definitionText.trim().isEmpty() ? "unknown" : definitionText.trim());
     }
 
     private StructuralDecomposition createStructuralDecomposition(AnkiCard card) {
@@ -112,7 +102,7 @@ public class AnkiCardDictionary implements Dictionary {
     private Example createExample(AnkiCard card) {
         String examplesText = card.examples();
         if (examplesText == null || examplesText.trim().isEmpty()) {
-            return new Example(List.of());
+            return new Example(List.of(), List.of());
         }
         
         // Simple parsing - create one usage from the examples field
@@ -124,7 +114,7 @@ public class AnkiCardDictionary implements Dictionary {
             "" // No breakdown available in AnkiCard
         );
         
-        return new Example(List.of(usage));
+        return new Example(List.of(usage), List.of());
     }
 
     private Explanation createExplanation(AnkiCard card) {

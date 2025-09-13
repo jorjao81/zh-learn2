@@ -36,6 +36,7 @@
 
     <modules>
         <module>zh-learn-domain</module>
+        <module>zh-learn-pinyin</module>
         <module>zh-learn-infrastructure</module>
         <module>zh-learn-application</module>
         <module>zh-learn-cli</module>
@@ -47,6 +48,11 @@
             <dependency>
                 <groupId>com.zhlearn</groupId>
                 <artifactId>zh-learn-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zhlearn</groupId>
+                <artifactId>zh-learn-pinyin</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -64,7 +65,17 @@ public class GenericChatModelProvider<T> {
     public T processWithContext(Hanzi word, Optional<String> additionalContext) {
         try {
             String prompt = buildPrompt(word.characters(), additionalContext.orElse(null));
+            
+            // Add timing information for AI provider calls
+            long startTime = System.currentTimeMillis();
+            String timestamp = Instant.now().toString();
+            log.info("[AI Call] {} for '{}': sent at {}", config.getProviderName(), word.characters(), timestamp);
+            
             String response = chatModel.chat(prompt);
+            
+            long duration = System.currentTimeMillis() - startTime;
+            log.info("[AI Call] {} for '{}': received after {}ms", config.getProviderName(), word.characters(), duration);
+            
             return config.getResponseMapper().apply(response);
         } catch (Exception e) {
             throw new RuntimeException(config.getErrorMessagePrefix() + ": " + e.getMessage(), e);

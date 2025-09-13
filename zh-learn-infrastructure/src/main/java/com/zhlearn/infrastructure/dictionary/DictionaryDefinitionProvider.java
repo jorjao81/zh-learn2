@@ -3,6 +3,7 @@ package com.zhlearn.infrastructure.dictionary;
 import com.zhlearn.domain.dictionary.Dictionary;
 import com.zhlearn.domain.model.Definition;
 import com.zhlearn.domain.model.Hanzi;
+import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.DefinitionProvider;
 
 public class DictionaryDefinitionProvider implements DefinitionProvider {
@@ -14,13 +15,17 @@ public class DictionaryDefinitionProvider implements DefinitionProvider {
 
     @Override
     public String getName() {
-        return "dictionary-definition-" + dictionary.getName();
+        // Use the dictionary's name directly (e.g., "pleco-export")
+        return dictionary.getName();
     }
     
     @Override
     public String getDescription() {
         return "Dictionary-based definition provider using " + dictionary.getName() + " dictionary data";
     }
+    
+    @Override
+    public ProviderType getType() { return ProviderType.DICTIONARY; }
 
     @Override
     public Definition getDefinition(Hanzi word) {

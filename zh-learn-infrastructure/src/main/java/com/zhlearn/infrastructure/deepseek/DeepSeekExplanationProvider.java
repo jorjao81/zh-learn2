@@ -2,6 +2,7 @@ package com.zhlearn.infrastructure.deepseek;
 
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Explanation;
+import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.ExplanationProvider;
 import com.zhlearn.infrastructure.common.DeepSeekConfig;
 import com.zhlearn.infrastructure.common.GenericChatModelProvider;
@@ -31,6 +32,9 @@ public class DeepSeekExplanationProvider implements ExplanationProvider {
     public String getDescription() {
         return "DeepSeek AI-powered explanation provider for generating detailed word explanations";
     }
+    
+    @Override
+    public ProviderType getType() { return ProviderType.AI; }
     
     @Override
     public Explanation getExplanation(Hanzi word) {

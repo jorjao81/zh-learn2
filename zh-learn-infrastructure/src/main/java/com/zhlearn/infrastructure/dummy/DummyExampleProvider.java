@@ -2,6 +2,7 @@ package com.zhlearn.infrastructure.dummy;
 
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Example;
+import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.ExampleProvider;
 
 import java.util.List;
@@ -18,6 +19,9 @@ public class DummyExampleProvider implements ExampleProvider {
     public String getDescription() {
         return "Test provider that returns dummy usage examples for development and testing";
     }
+    
+    @Override
+    public ProviderType getType() { return ProviderType.DUMMY; }
     
     @Override
     public Example getExamples(Hanzi word, Optional<String> definition) {
@@ -39,6 +43,6 @@ public class DummyExampleProvider implements ExampleProvider {
                 "Breakdown: " + word.characters() + " + 价 (price/value)"
             )
         );
-        return new Example(usages);
+        return new Example(usages, List.of());
     }
 }

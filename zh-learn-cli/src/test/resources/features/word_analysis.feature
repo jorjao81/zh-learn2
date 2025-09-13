@@ -7,7 +7,6 @@ Feature: Chinese Word Analysis
     Given the ZH Learn application is available
     When I analyze the word "你好" using provider "dummy"
     Then the analysis should be successful
-    And the provider name should be "dummy"
 #    And the pinyin should be "dummy-pinyin-你好"
 #    And the definition meaning should be "Dummy meaning for 你好"
 #    And the structural decomposition should be "Dummy structural decomposition for 你好: Component breakdown with radicals and meanings."

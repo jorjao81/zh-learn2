@@ -244,14 +244,8 @@ public class TerminalFormatter {
                 .toString();
     }
     
-    public static String formatDefinition(String meaning, String partOfSpeech) {
-        StringBuilder result = new StringBuilder();
-        result.append(Ansi.ansi().fg(Colors.ENGLISH).a(meaning).reset());
-        if (partOfSpeech != null && !partOfSpeech.isEmpty()) {
-            result.append("\n");
-            result.append(Ansi.ansi().fgBright(Colors.PROVIDER).a("Part of Speech: ").a(partOfSpeech).reset());
-        }
-        return result.toString();
+    public static String formatDefinition(String meaning) {
+        return Ansi.ansi().fg(Colors.ENGLISH).a(meaning).reset().toString();
     }
     
     public static String formatExample(String chinese, String pinyin, String english, String context) {
@@ -314,6 +308,33 @@ public class TerminalFormatter {
         }
         
         return result.toString();
+    }
+
+    public static String formatExamples(Example example) {
+        StringBuilder sb = new StringBuilder();
+        String grouped = formatGroupedExamples(example.usages());
+        if (!grouped.isEmpty()) {
+            sb.append(grouped);
+        }
+        if (example.phoneticSeries() != null && !example.phoneticSeries().isEmpty()) {
+            if (!grouped.isEmpty()) sb.append("\n\n");
+            sb.append(Ansi.ansi().bold().fg(Colors.HEADER).a("Phonetic series").reset()).append("\n");
+            for (Example.SeriesItem item : example.phoneticSeries()) {
+                sb.append("• ");
+                sb.append(Ansi.ansi().bold().fg(Colors.CHINESE).a(item.hanzi()).reset());
+                if (item.pinyin() != null && !item.pinyin().isBlank()) {
+                    sb.append(" ");
+                    sb.append(Ansi.ansi().fg(Colors.PINYIN).a(item.pinyin()).reset());
+                }
+                if (item.meaning() != null && !item.meaning().isBlank()) {
+                    sb.append(" ");
+                    sb.append(Ansi.ansi().fg(Colors.ENGLISH).a(item.meaning()).reset());
+                }
+                sb.append("\n");
+            }
+        }
+        // No standalone sentence section
+        return sb.toString();
     }
     
     public static String formatStructuralDecomposition(String html) {
@@ -473,13 +494,33 @@ public class TerminalFormatter {
                             result.append(Ansi.ansi().bold().fg(Colors.CHINESE)
                                     .a(childElement.text()).reset().toString());
                         } else if ("pinyin".equals(className)) {
+                            result.append(" ");
                             result.append(Ansi.ansi().fg(Colors.PINYIN)
+                                    .a(childElement.text()).reset().toString());
+                        } else if ("translation".equals(className)) {
+                            result.append(" ");
+                            result.append(Ansi.ansi().fg(Colors.ENGLISH)
+                                    .a(childElement.text()).reset().toString());
+                        } else if ("breakdown".equals(className)) {
+                            result.append("\n  ");
+                            result.append(Ansi.ansi().fgBright(Colors.PROVIDER)
                                     .a(childElement.text()).reset().toString());
                         } else {
                             convertElementToAnsi(childElement, result);
                         }
                     }
                     case "br" -> result.append("\n");
+                    case "ul" -> {
+                        result.append("\n");
+                        convertElementToAnsi(childElement, result);
+                        result.append("\n");
+                    }
+                    case "li" -> {
+                        // Render list items with bullet and newline
+                        result.append("• ");
+                        convertElementToAnsi(childElement, result);
+                        result.append("\n");
+                    }
                     case "div" -> {
                         result.append("\n");
                         convertElementToAnsi(childElement, result);

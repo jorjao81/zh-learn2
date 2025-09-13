@@ -2,6 +2,7 @@ package com.zhlearn.infrastructure.deepseek;
 
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Example;
+import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.ExampleProvider;
 import com.zhlearn.infrastructure.common.DeepSeekConfig;
 import com.zhlearn.infrastructure.common.GenericChatModelProvider;
@@ -33,6 +34,9 @@ public class DeepSeekExampleProvider implements ExampleProvider {
     public String getDescription() {
         return "DeepSeek AI-powered example provider for generating contextual usage examples";
     }
+    
+    @Override
+    public ProviderType getType() { return ProviderType.AI; }
     
     @Override
     public Example getExamples(Hanzi word, Optional<String> definition) {

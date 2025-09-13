@@ -24,14 +24,21 @@ public class ExampleResponseMapper implements Function<String, Example> {
             
             // Parse YAML response
             Map<String, Object> response = yamlMapper.readValue(cleanedYaml, Map.class);
-            List<Map<String, Object>> responseList = (List<Map<String, Object>>) response.get("response");
+            // Prefer 'words' (new) but accept 'response' (legacy) for backward compatibility
+            List<Map<String, Object>> responseList = (List<Map<String, Object>>) response.get("words");
+            if (responseList == null) {
+                responseList = (List<Map<String, Object>>) response.get("response");
+            }
             
             if (responseList == null || responseList.isEmpty()) {
-                log.warn("No examples found in response");
-                return new Example(List.of());
+                log.warn("No examples found in words/response list");
+                // Try to still parse phonetic series if present; otherwise return empty
+                List<Example.SeriesItem> series = parsePhoneticSeries(response);
+                return new Example(List.of(), series);
             }
             
             List<Example.Usage> allUsages = new ArrayList<>();
+            List<Example.SeriesItem> seriesItems = parsePhoneticSeries(response);
             
             // Process each meaning group
             for (Map<String, Object> meaningGroup : responseList) {
@@ -58,16 +65,40 @@ public class ExampleResponseMapper implements Function<String, Example> {
                 }
             }
             
-            return new Example(allUsages);
+            return new Example(allUsages, seriesItems);
             
         } catch (Exception e) {
             log.error("Failed to parse YAML response: {}", e.getMessage(), e);
             log.debug("Original response: {}", yamlResponse);
             
             // Return empty example on parse failure
-            return new Example(List.of());
+            return new Example(List.of(), List.of());
         }
     }
+
+    private List<Example.SeriesItem> parsePhoneticSeries(Map<String, Object> response) {
+        try {
+            Object raw = response.get("phonetic_series");
+            if (raw == null) return List.of();
+            List<Map<String, Object>> list = (List<Map<String, Object>>) raw;
+            List<Example.SeriesItem> result = new ArrayList<>();
+            for (Map<String, Object> item : list) {
+                if (item == null) continue;
+                String hanzi = (String) item.get("hanzi");
+                String pinyin = (String) item.get("pinyin");
+                String meaning = (String) item.get("meaning");
+                if (hanzi != null && !hanzi.isBlank()) {
+                    result.add(new Example.SeriesItem(hanzi, pinyin, meaning));
+                }
+            }
+            return result;
+        } catch (Exception ex) {
+            log.debug("Failed to parse phonetic_series: {}", ex.getMessage());
+            return List.of();
+        }
+    }
+
+    // Standalone sentences not supported
     
     private String stripMarkdownCodeBlocks(String input) {
         if (input == null) {

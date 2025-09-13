@@ -3,6 +3,7 @@ package com.zhlearn.infrastructure.dictionary;
 import com.zhlearn.domain.dictionary.Dictionary;
 import com.zhlearn.domain.model.Explanation;
 import com.zhlearn.domain.model.Hanzi;
+import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.ExplanationProvider;
 
 public class DictionaryExplanationProvider implements ExplanationProvider {
@@ -21,6 +22,9 @@ public class DictionaryExplanationProvider implements ExplanationProvider {
     public String getDescription() {
         return "Dictionary-based explanation provider using " + dictionary.getName() + " dictionary data";
     }
+    
+    @Override
+    public ProviderType getType() { return ProviderType.DICTIONARY; }
 
     @Override
     public Explanation getExplanation(Hanzi word) {

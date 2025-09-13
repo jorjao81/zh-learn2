@@ -11,7 +11,8 @@ public record ProviderInfo(
     
     public enum ProviderType {
         AI("AI-powered providers"),
-        DICTIONARY("Dictionary-based providers"), 
+        DICTIONARY("Dictionary-based providers"),
+        LOCAL("Local rule-based providers"),
         DUMMY("Test/dummy providers");
         
         private final String description;
