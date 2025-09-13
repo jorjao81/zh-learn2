@@ -7,12 +7,9 @@ set -e
 
 echo "Building ZH Learn native image..."
 
-# Clean and package
-mvn clean package -DskipTests
-
-# Build native image (don't clean again to preserve dependencies)
-cd zh-learn-cli
-mvn -Pnative package -DskipTests
+# Build CLI (and its modules) in one reactor run and produce native image
+# Using -pl/-am ensures siblings are built even when invoked from CI or fresh envs.
+mvn -B -DskipTests -Pnative -pl zh-learn-cli -am clean package
 
 echo "Native image built successfully: zh-learn-cli/target/zh-learn"
 echo "Usage examples:"

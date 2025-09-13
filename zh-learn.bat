@@ -17,4 +17,4 @@ REM Build module path - this is the key for true modular execution
 set MODULE_PATH=%CLI_TARGET%\lib\*;%CLI_TARGET%\zh-learn-cli-1.0.0-SNAPSHOT.jar
 
 REM Execute using true Java modules
-java --module-path "%MODULE_PATH%" --enable-native-access=org.fusesource.jansi --module com.zhlearn.cli/com.zhlearn.cli.ZhLearnApplication %*
+java --module-path "%MODULE_PATH%" --enable-native-access=org.fusesource.jansi,ALL-UNNAMED --module com.zhlearn.cli/com.zhlearn.cli.ZhLearnApplication %*

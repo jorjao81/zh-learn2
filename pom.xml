@@ -92,6 +92,11 @@
             </dependency>
             <dependency>
                 <groupId>dev.langchain4j</groupId>
+                <artifactId>langchain4j-core</artifactId>
+                <version>${langchain4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.langchain4j</groupId>
                 <artifactId>langchain4j-open-ai</artifactId>
                 <version>${langchain4j.version}</version>
             </dependency>
@@ -206,8 +211,8 @@
                         <compilerArgs>
                             <arg>--enable-preview</arg>
                         </compilerArgs>
-                        <verbose>true</verbose>
                         <fork>true</fork>
+                        <showWarnings>false</showWarnings>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -262,6 +267,51 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>3.6.1</version>
+                        <executions>
+                            <execution>
+                                <id>copy-commons-csv-for-moditect</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/moditect-libs</outputDirectory>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.apache.commons</groupId>
+                                            <artifactId>commons-csv</artifactId>
+                                            <version>1.10.0</version>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>inject-automatic-module-name-commons-csv</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <mkdir dir="${project.build.directory}/moditect-work"/>
+                                        <echo file="${project.build.directory}/moditect-work/manifest-commons-csv.mf">Manifest-Version: 1.0&#10;Automatic-Module-Name: org.apache.commons.csv&#10;</echo>
+                                        <jar destfile="${project.build.directory}/moditect-libs/commons-csv-1.10.0.jar" update="true" manifest="${project.build.directory}/moditect-work/manifest-commons-csv.mf"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
                         <groupId>org.graalvm.buildtools</groupId>
                         <artifactId>native-maven-plugin</artifactId>
                         <executions>
@@ -274,6 +324,154 @@
                             </execution>
                         </executions>
                     </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>moditect</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.moditect</groupId>
+                        <artifactId>moditect-maven-plugin</artifactId>
+                        <version>1.2.1.Final</version>
+                        <executions>
+                            <execution>
+                                <id>add-module-info-3rdparty</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>add-module-info</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/moditect-libs</outputDirectory>
+                                    <overwriteExistingFiles>true</overwriteExistingFiles>
+                                    <modules>
+                                        <module>
+                                            <artifact>
+                                                <groupId>org.apache.commons</groupId>
+                                                <artifactId>commons-csv</artifactId>
+                                                <version>1.10.0</version>
+                                            </artifact>
+                                            <moduleInfoSource>
+                                                module org.apache.commons.csv { exports org.apache.commons.csv; }
+                                            </moduleInfoSource>
+                                        </module>
+                                        <module>
+                                            <artifact>
+                                                <groupId>com.knuddels</groupId>
+                                                <artifactId>jtokkit</artifactId>
+                                                <version>1.1.0</version>
+                                            </artifact>
+                                            <moduleInfoSource>
+                                                module jtokkit { exports com.knuddels.jtokkit; }
+                                            </moduleInfoSource>
+                                        </module>
+                                        <module>
+                                            <artifact>
+                                                <groupId>dev.langchain4j</groupId>
+                                                <artifactId>langchain4j-core</artifactId>
+                                                <version>${langchain4j.version}</version>
+                                            </artifact>
+                                            <moduleInfoSource>
+                                                module langchain4j.core { requires transitive org.slf4j; requires transitive com.fasterxml.jackson.core; requires transitive com.fasterxml.jackson.databind; exports dev.langchain4j; exports dev.langchain4j.model; exports dev.langchain4j.model.chat; exports dev.langchain4j.data.message; }
+                                            </moduleInfoSource>
+                                        </module>
+                                        <module>
+                                            <artifact>
+                                                <groupId>dev.langchain4j</groupId>
+                                                <artifactId>langchain4j-http-client</artifactId>
+                                                <version>${langchain4j.version}</version>
+                                            </artifact>
+                                            <moduleInfoSource>
+                                                module langchain4j.http.client { requires transitive org.slf4j; exports dev.langchain4j.http.client; }
+                                            </moduleInfoSource>
+                                        </module>
+                                        <module>
+                                            <artifact>
+                                                <groupId>dev.langchain4j</groupId>
+                                                <artifactId>langchain4j-http-client-jdk</artifactId>
+                                                <version>${langchain4j.version}</version>
+                                            </artifact>
+                                            <moduleInfoSource>
+                                                module langchain4j.http.client.jdk { requires transitive java.net.http; requires transitive langchain4j.http.client; requires transitive org.slf4j; exports dev.langchain4j.http.client.jdk; }
+                                            </moduleInfoSource>
+                                        </module>
+                                        <module>
+                                            <artifact>
+                                                <groupId>dev.langchain4j</groupId>
+                                                <artifactId>langchain4j-open-ai</artifactId>
+                                                <version>${langchain4j.version}</version>
+                                            </artifact>
+                                            <moduleInfoSource>
+                                                module langchain4j.open.ai { requires transitive langchain4j.core; requires transitive langchain4j.http.client; requires transitive langchain4j.http.client.jdk; requires transitive java.net.http; requires transitive com.fasterxml.jackson.core; requires transitive com.fasterxml.jackson.databind; requires transitive org.slf4j; requires transitive jtokkit; exports dev.langchain4j.model.openai; }
+                                            </moduleInfoSource>
+                                        </module>
+                                        <module>
+                                            <artifact>
+                                                <groupId>dev.langchain4j</groupId>
+                                                <artifactId>langchain4j-google-ai-gemini</artifactId>
+                                                <version>${langchain4j.version}</version>
+                                            </artifact>
+                                            <moduleInfoSource>
+                                                module langchain4j.google.ai.gemini { requires transitive langchain4j.core; requires transitive java.net.http; requires transitive com.fasterxml.jackson.core; requires transitive com.fasterxml.jackson.databind; requires transitive org.slf4j; exports dev.langchain4j.model.googleai; }
+                                            </moduleInfoSource>
+                                        </module>
+                                        <module>
+                                            <artifact>
+                                                <groupId>org.apache.opennlp</groupId>
+                                                <artifactId>opennlp-tools</artifactId>
+                                                <version>2.5.4</version>
+                                            </artifact>
+                                            <moduleInfoSource>
+                                                module org.apache.opennlp.tools { }
+                                            </moduleInfoSource>
+                                        </module>
+                                    </modules>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>3.6.1</version>
+                        <executions>
+                            <execution>
+                                <id>copy-3rdparty-for-moditect</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/moditect-libs</outputDirectory>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>com.belerweb</groupId>
+                                            <artifactId>pinyin4j</artifactId>
+                                            <version>2.5.0</version>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>dev.langchain4j</groupId>
+                                            <artifactId>langchain4j-core</artifactId>
+                                            <version>${langchain4j.version}</version>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>dev.langchain4j</groupId>
+                                            <artifactId>langchain4j-open-ai</artifactId>
+                                            <version>${langchain4j.version}</version>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>dev.langchain4j</groupId>
+                                            <artifactId>langchain4j-google-ai-gemini</artifactId>
+                                            <version>${langchain4j.version}</version>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    
+                    
                 </plugins>
             </build>
         </profile>

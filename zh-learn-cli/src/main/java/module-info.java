@@ -4,7 +4,6 @@ module com.zhlearn.cli {
     requires com.zhlearn.application;
     requires io.helidon.config;
     requires java.logging;
-    requires java.base;
     requires org.fusesource.jansi;
     requires org.jsoup;
     requires info.picocli;

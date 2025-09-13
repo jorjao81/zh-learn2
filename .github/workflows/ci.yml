@@ -17,8 +17,8 @@ jobs:
         java-package: 'jdk'
         check-latest: true
 
-    - name: Build and test
-      run: mvn -B clean install
+    - name: Build and test (with Moditect)
+      run: mvn -B -Pmoditect -Dmaven.repo.local=$GITHUB_WORKSPACE/.m2 clean install
 
     - name: Run with modular JVM
       run: ./zh-learn.sh word 学习
@@ -28,4 +28,3 @@ jobs:
 
     - name: Run native executable
       run: ./zh-learn-cli/target/zh-learn word 学习
-
