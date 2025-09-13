@@ -21,6 +21,7 @@ MODULE_PATH="$CLI_TARGET/lib:$CLI_TARGET/zh-learn-cli-1.0.0-SNAPSHOT.jar"
 # Execute using true Java modules
 exec java \
     --module-path "$MODULE_PATH" \
+    --enable-preview \
     --enable-native-access=org.fusesource.jansi,ALL-UNNAMED \
     --module com.zhlearn.cli/com.zhlearn.cli.ZhLearnApplication \
     "$@"
