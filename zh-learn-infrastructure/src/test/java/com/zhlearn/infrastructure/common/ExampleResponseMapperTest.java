@@ -3,6 +3,7 @@ package com.zhlearn.infrastructure.common;
 import com.zhlearn.domain.model.Example;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ExampleResponseMapperTest {
     
@@ -62,10 +63,7 @@ class ExampleResponseMapperTest {
     @Test
     void shouldHandleInvalidYaml() {
         String invalidYaml = "invalid yaml content [[[";
-        
-        Example result = mapper.apply(invalidYaml);
-        
-        assertThat(result.usages()).isEmpty();
+        assertThrows(RuntimeException.class, () -> mapper.apply(invalidYaml));
     }
     
     @Test
