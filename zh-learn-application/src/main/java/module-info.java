@@ -1,8 +1,12 @@
 module com.zhlearn.application {
     requires com.zhlearn.domain;
-    requires com.zhlearn.infrastructure;
     
     exports com.zhlearn.application.service;
     exports com.zhlearn.application.format;
+    uses com.zhlearn.domain.provider.PinyinProvider;
+    uses com.zhlearn.domain.provider.DefinitionProvider;
+    uses com.zhlearn.domain.provider.StructuralDecompositionProvider;
+    uses com.zhlearn.domain.provider.ExampleProvider;
+    uses com.zhlearn.domain.provider.ExplanationProvider;
     uses com.zhlearn.domain.provider.AudioProvider;
 }

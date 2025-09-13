@@ -34,10 +34,12 @@
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-open-ai</artifactId>
+            
         </dependency>
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-google-ai-gemini</artifactId>
+            
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -114,43 +116,15 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>default-testCompile</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                        <configuration>
-                            <compilerArgs>
-                                <arg>--add-modules</arg>
-                                <arg>com.zhlearn.domain,com.zhlearn.infrastructure</arg>
-                                <arg>--add-reads</arg>
-                                <arg>com.zhlearn.infrastructure=com.zhlearn.domain</arg>
-                            </compilerArgs>
-                        </configuration>
-                    </execution>
-                </executions>
+                <!-- No special test-compile flags needed for JPMS-aware tests -->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <argLine>
-                        --add-modules ALL-MODULE-PATH
-                        --add-opens com.zhlearn.infrastructure/com.zhlearn.infrastructure.dictionary=ALL-UNNAMED
-                        --add-opens com.zhlearn.infrastructure/com.zhlearn.infrastructure.anki=ALL-UNNAMED
-                        --add-opens com.zhlearn.infrastructure/com.zhlearn.infrastructure.dummy=ALL-UNNAMED
-                        --add-opens com.zhlearn.infrastructure/com.zhlearn.infrastructure.deepseek=ALL-UNNAMED
-                        --add-opens com.zhlearn.infrastructure/com.zhlearn.infrastructure.gpt5nano=ALL-UNNAMED
-                        --add-opens com.zhlearn.infrastructure/com.zhlearn.infrastructure.pinyin4j=ALL-UNNAMED
-                        --add-opens com.zhlearn.infrastructure/com.zhlearn.infrastructure.common=ALL-UNNAMED
-                        --add-opens com.zhlearn.domain/com.zhlearn.domain.model=ALL-UNNAMED
-                        --add-opens com.zhlearn.domain/com.zhlearn.domain.provider=ALL-UNNAMED
-                        --add-opens com.zhlearn.domain/com.zhlearn.domain.dictionary=ALL-UNNAMED
-                    </argLine>
-                </configuration>
+                <!-- No extra add-opens: tests do not reflect on internals -->
             </plugin>
         </plugins>
     </build>
+
+    <profiles/>
 </project>
