@@ -40,7 +40,7 @@ public class ParsePlecoCommand implements Runnable {
     @Parameters(index = "0", description = "Path to the Pleco export file (TSV format)")
     private String filePath;
     
-    @Option(names = {"--provider"}, description = "Set default provider for all services (parse-pleco defaults: pleco-export for definition/pinyin, deepseek-chat for analysis, existing-anki-pronunciation for audio). Available: dummy, pinyin4j, gpt-5-nano, deepseek-chat, pleco-export, existing-anki-pronunciation")
+    @Option(names = {"--provider"}, description = "Set default provider for all services (parse-pleco defaults: pleco-export for definition/pinyin, deepseek-chat for analysis, existing-anki-pronunciation for audio). Available: dummy, pinyin4j, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash, pleco-export, existing-anki-pronunciation")
     private String defaultProvider = "custom";
     
     @Option(names = {"--pinyin-provider"}, description = "Set specific provider for pinyin (default: pleco-export). Available: pinyin4j, dummy, pleco-export")
@@ -49,13 +49,13 @@ public class ParsePlecoCommand implements Runnable {
     @Option(names = {"--definition-provider"}, description = "Set specific provider for definition (default: pleco-export). Available: dummy, pleco-export")
     private String definitionProvider;
     
-    @Option(names = {"--decomposition-provider"}, description = "Set specific provider for structural decomposition (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat")
+    @Option(names = {"--decomposition-provider"}, description = "Set specific provider for structural decomposition (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash")
     private String decompositionProvider;
     
-    @Option(names = {"--example-provider"}, description = "Set specific provider for examples (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat")
+    @Option(names = {"--example-provider"}, description = "Set specific provider for examples (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash")
     private String exampleProvider;
     
-    @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat")
+    @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash")
     private String explanationProvider;
     
     @Option(names = {"--audio-provider"}, description = "Set specific provider for audio pronunciation (default: existing-anki-pronunciation). Available: existing-anki-pronunciation")

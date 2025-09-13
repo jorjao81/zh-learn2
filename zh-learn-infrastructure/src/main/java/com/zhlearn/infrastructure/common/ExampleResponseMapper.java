@@ -68,11 +68,11 @@ public class ExampleResponseMapper implements Function<String, Example> {
             return new Example(allUsages, seriesItems);
             
         } catch (Exception e) {
-            log.error("Failed to parse YAML response: {}", e.getMessage(), e);
+            log.warn("Failed to parse examples YAML: {}", e.getMessage());
             log.debug("Original response: {}", yamlResponse);
-            
-            // Return empty example on parse failure
-            return new Example(List.of(), List.of());
+            log.debug("YAML parse exception", e);
+            // Fail fast on invalid YAML
+            throw new RuntimeException("Invalid YAML in examples response: " + e.getMessage(), e);
         }
     }
 

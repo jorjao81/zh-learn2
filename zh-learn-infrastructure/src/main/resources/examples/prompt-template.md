@@ -56,8 +56,20 @@ phonetic_series:
 - if A is our character under analysis, only add to the phonetic_series characters X where A is the phonetic omponent of X
 - The response must be valid YAML
 
+### STRICT OUTPUT RULES
+- Output MUST be only YAML (prefer a single YAML code block or raw YAML). Do NOT include any prose before or after.
+- Use spaces (2 spaces) for indentation. Do NOT use tabs.
+- Keys must be exactly: words, meaning, pinyin, examples, hanzi, translation, breakdown, phonetic_series.
+- Always include top-level `phonetic_series`. If none, set `phonetic_series: []`.
+- Quote all string values with double quotes. If a value contains double quotes, escape them (\").
+- Keep values on a single line; avoid multi-line scalars. Use commas/semicolons if needed.
+- Do NOT include Markdown, backticks, or HTML in the output.
+- Avoid colons in unquoted values; ensure any text with colons is quoted.
+- Validate that the YAML is syntactically correct and parsable before responding.
+
 ## Examples
 
 {EXAMPLES}
 
 Now generate examples for: **{WORD}**
+Remember: output only the YAML (no extra prose).

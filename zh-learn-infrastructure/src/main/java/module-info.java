@@ -28,6 +28,7 @@ module com.zhlearn.infrastructure {
     exports com.zhlearn.infrastructure.deepseek;
     exports com.zhlearn.infrastructure.gpt5nano;
     exports com.zhlearn.infrastructure.common;
+    exports com.zhlearn.infrastructure.qwen3;
     exports com.zhlearn.infrastructure.anki;
     exports com.zhlearn.infrastructure.dictionary;
     exports com.zhlearn.infrastructure.cache;
@@ -44,17 +45,26 @@ module com.zhlearn.infrastructure {
     provides com.zhlearn.domain.provider.StructuralDecompositionProvider 
         with com.zhlearn.infrastructure.dummy.DummyStructuralDecompositionProvider,
              com.zhlearn.infrastructure.deepseek.DeepSeekStructuralDecompositionProvider,
-             com.zhlearn.infrastructure.gpt5nano.GPT5NanoStructuralDecompositionProvider;
+             com.zhlearn.infrastructure.gpt5nano.GPT5NanoStructuralDecompositionProvider,
+             com.zhlearn.infrastructure.qwen3.Qwen3MaxStructuralDecompositionProvider,
+             com.zhlearn.infrastructure.qwen3.Qwen3PlusStructuralDecompositionProvider,
+             com.zhlearn.infrastructure.qwen3.Qwen3FlashStructuralDecompositionProvider;
     
     provides com.zhlearn.domain.provider.ExampleProvider 
         with com.zhlearn.infrastructure.dummy.DummyExampleProvider,
              com.zhlearn.infrastructure.deepseek.DeepSeekExampleProvider,
-             com.zhlearn.infrastructure.gpt5nano.GPT5NanoExampleProvider;
+             com.zhlearn.infrastructure.gpt5nano.GPT5NanoExampleProvider,
+             com.zhlearn.infrastructure.qwen3.Qwen3MaxExampleProvider,
+             com.zhlearn.infrastructure.qwen3.Qwen3PlusExampleProvider,
+             com.zhlearn.infrastructure.qwen3.Qwen3FlashExampleProvider;
     
     provides com.zhlearn.domain.provider.ExplanationProvider 
         with com.zhlearn.infrastructure.dummy.DummyExplanationProvider,
              com.zhlearn.infrastructure.deepseek.DeepSeekExplanationProvider,
-             com.zhlearn.infrastructure.gpt5nano.GPT5NanoExplanationProvider;
+             com.zhlearn.infrastructure.gpt5nano.GPT5NanoExplanationProvider,
+             com.zhlearn.infrastructure.qwen3.Qwen3MaxExplanationProvider,
+             com.zhlearn.infrastructure.qwen3.Qwen3PlusExplanationProvider,
+             com.zhlearn.infrastructure.qwen3.Qwen3FlashExplanationProvider;
 
     provides com.zhlearn.domain.provider.AudioProvider
         with com.zhlearn.infrastructure.anki.ExistingAnkiPronunciationProvider;

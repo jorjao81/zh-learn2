@@ -21,7 +21,7 @@ public class WordCommand implements Runnable {
     @Parameters(index = "0", description = "The Chinese word to analyze")
     private String chineseWord;
     
-    @Option(names = {"--provider"}, description = "Set default provider for all services (default: pinyin4j for pinyin, dummy for others). Available: dummy, pinyin4j, gpt-5-nano, deepseek-chat")
+    @Option(names = {"--provider"}, description = "Set default provider for all services (default: pinyin4j for pinyin, dummy for others). Available: dummy, pinyin4j, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash")
     private String defaultProvider = "dummy";
     
     @Option(names = {"--pinyin-provider"}, description = "Set specific provider for pinyin. Available: pinyin4j, dummy")
@@ -30,13 +30,13 @@ public class WordCommand implements Runnable {
     @Option(names = {"--definition-provider"}, description = "Set specific provider for definition. Available: dummy")
     private String definitionProvider;
     
-    @Option(names = {"--decomposition-provider"}, description = "Set specific provider for structural decomposition. Available: dummy, gpt-5-nano, deepseek-chat")
+    @Option(names = {"--decomposition-provider"}, description = "Set specific provider for structural decomposition. Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash")
     private String decompositionProvider;
     
-    @Option(names = {"--example-provider"}, description = "Set specific provider for examples. Available: dummy, gpt-5-nano, deepseek-chat")
+    @Option(names = {"--example-provider"}, description = "Set specific provider for examples. Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash")
     private String exampleProvider;
     
-    @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation. Available: dummy, gpt-5-nano, deepseek-chat")
+    @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation. Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash")
     private String explanationProvider;
     
     @Option(names = {"--audio-provider"}, description = "Set specific provider for audio pronunciation. Available: existing-anki-pronunciation")
