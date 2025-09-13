@@ -27,6 +27,7 @@ module com.zhlearn.infrastructure {
     exports com.zhlearn.infrastructure.dummy;
     exports com.zhlearn.infrastructure.deepseek;
     exports com.zhlearn.infrastructure.gpt5nano;
+    exports com.zhlearn.infrastructure.chatglm;
     exports com.zhlearn.infrastructure.common;
     exports com.zhlearn.infrastructure.qwen3;
     exports com.zhlearn.infrastructure.anki;
@@ -50,7 +51,9 @@ module com.zhlearn.infrastructure {
              com.zhlearn.infrastructure.gpt5nano.GPT5NanoStructuralDecompositionProvider,
              com.zhlearn.infrastructure.qwen3.Qwen3MaxStructuralDecompositionProvider,
              com.zhlearn.infrastructure.qwen3.Qwen3PlusStructuralDecompositionProvider,
-             com.zhlearn.infrastructure.qwen3.Qwen3FlashStructuralDecompositionProvider;
+             com.zhlearn.infrastructure.qwen3.Qwen3FlashStructuralDecompositionProvider,
+             com.zhlearn.infrastructure.chatglm.ChatGLMStructuralDecompositionProvider,
+             com.zhlearn.infrastructure.chatglm.ChatGLM45StructuralDecompositionProvider;
     
     provides com.zhlearn.domain.provider.ExampleProvider 
         with com.zhlearn.infrastructure.dummy.DummyExampleProvider,
@@ -58,7 +61,9 @@ module com.zhlearn.infrastructure {
              com.zhlearn.infrastructure.gpt5nano.GPT5NanoExampleProvider,
              com.zhlearn.infrastructure.qwen3.Qwen3MaxExampleProvider,
              com.zhlearn.infrastructure.qwen3.Qwen3PlusExampleProvider,
-             com.zhlearn.infrastructure.qwen3.Qwen3FlashExampleProvider;
+             com.zhlearn.infrastructure.qwen3.Qwen3FlashExampleProvider,
+             com.zhlearn.infrastructure.chatglm.ChatGLMExampleProvider,
+             com.zhlearn.infrastructure.chatglm.ChatGLM45ExampleProvider;
     
     provides com.zhlearn.domain.provider.ExplanationProvider 
         with com.zhlearn.infrastructure.dummy.DummyExplanationProvider,
@@ -66,7 +71,9 @@ module com.zhlearn.infrastructure {
              com.zhlearn.infrastructure.gpt5nano.GPT5NanoExplanationProvider,
              com.zhlearn.infrastructure.qwen3.Qwen3MaxExplanationProvider,
              com.zhlearn.infrastructure.qwen3.Qwen3PlusExplanationProvider,
-             com.zhlearn.infrastructure.qwen3.Qwen3FlashExplanationProvider;
+             com.zhlearn.infrastructure.qwen3.Qwen3FlashExplanationProvider,
+             com.zhlearn.infrastructure.chatglm.ChatGLMExplanationProvider,
+             com.zhlearn.infrastructure.chatglm.ChatGLM45ExplanationProvider;
 
     provides com.zhlearn.domain.provider.AudioProvider
         with com.zhlearn.infrastructure.anki.AnkiPronunciationProvider,
