@@ -7,9 +7,23 @@ set -e
 
 echo "Building ZH Learn native image..."
 
-# Build CLI (and its modules) in one reactor run and produce native image
-# Using -pl/-am ensures siblings are built even when invoked from CI or fresh envs.
-mvn -B -DskipTests -Pnative -pl zh-learn-cli -am clean package
+set -u
+
+# Use the same local Maven repository as the CI build step if available
+# Prefer $MAVEN_REPO_LOCAL, then GitHub Actions' $GITHUB_WORKSPACE/.m2
+MAVEN_REPO_LOCAL_ARG=""
+if [ -n "${MAVEN_REPO_LOCAL:-}" ]; then
+  MAVEN_REPO_LOCAL_ARG="-Dmaven.repo.local=$MAVEN_REPO_LOCAL"
+elif [ -n "${GITHUB_WORKSPACE:-}" ]; then
+  MAVEN_REPO_LOCAL_ARG="-Dmaven.repo.local=$GITHUB_WORKSPACE/.m2"
+fi
+
+# Build native image for the CLI module only. Dependencies are resolved from the
+# prior reactor install (same repo path), avoiding aggregator plugin execution.
+(
+  cd zh-learn-cli
+  mvn -B -DskipTests $MAVEN_REPO_LOCAL_ARG -Pnative package
+)
 
 echo "Native image built successfully: zh-learn-cli/target/zh-learn"
 echo "Usage examples:"
