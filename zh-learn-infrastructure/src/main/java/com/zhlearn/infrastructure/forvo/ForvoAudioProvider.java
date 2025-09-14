@@ -6,6 +6,7 @@ import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.AudioProvider;
+import com.zhlearn.infrastructure.audio.AudioCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -146,9 +147,18 @@ public class ForvoAudioProvider implements AudioProvider {
                 String mp3 = text(n, "pathmp3");
                 if (mp3 == null || mp3.isBlank()) continue; // skip non-mp3 entries
                 try {
-                    Path out = downloadMp3(mp3, word.characters());
-                    if (out != null) {
-                        results.add("[sound:" + out.toAbsolutePath() + "]");
+                    // First check cache by deterministic file name from source URL
+                    Path cached = com.zhlearn.infrastructure.audio.AudioPaths.audioDir()
+                        .resolve(getName())
+                        .resolve(com.zhlearn.infrastructure.audio.AudioPaths.sanitize(word.characters()) + "_" + com.zhlearn.infrastructure.audio.AudioPaths.sanitize(pinyin.pinyin()) + "_" + shortHash(mp3) + ".mp3");
+                    if (java.nio.file.Files.exists(cached)) {
+                        results.add("[sound:" + cached.toAbsolutePath() + "]");
+                        continue;
+                    }
+                    Path tmp = downloadMp3(mp3, word.characters());
+                    if (tmp != null) {
+                        Path norm = AudioCache.ensureCachedNormalized(tmp, getName(), word.characters(), pinyin.pinyin(), mp3);
+                        results.add("[sound:" + norm.toAbsolutePath() + "]");
                     }
                 } catch (IOException | InterruptedException e) {
                     log.warn("Forvo download failed ({}): {}", i, e.getMessage());
@@ -158,6 +168,17 @@ public class ForvoAudioProvider implements AudioProvider {
             log.warn("Forvo error for '{}': {}", word.characters(), e.getMessage());
         }
         return results;
+    }
+
+    private static String shortHash(String s) {
+        try {
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-1");
+            byte[] d = md.digest(s.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            String hex = java.util.HexFormat.of().withUpperCase().formatHex(d);
+            return hex.substring(0, 10);
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     private Path downloadMp3(String url, String word) throws IOException, InterruptedException {

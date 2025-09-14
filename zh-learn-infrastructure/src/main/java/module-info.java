@@ -30,6 +30,7 @@ module com.zhlearn.infrastructure {
     exports com.zhlearn.infrastructure.common;
     exports com.zhlearn.infrastructure.anki;
     exports com.zhlearn.infrastructure.dictionary;
+    exports com.zhlearn.infrastructure.audio;
     exports com.zhlearn.infrastructure.fixture;
     exports com.zhlearn.infrastructure.cache;
     exports com.zhlearn.infrastructure.pinyin4j;

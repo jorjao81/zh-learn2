@@ -1,0 +1,50 @@
+package com.zhlearn.infrastructure.audio;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class AudioCacheTest {
+    private Path tmpHome;
+
+    @BeforeEach
+    void setup() throws Exception {
+        tmpHome = Files.createTempDirectory("zhlearn-test-home");
+        System.setProperty("zhlearn.home", tmpHome.toString());
+        // Disable ffmpeg to make test stable in CI
+        // Note: we cannot set env vars reliably in JVM; AudioNormalizer checks env at runtime.
+        // We'll rely on copy fallback by ensuring ffmpeg is likely absent, but create mp3-like file.
+        // To be robust, write a tiny file and let fallback copy handle it if ffmpeg not present.
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        System.clearProperty("zhlearn.home");
+        // best-effort cleanup
+        try { java.nio.file.Files.walk(tmpHome).sorted(java.util.Comparator.reverseOrder()).forEach(p -> { try { Files.deleteIfExists(p); } catch (Exception ignored) {} }); } catch (Exception ignored) {}
+    }
+
+    @Test
+    void cachesAndReusesNormalizedFile() throws Exception {
+        Path src = Files.createTempFile("src-", ".mp3");
+        Files.write(src, new byte[]{0,1,2,3,4,5,6});
+
+        Path out1 = AudioCache.ensureCachedNormalized(src, "forvo", "学习", "xuéxí", "http://example.com/a.mp3");
+        assertThat(out1).exists();
+        assertThat(out1.getParent()).isEqualTo(AudioPaths.audioDir().resolve("forvo").toAbsolutePath());
+
+        long size1 = Files.size(out1);
+
+        // Second call should return same path and not fail
+        Path out2 = AudioCache.ensureCachedNormalized(src, "forvo", "学习", "xuéxí", "http://example.com/a.mp3");
+        assertThat(out2).exists();
+        assertThat(out2).isEqualTo(out1);
+        assertThat(Files.size(out2)).isEqualTo(size1);
+    }
+}
+

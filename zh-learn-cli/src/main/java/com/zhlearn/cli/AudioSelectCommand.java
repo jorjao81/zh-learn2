@@ -28,7 +28,10 @@ public class AudioSelectCommand implements Runnable {
     @Override
     public void run() {
         AudioOrchestrator orchestrator = new AudioOrchestrator(parent.getProviderRegistry());
-        List<PronunciationCandidate> candidates = orchestrator.candidatesFor(new Hanzi(chineseWord), new Pinyin(pinyin));
+        Hanzi word = new Hanzi(chineseWord);
+        Pinyin pin = new Pinyin(pinyin);
+        List<PronunciationCandidate> raw = orchestrator.candidatesFor(word, pin);
+        List<PronunciationCandidate> candidates = com.zhlearn.cli.audio.PrePlayback.preprocessCandidates(word, pin, raw);
         if (candidates.isEmpty()) {
             System.out.println("No pronunciation candidates found.");
             // Helpful hint when Anki export is missing (default path)
