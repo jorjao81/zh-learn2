@@ -19,6 +19,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -109,6 +111,55 @@ public class ForvoAudioProvider implements AudioProvider {
         }
     }
 
+    @Override
+    public List<String> getPronunciations(Hanzi word, Pinyin pinyin) {
+        List<String> results = new ArrayList<>();
+        String apiKey = getApiKey();
+        if (apiKey == null || apiKey.isBlank()) {
+            log.warn("Forvo API key not configured. Set FORVO_API_KEY env var or -Dforvo.api.key");
+            return results;
+        }
+        try {
+            String encoded = URLEncoder.encode(word.characters(), StandardCharsets.UTF_8);
+            String url = "https://apifree.forvo.com/key/" + apiKey +
+                "/format/json/action/word-pronunciations/word/" + encoded +
+                "/language/zh/porder/rate-desc/perpage/20";
+
+            HttpRequest req = HttpRequest.newBuilder(URI.create(url))
+                .timeout(Duration.ofSeconds(10))
+                .GET()
+                .build();
+            HttpResponse<String> resp = http.send(req, HttpResponse.BodyHandlers.ofString());
+            if (resp.statusCode() != 200) {
+                log.warn("Forvo request failed: HTTP {}", resp.statusCode());
+                return results;
+            }
+            JsonNode root = mapper.readTree(resp.body());
+            JsonNode items = root.get("items");
+            if (items == null || !items.isArray() || items.size() == 0) {
+                log.info("Forvo: no pronunciations for '{}'", word.characters());
+                return results;
+            }
+            int limit = Math.min(items.size(), 8); // cap downloads to avoid over-fetching
+            for (int i = 0; i < limit; i++) {
+                JsonNode n = items.get(i);
+                String mp3 = text(n, "pathmp3");
+                if (mp3 == null || mp3.isBlank()) continue; // skip non-mp3 entries
+                try {
+                    Path out = downloadMp3(mp3, word.characters());
+                    if (out != null) {
+                        results.add("[sound:" + out.toAbsolutePath() + "]");
+                    }
+                } catch (IOException | InterruptedException e) {
+                    log.warn("Forvo download failed ({}): {}", i, e.getMessage());
+                }
+            }
+        } catch (IOException | InterruptedException e) {
+            log.warn("Forvo error for '{}': {}", word.characters(), e.getMessage());
+        }
+        return results;
+    }
+
     private Path downloadMp3(String url, String word) throws IOException, InterruptedException {
         HttpRequest req = HttpRequest.newBuilder(URI.create(url))
                 .timeout(Duration.ofSeconds(15))
@@ -141,4 +192,3 @@ public class ForvoAudioProvider implements AudioProvider {
         return k;
     }
 }
-

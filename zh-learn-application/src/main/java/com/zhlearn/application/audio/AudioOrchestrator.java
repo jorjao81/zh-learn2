@@ -24,12 +24,15 @@ public class AudioOrchestrator {
             Optional<AudioProvider> providerOpt = registry.getAudioProvider(providerName);
             if (providerOpt.isEmpty()) continue;
             AudioProvider provider = providerOpt.get();
-            Optional<String> sound = provider.getPronunciation(word, pinyin);
-            sound.ifPresent(s -> list.add(new PronunciationCandidate(
-                provider.getName(),
-                s,
-                resolvePath(extractFileName(s))
-            )));
+            java.util.List<String> sounds = provider.getPronunciations(word, pinyin);
+            for (String s : sounds) {
+                if (s == null || s.isBlank()) continue;
+                list.add(new PronunciationCandidate(
+                    provider.getName(),
+                    s,
+                    resolvePath(extractFileName(s))
+                ));
+            }
         }
         return list;
     }
