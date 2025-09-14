@@ -51,6 +51,14 @@ public class AudioOrchestrator {
             if (java.nio.file.Files.exists(p)) {
                 return p.toAbsolutePath();
             }
+            // Try Anki media directory if configured
+            Path anki = ankiMediaDir();
+            if (anki != null) {
+                Path candidate = anki.resolve(fileName);
+                if (java.nio.file.Files.exists(candidate)) {
+                    return candidate.toAbsolutePath();
+                }
+            }
             // Try classpath resource fallback (e.g., fixtures)
             String resourcePath = "/fixtures/audio/" + fileName;
             var cl = Thread.currentThread().getContextClassLoader();
@@ -68,5 +76,28 @@ public class AudioOrchestrator {
         } catch (Exception ignored) {
         }
         return Path.of(fileName);
+    }
+
+    private static Path ankiMediaDir() {
+        // priority: system property -> env vars -> OS default (macOS)
+        String v = System.getProperty("zhlearn.anki.media.dir");
+        if (v == null || v.isBlank()) v = System.getProperty("zhlearn.anki.mediaDir");
+        if (v == null || v.isBlank()) v = System.getProperty("anki.media.dir");
+        if (v == null || v.isBlank()) v = System.getenv("ZHLEARN_ANKI_MEDIA_DIR");
+        if (v == null || v.isBlank()) v = System.getenv("ANKI_MEDIA_DIR");
+        try {
+            if (v != null && !v.isBlank()) {
+                Path dir = Path.of(v).toAbsolutePath();
+                if (java.nio.file.Files.isDirectory(dir)) return dir;
+            }
+            // macOS default
+            String os = System.getProperty("os.name", "").toLowerCase();
+            if (os.contains("mac")) {
+                String home = System.getProperty("user.home");
+                Path macDefault = Path.of(home, "Library", "Application Support", "Anki2", "User 1", "collection.media");
+                if (java.nio.file.Files.isDirectory(macDefault)) return macDefault.toAbsolutePath();
+            }
+        } catch (Exception ignored) {}
+        return null;
     }
 }

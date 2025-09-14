@@ -37,6 +37,12 @@ public class AudioCommand implements Runnable {
                 System.out.println(result.get());
             } else {
                 System.out.println("(no pronunciation)");
+                java.nio.file.Path defaultExport = java.nio.file.Paths.get(System.getProperty("user.home"), ".zh-learn", "Chinese.txt");
+                if (!java.nio.file.Files.exists(defaultExport)) {
+                    System.out.println("Hint: Export your Anki collection as a TSV named 'Chinese.txt' to: \n  "
+                        + defaultExport.getParent().toAbsolutePath());
+                    System.out.println("The parser currently supports note type 'Chinese 2' (columns: 1=simplified, 2=pinyin, 3=pronunciation).");
+                }
             }
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
@@ -44,4 +50,3 @@ public class AudioCommand implements Runnable {
         }
     }
 }
-

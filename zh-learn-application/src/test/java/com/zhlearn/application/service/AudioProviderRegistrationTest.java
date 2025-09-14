@@ -23,6 +23,7 @@ class AudioProviderRegistrationTest {
 
     @Test
     void registryRegistersAndListsAudioProvider() {
+        System.setProperty("zhlearn.enable.fixture.audio", "true");
         ProviderRegistry registry = new ProviderRegistry();
         registry.registerAudioProvider(new FakeAudioProvider());
 
@@ -37,6 +38,7 @@ class AudioProviderRegistrationTest {
 
     @Test
     void serviceDelegatesToAudioProvider() {
+        System.setProperty("zhlearn.enable.fixture.audio", "true");
         ProviderRegistry registry = new ProviderRegistry();
         WordAnalysisServiceImpl service = new WordAnalysisServiceImpl(registry);
 

@@ -16,7 +16,7 @@ public class ProviderRegistry {
     private final Map<String, StructuralDecompositionProvider> decompositionProviders = new ConcurrentHashMap<>();
     private final Map<String, ExampleProvider> exampleProviders = new ConcurrentHashMap<>();
     private final Map<String, ExplanationProvider> explanationProviders = new ConcurrentHashMap<>();
-    private final Map<String, AudioProvider> audioProviders = new ConcurrentHashMap<>();
+    private final Map<String, AudioProvider> audioProviders = new java.util.concurrent.ConcurrentHashMap<>();
     
     private final Map<String, String> configurations = new ConcurrentHashMap<>();
     
@@ -152,7 +152,38 @@ public class ProviderRegistry {
     }
     
     public Set<String> getAvailableAudioProviders() {
-        return new HashSet<>(audioProviders.keySet());
+        // Feature-flag: disable fixture/dummy audio providers by default
+        boolean enableFixtures = isTruthy(configurations.getOrDefault(
+            "zhlearn.enable.fixture.audio",
+            configurations.getOrDefault("ZHLEARN_ENABLE_FIXTURE_AUDIO", "false")
+        ));
+
+        // Build list with optional filtering, then order by preference
+        java.util.List<java.util.Map.Entry<String, AudioProvider>> entries = new java.util.ArrayList<>(audioProviders.entrySet());
+        java.util.List<String> filtered = new java.util.ArrayList<>();
+        for (var e : entries) {
+            AudioProvider p = e.getValue();
+            if (!enableFixtures && p.getType() == ProviderType.DUMMY) {
+                continue; // skip fixtures unless explicitly enabled
+            }
+            filtered.add(e.getKey());
+        }
+
+        // Preferred ordering: Anki first, then others (stable by name)
+        filtered.sort((a, b) -> {
+            if (a.equals("existing-anki-pronunciation") && !b.equals("existing-anki-pronunciation")) return -1;
+            if (b.equals("existing-anki-pronunciation") && !a.equals("existing-anki-pronunciation")) return 1;
+            return a.compareTo(b);
+        });
+
+        java.util.LinkedHashSet<String> ordered = new java.util.LinkedHashSet<>(filtered);
+        return ordered;
+    }
+
+    private static boolean isTruthy(String v) {
+        if (v == null) return false;
+        String s = v.trim().toLowerCase();
+        return s.equals("1") || s.equals("true") || s.equals("yes") || s.equals("on");
     }
     
     public List<ProviderInfo> getAllProviderInfo() {

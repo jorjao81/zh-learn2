@@ -31,6 +31,13 @@ public class AudioSelectCommand implements Runnable {
         List<PronunciationCandidate> candidates = orchestrator.candidatesFor(new Hanzi(chineseWord), new Pinyin(pinyin));
         if (candidates.isEmpty()) {
             System.out.println("No pronunciation candidates found.");
+            // Helpful hint when Anki export is missing (default path)
+            java.nio.file.Path defaultExport = java.nio.file.Paths.get(System.getProperty("user.home"), ".zh-learn", "Chinese.txt");
+            if (!java.nio.file.Files.exists(defaultExport)) {
+                System.out.println("Hint: Export your Anki collection as a TSV named 'Chinese.txt' to: \n  "
+                    + defaultExport.getParent().toAbsolutePath());
+                System.out.println("The parser currently supports note type 'Chinese 2' (columns: 1=simplified, 2=pinyin, 3=pronunciation).");
+            }
             return;
         }
 

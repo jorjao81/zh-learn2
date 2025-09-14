@@ -26,9 +26,10 @@ cd zh-learn-cli && mvn native:compile-no-fork -Pnative
 ```
 
 ### Audio lookup (Existing Anki Pronunciation)
-- Ensure a TSV export of your Anki collection is present at `Chinese.txt` in the project root. The file must have the first column as the Note Type and only rows with Note Type `Chinese` or `Chinese 2` are considered. Column order depends on the Note Type:
-  - `Chinese`: 0 Note Type, 1 Pinyin, 2 Simplified, 3 Pronunciation
+- Default location: export your Anki collection (TSV) as `Chinese.txt` to `~/.zh-learn/Chinese.txt`.
+- The file must have the first column as the Note Type. Currently the parser supports the `Chinese 2` note type with the following columns:
   - `Chinese 2`: 0 Note Type, 1 Simplified, 2 Pinyin, 3 Pronunciation
+  - Other note types are ignored by the current parser.
 
 ```bash
 # Query an existing pronunciation by exact pinyin match
@@ -38,6 +39,11 @@ cd zh-learn-cli && mvn native:compile-no-fork -Pnative
 
 # Specify provider explicitly (optional)
 ./zh-learn.sh audio 学 xué --audio-provider existing-anki-pronunciation
+
+# Optional: configure Anki media directory (for playback)
+# Use either a system property or environment variable:
+#   -Danki.media.dir="/path/to/Anki2/User 1/collection.media"
+#   ANKI_MEDIA_DIR=/path/to/Anki2/User\ 1/collection.media
 ```
 
 ### Native executable
@@ -62,7 +68,16 @@ mvn test
 
 - Audio providers return an Anki-ready string (e.g., `[sound:...mp3]`) for a given word and pinyin.
 - Current provider:
-  - `existing-anki-pronunciation`: scans `Chinese.txt` and reuses the pronunciation of any card with the exact same pinyin (tone marks included). If nothing is found, it returns no pronunciation.
+  - `existing-anki-pronunciation`: scans the Anki export at `~/.zh-learn/Chinese.txt` (fallback: `./Chinese.txt`) and reuses the pronunciation of any card with the exact same pinyin (tone marks included). If nothing is found, it returns no pronunciation.
+
+Audio playback file resolution:
+- Default Anki media directory on macOS: `~/Library/Application Support/Anki2/User 1/collection.media/`
+- Override with `ZHLEARN_ANKI_MEDIA_DIR` or system property `-Dzhlearn.anki.media.dir=/path/to/collection.media`
+
+Playback resolution order:
+- Absolute/relative path if it exists
+- `anki.media.dir` or `ANKI_MEDIA_DIR` joined with the filename
+- CLI fixtures (sample audio) for development
 
 List providers and capabilities:
 ```bash

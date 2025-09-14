@@ -13,10 +13,23 @@ public class SystemAudioPlayer implements AudioPlayer {
     public void play(Path file) {
         stop();
         if (file == null || !Files.exists(file)) {
+            // Try Anki media directory if configured
+            Path fromAnki = tryFromAnkiMedia(file);
+            if (fromAnki != null) {
+                file = fromAnki;
+            }
+
             // Try to resolve from CLI module resources (fixtures/audio/<name>)
             Path resolved = tryExtractFromResources(file);
             if (resolved == null) {
                 System.err.println("[audio] File not found: " + (file == null ? "(null)" : file.toAbsolutePath()));
+                // Help users configure Anki media directory if relevant
+                String cfg = System.getProperty("anki.media.dir");
+                if (cfg == null || cfg.isBlank()) cfg = System.getenv("ANKI_MEDIA_DIR");
+                if (cfg == null || cfg.isBlank()) cfg = System.getenv("ZHLEARN_ANKI_MEDIA_DIR");
+                if (cfg == null || cfg.isBlank()) {
+                    System.err.println("[audio] Hint: set system property 'anki.media.dir' or env var 'ANKI_MEDIA_DIR' to your Anki collection.media directory");
+                }
                 return;
             }
             file = resolved;
@@ -56,6 +69,23 @@ public class SystemAudioPlayer implements AudioPlayer {
                 out.toFile().deleteOnExit();
                 return out;
             }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Path tryFromAnkiMedia(Path file) {
+        try {
+            String name = (file == null) ? null : file.getFileName().toString();
+            if (name == null || name.isBlank()) return null;
+            String cfg = System.getProperty("anki.media.dir");
+            if (cfg == null || cfg.isBlank()) cfg = System.getProperty("zhlearn.anki.media.dir");
+            if (cfg == null || cfg.isBlank()) cfg = System.getenv("ANKI_MEDIA_DIR");
+            if (cfg == null || cfg.isBlank()) cfg = System.getenv("ZHLEARN_ANKI_MEDIA_DIR");
+            if (cfg == null || cfg.isBlank()) return null;
+            Path dir = Path.of(cfg);
+            Path candidate = dir.resolve(name);
+            return Files.exists(candidate) ? candidate.toAbsolutePath() : null;
         } catch (Exception e) {
             return null;
         }
