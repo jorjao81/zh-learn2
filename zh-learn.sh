@@ -19,7 +19,13 @@ fi
 MODULE_PATH="$CLI_TARGET/lib:$CLI_TARGET/zh-learn-cli-1.0.0-SNAPSHOT.jar"
 
 # Execute using true Java modules
-exec java \
+JAVA_OPTS="${JAVA_OPTS:-}"
+# Pass FORVO_API_KEY into JVM as system property too (helps in some shells)
+if [ -n "$FORVO_API_KEY" ]; then
+  JAVA_OPTS="$JAVA_OPTS -Dforvo.api.key=$FORVO_API_KEY"
+fi
+
+exec java $JAVA_OPTS \
     --module-path "$MODULE_PATH" \
     --enable-native-access=org.fusesource.jansi,org.jline.nativ,ALL-UNNAMED \
     --module com.zhlearn.cli/com.zhlearn.cli.ZhLearnApplication \
