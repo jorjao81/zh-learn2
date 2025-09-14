@@ -59,6 +59,7 @@ module com.zhlearn.infrastructure {
 
     provides com.zhlearn.domain.provider.AudioProvider
         with com.zhlearn.infrastructure.anki.ExistingAnkiPronunciationProvider,
+             com.zhlearn.infrastructure.forvo.ForvoAudioProvider,
              com.zhlearn.infrastructure.fixture.FixtureAudioProvider,
              com.zhlearn.infrastructure.fixture.FixtureAudioProvider2;
 }

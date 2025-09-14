@@ -69,6 +69,7 @@ mvn test
 - Audio providers return an Anki-ready string (e.g., `[sound:...mp3]`) for a given word and pinyin.
 - Current provider:
   - `existing-anki-pronunciation`: scans the Anki export at `~/.zh-learn/Chinese.txt` (fallback: `./Chinese.txt`) and reuses the pronunciation of any card with the exact same pinyin (tone marks included). If nothing is found, it returns no pronunciation.
+  - `forvo`: fetches pronunciations from Forvo (manual selection only). Requires `FORVO_API_KEY` in the environment or `-Dforvo.api.key=...`.
 
 Audio playback file resolution:
 - Default Anki media directory on macOS: `~/Library/Application Support/Anki2/User 1/collection.media/`
