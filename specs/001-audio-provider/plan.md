@@ -32,6 +32,8 @@
 ## Summary
 Enable pronunciation retrieval for Chinese words with multiple pluggable providers (Existing Anki pronunciations, Forvo, and TTS such as Alibaba/Qwen and Tencent), with caching, normalized volume, mp3 output, and a decoupled selection UI. Providers are discovered via the provider pattern in the infrastructure layer; the application layer orchestrates provider queries, auto-selection when allowed (Anki/Forvo), and exposes a selection session to the CLI. Audio is normalized and transcoded to mp3 before caching; filenames encode the source and metadata; cached assets are reused across runs.
 
+Next milestone (updated): Implement Forvo provider (manual-only, no auto-select/known-good users) before caching/normalization so we can validate multi-provider flows, provider priority (Anki → Forvo → TTS), and interactive selection with real options. Auto-select and known-good users will be a follow-up milestone.
+
 ## Technical Context
 **Language/Version**: Java 24 (preview), modular JVM; GraalVM for native
 **Primary Dependencies**: Picocli (CLI), Helidon DI (infrastructure), SLF4J (logging), JUnit 5 + Cucumber (tests); External tool: FFmpeg for mp3 transcode + loudness normalization
@@ -194,6 +196,7 @@ ios/ or android/
 **Ordering Strategy**:
 - TDD order: Tests before implementation 
 - Dependency order: Models before services before UI
+- Implement Forvo provider (manual-only) immediately after Anki so multiple options and priority can be validated before introducing cache/normalization. Defer Forvo auto-select and known-good users to a later milestone.
 - Mark [P] for parallel execution (independent files)
 
 **Estimated Output**: 25-30 numbered, ordered tasks in tasks.md
