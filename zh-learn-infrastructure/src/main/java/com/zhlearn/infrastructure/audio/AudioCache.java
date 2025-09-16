@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
 
 public class AudioCache {
@@ -53,9 +54,8 @@ public class AudioCache {
             byte[] d = md.digest(bytes);
             String hex = HexFormat.of().withUpperCase().formatHex(d);
             return hex.substring(0, 10);
-        } catch (Exception e) {
-            return "";
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-1 digest not available", e);
         }
     }
 }
-

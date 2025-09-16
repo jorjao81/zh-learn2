@@ -161,11 +161,17 @@ public class ForvoAudioProvider implements AudioProvider {
                         results.add("[sound:" + norm.toAbsolutePath() + "]");
                     }
                 } catch (IOException | InterruptedException e) {
-                    log.warn("Forvo download failed ({}): {}", i, e.getMessage());
+                    if (e instanceof InterruptedException) {
+                        Thread.currentThread().interrupt();
+                    }
+                    throw new RuntimeException("Forvo download failed (" + i + ")", e);
                 }
             }
         } catch (IOException | InterruptedException e) {
-            log.warn("Forvo error for '{}': {}", word.characters(), e.getMessage());
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+            throw new RuntimeException("Forvo error for '" + word.characters() + "'", e);
         }
         return results;
     }
@@ -176,8 +182,8 @@ public class ForvoAudioProvider implements AudioProvider {
             byte[] d = md.digest(s.getBytes(java.nio.charset.StandardCharsets.UTF_8));
             String hex = java.util.HexFormat.of().withUpperCase().formatHex(d);
             return hex.substring(0, 10);
-        } catch (Exception e) {
-            return "";
+        } catch (java.security.NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-1 digest not available", e);
         }
     }
 

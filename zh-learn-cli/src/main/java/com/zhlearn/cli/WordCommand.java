@@ -50,44 +50,37 @@ public class WordCommand implements Runnable {
 
     @Override
     public void run() {
-        try {
-            WordAnalysisServiceImpl wordAnalysisService = new WordAnalysisServiceImpl(parent.getProviderRegistry());
-            // Validate providers before processing
-            String validationError = validateProviders();
-            if (validationError != null) {
-                System.err.println(validationError);
-                System.exit(1);
-            }
-            
-            // Choose audio provider: prefer user-provided; else use existing-anki-pronunciation when available; else omit
-            String effectiveAudioProvider = audioProvider;
-            if (effectiveAudioProvider == null || effectiveAudioProvider.isBlank()) {
-                effectiveAudioProvider = parent.getProviderRegistry().getAudioProvider("existing-anki-pronunciation").isPresent()
-                    ? "existing-anki-pronunciation" : null;
-            }
-
-            ProviderConfiguration config = new ProviderConfiguration(
-                defaultProvider,
-                pinyinProvider,
-                definitionProvider,
-                decompositionProvider,
-                exampleProvider,
-                explanationProvider,
-                effectiveAudioProvider
-            );
-            
-            Hanzi word = new Hanzi(chineseWord);
-            WordAnalysis analysis = wordAnalysisService.getCompleteAnalysis(word, config);
-            
-            if (rawOutput) {
-                AnalysisPrinter.printRaw(analysis);
-            } else {
-                AnalysisPrinter.printFormatted(analysis);
-            }
-        } catch (Exception e) {
-            System.err.println("Error analyzing word: " + e.getMessage());
-            e.printStackTrace();
+        WordAnalysisServiceImpl wordAnalysisService = new WordAnalysisServiceImpl(parent.getProviderRegistry());
+        // Validate providers before processing
+        String validationError = validateProviders();
+        if (validationError != null) {
+            System.err.println(validationError);
             System.exit(1);
+        }
+        
+        String effectiveAudioProvider = audioProvider;
+        if (effectiveAudioProvider == null || effectiveAudioProvider.isBlank()) {
+            effectiveAudioProvider = parent.getProviderRegistry().getAudioProvider("existing-anki-pronunciation").isPresent()
+                ? "existing-anki-pronunciation" : null;
+        }
+
+        ProviderConfiguration config = new ProviderConfiguration(
+            defaultProvider,
+            pinyinProvider,
+            definitionProvider,
+            decompositionProvider,
+            exampleProvider,
+            explanationProvider,
+            effectiveAudioProvider
+        );
+        
+        Hanzi word = new Hanzi(chineseWord);
+        WordAnalysis analysis = wordAnalysisService.getCompleteAnalysis(word, config);
+        
+        if (rawOutput) {
+            AnalysisPrinter.printRaw(analysis);
+        } else {
+            AnalysisPrinter.printFormatted(analysis);
         }
     }
     

@@ -5,6 +5,7 @@ import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.infrastructure.audio.AudioCache;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,12 +26,13 @@ public final class PrePlayback {
                 );
                 String sound = "[sound:" + normalized.toAbsolutePath() + "]";
                 out.add(new PronunciationCandidate(c.label(), sound, normalized));
-            } catch (Exception e) {
-                // If anything fails, keep the original candidate so the user can still try to play it
-                out.add(c);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to normalize audio candidate '" + c.label() + "'", e);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Normalization interrupted for candidate '" + c.label() + "'", e);
             }
         }
         return out;
     }
 }
-

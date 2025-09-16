@@ -6,6 +6,7 @@ import com.zhlearn.domain.model.Example;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +32,7 @@ public class ExampleResponseMapper implements Function<String, Example> {
             }
             
             if (responseList == null || responseList.isEmpty()) {
-                log.warn("No examples found in words/response list");
-                // Try to still parse phonetic series if present; otherwise return empty
-                List<Example.SeriesItem> series = parsePhoneticSeries(response);
-                return new Example(List.of(), series);
+                throw new IllegalStateException("No examples found in words/response list");
             }
             
             List<Example.Usage> allUsages = new ArrayList<>();
@@ -67,12 +65,10 @@ public class ExampleResponseMapper implements Function<String, Example> {
             
             return new Example(allUsages, seriesItems);
             
-        } catch (Exception e) {
+        } catch (IOException e) {
             log.error("Failed to parse YAML response: {}", e.getMessage(), e);
             log.debug("Original response: {}", yamlResponse);
-            
-            // Return empty example on parse failure
-            return new Example(List.of(), List.of());
+            throw new RuntimeException("Failed to parse YAML response", e);
         }
     }
 
@@ -92,9 +88,9 @@ public class ExampleResponseMapper implements Function<String, Example> {
                 }
             }
             return result;
-        } catch (Exception ex) {
+        } catch (RuntimeException ex) {
             log.debug("Failed to parse phonetic_series: {}", ex.getMessage());
-            return List.of();
+            throw new RuntimeException("Failed to parse phonetic_series", ex);
         }
     }
 

@@ -45,39 +45,9 @@ public class ProviderRegistry {
     }
 
     private <T> void loadViaServiceLoader(Class<T> serviceType, Consumer<T> registrar) {
-        int count = 0;
-        // First attempt: default loader
-        try {
-            ServiceLoader<T> loader = ServiceLoader.load(serviceType);
-            for (ServiceLoader.Provider<T> prov : loader.stream().toList()) {
-                try {
-                    T instance = prov.get();
-                    registrar.accept(instance);
-                    count++;
-                } catch (Throwable e) {
-                    // Skip faulty provider instance; continue loading others
-                }
-            }
-        } catch (Throwable ignored) {
-            // Fall through to TCCL attempt
-        }
-        // Second attempt: context class loader if nothing loaded so far
-        if (count == 0) {
-            try {
-                ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-                ServiceLoader<T> loader = ServiceLoader.load(serviceType, tccl);
-                for (ServiceLoader.Provider<T> prov : loader.stream().toList()) {
-                    try {
-                        T instance = prov.get();
-                        registrar.accept(instance);
-                        count++;
-                    } catch (Throwable e) {
-                        // Skip faulty provider instance
-                    }
-                }
-            } catch (Throwable ignoredAlso) {
-                // ignore
-            }
+        ServiceLoader<T> loader = ServiceLoader.load(serviceType);
+        for (ServiceLoader.Provider<T> provider : loader.stream().toList()) {
+            registrar.accept(provider.get());
         }
     }
 

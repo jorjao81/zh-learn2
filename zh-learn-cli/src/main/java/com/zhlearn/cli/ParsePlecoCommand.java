@@ -17,6 +17,8 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -172,9 +174,8 @@ public class ParsePlecoCommand implements Runnable {
                 exportToAnkiFile(successfulAnalyses, ankiExportFile.trim());
             }
             
-        } catch (Exception e) {
-            System.err.println("Error parsing Pleco file: " + e.getMessage());
-            System.exit(1);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to parse Pleco export at " + filePath, e);
         }
     }
     
@@ -191,7 +192,7 @@ public class ParsePlecoCommand implements Runnable {
                 successfulAnalyses.add(analysis); // Collect for export
                 processedCount++;
                 
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 System.err.println("Error analyzing word '" + entry.hanzi() + "': " + e.getMessage());
             }
         }
@@ -220,7 +221,7 @@ public class ParsePlecoCommand implements Runnable {
                         WordAnalysis analysis = wordAnalysisService.getCompleteAnalysis(word, config);
                         long wordDuration = System.currentTimeMillis() - wordStartTime;
                         return new WordAnalysisResult(entry, analysis, null, wordDuration);
-                    } catch (Exception e) {
+                    } catch (RuntimeException e) {
                         long wordDuration = System.currentTimeMillis() - wordStartTime;
                         return new WordAnalysisResult(entry, null, e, wordDuration);
                     }
@@ -291,10 +292,10 @@ public class ParsePlecoCommand implements Runnable {
     private static class WordAnalysisResult {
         final PlecoEntry entry;
         final WordAnalysis analysis;
-        final Exception error;
+        final RuntimeException error;
         final long duration; // Duration in milliseconds
         
-        WordAnalysisResult(PlecoEntry entry, WordAnalysis analysis, Exception error, long duration) {
+        WordAnalysisResult(PlecoEntry entry, WordAnalysis analysis, RuntimeException error, long duration) {
             this.entry = entry;
             this.analysis = analysis;
             this.error = error;
@@ -313,8 +314,8 @@ public class ParsePlecoCommand implements Runnable {
             System.out.println("=".repeat(80));
             System.out.printf("Exported %d words to %s (Anki Chinese 2 format)%n", analyses.size(), filename);
             
-        } catch (Exception e) {
-            System.err.println("Error exporting to Anki file: " + e.getMessage());
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to export Anki file to " + filename, e);
         }
     }
     

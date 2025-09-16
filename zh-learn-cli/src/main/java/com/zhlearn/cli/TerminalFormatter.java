@@ -342,43 +342,37 @@ public class TerminalFormatter {
             return html;
         }
         
-        try {
-            // Parse HTML with JSoup
-            Document doc = Jsoup.parse(html);
-            
-            // Extract components from HTML
-            java.util.List<DecompositionComponent> components = new java.util.ArrayList<>();
-            Element ulElement = doc.selectFirst("ul");
-            if (ulElement != null) {
-                for (Element li : ulElement.select("li")) {
-                    String type = li.hasClass("semantic") ? "semantic" : "phonetic";
-                    String hanzi = "";
-                    String pinyin = "";
-                    String definition = "";
-                    
-                    Element hanziSpan = li.selectFirst("span.hanzi");
-                    if (hanziSpan != null) hanzi = hanziSpan.text();
-                    
-                    Element pinyinSpan = li.selectFirst("span.pinyin");
-                    if (pinyinSpan != null) pinyin = pinyinSpan.text();
-                    
-                    Element definitionSpan = li.selectFirst("span.definition");
-                    if (definitionSpan != null) definition = definitionSpan.text();
-                    
-                    components.add(new DecompositionComponent(type, hanzi, pinyin, definition));
-                }
+        // Parse HTML with JSoup
+        Document doc = Jsoup.parse(html);
+        
+        // Extract components from HTML
+        java.util.List<DecompositionComponent> components = new java.util.ArrayList<>();
+        Element ulElement = doc.selectFirst("ul");
+        if (ulElement != null) {
+            for (Element li : ulElement.select("li")) {
+                String type = li.hasClass("semantic") ? "semantic" : "phonetic";
+                String hanzi = "";
+                String pinyin = "";
+                String definition = "";
+                
+                Element hanziSpan = li.selectFirst("span.hanzi");
+                if (hanziSpan != null) hanzi = hanziSpan.text();
+                
+                Element pinyinSpan = li.selectFirst("span.pinyin");
+                if (pinyinSpan != null) pinyin = pinyinSpan.text();
+                
+                Element definitionSpan = li.selectFirst("span.definition");
+                if (definitionSpan != null) definition = definitionSpan.text();
+                
+                components.add(new DecompositionComponent(type, hanzi, pinyin, definition));
             }
-            
-            if (components.isEmpty()) {
-                return html; // Fallback to original if no components found
-            }
-            
-            return formatComponentBoxes(components);
-            
-        } catch (Exception e) {
-            // Fallback to original HTML if parsing fails
-            return html;
         }
+        
+        if (components.isEmpty()) {
+            return html; // Fallback to original if no components found
+        }
+        
+        return formatComponentBoxes(components);
     }
     
     private static String formatComponentBoxes(java.util.List<DecompositionComponent> components) {
@@ -427,25 +421,19 @@ public class TerminalFormatter {
             return html;
         }
         
-        try {
-            // Parse HTML with JSoup
-            Document doc = Jsoup.parse(html);
-            
-            // Convert DOM to ANSI formatted text
-            StringBuilder result = new StringBuilder();
-            convertElementToAnsi(doc.body(), result);
-            
-            // Clean up excessive whitespace and line breaks
-            String output = result.toString();
-            output = output.replaceAll("[ \t]+", " ");  // Multiple spaces to single space
-            output = output.replaceAll(" *\n *", "\n"); // Remove spaces around line breaks
-            output = output.replaceAll("\n{3,}", "\n\n"); // Max 2 consecutive line breaks
-            return output.trim(); // Remove leading/trailing whitespace
-            
-        } catch (Exception e) {
-            // Fallback to original HTML if parsing fails
-            return html;
-        }
+        // Parse HTML with JSoup
+        Document doc = Jsoup.parse(html);
+        
+        // Convert DOM to ANSI formatted text
+        StringBuilder result = new StringBuilder();
+        convertElementToAnsi(doc.body(), result);
+        
+        // Clean up excessive whitespace and line breaks
+        String output = result.toString();
+        output = output.replaceAll("[ \t]+", " ");  // Multiple spaces to single space
+        output = output.replaceAll(" *\n *", "\n"); // Remove spaces around line breaks
+        output = output.replaceAll("\n{3,}", "\n\n"); // Max 2 consecutive line breaks
+        return output.trim(); // Remove leading/trailing whitespace
     }
     
     private static void convertElementToAnsi(Element element, StringBuilder result) {

@@ -9,6 +9,7 @@ import org.jline.utils.Display;
 import org.jline.utils.NonBlockingReader;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -79,9 +80,8 @@ public class InteractiveAudioUI {
             writer.print("\u001B[2J\u001B[H\u001B[?25h");
             writer.flush();
             return TriState.skipped();
-        } catch (Exception e) {
-            System.err.println("[ui] JLine loop failed: " + e.getClass().getName() + ": " + e.getMessage());
-            return TriState.unavailable();
+        } catch (IOException e) {
+            throw new RuntimeException("JLine interactive UI failed", e);
         }
     }
 
@@ -123,7 +123,9 @@ public class InteractiveAudioUI {
                 else System.out.println("Unknown command: " + line);
                 printList(session);
             }
-        } catch (Exception ignored) {}
+        } catch (IOException e) {
+            throw new RuntimeException("Fallback audio UI failed", e);
+        }
         return session.selected();
     }
 

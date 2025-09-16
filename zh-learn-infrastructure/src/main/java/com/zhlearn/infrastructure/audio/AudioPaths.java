@@ -1,5 +1,7 @@
 package com.zhlearn.infrastructure.audio;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -12,13 +14,21 @@ public final class AudioPaths {
         Path base = (override == null || override.isBlank())
                 ? Path.of(System.getProperty("user.home"), ".zh-learn")
                 : Path.of(override);
-        try { Files.createDirectories(base); } catch (Exception ignored) {}
+        try {
+            Files.createDirectories(base);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to create zh-learn home directory at " + base, e);
+        }
         return base.toAbsolutePath();
     }
 
     public static Path audioDir() {
         Path dir = homeDir().resolve("audio");
-        try { Files.createDirectories(dir); } catch (Exception ignored) {}
+        try {
+            Files.createDirectories(dir);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to create zh-learn audio directory at " + dir, e);
+        }
         return dir.toAbsolutePath();
     }
 

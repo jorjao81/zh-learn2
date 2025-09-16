@@ -5,7 +5,12 @@ import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.provider.AudioProvider;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -49,36 +54,41 @@ public class AudioOrchestrator {
     }
 
     static Path resolvePath(String fileName) {
-        try {
-            Path p = Path.of(fileName);
-            if (java.nio.file.Files.exists(p)) {
-                return p.toAbsolutePath();
+        Path original = Path.of(fileName);
+        if (Files.exists(original)) {
+            return original.toAbsolutePath();
+        }
+
+        Path anki = ankiMediaDir();
+        if (anki != null) {
+            Path candidate = anki.resolve(fileName);
+            if (Files.exists(candidate)) {
+                return candidate.toAbsolutePath();
             }
-            // Try Anki media directory if configured
-            Path anki = ankiMediaDir();
-            if (anki != null) {
-                Path candidate = anki.resolve(fileName);
-                if (java.nio.file.Files.exists(candidate)) {
-                    return candidate.toAbsolutePath();
-                }
-            }
-            // Try classpath resource fallback (e.g., fixtures)
-            String resourcePath = "/fixtures/audio/" + fileName;
-            var cl = Thread.currentThread().getContextClassLoader();
-            java.io.InputStream in = cl != null ? cl.getResourceAsStream(resourcePath.substring(1)) : null;
-            if (in == null) {
-                in = AudioOrchestrator.class.getResourceAsStream(resourcePath);
-            }
+        }
+
+        String resourcePath = "/fixtures/audio/" + fileName;
+        try (InputStream in = openResourceStream(resourcePath)) {
             if (in != null) {
-                java.nio.file.Path out = java.nio.file.Files.createTempFile("zhlearn-", "-" + fileName);
-                java.nio.file.Files.copy(in, out, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-                try { in.close(); } catch (Exception ignored) {}
+                Path out = Files.createTempFile("zhlearn-", "-" + fileName);
+                Files.copy(in, out, StandardCopyOption.REPLACE_EXISTING);
                 out.toFile().deleteOnExit();
                 return out;
             }
-        } catch (Exception ignored) {
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to resolve audio resource '" + fileName + "'", e);
         }
-        return Path.of(fileName);
+
+        return original;
+    }
+
+    private static InputStream openResourceStream(String resourcePath) {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        InputStream in = cl != null ? cl.getResourceAsStream(resourcePath.substring(1)) : null;
+        if (in == null) {
+            in = AudioOrchestrator.class.getResourceAsStream(resourcePath);
+        }
+        return in;
     }
 
     private static Path ankiMediaDir() {
@@ -88,19 +98,22 @@ public class AudioOrchestrator {
         if (v == null || v.isBlank()) v = System.getProperty("anki.media.dir");
         if (v == null || v.isBlank()) v = System.getenv("ZHLEARN_ANKI_MEDIA_DIR");
         if (v == null || v.isBlank()) v = System.getenv("ANKI_MEDIA_DIR");
-        try {
-            if (v != null && !v.isBlank()) {
-                Path dir = Path.of(v).toAbsolutePath();
-                if (java.nio.file.Files.isDirectory(dir)) return dir;
+
+        if (v != null && !v.isBlank()) {
+            Path dir = Path.of(v).toAbsolutePath();
+            if (!Files.isDirectory(dir)) {
+                throw new IllegalStateException("Configured Anki media directory '" + dir + "' is not a directory");
             }
-            // macOS default
-            String os = System.getProperty("os.name", "").toLowerCase();
-            if (os.contains("mac")) {
-                String home = System.getProperty("user.home");
-                Path macDefault = Path.of(home, "Library", "Application Support", "Anki2", "User 1", "collection.media");
-                if (java.nio.file.Files.isDirectory(macDefault)) return macDefault.toAbsolutePath();
-            }
-        } catch (Exception ignored) {}
+            return dir;
+        }
+
+        String os = System.getProperty("os.name", "").toLowerCase();
+        if (os.contains("mac")) {
+            String home = System.getProperty("user.home");
+            Path macDefault = Path.of(home, "Library", "Application Support", "Anki2", "User 1", "collection.media");
+            if (Files.isDirectory(macDefault)) return macDefault.toAbsolutePath();
+        }
+
         return null;
     }
 }

@@ -4,6 +4,7 @@ import com.zhlearn.domain.model.*;
 import com.zhlearn.domain.service.WordAnalysisService;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -133,8 +134,11 @@ public class ParallelWordAnalysisService implements WordAnalysisService {
                 explanationFuture.get(),
                 pronunciationFuture.get()
             );
-        } catch (Exception e) {
-            throw new RuntimeException("Error in parallel word analysis: " + e.getMessage(), e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Parallel word analysis interrupted", e);
+        } catch (java.util.concurrent.ExecutionException e) {
+            throw new RuntimeException("Error in parallel word analysis: " + e.getCause().getMessage(), e.getCause());
         }
     }
 

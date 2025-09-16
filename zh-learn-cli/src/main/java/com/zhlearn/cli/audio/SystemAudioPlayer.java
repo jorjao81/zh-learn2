@@ -3,6 +3,7 @@ package com.zhlearn.cli.audio;
 import com.zhlearn.application.audio.AudioPlayer;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -22,15 +23,7 @@ public class SystemAudioPlayer implements AudioPlayer {
             // Try to resolve from CLI module resources (fixtures/audio/<name>)
             Path resolved = tryExtractFromResources(file);
             if (resolved == null) {
-                System.err.println("[audio] File not found: " + (file == null ? "(null)" : file.toAbsolutePath()));
-                // Help users configure Anki media directory if relevant
-                String cfg = System.getProperty("anki.media.dir");
-                if (cfg == null || cfg.isBlank()) cfg = System.getenv("ANKI_MEDIA_DIR");
-                if (cfg == null || cfg.isBlank()) cfg = System.getenv("ZHLEARN_ANKI_MEDIA_DIR");
-                if (cfg == null || cfg.isBlank()) {
-                    System.err.println("[audio] Hint: set system property 'anki.media.dir' or env var 'ANKI_MEDIA_DIR' to your Anki collection.media directory");
-                }
-                return;
+                throw new IllegalStateException("Audio file not found: " + (file == null ? "(null)" : file.toAbsolutePath()));
             }
             file = resolved;
         }
@@ -44,8 +37,7 @@ public class SystemAudioPlayer implements AudioPlayer {
         try {
             current = pb.start();
         } catch (IOException e) {
-            // Swallow for now in minimal MVP; a real impl would surface this
-            current = null;
+            throw new UncheckedIOException("Failed to launch audio player process", e);
         }
     }
 
@@ -58,36 +50,33 @@ public class SystemAudioPlayer implements AudioPlayer {
     }
 
     private Path tryExtractFromResources(Path file) {
-        try {
-            String name = (file == null) ? null : file.getFileName().toString();
-            if (name == null || name.isBlank()) return null;
-            String resourcePath = "/fixtures/audio/" + name;
-            try (var in = SystemAudioPlayer.class.getResourceAsStream(resourcePath)) {
-                if (in == null) return null;
-                Path out = Files.createTempFile("zhlearn-", "-" + name);
-                Files.copy(in, out, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-                out.toFile().deleteOnExit();
-                return out;
-            }
-        } catch (Exception e) {
-            return null;
+        String name = (file == null) ? null : file.getFileName().toString();
+        if (name == null || name.isBlank()) return null;
+        String resourcePath = "/fixtures/audio/" + name;
+        try (var in = SystemAudioPlayer.class.getResourceAsStream(resourcePath)) {
+            if (in == null) return null;
+            Path out = Files.createTempFile("zhlearn-", "-" + name);
+            Files.copy(in, out, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            out.toFile().deleteOnExit();
+            return out;
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to extract bundled audio resource '" + name + "'", e);
         }
     }
 
     private Path tryFromAnkiMedia(Path file) {
-        try {
-            String name = (file == null) ? null : file.getFileName().toString();
-            if (name == null || name.isBlank()) return null;
-            String cfg = System.getProperty("anki.media.dir");
-            if (cfg == null || cfg.isBlank()) cfg = System.getProperty("zhlearn.anki.media.dir");
-            if (cfg == null || cfg.isBlank()) cfg = System.getenv("ANKI_MEDIA_DIR");
-            if (cfg == null || cfg.isBlank()) cfg = System.getenv("ZHLEARN_ANKI_MEDIA_DIR");
-            if (cfg == null || cfg.isBlank()) return null;
-            Path dir = Path.of(cfg);
-            Path candidate = dir.resolve(name);
-            return Files.exists(candidate) ? candidate.toAbsolutePath() : null;
-        } catch (Exception e) {
-            return null;
+        String name = (file == null) ? null : file.getFileName().toString();
+        if (name == null || name.isBlank()) return null;
+        String cfg = System.getProperty("anki.media.dir");
+        if (cfg == null || cfg.isBlank()) cfg = System.getProperty("zhlearn.anki.media.dir");
+        if (cfg == null || cfg.isBlank()) cfg = System.getenv("ANKI_MEDIA_DIR");
+        if (cfg == null || cfg.isBlank()) cfg = System.getenv("ZHLEARN_ANKI_MEDIA_DIR");
+        if (cfg == null || cfg.isBlank()) return null;
+        Path dir = Path.of(cfg);
+        Path candidate = dir.resolve(name);
+        if (!Files.exists(candidate)) {
+            throw new IllegalStateException("Configured Anki media file not found: " + candidate.toAbsolutePath());
         }
+        return candidate.toAbsolutePath();
     }
 }
