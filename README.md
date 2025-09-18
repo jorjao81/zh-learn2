@@ -74,9 +74,10 @@ mvn test
 ## Providers: Audio (Pronunciation)
 
 - Audio providers return the path to an mp3 file; conversion to `[sound:filename.mp3]` happens during Anki export.
-- Current provider:
+- Current providers:
   - `anki`: scans the Anki export at `~/.zh-learn/Chinese.txt` and reuses the pronunciation of any card with the exact same pinyin (tone marks included). If nothing is found, it returns no pronunciation.
   - `forvo`: fetches pronunciations from Forvo (manual selection only). Requires `FORVO_API_KEY` in the environment or `-Dforvo.api.key=...`.
+  - `qwen-tts`: calls Alibaba Qwen text-to-speech and normalizes three voices per lookup (`Cherry`, `Serena`, `Chelsie`). Requires `DASHSCOPE_API_KEY` with access to the current Qwen TTS endpoint (Alibaba notes this service is limited to the CN-Beijing region). Each request downloads and caches all three voices so they remain available offline.
 
 Audio playback file resolution:
 - Default Anki media directory on macOS: `~/Library/Application Support/Anki2/User 1/collection.media/`
@@ -90,4 +91,8 @@ Playback resolution order:
 List providers and capabilities:
 ```bash
 ./zh-learn.sh providers -d
+
+# Qwen TTS (generates three voices per lookup)
+./zh-learn.sh audio 学习 xuéxí --audio-provider qwen-tts
+# → returns three absolute paths (Cherry, Serena, Chelsie) once `DASHSCOPE_API_KEY` is configured
 ```
