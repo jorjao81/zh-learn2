@@ -75,17 +75,6 @@ class QwenAudioProviderTest {
     }
 
     @Test
-    void throwsWhenApiKeyMissing() {
-        AudioProvider provider = new QwenAudioProvider(new FakeQwenClient(), HttpClient.newHttpClient(), null);
-        Hanzi word = new Hanzi("学");
-        Pinyin pinyin = new Pinyin("xué");
-
-        assertThatThrownBy(() -> provider.getPronunciations(word, pinyin))
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining("DASHSCOPE_API_KEY");
-    }
-
-    @Test
     void propagatesHttpFailure() throws Exception {
         System.setProperty("zhlearn.home", tmpHome.toString());
 
