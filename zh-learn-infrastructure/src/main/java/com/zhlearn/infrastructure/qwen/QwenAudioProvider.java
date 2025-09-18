@@ -32,20 +32,16 @@ public class QwenAudioProvider implements AudioProvider {
     private static final String API_KEY_ENV = "DASHSCOPE_API_KEY";
     private static final String USER_AGENT = "zh-learn-cli/1.0 (QwenAudioProvider)";
 
-    private final QwenTtsClient client;
+    private final QwenTtsClient clientOverride;
     private final HttpClient httpClient;
-    private final String configuredApiKey;
 
     public QwenAudioProvider() {
-        this(new RestQwenTtsClient(HttpClient.newBuilder().connectTimeout(TIMEOUT).build()),
-            HttpClient.newBuilder().connectTimeout(TIMEOUT).build(),
-            System.getenv(API_KEY_ENV));
+        this(null, HttpClient.newBuilder().connectTimeout(TIMEOUT).build());
     }
 
-    public QwenAudioProvider(QwenTtsClient client, HttpClient httpClient, String apiKey) {
-        this.client = Objects.requireNonNull(client, "client");
+    public QwenAudioProvider(QwenTtsClient clientOverride, HttpClient httpClient) {
+        this.clientOverride = clientOverride;
         this.httpClient = Objects.requireNonNull(httpClient, "httpClient");
-        this.configuredApiKey = apiKey;
     }
 
     @Override
@@ -74,7 +70,10 @@ public class QwenAudioProvider implements AudioProvider {
 
     @Override
     public List<Path> getPronunciations(Hanzi word, Pinyin pinyin) {
-        String apiKey = resolveApiKey();
+        QwenTtsClient activeClient = clientOverride;
+        if (activeClient == null) {
+            activeClient = new QwenTtsClient(httpClient, resolveApiKey(), MODEL);
+        }
         List<Path> results = new ArrayList<>();
         for (String voice : VOICES) {
             Path cached = cachedPath(word, pinyin, voice);
@@ -83,7 +82,7 @@ public class QwenAudioProvider implements AudioProvider {
                 continue;
             }
             try {
-                QwenTtsResult result = client.synthesize(apiKey, MODEL, voice, word.characters());
+                QwenTtsResult result = activeClient.synthesize(voice, word.characters());
                 Path downloaded = download(result.audioUrl());
                 try {
                     Path normalized = AudioCache.ensureCachedNormalized(downloaded, NAME,
@@ -118,10 +117,7 @@ public class QwenAudioProvider implements AudioProvider {
     }
 
     private String resolveApiKey() {
-        String key = configuredApiKey;
-        if (key == null || key.isBlank()) {
-            key = System.getenv(API_KEY_ENV);
-        }
+        String key = System.getenv(API_KEY_ENV);
         if (key == null || key.isBlank()) {
             throw new IllegalStateException("DASHSCOPE_API_KEY is required for Qwen TTS provider");
         }

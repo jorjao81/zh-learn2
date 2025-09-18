@@ -18,7 +18,6 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -49,7 +48,7 @@ class QwenAudioProviderTest {
             .thenReturn((HttpResponse) serenaResp)
             .thenReturn((HttpResponse) chelsieResp);
 
-        AudioProvider provider = new QwenAudioProvider(client, http, "test-key");
+        AudioProvider provider = new QwenAudioProvider(client, http);
 
         Hanzi word = new Hanzi("学习");
         Pinyin pinyin = new Pinyin("xuéxí");
@@ -89,7 +88,7 @@ class QwenAudioProviderTest {
         when(failure.statusCode()).thenReturn(500);
         when(http.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn((HttpResponse) failure);
 
-        AudioProvider provider = new QwenAudioProvider(client, http, "test-key");
+        AudioProvider provider = new QwenAudioProvider(client, http);
 
         Hanzi word = new Hanzi("语音");
         Pinyin pinyin = new Pinyin("yǔyīn");
@@ -103,7 +102,7 @@ class QwenAudioProviderTest {
 
     @Test
     void reportsMetadataAccurately() {
-        AudioProvider provider = new QwenAudioProvider(new FakeQwenClient(), HttpClient.newHttpClient(), "fake-key");
+        AudioProvider provider = new QwenAudioProvider(new FakeQwenClient(), HttpClient.newHttpClient());
         assertThat(provider.getName()).isEqualTo("qwen-tts");
         assertThat(provider.getType()).isEqualTo(ProviderType.AI);
         assertThat(provider.getDescription()).contains("Cherry").contains("Serena").contains("Chelsie");
@@ -117,11 +116,15 @@ class QwenAudioProviderTest {
         return response;
     }
 
-    private static class FakeQwenClient implements QwenTtsClient {
+    private static class FakeQwenClient extends QwenTtsClient {
         private int callCount = 0;
 
+        FakeQwenClient() {
+            super(HttpClient.newHttpClient(), "test-key", "qwen-tts-latest");
+        }
+
         @Override
-        public QwenTtsResult synthesize(String apiKey, String model, String voice, String text) throws IOException {
+        public QwenTtsResult synthesize(String voice, String text) {
             callCount++;
             return new QwenTtsResult(
                 URI.create("https://example.com/" + voice.toLowerCase() + callCount + ".mp3"),
