@@ -17,6 +17,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class AnkiAudioProviderAcceptanceTest {
 
+    private static class NoopQwenAudioProvider implements AudioProvider {
+        @Override public String getName() { return "qwen-tts"; }
+        @Override public String getDescription() { return "stub qwen provider for tests"; }
+        @Override public ProviderType getType() { return ProviderType.AI; }
+        @Override public Optional<Path> getPronunciation(Hanzi word, Pinyin pinyin) { return Optional.empty(); }
+    }
+
     @Test
     void ankiProviderReturnsExistingAudioWhenPresent_andSkipsWhenAbsent() {
         String content = """
@@ -27,6 +34,7 @@ class AnkiAudioProviderAcceptanceTest {
         ProviderRegistry registry = new ProviderRegistry();
         // Override discovery with our test instance
         registry.registerAudioProvider(AnkiPronunciationProvider.fromString(content));
+        registry.registerAudioProvider(new NoopQwenAudioProvider());
 
         WordAnalysisServiceImpl service = new WordAnalysisServiceImpl(registry);
 
@@ -46,6 +54,7 @@ class AnkiAudioProviderAcceptanceTest {
 
         ProviderRegistry registry = new ProviderRegistry();
         registry.registerAudioProvider(AnkiPronunciationProvider.fromString(content));
+        registry.registerAudioProvider(new NoopQwenAudioProvider());
         // Also register a simple test provider to simulate a second option
         registry.registerAudioProvider(new AudioProvider() {
             @Override public String getName() { return "test-audio"; }

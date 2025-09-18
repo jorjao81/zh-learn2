@@ -35,6 +35,7 @@ module com.zhlearn.infrastructure {
     exports com.zhlearn.infrastructure.pinyin4j;
     // pinyin utility moved to separate module com.zhlearn.pinyin
     exports com.zhlearn.infrastructure.pleco;
+    exports com.zhlearn.infrastructure.qwen;
     
     provides com.zhlearn.domain.provider.PinyinProvider
         with com.zhlearn.infrastructure.pinyin4j.Pinyin4jProvider;
@@ -59,5 +60,6 @@ module com.zhlearn.infrastructure {
 
     provides com.zhlearn.domain.provider.AudioProvider
         with com.zhlearn.infrastructure.anki.AnkiPronunciationProvider,
-             com.zhlearn.infrastructure.forvo.ForvoAudioProvider;
+             com.zhlearn.infrastructure.forvo.ForvoAudioProvider,
+             com.zhlearn.infrastructure.qwen.QwenAudioProvider;
 }

@@ -53,9 +53,10 @@ Boundary rules
 - Implement provider specifics (LLM/dictionary/audio, caching, config) under `zh-learn-infrastructure`.
 - Add new providers behind `domain` interfaces; wire via `application` services, and expose selection in CLI where relevant.
 - Configuration belongs in infrastructure adapters; application code should consume typed config, not raw environment variables.
+- Qwen TTS provider expectations: emit three pronunciations (Cherry, Serena, Chelsie) per request, fail fast when `DASHSCOPE_API_KEY` is missing, and rely on the shared audio cache for normalization.
 
 ## Configuration & Secrets
-- Source secrets from env vars: e.g., `OPENAI_API_KEY`, `DEEPSEEK_API_KEY`. See `.envrc` for local setup patterns.
+- Source secrets from env vars: e.g., `OPENAI_API_KEY`, `DEEPSEEK_API_KEY`, `DASHSCOPE_API_KEY` (required for Qwen text-to-speech and currently limited to Alibaba's CN-Beijing region accounts). See `.envrc` for local setup patterns.
 - Don’t commit secrets or sensitive files. Avoid printing keys, prompts, or provider responses containing PII.
 
 ## CLI Usage (quick reference)
@@ -64,6 +65,7 @@ Boundary rules
   - Word lookup: `./zh-learn.sh word 学习`
   - List providers: `./zh-learn.sh providers -d`
   - Audio lookup (existing Anki TSV): `./zh-learn.sh audio 学习 xuéxí`
+  - Qwen TTS audio (requires `DASHSCOPE_API_KEY`): `./zh-learn.sh audio 学习 xuéxí --audio-provider qwen-tts`
 
 ## Pull Requests & Commits
 - Conventional Commits: `feat:`, `fix:`, `chore:`, `refactor:`, etc.
