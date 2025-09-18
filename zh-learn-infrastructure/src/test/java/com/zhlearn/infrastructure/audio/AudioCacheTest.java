@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,7 +27,7 @@ class AudioCacheTest {
     void tearDown() throws Exception {
         System.clearProperty("zhlearn.home");
         // best-effort cleanup
-        try { java.nio.file.Files.walk(tmpHome).sorted(java.util.Comparator.reverseOrder()).forEach(p -> { try { Files.deleteIfExists(p); } catch (Exception ignored) {} }); } catch (Exception ignored) {}
+        try { Files.walk(tmpHome).sorted(Comparator.reverseOrder()).forEach(p -> { try { Files.deleteIfExists(p); } catch (Exception ignored) {} }); } catch (Exception ignored) {}
     }
 
     @Test
@@ -47,4 +48,3 @@ class AudioCacheTest {
         assertThat(Files.size(out2)).isEqualTo(size1);
     }
 }
-

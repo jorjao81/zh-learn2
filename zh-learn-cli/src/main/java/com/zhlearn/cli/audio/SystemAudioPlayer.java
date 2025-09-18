@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.Optional;
 
 public class SystemAudioPlayer implements AudioPlayer {
     private Process current;
@@ -57,7 +59,7 @@ public class SystemAudioPlayer implements AudioPlayer {
         try (var in = SystemAudioPlayer.class.getResourceAsStream(resourcePath)) {
             if (in == null) return null;
             Path out = Files.createTempFile("zhlearn-", "-" + name);
-            Files.copy(in, out, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(in, out, StandardCopyOption.REPLACE_EXISTING);
             out.toFile().deleteOnExit();
             return out;
         } catch (IOException e) {
@@ -68,7 +70,7 @@ public class SystemAudioPlayer implements AudioPlayer {
     private Path tryFromAnkiMedia(Path file) {
         String name = (file == null) ? null : file.getFileName().toString();
         if (name == null || name.isBlank()) return null;
-        java.util.Optional<Path> mediaDir = AnkiMediaLocator.locate();
+        Optional<Path> mediaDir = AnkiMediaLocator.locate();
         if (mediaDir.isEmpty()) {
             return null;
         }

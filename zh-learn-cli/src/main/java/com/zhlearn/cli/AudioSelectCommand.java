@@ -3,6 +3,8 @@ package com.zhlearn.cli;
 import com.zhlearn.application.audio.AudioOrchestrator;
 import com.zhlearn.application.audio.PronunciationCandidate;
 import com.zhlearn.application.audio.SelectionSession;
+import com.zhlearn.cli.audio.InteractiveAudioUI;
+import com.zhlearn.cli.audio.PrePlayback;
 import com.zhlearn.cli.audio.SystemAudioPlayer;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
@@ -11,6 +13,8 @@ import picocli.CommandLine.Parameters;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 @Command(name = "audio-select", description = "Interactive selection of pronunciation audio from available providers")
@@ -31,12 +35,12 @@ public class AudioSelectCommand implements Runnable {
         Hanzi word = new Hanzi(chineseWord);
         Pinyin pin = new Pinyin(pinyin);
         List<PronunciationCandidate> raw = orchestrator.candidatesFor(word, pin);
-        List<PronunciationCandidate> candidates = com.zhlearn.cli.audio.PrePlayback.preprocessCandidates(word, pin, raw);
+        List<PronunciationCandidate> candidates = PrePlayback.preprocessCandidates(word, pin, raw);
         if (candidates.isEmpty()) {
             System.out.println("No pronunciation candidates found.");
             // Helpful hint when Anki export is missing (default path)
-            java.nio.file.Path defaultExport = java.nio.file.Paths.get(System.getProperty("user.home"), ".zh-learn", "Chinese.txt");
-            if (!java.nio.file.Files.exists(defaultExport)) {
+            Path defaultExport = Path.of(System.getProperty("user.home"), ".zh-learn", "Chinese.txt");
+            if (!Files.exists(defaultExport)) {
                 System.out.println("Hint: Export your Anki collection as a TSV named 'Chinese.txt' to: \n  "
                     + defaultExport.getParent().toAbsolutePath());
                 System.out.println("The parser currently supports note type 'Chinese 2' (columns: 1=simplified, 2=pinyin, 3=pronunciation).");
@@ -46,7 +50,7 @@ public class AudioSelectCommand implements Runnable {
 
         SelectionSession session = new SelectionSession(candidates, new SystemAudioPlayer());
 
-        com.zhlearn.application.audio.PronunciationCandidate selected = new com.zhlearn.cli.audio.InteractiveAudioUI().run(session);
+        PronunciationCandidate selected = new InteractiveAudioUI().run(session);
         if (selected != null) {
             System.out.println("Selected: " + selected.file().toAbsolutePath());
         } else {

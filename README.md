@@ -38,7 +38,7 @@ cd zh-learn-cli && mvn native:compile-no-fork -Pnative
 [sound:xuéxí.mp3]
 
 # Specify provider explicitly (optional)
-./zh-learn.sh audio 学 xué --audio-provider existing-anki-pronunciation
+./zh-learn.sh audio 学 xué --audio-provider anki
 
 # Optional: configure Anki media directory (for playback)
 # Use either a system property or environment variable:
@@ -75,7 +75,7 @@ mvn test
 
 - Audio providers return the path to an mp3 file; conversion to `[sound:filename.mp3]` happens during Anki export.
 - Current provider:
-  - `existing-anki-pronunciation`: scans the Anki export at `~/.zh-learn/Chinese.txt` (fallback: `./Chinese.txt`) and reuses the pronunciation of any card with the exact same pinyin (tone marks included). If nothing is found, it returns no pronunciation.
+  - `anki`: scans the Anki export at `~/.zh-learn/Chinese.txt` and reuses the pronunciation of any card with the exact same pinyin (tone marks included). If nothing is found, it returns no pronunciation.
   - `forvo`: fetches pronunciations from Forvo (manual selection only). Requires `FORVO_API_KEY` in the environment or `-Dforvo.api.key=...`.
 
 Audio playback file resolution:

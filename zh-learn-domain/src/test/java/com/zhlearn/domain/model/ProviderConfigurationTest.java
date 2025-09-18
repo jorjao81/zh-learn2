@@ -30,10 +30,9 @@ class ProviderConfigurationTest {
             null,
             null,
             null,
-            "existing-anki-pronunciation"
+            "anki"
         );
 
-        assertThat(cfg.getAudioProvider()).isEqualTo("existing-anki-pronunciation");
+        assertThat(cfg.getAudioProvider()).isEqualTo("anki");
     }
 }
-

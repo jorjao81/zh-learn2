@@ -89,7 +89,7 @@ public class PlecoExportDictionary implements Dictionary {
             decomposition,
             examples,
             explanation,
-            java.util.Optional.empty() // no pronunciation available from dictionary
+            Optional.empty() // no pronunciation available from dictionary
         );
     }
 }

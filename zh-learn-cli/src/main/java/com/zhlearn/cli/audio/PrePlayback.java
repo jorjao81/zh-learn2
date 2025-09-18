@@ -47,7 +47,7 @@ public final class PrePlayback {
     }
 
     private static boolean shouldBypassCache(String providerLabel) {
-        return "existing-anki-pronunciation".equals(providerLabel);
+        return "anki".equals(providerLabel);
     }
 
     private static boolean isAlreadyCached(Path file, Path audioBase) {

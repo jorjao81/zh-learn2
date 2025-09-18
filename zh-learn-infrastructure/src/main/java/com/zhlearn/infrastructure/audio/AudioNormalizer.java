@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 public class AudioNormalizer {
     private static final Logger log = LoggerFactory.getLogger(AudioNormalizer.class);
@@ -17,7 +18,7 @@ public class AudioNormalizer {
         // Allow disabling external tools in tests/CI
         String disable = System.getenv("ZHLEARN_DISABLE_FFMPEG");
         if (disable != null && (disable.equals("1") || disable.equalsIgnoreCase("true"))) {
-            Files.copy(input, output, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(input, output, StandardCopyOption.REPLACE_EXISTING);
             return;
         }
 
@@ -45,7 +46,7 @@ public class AudioNormalizer {
             log.debug("ffmpeg not found on PATH — falling back to copy");
         }
         // Fallback: straight copy
-        Files.copy(input, output, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(input, output, StandardCopyOption.REPLACE_EXISTING);
     }
 
     private static boolean isOnPath(String tool) {
@@ -58,4 +59,3 @@ public class AudioNormalizer {
         }
     }
 }
-

@@ -9,6 +9,13 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class TerminalFormatter {
     
     // Box drawing characters
@@ -112,8 +119,8 @@ public class TerminalFormatter {
         }
         
         // Pattern to match ANSI escape sequences
-        java.util.regex.Pattern ansiPattern = java.util.regex.Pattern.compile("\u001B\\[[0-9;]*[mK]");
-        java.util.regex.Matcher matcher = ansiPattern.matcher(text);
+        Pattern ansiPattern = Pattern.compile("\u001B\\[[0-9;]*[mK]");
+        Matcher matcher = ansiPattern.matcher(text);
         
         while (matcher.find()) {
             String sequence = matcher.group();
@@ -202,7 +209,7 @@ public class TerminalFormatter {
         String[] lines = content.split("\n");
         for (String line : lines) {
             // Wrap long lines
-            java.util.List<String> wrappedLines = wrapText(line, width - 4);
+            List<String> wrappedLines = wrapText(line, width - 4);
             for (String wrappedLine : wrappedLines) {
                 box.append(Ansi.ansi().fg(Colors.BOX).a(VERTICAL).reset().toString());
                 box.append(" ");
@@ -260,7 +267,7 @@ public class TerminalFormatter {
         return result.toString();
     }
     
-    public static String formatGroupedExamples(java.util.List<Example.Usage> usages) {
+    public static String formatGroupedExamples(List<Example.Usage> usages) {
         if (usages == null || usages.isEmpty()) {
             return "";
         }
@@ -268,22 +275,22 @@ public class TerminalFormatter {
         StringBuilder result = new StringBuilder();
         
         // Group examples by context (meaning + pinyin combination)
-        java.util.Map<String, java.util.List<Example.Usage>> groupedUsages = new java.util.LinkedHashMap<>();
+        Map<String, List<Example.Usage>> groupedUsages = new LinkedHashMap<>();
         for (Example.Usage usage : usages) {
             String context = usage.context();
             if (context == null) context = "";
-            groupedUsages.computeIfAbsent(context, k -> new java.util.ArrayList<>()).add(usage);
+            groupedUsages.computeIfAbsent(context, k -> new ArrayList<>()).add(usage);
         }
         
         boolean firstGroup = true;
-        for (java.util.Map.Entry<String, java.util.List<Example.Usage>> entry : groupedUsages.entrySet()) {
+        for (Map.Entry<String, List<Example.Usage>> entry : groupedUsages.entrySet()) {
             if (!firstGroup) {
                 result.append("\n\n");
             }
             firstGroup = false;
             
             String context = entry.getKey();
-            java.util.List<Example.Usage> examples = entry.getValue();
+            List<Example.Usage> examples = entry.getValue();
             
             // Format header like: "to estimate, assess (gū)"
             if (!context.isEmpty()) {
@@ -346,7 +353,7 @@ public class TerminalFormatter {
         Document doc = Jsoup.parse(html);
         
         // Extract components from HTML
-        java.util.List<DecompositionComponent> components = new java.util.ArrayList<>();
+        List<DecompositionComponent> components = new ArrayList<>();
         Element ulElement = doc.selectFirst("ul");
         if (ulElement != null) {
             for (Element li : ulElement.select("li")) {
@@ -375,7 +382,7 @@ public class TerminalFormatter {
         return formatComponentBoxes(components);
     }
     
-    private static String formatComponentBoxes(java.util.List<DecompositionComponent> components) {
+    private static String formatComponentBoxes(List<DecompositionComponent> components) {
         StringBuilder result = new StringBuilder();
         
         for (int i = 0; i < components.size(); i++) {
@@ -528,8 +535,8 @@ public class TerminalFormatter {
         return 80;
     }
     
-    private static java.util.List<String> wrapText(String text, int maxWidth) {
-        java.util.List<String> result = new java.util.ArrayList<>();
+    private static List<String> wrapText(String text, int maxWidth) {
+        List<String> result = new ArrayList<>();
         if (text == null || text.isEmpty()) {
             result.add("");
             return result;
@@ -610,13 +617,13 @@ public class TerminalFormatter {
             result.add(currentLine.toString());
         }
         
-        return result.isEmpty() ? java.util.List.of("") : result;
+        return result.isEmpty() ? List.of("") : result;
     }
     
     // Helper method to update ANSI state from text content
     private static void updateStateFromText(AnsiState state, String text) {
-        java.util.regex.Pattern ansiPattern = java.util.regex.Pattern.compile("\u001B\\[[0-9;]*[mK]");
-        java.util.regex.Matcher matcher = ansiPattern.matcher(text);
+        Pattern ansiPattern = Pattern.compile("\u001B\\[[0-9;]*[mK]");
+        Matcher matcher = ansiPattern.matcher(text);
         
         while (matcher.find()) {
             String sequence = matcher.group();

@@ -39,7 +39,7 @@ public class WordCommand implements Runnable {
     @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation. Available: dummy, gpt-5-nano, deepseek-chat")
     private String explanationProvider;
     
-    @Option(names = {"--audio-provider"}, description = "Set specific provider for audio pronunciation. Available: existing-anki-pronunciation")
+    @Option(names = {"--audio-provider"}, description = "Set specific provider for audio pronunciation. Available: anki")
     private String audioProvider;
     
     @Option(names = {"--raw", "--raw-output"}, description = "Display raw HTML content instead of formatted output")
@@ -60,8 +60,8 @@ public class WordCommand implements Runnable {
         
         String effectiveAudioProvider = audioProvider;
         if (effectiveAudioProvider == null || effectiveAudioProvider.isBlank()) {
-            effectiveAudioProvider = parent.getProviderRegistry().getAudioProvider("existing-anki-pronunciation").isPresent()
-                ? "existing-anki-pronunciation" : null;
+            effectiveAudioProvider = parent.getProviderRegistry().getAudioProvider("anki").isPresent()
+                ? "anki" : null;
         }
 
         ProviderConfiguration config = new ProviderConfiguration(

@@ -59,7 +59,7 @@ module com.zhlearn.infrastructure {
              com.zhlearn.infrastructure.gpt5nano.GPT5NanoExplanationProvider;
 
     provides com.zhlearn.domain.provider.AudioProvider
-        with com.zhlearn.infrastructure.anki.ExistingAnkiPronunciationProvider,
+        with com.zhlearn.infrastructure.anki.AnkiPronunciationProvider,
              com.zhlearn.infrastructure.forvo.ForvoAudioProvider,
              com.zhlearn.infrastructure.fixture.FixtureAudioProvider,
              com.zhlearn.infrastructure.fixture.FixtureAudioProvider2;

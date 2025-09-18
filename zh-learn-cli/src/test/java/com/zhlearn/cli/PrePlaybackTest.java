@@ -52,7 +52,7 @@ class PrePlaybackTest {
         Files.createDirectories(ankiFile.getParent());
         Files.write(ankiFile, new byte[]{5,6,7});
 
-        PronunciationCandidate in = new PronunciationCandidate("existing-anki-pronunciation", ankiFile);
+        PronunciationCandidate in = new PronunciationCandidate("anki", ankiFile);
 
         List<PronunciationCandidate> out = PrePlayback.preprocessCandidates(new Hanzi("学习"), new Pinyin("xuéxí"), List.of(in));
         assertThat(out).hasSize(1);

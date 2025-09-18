@@ -5,6 +5,7 @@ import com.zhlearn.application.audio.PronunciationCandidate;
 import com.zhlearn.application.audio.SelectionSession;
 import com.zhlearn.application.service.AnkiExporter;
 import com.zhlearn.application.service.ParallelWordAnalysisService;
+import com.zhlearn.application.service.ProviderRegistry;
 import com.zhlearn.application.service.WordAnalysisServiceImpl;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.ProviderConfiguration;
@@ -52,7 +53,7 @@ public class ParsePlecoCommand implements Runnable {
     @Parameters(index = "0", description = "Path to the Pleco export file (TSV format)")
     private String filePath;
     
-    @Option(names = {"--provider"}, description = "Set default provider for all services (parse-pleco defaults: pleco-export for definition/pinyin, deepseek-chat for analysis, existing-anki-pronunciation for audio). Available: dummy, pinyin4j, gpt-5-nano, deepseek-chat, pleco-export, existing-anki-pronunciation")
+    @Option(names = {"--provider"}, description = "Set default provider for all services (parse-pleco defaults: pleco-export for definition/pinyin, deepseek-chat for analysis, anki for audio). Available: dummy, pinyin4j, gpt-5-nano, deepseek-chat, pleco-export, anki")
     private String defaultProvider = "custom";
     
     @Option(names = {"--pinyin-provider"}, description = "Set specific provider for pinyin (default: pleco-export). Available: pinyin4j, dummy, pleco-export")
@@ -70,7 +71,7 @@ public class ParsePlecoCommand implements Runnable {
     @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat")
     private String explanationProvider;
     
-    @Option(names = {"--audio-provider"}, description = "Set specific provider for audio pronunciation (default: existing-anki-pronunciation). Available: existing-anki-pronunciation")
+    @Option(names = {"--audio-provider"}, description = "Set specific provider for audio pronunciation (default: anki). Available: anki")
     private String audioProvider;
     
     @Option(names = {"--raw", "--raw-output"}, description = "Display raw HTML content instead of formatted output")
@@ -128,7 +129,7 @@ public class ParsePlecoCommand implements Runnable {
             String effectiveDecompositionProvider = decompositionProvider != null ? decompositionProvider : "deepseek-chat";
             String effectiveExampleProvider = exampleProvider != null ? exampleProvider : "deepseek-chat";
             String effectiveExplanationProvider = explanationProvider != null ? explanationProvider : "deepseek-chat";
-            String effectiveAudioProvider = audioProvider != null ? audioProvider : "existing-anki-pronunciation";
+            String effectiveAudioProvider = audioProvider != null ? audioProvider : "anki";
             
             // Use a representative label for mixed providers unless overridden via --provider
             String effectiveDefaultProvider = (defaultProvider == null || defaultProvider.isBlank()) ? "custom" : defaultProvider;
@@ -440,7 +441,7 @@ public class ParsePlecoCommand implements Runnable {
         return null;
     }
 
-    private boolean isProviderAvailable(com.zhlearn.application.service.ProviderRegistry registry, String providerName) {
+    private boolean isProviderAvailable(ProviderRegistry registry, String providerName) {
         return registry.getPinyinProvider(providerName).isPresent() ||
                registry.getDefinitionProvider(providerName).isPresent() ||
                registry.getStructuralDecompositionProvider(providerName).isPresent() ||
@@ -449,7 +450,7 @@ public class ParsePlecoCommand implements Runnable {
                registry.getAudioProvider(providerName).isPresent();
     }
 
-    private String createProviderNotFoundError(com.zhlearn.application.service.ProviderRegistry registry, String requestedProvider, String providerType) {
+    private String createProviderNotFoundError(ProviderRegistry registry, String requestedProvider, String providerType) {
         StringBuilder error = new StringBuilder();
         error.append("Provider '").append(requestedProvider).append("' not found");
         if (!providerType.equals("default")) {
@@ -458,7 +459,7 @@ public class ParsePlecoCommand implements Runnable {
         error.append(".\n\n");
 
         // Find similar providers
-        java.util.List<String> similarProviders = registry.findSimilarProviders(requestedProvider);
+        List<String> similarProviders = registry.findSimilarProviders(requestedProvider);
         if (!similarProviders.isEmpty()) {
             error.append("Did you mean one of these?\n");
             for (String similar : similarProviders) {

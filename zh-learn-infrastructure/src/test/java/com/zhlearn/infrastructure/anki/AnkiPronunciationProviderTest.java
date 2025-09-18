@@ -10,7 +10,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ExistingAnkiPronunciationProviderTest {
+class AnkiPronunciationProviderTest {
 
     @Test
     void returnsPronunciationForExactPinyinMatch() {
@@ -19,8 +19,8 @@ class ExistingAnkiPronunciationProviderTest {
             Chinese 2\t习\txí\t[sound:xi.mp3]\tdef
             Other\t词\tcí\t[sound:ci.mp3]\tdef
             """;
-        ExistingAnkiPronunciationProvider provider =
-            ExistingAnkiPronunciationProvider.fromString(content);
+        AnkiPronunciationProvider provider =
+            AnkiPronunciationProvider.fromString(content);
 
         Optional<Path> result = provider.getPronunciation(new Hanzi("学"), new Pinyin("xué"));
         assertThat(result).isPresent();
@@ -42,7 +42,7 @@ class ExistingAnkiPronunciationProviderTest {
             AnkiNote.ofCollection("Chinese", "xué", "学", "[sound:xue-3.mp3]", "", "", "", "", "", "", "", "")
         );
 
-        ExistingAnkiPronunciationProvider provider = new ExistingAnkiPronunciationProvider(notes);
+        AnkiPronunciationProvider provider = new AnkiPronunciationProvider(notes);
         Optional<Path> result = provider.getPronunciation(new Hanzi("学"), new Pinyin("xué"));
         assertThat(result).isPresent();
         assertThat(result.get().getFileName().toString()).isEqualTo("xue-2.mp3");
@@ -54,7 +54,7 @@ class ExistingAnkiPronunciationProviderTest {
             AnkiNote.ofCollection("Chinese", "xué", "学", "", "", "", "", "", "", "", "", "")
         );
 
-        ExistingAnkiPronunciationProvider provider = new ExistingAnkiPronunciationProvider(notes);
+        AnkiPronunciationProvider provider = new AnkiPronunciationProvider(notes);
         Optional<Path> result = provider.getPronunciation(new Hanzi("学"), new Pinyin("xué"));
         assertThat(result).isEmpty();
     }
@@ -69,8 +69,8 @@ class ExistingAnkiPronunciationProviderTest {
             Chinese 2	倒霉	dǎoméi	[sound:倒霉_normalized-eee6e3ca128fe52b60127beb231a29de58ee9ce6.mp3]	azar, azarado
             """;
         
-        ExistingAnkiPronunciationProvider provider = 
-            ExistingAnkiPronunciationProvider.fromString(chineseTxtContent);
+        AnkiPronunciationProvider provider = 
+            AnkiPronunciationProvider.fromString(chineseTxtContent);
 
         // Test the conversion from flash2.tsv format
         String[] testCases = {"dao3", "daohang2", "daomei2"};

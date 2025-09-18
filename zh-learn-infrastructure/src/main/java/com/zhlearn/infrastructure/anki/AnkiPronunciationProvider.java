@@ -12,7 +12,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.List;
@@ -24,39 +23,40 @@ import java.util.Optional;
  * Anki collection export (Chinese.txt). It finds entries by exact pinyin match
  * and returns the pronunciation file if non-empty.
  */
-public class ExistingAnkiPronunciationProvider implements AudioProvider {
+public class AnkiPronunciationProvider implements AudioProvider {
 
-    private static final Logger log = LoggerFactory.getLogger(ExistingAnkiPronunciationProvider.class);
-    private static final String NAME = "existing-anki-pronunciation";
+    private static final Logger log = LoggerFactory.getLogger(AnkiPronunciationProvider.class);
+    private static final String NAME = "anki";
     private static final String DESCRIPTION = "Reuses existing pronunciations from local Anki collection (Chinese.txt) by exact pinyin match.";
 
     private final Map<String, Path> pinyinToPronunciation;
 
-    public ExistingAnkiPronunciationProvider() {
+    public AnkiPronunciationProvider() {
         this.pinyinToPronunciation = new HashMap<>();
         AnkiNoteParser parser = new AnkiNoteParser();
-        Path defaultPath = defaultExportPath();
-        Path fallbackPath = Paths.get("Chinese.txt");
-        Path pathToUse = Files.exists(defaultPath) ? defaultPath : fallbackPath;
+        Path exportPath = defaultExportPath();
         try {
-            if (!Files.exists(pathToUse)) {
-                log.warn("Anki export not found. Expected at: {}", defaultPath.toAbsolutePath());
-                log.warn("Hint: Export your Anki collection as a TSV named 'Chinese.txt' to {}", defaultPath.getParent().toAbsolutePath());
+            if (!Files.exists(exportPath)) {
+                log.warn("Anki export not found. Expected at: {}", exportPath.toAbsolutePath());
+                Path parent = exportPath.getParent();
+                if (parent != null) {
+                    log.warn("Hint: Export your Anki collection as a TSV named 'Chinese.txt' to {}", parent.toAbsolutePath());
+                }
                 return; // graceful: provider remains available but has no entries
             }
-            List<AnkiNote> notes = parser.parseFile(pathToUse);
+            List<AnkiNote> notes = parser.parseFile(exportPath);
             index(notes);
         } catch (IOException e) {
-            log.warn("Failed to parse Anki export at {}: {}", pathToUse.toAbsolutePath(), e.getMessage());
+            log.warn("Failed to parse Anki export at {}: {}", exportPath.toAbsolutePath(), e.getMessage());
         }
     }
 
     private static Path defaultExportPath() {
         String home = System.getProperty("user.home");
-        return Paths.get(home, ".zh-learn", "Chinese.txt");
+        return Path.of(home, ".zh-learn", "Chinese.txt");
     }
 
-    public ExistingAnkiPronunciationProvider(Path collectionPath, AnkiNoteParser parser) {
+    public AnkiPronunciationProvider(Path collectionPath, AnkiNoteParser parser) {
         this.pinyinToPronunciation = new HashMap<>();
         try {
             List<AnkiNote> notes = parser.parseFile(collectionPath);
@@ -66,16 +66,16 @@ public class ExistingAnkiPronunciationProvider implements AudioProvider {
         }
     }
 
-    public ExistingAnkiPronunciationProvider(List<AnkiNote> notes) {
+    public AnkiPronunciationProvider(List<AnkiNote> notes) {
         this.pinyinToPronunciation = new HashMap<>();
         index(notes);
     }
 
-    public static ExistingAnkiPronunciationProvider fromString(String tsvContent) {
+    public static AnkiPronunciationProvider fromString(String tsvContent) {
         try {
             Reader r = new StringReader(tsvContent);
             List<AnkiNote> notes = new AnkiNoteParser().parseFromReader(r);
-            return new ExistingAnkiPronunciationProvider(notes);
+            return new AnkiPronunciationProvider(notes);
         } catch (IOException e) {
             throw new IllegalStateException("Failed to parse content: " + e.getMessage(), e);
         }

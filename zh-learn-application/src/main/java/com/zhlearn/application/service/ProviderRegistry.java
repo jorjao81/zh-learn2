@@ -16,7 +16,7 @@ public class ProviderRegistry {
     private final Map<String, StructuralDecompositionProvider> decompositionProviders = new ConcurrentHashMap<>();
     private final Map<String, ExampleProvider> exampleProviders = new ConcurrentHashMap<>();
     private final Map<String, ExplanationProvider> explanationProviders = new ConcurrentHashMap<>();
-    private final Map<String, AudioProvider> audioProviders = new java.util.concurrent.ConcurrentHashMap<>();
+    private final Map<String, AudioProvider> audioProviders = new ConcurrentHashMap<>();
     
     private final Map<String, String> configurations = new ConcurrentHashMap<>();
     
@@ -129,8 +129,8 @@ public class ProviderRegistry {
         ));
 
         // Build list with optional filtering, then order by preference
-        java.util.List<java.util.Map.Entry<String, AudioProvider>> entries = new java.util.ArrayList<>(audioProviders.entrySet());
-        java.util.List<String> filtered = new java.util.ArrayList<>();
+        List<Map.Entry<String, AudioProvider>> entries = new ArrayList<>(audioProviders.entrySet());
+        List<String> filtered = new ArrayList<>();
         for (var e : entries) {
             AudioProvider p = e.getValue();
             if (!enableFixtures && p.getType() == ProviderType.DUMMY) {
@@ -141,12 +141,12 @@ public class ProviderRegistry {
 
         // Preferred ordering: Anki first, then others (stable by name)
         filtered.sort((a, b) -> {
-            if (a.equals("existing-anki-pronunciation") && !b.equals("existing-anki-pronunciation")) return -1;
-            if (b.equals("existing-anki-pronunciation") && !a.equals("existing-anki-pronunciation")) return 1;
+            if (a.equals("anki") && !b.equals("anki")) return -1;
+            if (b.equals("anki") && !a.equals("anki")) return 1;
             return a.compareTo(b);
         });
 
-        java.util.LinkedHashSet<String> ordered = new java.util.LinkedHashSet<>(filtered);
+        LinkedHashSet<String> ordered = new LinkedHashSet<>(filtered);
         return ordered;
     }
 

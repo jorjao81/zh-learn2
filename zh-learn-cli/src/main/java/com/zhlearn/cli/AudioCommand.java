@@ -7,6 +7,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -19,8 +20,8 @@ public class AudioCommand implements Runnable {
     @Parameters(index = "1", description = "Exact pinyin to match (with tone marks)")
     private String pinyin;
 
-    @Option(names = {"--audio-provider"}, description = "Audio provider name (default: existing-anki-pronunciation)")
-    private String audioProvider = "existing-anki-pronunciation";
+    @Option(names = {"--audio-provider"}, description = "Audio provider name (default: anki)")
+    private String audioProvider = "anki";
 
     @picocli.CommandLine.ParentCommand
     private MainCommand parent;
@@ -38,8 +39,8 @@ public class AudioCommand implements Runnable {
             System.out.println(file.toAbsolutePath());
         } else {
             System.out.println("(no pronunciation)");
-            java.nio.file.Path defaultExport = java.nio.file.Paths.get(System.getProperty("user.home"), ".zh-learn", "Chinese.txt");
-            if (!java.nio.file.Files.exists(defaultExport)) {
+            Path defaultExport = Path.of(System.getProperty("user.home"), ".zh-learn", "Chinese.txt");
+            if (!Files.exists(defaultExport)) {
                 System.out.println("Hint: Export your Anki collection as a TSV named 'Chinese.txt' to: \n  "
                     + defaultExport.getParent().toAbsolutePath());
                 System.out.println("The parser currently supports note type 'Chinese 2' (columns: 1=simplified, 2=pinyin, 3=pronunciation).");

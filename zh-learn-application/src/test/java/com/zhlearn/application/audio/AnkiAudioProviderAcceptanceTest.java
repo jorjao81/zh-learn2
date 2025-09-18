@@ -6,7 +6,7 @@ import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.AudioProvider;
-import com.zhlearn.infrastructure.anki.ExistingAnkiPronunciationProvider;
+import com.zhlearn.infrastructure.anki.AnkiPronunciationProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,15 +45,15 @@ class AnkiAudioProviderAcceptanceTest {
 
         ProviderRegistry registry = new ProviderRegistry();
         // Override discovery with our test instance
-        registry.registerAudioProvider(ExistingAnkiPronunciationProvider.fromString(content));
+        registry.registerAudioProvider(AnkiPronunciationProvider.fromString(content));
 
         WordAnalysisServiceImpl service = new WordAnalysisServiceImpl(registry);
 
-        Optional<Path> present = service.getPronunciation(new Hanzi("学习"), new Pinyin("xuéxí"), "existing-anki-pronunciation");
+        Optional<Path> present = service.getPronunciation(new Hanzi("学习"), new Pinyin("xuéxí"), "anki");
         assertThat(present).isPresent();
         assertThat(present.get().getFileName().toString()).isEqualTo("xuexi.mp3");
 
-        Optional<Path> absent = service.getPronunciation(new Hanzi("不存在"), new Pinyin("búzàicún"), "existing-anki-pronunciation");
+        Optional<Path> absent = service.getPronunciation(new Hanzi("不存在"), new Pinyin("búzàicún"), "anki");
         assertThat(absent).isEmpty();
     }
 
@@ -67,7 +67,7 @@ class AnkiAudioProviderAcceptanceTest {
             """;
 
         ProviderRegistry registry = new ProviderRegistry();
-        registry.registerAudioProvider(ExistingAnkiPronunciationProvider.fromString(content));
+        registry.registerAudioProvider(AnkiPronunciationProvider.fromString(content));
         // Also register a simple dummy fixture provider
         registry.registerAudioProvider(new AudioProvider() {
             @Override public String getName() { return "fixture-audio"; }
@@ -80,7 +80,7 @@ class AnkiAudioProviderAcceptanceTest {
         List<PronunciationCandidate> list = orchestrator.candidatesFor(new Hanzi("学习"), new Pinyin("xuéxí"));
 
         assertThat(list).isNotEmpty();
-        assertThat(list.get(0).label()).isEqualTo("existing-anki-pronunciation");
+        assertThat(list.get(0).label()).isEqualTo("anki");
         // Ensure both providers contributed when enabled
         assertThat(list.stream().map(PronunciationCandidate::label).toList())
             .contains("fixture-audio");
