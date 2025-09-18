@@ -122,38 +122,17 @@ public class ProviderRegistry {
     }
     
     public Set<String> getAvailableAudioProviders() {
-        // Feature-flag: disable fixture/dummy audio providers by default
-        boolean enableFixtures = isTruthy(configurations.getOrDefault(
-            "zhlearn.enable.fixture.audio",
-            configurations.getOrDefault("ZHLEARN_ENABLE_FIXTURE_AUDIO", "false")
-        ));
-
-        // Build list with optional filtering, then order by preference
-        List<Map.Entry<String, AudioProvider>> entries = new ArrayList<>(audioProviders.entrySet());
-        List<String> filtered = new ArrayList<>();
-        for (var e : entries) {
-            AudioProvider p = e.getValue();
-            if (!enableFixtures && p.getType() == ProviderType.DUMMY) {
-                continue; // skip fixtures unless explicitly enabled
-            }
-            filtered.add(e.getKey());
-        }
+        List<String> names = new ArrayList<>(audioProviders.keySet());
 
         // Preferred ordering: Anki first, then others (stable by name)
-        filtered.sort((a, b) -> {
+        names.sort((a, b) -> {
             if (a.equals("anki") && !b.equals("anki")) return -1;
             if (b.equals("anki") && !a.equals("anki")) return 1;
             return a.compareTo(b);
         });
 
-        LinkedHashSet<String> ordered = new LinkedHashSet<>(filtered);
+        LinkedHashSet<String> ordered = new LinkedHashSet<>(names);
         return ordered;
-    }
-
-    private static boolean isTruthy(String v) {
-        if (v == null) return false;
-        String s = v.trim().toLowerCase();
-        return s.equals("1") || s.equals("true") || s.equals("yes") || s.equals("on");
     }
     
     public List<ProviderInfo> getAllProviderInfo() {

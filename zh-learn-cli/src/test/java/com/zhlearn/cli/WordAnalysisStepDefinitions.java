@@ -3,11 +3,17 @@ package com.zhlearn.cli;
 import com.zhlearn.application.service.ProviderRegistry;
 import com.zhlearn.application.service.WordAnalysisServiceImpl;
 import com.zhlearn.domain.model.Hanzi;
+import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.WordAnalysis;
+import com.zhlearn.domain.model.ProviderInfo.ProviderType;
+import com.zhlearn.domain.provider.AudioProvider;
 import com.zhlearn.infrastructure.dummy.*;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+
+import java.nio.file.Path;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +32,7 @@ public class WordAnalysisStepDefinitions {
         registry.registerExplanationProvider(new DummyExplanationProvider());
         registry.registerPinyinProvider(new DummyPinyinProvider());
         registry.registerStructuralDecompositionProvider(new DummyStructuralDecompositionProvider());
-        registry.registerAudioProvider(new DummyAudioProvider());
+        registry.registerAudioProvider(new AbsolutePathAudioProvider());
         
         this.wordAnalysisService = new WordAnalysisServiceImpl(registry);
     }
@@ -213,5 +219,29 @@ public class WordAnalysisStepDefinitions {
         assertNotNull(currentAnalysis);
         assertNotNull(currentAnalysis.explanation());
         assertEquals(expectedExplanation, currentAnalysis.explanation().explanation());
+    }
+
+    private static class AbsolutePathAudioProvider implements AudioProvider {
+        private static final Path AUDIO = Path.of("src/test/resources/fixtures/audio/sample.mp3").toAbsolutePath();
+
+        @Override
+        public String getName() {
+            return "test-audio";
+        }
+
+        @Override
+        public String getDescription() {
+            return "Test audio provider returning an absolute fixture path";
+        }
+
+        @Override
+        public ProviderType getType() {
+            return ProviderType.DUMMY;
+        }
+
+        @Override
+        public Optional<Path> getPronunciation(Hanzi word, Pinyin pinyin) {
+            return Optional.of(AUDIO);
+        }
     }
 }

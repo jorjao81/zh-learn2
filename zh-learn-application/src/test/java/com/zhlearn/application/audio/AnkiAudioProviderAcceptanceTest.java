@@ -7,8 +7,6 @@ import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.AudioProvider;
 import com.zhlearn.infrastructure.anki.AnkiPronunciationProvider;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
@@ -18,23 +16,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AnkiAudioProviderAcceptanceTest {
-
-    private String previousFixtureFlag;
-
-    @BeforeEach
-    void saveAndClearFixtureFlag() {
-        previousFixtureFlag = System.getProperty("zhlearn.enable.fixture.audio");
-        System.clearProperty("zhlearn.enable.fixture.audio");
-    }
-
-    @AfterEach
-    void restoreFixtureFlag() {
-        if (previousFixtureFlag == null) {
-            System.clearProperty("zhlearn.enable.fixture.audio");
-        } else {
-            System.setProperty("zhlearn.enable.fixture.audio", previousFixtureFlag);
-        }
-    }
 
     @Test
     void ankiProviderReturnsExistingAudioWhenPresent_andSkipsWhenAbsent() {
@@ -59,21 +40,21 @@ class AnkiAudioProviderAcceptanceTest {
 
     @Test
     void orchestratorPrefersAnkiFirst_whenMultipleProvidersEnabled() {
-        // Enable fixture providers for this test to simulate multiple results
-        System.setProperty("zhlearn.enable.fixture.audio", "true");
-
         String content = """
             Chinese 2\t学习\txuéxí\t[sound:xuexi.mp3]\tdef
             """;
 
         ProviderRegistry registry = new ProviderRegistry();
         registry.registerAudioProvider(AnkiPronunciationProvider.fromString(content));
-        // Also register a simple dummy fixture provider
+        // Also register a simple test provider to simulate a second option
         registry.registerAudioProvider(new AudioProvider() {
-            @Override public String getName() { return "fixture-audio"; }
-            @Override public String getDescription() { return "test fixture"; }
+            @Override public String getName() { return "test-audio"; }
+            @Override public String getDescription() { return "test audio provider"; }
             @Override public ProviderType getType() { return ProviderType.DUMMY; }
-            @Override public Optional<Path> getPronunciation(Hanzi word, Pinyin pinyin) { return Optional.of(Path.of("sample.mp3")); }
+            @Override public Optional<Path> getPronunciation(Hanzi word, Pinyin pinyin) {
+                Path audio = Path.of("src/test/resources/fixtures/audio/sample.mp3").toAbsolutePath();
+                return Optional.of(audio);
+            }
         });
 
         AudioOrchestrator orchestrator = new AudioOrchestrator(registry);
@@ -83,6 +64,6 @@ class AnkiAudioProviderAcceptanceTest {
         assertThat(list.get(0).label()).isEqualTo("anki");
         // Ensure both providers contributed when enabled
         assertThat(list.stream().map(PronunciationCandidate::label).toList())
-            .contains("fixture-audio");
+            .contains("test-audio");
     }
 }

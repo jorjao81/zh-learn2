@@ -18,13 +18,13 @@ class AudioProviderRegistrationTest {
         @Override public String getDescription() { return "Fake audio provider for tests"; }
         @Override public ProviderType getType() { return ProviderType.DUMMY; }
         @Override public Optional<Path> getPronunciation(Hanzi word, Pinyin pinyin) {
-            return Optional.of(Path.of("test.mp3"));
+            Path audio = Path.of("src/test/resources/fixtures/audio/sample.mp3").toAbsolutePath();
+            return Optional.of(audio);
         }
     }
 
     @Test
     void registryRegistersAndListsAudioProvider() {
-        System.setProperty("zhlearn.enable.fixture.audio", "true");
         ProviderRegistry registry = new ProviderRegistry();
         registry.registerAudioProvider(new FakeAudioProvider());
 
@@ -39,7 +39,6 @@ class AudioProviderRegistrationTest {
 
     @Test
     void serviceDelegatesToAudioProvider() {
-        System.setProperty("zhlearn.enable.fixture.audio", "true");
         ProviderRegistry registry = new ProviderRegistry();
         WordAnalysisServiceImpl service = new WordAnalysisServiceImpl(registry);
 
@@ -47,6 +46,6 @@ class AudioProviderRegistrationTest {
 
         Optional<Path> result = service.getPronunciation(new Hanzi("学"), new Pinyin("xué"), "fake-audio");
         assertThat(result).isPresent();
-        assertThat(result.get().getFileName().toString()).isEqualTo("test.mp3");
+        assertThat(result.get().getFileName().toString()).isEqualTo("sample.mp3");
     }
 }

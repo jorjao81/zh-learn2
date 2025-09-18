@@ -1,4 +1,2 @@
 com.zhlearn.infrastructure.anki.AnkiPronunciationProvider
 com.zhlearn.infrastructure.forvo.ForvoAudioProvider
-com.zhlearn.infrastructure.fixture.FixtureAudioProvider
-com.zhlearn.infrastructure.fixture.FixtureAudioProvider2

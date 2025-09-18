@@ -134,7 +134,7 @@ public class AnkiPronunciationProvider implements AudioProvider {
             Path resolved = base.resolve(fileName).toAbsolutePath();
             return Optional.of(resolved);
         }
-        return Optional.of(rawPath);
+        return Optional.of(rawPath.toAbsolutePath());
     }
 
     private static Optional<String> extractFileName(String soundNotation) {
