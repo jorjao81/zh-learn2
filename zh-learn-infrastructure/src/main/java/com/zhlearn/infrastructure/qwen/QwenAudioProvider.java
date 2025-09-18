@@ -87,7 +87,7 @@ public class QwenAudioProvider implements AudioProvider {
                 Path downloaded = download(result.audioUrl());
                 try {
                     Path normalized = AudioCache.ensureCachedNormalized(downloaded, NAME,
-                        word.characters(), pinyin.pinyin(), cacheKey(word, pinyin, voice));
+                        word.characters(), voice, cacheKey(word, pinyin, voice));
                     results.add(normalized);
                 } finally {
                     Files.deleteIfExists(downloaded);
@@ -136,7 +136,7 @@ public class QwenAudioProvider implements AudioProvider {
         String sourceId = cacheKey(word, pinyin, voice);
         String base = AudioPaths.sanitize(NAME) + "_" +
             AudioPaths.sanitize(word.characters()) + "_" +
-            AudioPaths.sanitize(pinyin.pinyin());
+            AudioPaths.sanitize(voice);
         String hash = shortHash(sourceId.getBytes(StandardCharsets.UTF_8));
         String fileName = base + "_" + hash + ".mp3";
         return AudioPaths.audioDir().resolve(NAME).resolve(fileName);

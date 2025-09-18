@@ -61,6 +61,10 @@ class QwenAudioProviderTest {
         assertThat(pronunciations.get(1)).isAbsolute();
         assertThat(pronunciations.get(2)).isAbsolute();
 
+        assertThat(pronunciations.get(0).getFileName().toString()).contains("Cherry").doesNotContain("xuéxí");
+        assertThat(pronunciations.get(1).getFileName().toString()).contains("Serena");
+        assertThat(pronunciations.get(2).getFileName().toString()).contains("Chelsie");
+
         assertThat(Files.exists(pronunciations.get(0))).isTrue();
         assertThat(Files.exists(pronunciations.get(1))).isTrue();
         assertThat(Files.exists(pronunciations.get(2))).isTrue();
