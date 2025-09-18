@@ -1,1 +1,2 @@
-com.zhlearn.infrastructure.anki.ExistingAnkiPronunciationProvider
+com.zhlearn.infrastructure.anki.AnkiPronunciationProvider
+com.zhlearn.infrastructure.forvo.ForvoAudioProvider

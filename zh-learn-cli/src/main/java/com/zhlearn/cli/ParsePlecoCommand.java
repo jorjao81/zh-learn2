@@ -1,12 +1,19 @@
 package com.zhlearn.cli;
 
-import com.zhlearn.application.service.WordAnalysisServiceImpl;
-import com.zhlearn.application.service.ParallelWordAnalysisService;
+import com.zhlearn.application.audio.AudioOrchestrator;
+import com.zhlearn.application.audio.PronunciationCandidate;
+import com.zhlearn.application.audio.SelectionSession;
 import com.zhlearn.application.service.AnkiExporter;
+import com.zhlearn.application.service.ParallelWordAnalysisService;
+import com.zhlearn.application.service.ProviderRegistry;
+import com.zhlearn.application.service.WordAnalysisServiceImpl;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.ProviderConfiguration;
 import com.zhlearn.domain.model.WordAnalysis;
 import com.zhlearn.domain.service.WordAnalysisService;
+import com.zhlearn.cli.audio.InteractiveAudioUI;
+import com.zhlearn.cli.audio.PrePlayback;
+import com.zhlearn.cli.audio.SystemAudioPlayer;
 import com.zhlearn.infrastructure.dictionary.PlecoExportDictionary;
 import com.zhlearn.infrastructure.dictionary.DictionaryDefinitionProvider;
 import com.zhlearn.infrastructure.dictionary.DictionaryPinyinProvider;
@@ -17,15 +24,21 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
+
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 
 /**
  * CLI command to parse Pleco export files and process all words through the analysis pipeline.
@@ -40,7 +53,7 @@ public class ParsePlecoCommand implements Runnable {
     @Parameters(index = "0", description = "Path to the Pleco export file (TSV format)")
     private String filePath;
     
-    @Option(names = {"--provider"}, description = "Set default provider for all services (parse-pleco defaults: pleco-export for definition/pinyin, deepseek-chat for analysis, existing-anki-pronunciation for audio). Available: dummy, pinyin4j, gpt-5-nano, deepseek-chat, pleco-export, existing-anki-pronunciation")
+    @Option(names = {"--provider"}, description = "Set default provider for all services (parse-pleco defaults: pleco-export for definition/pinyin, deepseek-chat for analysis, anki for audio). Available: dummy, pinyin4j, gpt-5-nano, deepseek-chat, pleco-export, anki")
     private String defaultProvider = "custom";
     
     @Option(names = {"--pinyin-provider"}, description = "Set specific provider for pinyin (default: pleco-export). Available: pinyin4j, dummy, pleco-export")
@@ -58,7 +71,7 @@ public class ParsePlecoCommand implements Runnable {
     @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat")
     private String explanationProvider;
     
-    @Option(names = {"--audio-provider"}, description = "Set specific provider for audio pronunciation (default: existing-anki-pronunciation). Available: existing-anki-pronunciation")
+    @Option(names = {"--audio-provider"}, description = "Set specific provider for audio pronunciation (default: anki). Available: anki")
     private String audioProvider;
     
     @Option(names = {"--raw", "--raw-output"}, description = "Display raw HTML content instead of formatted output")
@@ -116,7 +129,7 @@ public class ParsePlecoCommand implements Runnable {
             String effectiveDecompositionProvider = decompositionProvider != null ? decompositionProvider : "deepseek-chat";
             String effectiveExampleProvider = exampleProvider != null ? exampleProvider : "deepseek-chat";
             String effectiveExplanationProvider = explanationProvider != null ? explanationProvider : "deepseek-chat";
-            String effectiveAudioProvider = audioProvider != null ? audioProvider : "existing-anki-pronunciation";
+            String effectiveAudioProvider = audioProvider != null ? audioProvider : "anki";
             
             // Use a representative label for mixed providers unless overridden via --provider
             String effectiveDefaultProvider = (defaultProvider == null || defaultProvider.isBlank()) ? "custom" : defaultProvider;
@@ -151,6 +164,10 @@ public class ParsePlecoCommand implements Runnable {
                 .limit(maxToProcess)
                 .collect(Collectors.toList());
             
+            if (!entriesToProcess.isEmpty()) {
+                ensureInteractiveAudioSupported();
+            }
+
             // Thread-safe collection to store successful analyses for export
             List<WordAnalysis> successfulAnalyses = new CopyOnWriteArrayList<>();
             
@@ -172,26 +189,26 @@ public class ParsePlecoCommand implements Runnable {
                 exportToAnkiFile(successfulAnalyses, ankiExportFile.trim());
             }
             
-        } catch (Exception e) {
-            System.err.println("Error parsing Pleco file: " + e.getMessage());
-            System.exit(1);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to parse Pleco export at " + filePath, e);
         }
     }
     
-    private void processWordsSequentially(List<PlecoEntry> entries, WordAnalysisService wordAnalysisService, 
+    private void processWordsSequentially(List<PlecoEntry> entries, WordAnalysisService wordAnalysisService,
                                         ProviderConfiguration config, int maxToProcess, List<WordAnalysis> successfulAnalyses) {
         int processedCount = 0;
-        
+        AudioOrchestrator audioOrchestrator = new AudioOrchestrator(parent.getProviderRegistry());
+        InteractiveAudioUI audioUI = new InteractiveAudioUI();
+
         for (PlecoEntry entry : entries) {
             try {
                 Hanzi word = new Hanzi(entry.hanzi());
                 WordAnalysis analysis = wordAnalysisService.getCompleteAnalysis(word, config);
-                
                 printWordAnalysis(analysis, processedCount + 1, maxToProcess);
-                successfulAnalyses.add(analysis); // Collect for export
+                WordAnalysis updated = runAudioSelection(audioOrchestrator, audioUI, analysis);
+                successfulAnalyses.add(updated); // Collect for export
                 processedCount++;
-                
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 System.err.println("Error analyzing word '" + entry.hanzi() + "': " + e.getMessage());
             }
         }
@@ -220,7 +237,7 @@ public class ParsePlecoCommand implements Runnable {
                         WordAnalysis analysis = wordAnalysisService.getCompleteAnalysis(word, config);
                         long wordDuration = System.currentTimeMillis() - wordStartTime;
                         return new WordAnalysisResult(entry, analysis, null, wordDuration);
-                    } catch (Exception e) {
+                    } catch (RuntimeException e) {
                         long wordDuration = System.currentTimeMillis() - wordStartTime;
                         return new WordAnalysisResult(entry, null, e, wordDuration);
                     }
@@ -260,10 +277,19 @@ public class ParsePlecoCommand implements Runnable {
             
             // Wait for all displays to complete
             CompletableFuture.allOf(displayFutures.toArray(new CompletableFuture[0])).join();
-            
+
+            if (!successfulAnalyses.isEmpty()) {
+                AudioOrchestrator audioOrchestrator = new AudioOrchestrator(parent.getProviderRegistry());
+                InteractiveAudioUI audioUI = new InteractiveAudioUI();
+                for (int i = 0; i < successfulAnalyses.size(); i++) {
+                    WordAnalysis updated = runAudioSelection(audioOrchestrator, audioUI, successfulAnalyses.get(i));
+                    successfulAnalyses.set(i, updated);
+                }
+            }
+
             long overallDuration = System.currentTimeMillis() - overallStartTime;
             System.out.println("=".repeat(80));
-            System.out.printf("Processing complete! %d words successful, %d errors in %.2fs%n", 
+            System.out.printf("Processing complete! %d words successful, %d errors in %.2fs%n",
                 successCount.get(), errorCount.get(), overallDuration / 1000.0);
             
         } finally {
@@ -284,6 +310,72 @@ public class ParsePlecoCommand implements Runnable {
         
         System.out.println();
     }
+
+    private WordAnalysis runAudioSelection(AudioOrchestrator orchestrator, InteractiveAudioUI audioUI, WordAnalysis analysis) {
+        List<PronunciationCandidate> rawCandidates = orchestrator.candidatesFor(analysis.word(), analysis.pinyin());
+        if (rawCandidates.isEmpty()) {
+            System.out.printf("No pronunciation candidates available for '%s'.%n%n", analysis.word().characters());
+            return analysis;
+        }
+
+        List<PronunciationCandidate> candidates = PrePlayback.preprocessCandidates(analysis.word(), analysis.pinyin(), rawCandidates);
+        if (candidates.isEmpty()) {
+            System.out.printf("No playable pronunciation candidates available for '%s'.%n%n", analysis.word().characters());
+            return analysis;
+        }
+
+        System.out.printf("Selecting audio for '%s' (%s)%n", analysis.word().characters(), analysis.pinyin().pinyin());
+        SystemAudioPlayer player = new SystemAudioPlayer();
+        SelectionSession session = new SelectionSession(candidates, player);
+        PronunciationCandidate choice;
+        try {
+            choice = audioUI.run(session);
+        } finally {
+            player.stop();
+        }
+
+        if (choice == null) {
+            System.out.println("No audio selected.");
+            System.out.println();
+            return analysis;
+        }
+
+        System.out.println("Selected audio: " + choice.file().toAbsolutePath());
+        System.out.println();
+
+        return new WordAnalysis(
+            analysis.word(),
+            analysis.pinyin(),
+            analysis.definition(),
+            analysis.structuralDecomposition(),
+            analysis.examples(),
+            analysis.explanation(),
+            Optional.of(choice.file().toAbsolutePath())
+        );
+    }
+
+    private void ensureInteractiveAudioSupported() {
+        if (System.console() != null) {
+            return;
+        }
+
+        try (Terminal terminal = TerminalBuilder.builder().system(true).build()) {
+            if (terminal == null || "dumb".equalsIgnoreCase(terminal.getType())) {
+                failNonInteractiveTerminal();
+            }
+        } catch (IOException e) {
+            System.err.println("Unable to initialize terminal for audio selection: " + e.getMessage());
+            System.exit(1);
+        } catch (IllegalStateException e) {
+            failNonInteractiveTerminal();
+        }
+    }
+
+    private void failNonInteractiveTerminal() {
+        System.err.println("parse-pleco requires an interactive terminal that supports raw mode for audio selection.");
+        System.err.println("Run zh-learn from a terminal (no piping or redirection) to continue.");
+        System.exit(1);
+    }
     
     /**
      * Helper class to hold analysis results from parallel processing
@@ -291,10 +383,10 @@ public class ParsePlecoCommand implements Runnable {
     private static class WordAnalysisResult {
         final PlecoEntry entry;
         final WordAnalysis analysis;
-        final Exception error;
+        final RuntimeException error;
         final long duration; // Duration in milliseconds
         
-        WordAnalysisResult(PlecoEntry entry, WordAnalysis analysis, Exception error, long duration) {
+        WordAnalysisResult(PlecoEntry entry, WordAnalysis analysis, RuntimeException error, long duration) {
             this.entry = entry;
             this.analysis = analysis;
             this.error = error;
@@ -313,8 +405,8 @@ public class ParsePlecoCommand implements Runnable {
             System.out.println("=".repeat(80));
             System.out.printf("Exported %d words to %s (Anki Chinese 2 format)%n", analyses.size(), filename);
             
-        } catch (Exception e) {
-            System.err.println("Error exporting to Anki file: " + e.getMessage());
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to export Anki file to " + filename, e);
         }
     }
     
@@ -349,7 +441,7 @@ public class ParsePlecoCommand implements Runnable {
         return null;
     }
 
-    private boolean isProviderAvailable(com.zhlearn.application.service.ProviderRegistry registry, String providerName) {
+    private boolean isProviderAvailable(ProviderRegistry registry, String providerName) {
         return registry.getPinyinProvider(providerName).isPresent() ||
                registry.getDefinitionProvider(providerName).isPresent() ||
                registry.getStructuralDecompositionProvider(providerName).isPresent() ||
@@ -358,7 +450,7 @@ public class ParsePlecoCommand implements Runnable {
                registry.getAudioProvider(providerName).isPresent();
     }
 
-    private String createProviderNotFoundError(com.zhlearn.application.service.ProviderRegistry registry, String requestedProvider, String providerType) {
+    private String createProviderNotFoundError(ProviderRegistry registry, String requestedProvider, String providerType) {
         StringBuilder error = new StringBuilder();
         error.append("Provider '").append(requestedProvider).append("' not found");
         if (!providerType.equals("default")) {
@@ -367,7 +459,7 @@ public class ParsePlecoCommand implements Runnable {
         error.append(".\n\n");
 
         // Find similar providers
-        java.util.List<String> similarProviders = registry.findSimilarProviders(requestedProvider);
+        List<String> similarProviders = registry.findSimilarProviders(requestedProvider);
         if (!similarProviders.isEmpty()) {
             error.append("Did you mean one of these?\n");
             for (String similar : similarProviders) {

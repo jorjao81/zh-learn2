@@ -58,6 +58,18 @@
             <artifactId>picocli</artifactId>
         </dependency>
 
+        <!-- JLine for interactive TUI (arrow keys, display) -->
+        <dependency>
+            <groupId>org.jline</groupId>
+            <artifactId>jline-reader</artifactId>
+            <version>3.25.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jline</groupId>
+            <artifactId>jline-terminal</artifactId>
+            <version>3.25.1</version>
+        </dependency>
+
         <!-- Testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -165,7 +177,6 @@
                         </goals>
                         <configuration>
                             <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                            <excludeArtifactIds>langchain4j-core,langchain4j-open-ai,langchain4j-google-ai-gemini</excludeArtifactIds>
                         </configuration>
                     </execution>
                     <execution>

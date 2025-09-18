@@ -7,7 +7,7 @@ import picocli.CommandLine.ScopeType;
 @Command(name = "zh-learn",
         mixinStandardHelpOptions = true,
         version = "1.0.0-SNAPSHOT",
-        subcommands = { WordCommand.class, ProvidersCommand.class, ParseAnkiCommand.class, ParsePlecoCommand.class, AudioCommand.class, picocli.CommandLine.HelpCommand.class },
+        subcommands = { WordCommand.class, ProvidersCommand.class, ParseAnkiCommand.class, ParsePlecoCommand.class, AudioCommand.class, AudioSelectCommand.class, picocli.CommandLine.HelpCommand.class },
         scope = ScopeType.INHERIT)
 public class MainCommand implements Runnable {
 

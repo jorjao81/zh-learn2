@@ -1,4 +1,4 @@
 com.zhlearn.infrastructure.dummy.DummyStructuralDecompositionProvider
 com.zhlearn.infrastructure.deepseek.DeepSeekStructuralDecompositionProvider
 com.zhlearn.infrastructure.gpt5nano.GPT5NanoStructuralDecompositionProvider
-com.zhlearn.infrastructure.dictionary.DictionaryStructuralDecompositionProvider
+

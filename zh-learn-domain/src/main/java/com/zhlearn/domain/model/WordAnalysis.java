@@ -1,5 +1,6 @@
 package com.zhlearn.domain.model;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 public record WordAnalysis(
@@ -9,7 +10,7 @@ public record WordAnalysis(
     StructuralDecomposition structuralDecomposition,
     Example examples,
     Explanation explanation,
-    Optional<String> pronunciation
+    Optional<Path> pronunciation
 ) {
     public WordAnalysis {
         if (word == null) {

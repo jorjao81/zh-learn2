@@ -45,25 +45,9 @@ public class ProviderRegistry {
     }
 
     private <T> void loadViaServiceLoader(Class<T> serviceType, Consumer<T> registrar) {
-        int count = 0;
-        try {
-            for (T provider : ServiceLoader.load(serviceType)) {
-                registrar.accept(provider);
-                count++;
-            }
-        } catch (Throwable ignored) {
-            // Fall through to TCCL attempt
-        }
-        if (count == 0) {
-            try {
-                ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-                for (T provider : ServiceLoader.load(serviceType, tccl)) {
-                    registrar.accept(provider);
-                    count++;
-                }
-            } catch (Throwable ignoredAlso) {
-                // ignore
-            }
+        ServiceLoader<T> loader = ServiceLoader.load(serviceType);
+        for (ServiceLoader.Provider<T> provider : loader.stream().toList()) {
+            registrar.accept(provider.get());
         }
     }
 
@@ -138,7 +122,17 @@ public class ProviderRegistry {
     }
     
     public Set<String> getAvailableAudioProviders() {
-        return new HashSet<>(audioProviders.keySet());
+        List<String> names = new ArrayList<>(audioProviders.keySet());
+
+        // Preferred ordering: Anki first, then others (stable by name)
+        names.sort((a, b) -> {
+            if (a.equals("anki") && !b.equals("anki")) return -1;
+            if (b.equals("anki") && !a.equals("anki")) return 1;
+            return a.compareTo(b);
+        });
+
+        LinkedHashSet<String> ordered = new LinkedHashSet<>(names);
+        return ordered;
     }
     
     public List<ProviderInfo> getAllProviderInfo() {

@@ -70,7 +70,7 @@ public class AnkiCardDictionary implements Dictionary {
             decomposition,
             examples,
             explanation,
-            java.util.Optional.empty() // no pronunciation available from dictionary
+            Optional.empty() // no pronunciation available from dictionary
         );
     }
 
