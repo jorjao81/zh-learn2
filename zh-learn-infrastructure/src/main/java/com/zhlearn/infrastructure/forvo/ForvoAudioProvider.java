@@ -30,11 +30,7 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * Forvo-based audio provider (manual-only).
- *
- * Fetches the top-rated pronunciation for a Chinese word from the Forvo API
- * and downloads it to a cached MP3 file. Returns the normalized file path so
- * downstream layers can decide how to present or export the audio.
- *
+ **
  * Configuration:
  *  - Env var FORVO_API_KEY (preferred)
  *  - System property forvo.api.key (fallback)
