@@ -4,6 +4,7 @@ import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,13 +22,15 @@ class ExistingAnkiPronunciationProviderTest {
         ExistingAnkiPronunciationProvider provider =
             ExistingAnkiPronunciationProvider.fromString(content);
 
-        Optional<String> result = provider.getPronunciation(new Hanzi("学"), new Pinyin("xué"));
-        assertThat(result).contains("[sound:xue.mp3]");
+        Optional<Path> result = provider.getPronunciation(new Hanzi("学"), new Pinyin("xué"));
+        assertThat(result).isPresent();
+        assertThat(result.get().getFileName().toString()).isEqualTo("xue.mp3");
 
-        Optional<String> result2 = provider.getPronunciation(new Hanzi("习"), new Pinyin("xí"));
-        assertThat(result2).contains("[sound:xi.mp3]");
+        Optional<Path> result2 = provider.getPronunciation(new Hanzi("习"), new Pinyin("xí"));
+        assertThat(result2).isPresent();
+        assertThat(result2.get().getFileName().toString()).isEqualTo("xi.mp3");
 
-        Optional<String> noMatch = provider.getPronunciation(new Hanzi("词"), new Pinyin("cí"));
+        Optional<Path> noMatch = provider.getPronunciation(new Hanzi("词"), new Pinyin("cí"));
         assertThat(noMatch).isEmpty();
     }
 
@@ -40,8 +43,9 @@ class ExistingAnkiPronunciationProviderTest {
         );
 
         ExistingAnkiPronunciationProvider provider = new ExistingAnkiPronunciationProvider(notes);
-        Optional<String> result = provider.getPronunciation(new Hanzi("学"), new Pinyin("xué"));
-        assertThat(result).contains("[sound:xue-2.mp3]");
+        Optional<Path> result = provider.getPronunciation(new Hanzi("学"), new Pinyin("xué"));
+        assertThat(result).isPresent();
+        assertThat(result.get().getFileName().toString()).isEqualTo("xue-2.mp3");
     }
 
     @Test
@@ -51,7 +55,7 @@ class ExistingAnkiPronunciationProviderTest {
         );
 
         ExistingAnkiPronunciationProvider provider = new ExistingAnkiPronunciationProvider(notes);
-        Optional<String> result = provider.getPronunciation(new Hanzi("学"), new Pinyin("xué"));
+        Optional<Path> result = provider.getPronunciation(new Hanzi("学"), new Pinyin("xué"));
         assertThat(result).isEmpty();
     }
 
@@ -76,7 +80,7 @@ class ExistingAnkiPronunciationProviderTest {
             System.out.println("Testing: '" + originalPinyin + "' -> '" + convertedPinyin + "'");
             
             // Try to find audio for the converted pinyin
-            Optional<String> result = provider.getPronunciation(new Hanzi("test"), new Pinyin(convertedPinyin));
+            Optional<Path> result = provider.getPronunciation(new Hanzi("test"), new Pinyin(convertedPinyin));
             if (result.isPresent()) {
                 System.out.println("  Found: " + result.get());
             } else {
@@ -86,7 +90,7 @@ class ExistingAnkiPronunciationProviderTest {
 
         // This specific test should pass if normalization is working
         String convertedDao = com.zhlearn.pinyin.PinyinToneConverter.convertToToneMarks("dao3yu3");
-        Optional<String> result = provider.getPronunciation(new Hanzi("岛屿"), new Pinyin(convertedDao));
+        Optional<Path> result = provider.getPronunciation(new Hanzi("岛屿"), new Pinyin(convertedDao));
         
         System.out.println("Final test: 'dao3yu3' -> '" + convertedDao + "'");
         System.out.println("Looking for match with: 'dǎoyǔ'");

@@ -29,11 +29,15 @@ public class AnkiExporter {
             // Write data rows
             for (WordAnalysis analysis : analyses) {
                 String examplesHtml = ExamplesHtmlFormatter.format(analysis.examples());
+                String soundNotation = analysis.pronunciation()
+                    .map(path -> "[sound:" + path.getFileName().toString() + "]")
+                    .orElse("");
+
                 AnkiExportEntry entry = new AnkiExportEntry(
                     "Chinese 2",
                     analysis.word().characters(),
                     analysis.pinyin().pinyin(),
-                    analysis.pronunciation().orElse(""),
+                    soundNotation,
                     analysis.definition().meaning(),
                     examplesHtml,
                     analysis.explanation().explanation(),

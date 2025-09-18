@@ -7,6 +7,7 @@ import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.AudioProvider;
 import com.zhlearn.infrastructure.audio.AudioCache;
+import com.zhlearn.infrastructure.audio.AudioPaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,16 +22,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Optional;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Forvo-based audio provider (manual-only).
  *
  * Fetches the top-rated pronunciation for a Chinese word from the Forvo API
- * and downloads it to a temporary MP3 file. Returns a sound notation that
- * includes the absolute file path so the orchestrator/player can resolve it
- * without caching.
+ * and downloads it to a cached MP3 file. Returns the normalized file path so
+ * downstream layers can decide how to present or export the audio.
  *
  * Configuration:
  *  - Env var FORVO_API_KEY (preferred)
@@ -64,7 +67,7 @@ public class ForvoAudioProvider implements AudioProvider {
     public ProviderType getType() { return ProviderType.DICTIONARY; }
 
     @Override
-    public Optional<String> getPronunciation(Hanzi word, Pinyin pinyin) {
+    public Optional<Path> getPronunciation(Hanzi word, Pinyin pinyin) {
         String apiKey = getApiKey();
         if (apiKey == null || apiKey.isBlank()) {
             log.warn("Forvo API key not configured. Set FORVO_API_KEY env var or -Dforvo.api.key");
@@ -97,15 +100,23 @@ public class ForvoAudioProvider implements AudioProvider {
             // Pick first item (already rate-desc). Only manual path for now.
             JsonNode first = items.get(0);
             String mp3 = text(first, "pathmp3");
+            String username = username(first);
             if (mp3 == null || mp3.isBlank()) {
                 // fallback to ogg if present? we need mp3 only by spec
                 log.info("Forvo: top pronunciation missing mp3 for '{}'", word.characters());
                 return Optional.empty();
             }
+            Path cached = AudioPaths.audioDir()
+                .resolve(getName())
+                .resolve(fileName(word.characters(), username, mp3));
+            if (Files.exists(cached)) {
+                return Optional.of(cached.toAbsolutePath());
+            }
             // Download to a temp file
             Path out = downloadMp3(mp3, word.characters());
             if (out == null) return Optional.empty();
-            return Optional.of("[sound:" + out.toAbsolutePath() + "]");
+            Path normalized = AudioCache.ensureCachedNormalized(out, getName(), word.characters(), username, mp3);
+            return Optional.of(normalized.toAbsolutePath());
         } catch (IOException | InterruptedException e) {
             log.warn("Forvo error for '{}': {}", word.characters(), e.getMessage());
             return Optional.empty();
@@ -113,8 +124,8 @@ public class ForvoAudioProvider implements AudioProvider {
     }
 
     @Override
-    public List<String> getPronunciations(Hanzi word, Pinyin pinyin) {
-        List<String> results = new ArrayList<>();
+    public List<Path> getPronunciations(Hanzi word, Pinyin pinyin) {
+        List<Path> results = new ArrayList<>();
         String apiKey = getApiKey();
         if (apiKey == null || apiKey.isBlank()) {
             log.warn("Forvo API key not configured. Set FORVO_API_KEY env var or -Dforvo.api.key");
@@ -145,20 +156,21 @@ public class ForvoAudioProvider implements AudioProvider {
             for (int i = 0; i < limit; i++) {
                 JsonNode n = items.get(i);
                 String mp3 = text(n, "pathmp3");
+                String username = username(n);
                 if (mp3 == null || mp3.isBlank()) continue; // skip non-mp3 entries
                 try {
                     // First check cache by deterministic file name from source URL
-                    Path cached = com.zhlearn.infrastructure.audio.AudioPaths.audioDir()
+                    Path cached = AudioPaths.audioDir()
                         .resolve(getName())
-                        .resolve(com.zhlearn.infrastructure.audio.AudioPaths.sanitize(word.characters()) + "_" + com.zhlearn.infrastructure.audio.AudioPaths.sanitize(pinyin.pinyin()) + "_" + shortHash(mp3) + ".mp3");
-                    if (java.nio.file.Files.exists(cached)) {
-                        results.add("[sound:" + cached.toAbsolutePath() + "]");
+                        .resolve(fileName(word.characters(), username, mp3));
+                    if (Files.exists(cached)) {
+                        results.add(cached.toAbsolutePath());
                         continue;
                     }
                     Path tmp = downloadMp3(mp3, word.characters());
                     if (tmp != null) {
-                        Path norm = AudioCache.ensureCachedNormalized(tmp, getName(), word.characters(), pinyin.pinyin(), mp3);
-                        results.add("[sound:" + norm.toAbsolutePath() + "]");
+                        Path norm = AudioCache.ensureCachedNormalized(tmp, getName(), word.characters(), username, mp3);
+                        results.add(norm.toAbsolutePath());
                     }
                 } catch (IOException | InterruptedException e) {
                     if (e instanceof InterruptedException) {
@@ -178,13 +190,31 @@ public class ForvoAudioProvider implements AudioProvider {
 
     private static String shortHash(String s) {
         try {
-            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-1");
-            byte[] d = md.digest(s.getBytes(java.nio.charset.StandardCharsets.UTF_8));
-            String hex = java.util.HexFormat.of().withUpperCase().formatHex(d);
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
+            byte[] d = md.digest(s.getBytes(StandardCharsets.UTF_8));
+            String hex = HexFormat.of().withUpperCase().formatHex(d);
             return hex.substring(0, 10);
-        } catch (java.security.NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException("SHA-1 digest not available", e);
         }
+    }
+
+    private static String username(JsonNode node) {
+        String value = text(node, "username");
+        if (value == null || value.isBlank()) {
+            value = text(node, "user");
+        }
+        if (value == null || value.isBlank()) {
+            return "unknown";
+        }
+        return value;
+    }
+
+    private static String fileName(String word, String username, String sourceId) {
+        String user = (username == null || username.isBlank()) ? "unknown" : username;
+        String safeWord = AudioPaths.sanitize(word);
+        String safeUser = AudioPaths.sanitize(user);
+        return NAME + "_" + safeWord + "_" + safeUser + "_" + shortHash(sourceId) + ".mp3";
     }
 
     private Path downloadMp3(String url, String word) throws IOException, InterruptedException {

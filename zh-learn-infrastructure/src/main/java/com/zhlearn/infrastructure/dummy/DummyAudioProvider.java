@@ -5,6 +5,7 @@ import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.AudioProvider;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 public class DummyAudioProvider implements AudioProvider {
@@ -23,7 +24,7 @@ public class DummyAudioProvider implements AudioProvider {
     public ProviderType getType() { return ProviderType.DUMMY; }
     
     @Override
-    public Optional<String> getPronunciation(Hanzi word, Pinyin pinyin) {
-        return Optional.of("[sound:dummy-" + word.characters() + ".mp3]");
+    public Optional<Path> getPronunciation(Hanzi word, Pinyin pinyin) {
+        return Optional.of(Path.of("dummy-" + word.characters() + ".mp3"));
     }
 }

@@ -21,8 +21,8 @@ public class AudioSelectionStepDefinitions {
     @Given("a fixture audio provider with sample audio")
     public void a_fixture_audio_provider_with_sample_audio() {
         Path file = Path.of("src/test/resources/fixtures/audio/sample.mp3").toAbsolutePath();
-        PronunciationCandidate c1 = new PronunciationCandidate("fixture-1", "[sound:sample.mp3]", file);
-        PronunciationCandidate c2 = new PronunciationCandidate("fixture-2", "[sound:sample.mp3]", file);
+        PronunciationCandidate c1 = new PronunciationCandidate("fixture-1", file);
+        PronunciationCandidate c2 = new PronunciationCandidate("fixture-2", file);
         candidates = List.of(c1, c2);
     }
 
@@ -79,7 +79,7 @@ public class AudioSelectionStepDefinitions {
 
     @Then("the selected pronunciation should be {string}")
     public void the_selected_pronunciation_should_be(String expected) {
-        assertThat(session.selected().soundNotation()).isEqualTo(expected);
+        assertThat(session.selected().file().getFileName().toString()).isEqualTo(expected);
     }
 
     private static class TestAudioPlayer implements AudioPlayer {

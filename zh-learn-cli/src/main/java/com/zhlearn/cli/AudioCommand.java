@@ -7,6 +7,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 @Command(name = "audio", description = "Lookup pronunciation audio by pinyin from existing Anki collection")
@@ -31,9 +32,10 @@ public class AudioCommand implements Runnable {
         Hanzi word = new Hanzi(chineseWord);
         Pinyin p = new Pinyin(pinyin);
 
-        Optional<String> result = service.getPronunciation(word, p, audioProvider);
+        Optional<Path> result = service.getPronunciation(word, p, audioProvider);
         if (result.isPresent()) {
-            System.out.println(result.get());
+            Path file = result.get();
+            System.out.println(file.toAbsolutePath());
         } else {
             System.out.println("(no pronunciation)");
             java.nio.file.Path defaultExport = java.nio.file.Paths.get(System.getProperty("user.home"), ".zh-learn", "Chinese.txt");

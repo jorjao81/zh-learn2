@@ -49,10 +49,11 @@ class AnkiAudioProviderAcceptanceTest {
 
         WordAnalysisServiceImpl service = new WordAnalysisServiceImpl(registry);
 
-        Optional<String> present = service.getPronunciation(new Hanzi("学习"), new Pinyin("xuéxí"), "existing-anki-pronunciation");
-        assertThat(present).contains("[sound:xuexi.mp3]");
+        Optional<Path> present = service.getPronunciation(new Hanzi("学习"), new Pinyin("xuéxí"), "existing-anki-pronunciation");
+        assertThat(present).isPresent();
+        assertThat(present.get().getFileName().toString()).isEqualTo("xuexi.mp3");
 
-        Optional<String> absent = service.getPronunciation(new Hanzi("不存在"), new Pinyin("búzàicún"), "existing-anki-pronunciation");
+        Optional<Path> absent = service.getPronunciation(new Hanzi("不存在"), new Pinyin("búzàicún"), "existing-anki-pronunciation");
         assertThat(absent).isEmpty();
     }
 
@@ -72,7 +73,7 @@ class AnkiAudioProviderAcceptanceTest {
             @Override public String getName() { return "fixture-audio"; }
             @Override public String getDescription() { return "test fixture"; }
             @Override public ProviderType getType() { return ProviderType.DUMMY; }
-            @Override public Optional<String> getPronunciation(Hanzi word, Pinyin pinyin) { return Optional.of("[sound:sample.mp3]"); }
+            @Override public Optional<Path> getPronunciation(Hanzi word, Pinyin pinyin) { return Optional.of(Path.of("sample.mp3")); }
         });
 
         AudioOrchestrator orchestrator = new AudioOrchestrator(registry);
@@ -85,4 +86,3 @@ class AnkiAudioProviderAcceptanceTest {
             .contains("fixture-audio");
     }
 }
-

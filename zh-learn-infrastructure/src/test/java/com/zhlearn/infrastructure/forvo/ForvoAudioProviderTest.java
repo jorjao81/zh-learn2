@@ -3,11 +3,15 @@ package com.zhlearn.infrastructure.forvo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,6 +21,15 @@ import static org.mockito.Mockito.when;
 
 class ForvoAudioProviderTest {
 
+    @TempDir
+    Path tmpHome;
+
+    @AfterEach
+    void tearDown() {
+        System.clearProperty("zhlearn.home");
+        System.clearProperty("forvo.api.key");
+    }
+
     @Test
     void returnsMultiplePronunciationsFromJson() throws Exception {
         HttpClient http = mock(HttpClient.class);
@@ -24,9 +37,9 @@ class ForvoAudioProviderTest {
         // Mock JSON listing three items
         String json = "{\n" +
             "  \"items\": [\n" +
-            "    { \"pathmp3\": \"https://audio.example/a.mp3\" },\n" +
-            "    { \"pathmp3\": \"https://audio.example/b.mp3\" },\n" +
-            "    { \"pathmp3\": \"https://audio.example/c.mp3\" }\n" +
+            "    { \"pathmp3\": \"https://audio.example/a.mp3\", \"username\": \"UserOne\" },\n" +
+            "    { \"pathmp3\": \"https://audio.example/b.mp3\", \"username\": \"UserTwo\" },\n" +
+            "    { \"pathmp3\": \"https://audio.example/c.mp3\", \"username\": \"UserThree\" }\n" +
             "  ]\n" +
             "}";
 
@@ -57,11 +70,23 @@ class ForvoAudioProviderTest {
             .thenReturn((HttpResponse) resp3)
             .thenReturn((HttpResponse) resp4);
 
+        System.setProperty("zhlearn.home", tmpHome.toString());
         System.setProperty("forvo.api.key", "test-key");
         ForvoAudioProvider provider = new ForvoAudioProvider(http, new ObjectMapper());
 
-        List<String> list = provider.getPronunciations(new Hanzi("学习"), new Pinyin("xuéxí"));
+        List<Path> list = provider.getPronunciations(new Hanzi("学习"), new Pinyin("xuéxí"));
         assertThat(list).hasSize(3);
-        assertThat(list.get(0)).startsWith("[sound:");
+
+        Path firstPath = list.get(0);
+        Path secondPath = list.get(1);
+        Path thirdPath = list.get(2);
+
+        assertThat(firstPath.getFileName().toString()).startsWith("forvo_学习_UserOne_");
+        assertThat(secondPath.getFileName().toString()).startsWith("forvo_学习_UserTwo_");
+        assertThat(thirdPath.getFileName().toString()).startsWith("forvo_学习_UserThree_");
+
+        assertThat(Files.exists(firstPath)).isTrue();
+        assertThat(Files.exists(secondPath)).isTrue();
+        assertThat(Files.exists(thirdPath)).isTrue();
     }
 }

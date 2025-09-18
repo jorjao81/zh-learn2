@@ -4,6 +4,7 @@ import com.zhlearn.application.audio.PronunciationCandidate;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.infrastructure.audio.AudioCache;
+import com.zhlearn.infrastructure.audio.AudioPaths;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -15,17 +16,26 @@ public final class PrePlayback {
 
     public static List<PronunciationCandidate> preprocessCandidates(Hanzi word, Pinyin pinyin, List<PronunciationCandidate> list) {
         List<PronunciationCandidate> out = new ArrayList<>();
+        Path audioBase = AudioPaths.audioDir();
         for (PronunciationCandidate c : list) {
+            Path absolute = c.file().toAbsolutePath();
+            if (shouldBypassCache(c.label())) {
+                out.add(new PronunciationCandidate(c.label(), absolute));
+                continue;
+            }
+            if (isAlreadyCached(absolute, audioBase)) {
+                out.add(new PronunciationCandidate(c.label(), absolute));
+                continue;
+            }
             try {
                 Path normalized = AudioCache.ensureCachedNormalized(
-                    c.file(),
+                    absolute,
                     c.label(),
                     word.characters(),
                     pinyin.pinyin(),
                     null
                 );
-                String sound = "[sound:" + normalized.toAbsolutePath() + "]";
-                out.add(new PronunciationCandidate(c.label(), sound, normalized));
+                out.add(new PronunciationCandidate(c.label(), normalized));
             } catch (IOException e) {
                 throw new RuntimeException("Failed to normalize audio candidate '" + c.label() + "'", e);
             } catch (InterruptedException e) {
@@ -34,5 +44,15 @@ public final class PrePlayback {
             }
         }
         return out;
+    }
+
+    private static boolean shouldBypassCache(String providerLabel) {
+        return "existing-anki-pronunciation".equals(providerLabel);
+    }
+
+    private static boolean isAlreadyCached(Path file, Path audioBase) {
+        Path normalizedFile = file.toAbsolutePath().normalize();
+        Path normalizedBase = audioBase.toAbsolutePath().normalize();
+        return normalizedFile.startsWith(normalizedBase);
     }
 }

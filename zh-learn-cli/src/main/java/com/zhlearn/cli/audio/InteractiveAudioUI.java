@@ -4,16 +4,10 @@ import com.zhlearn.application.audio.PronunciationCandidate;
 import com.zhlearn.application.audio.SelectionSession;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import org.jline.utils.AttributedString;
-import org.jline.utils.Display;
 import org.jline.utils.NonBlockingReader;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Path;
 
 public class InteractiveAudioUI {
 
@@ -22,11 +16,10 @@ public class InteractiveAudioUI {
         if (result.state == TriState.State.SELECTED) {
             return result.value;
         }
-        if (result.state == TriState.State.SKIPPED) {
-            return null; // explicit skip; do not fallback
+        if (result.state == TriState.State.SKIPPED || result.state == TriState.State.UNAVAILABLE) {
+            return null;
         }
-        // JLine unavailable; fallback to simple loop
-        return runFallback(session);
+        throw new IllegalStateException("Unexpected UI state: " + result.state);
     }
 
     private TriState runUsingJLine(SelectionSession session) {
@@ -93,7 +86,7 @@ public class InteractiveAudioUI {
             PronunciationCandidate c = session.candidateAt(i);
             boolean selected = (i == session.currentIndex());
             String marker = selected ? ">" : " ";
-            String line = String.format("%s %2d. %-20s %s", marker, i + 1, c.label(), c.soundNotation());
+            String line = String.format("%s %2d. %-20s %s", marker, i + 1, c.label(), displayPath(c));
             if (selected) {
                 writer.print("\u001B[7m"); // reverse video
                 writer.println(line);
@@ -106,37 +99,9 @@ public class InteractiveAudioUI {
         writer.println("Use ↑/↓ to navigate, Space to replay, Enter to select, Esc to quit");
     }
 
-    private PronunciationCandidate runFallback(SelectionSession session) {
-        printList(session);
-        System.out.println("Commands: n=down, p=up, space=replay, Enter=select, q=quit");
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
-            while (true) {
-                System.out.print("> ");
-                String line = br.readLine();
-                if (line == null) break;
-                line = line.trim();
-                if (line.isEmpty()) { session.pressEnter(); break; }
-                if (line.equalsIgnoreCase("q")) break;
-                else if (line.equalsIgnoreCase("n")) session.pressDown();
-                else if (line.equalsIgnoreCase("p")) session.pressUp();
-                else if (line.equalsIgnoreCase("space") || line.equals(" ")) session.pressSpace();
-                else System.out.println("Unknown command: " + line);
-                printList(session);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Fallback audio UI failed", e);
-        }
-        return session.selected();
-    }
-
-    private void printList(SelectionSession session) {
-        System.out.println();
-        for (int i = 0; i < session.size(); i++) {
-            PronunciationCandidate c = session.candidateAt(i);
-            String marker = (i == session.currentIndex()) ? ">" : " ";
-            System.out.printf("%s %2d. %-20s %s%n", marker, i + 1, c.label(), c.soundNotation());
-        }
-        System.out.println();
+    private String displayPath(PronunciationCandidate candidate) {
+        Path file = candidate.file();
+        return file.getFileName() != null ? file.getFileName().toString() : file.toString();
     }
 }
 

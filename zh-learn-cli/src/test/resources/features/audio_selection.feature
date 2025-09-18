@@ -14,5 +14,4 @@ Feature: Audio selection from a single provider
     Then the current item should replay
     When I press ENTER
     Then the selection should be submitted
-    And the selected pronunciation should be "[sound:sample.mp3]"
-
+    And the selected pronunciation should be "sample.mp3"

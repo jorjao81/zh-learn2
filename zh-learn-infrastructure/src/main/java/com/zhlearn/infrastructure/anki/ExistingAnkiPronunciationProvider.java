@@ -13,13 +13,16 @@ import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
 import java.text.Normalizer;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Audio provider that reuses pronunciations already present in the user's
  * Anki collection export (Chinese.txt). It finds entries by exact pinyin match
- * and returns the pronunciation field if non-empty.
+ * and returns the pronunciation file if non-empty.
  */
 public class ExistingAnkiPronunciationProvider implements AudioProvider {
 
@@ -27,7 +30,7 @@ public class ExistingAnkiPronunciationProvider implements AudioProvider {
     private static final String NAME = "existing-anki-pronunciation";
     private static final String DESCRIPTION = "Reuses existing pronunciations from local Anki collection (Chinese.txt) by exact pinyin match.";
 
-    private final Map<String, String> pinyinToPronunciation;
+    private final Map<String, Path> pinyinToPronunciation;
 
     public ExistingAnkiPronunciationProvider() {
         this.pinyinToPronunciation = new HashMap<>();
@@ -83,8 +86,9 @@ public class ExistingAnkiPronunciationProvider implements AudioProvider {
             String p = normalizePinyin(safe(n.pinyin()));
             String pron = safe(n.pronunciation());
             if (!p.isEmpty() && !pron.isEmpty()) {
-                // Keep first non-empty pronunciation for a given pinyin
-                pinyinToPronunciation.putIfAbsent(p, pron);
+                resolvePronunciationPath(pron).ifPresent(path ->
+                    pinyinToPronunciation.putIfAbsent(p, path)
+                );
             }
         }
     }
@@ -94,23 +98,79 @@ public class ExistingAnkiPronunciationProvider implements AudioProvider {
 
     @Override
     public String getDescription() { return DESCRIPTION; }
-    
+
     @Override
     public ProviderType getType() { return ProviderType.DICTIONARY; }
 
     @Override
-    public Optional<String> getPronunciation(Hanzi word, Pinyin pinyin) {
+    public Optional<Path> getPronunciation(Hanzi word, Pinyin pinyin) {
         if (pinyin == null || pinyin.pinyin() == null) return Optional.empty();
         String key = normalizePinyin(pinyin.pinyin().trim());
         if (key.isEmpty()) return Optional.empty();
-        String result = pinyinToPronunciation.get(key);
-        return (result == null || result.isEmpty()) ? Optional.empty() : Optional.of(result);
+        Path result = pinyinToPronunciation.get(key);
+        return Optional.ofNullable(result);
     }
 
     private static String safe(String s) { return s == null ? "" : s.trim(); }
+
     private static String normalizePinyin(String s) {
         if (s == null) return "";
         String t = s.trim();
         return Normalizer.normalize(t, Normalizer.Form.NFC);
+    }
+
+    private static Optional<Path> resolvePronunciationPath(String soundNotation) {
+        Optional<String> fileNameOpt = extractFileName(soundNotation);
+        if (fileNameOpt.isEmpty()) {
+            return Optional.empty();
+        }
+        String fileName = fileNameOpt.get();
+        Path rawPath = Path.of(fileName);
+        if (rawPath.isAbsolute()) {
+            return Optional.of(rawPath.toAbsolutePath());
+        }
+        Path base = ankiMediaDir();
+        if (base != null) {
+            Path resolved = base.resolve(fileName).toAbsolutePath();
+            return Optional.of(resolved);
+        }
+        return Optional.of(rawPath);
+    }
+
+    private static Optional<String> extractFileName(String soundNotation) {
+        int colon = soundNotation.indexOf(':');
+        int close = soundNotation.indexOf(']');
+        if (colon >= 0 && close > colon) {
+            return Optional.of(soundNotation.substring(colon + 1, close));
+        }
+        if (soundNotation.endsWith("]")) {
+            return Optional.empty();
+        }
+        return Optional.of(soundNotation.trim());
+    }
+
+    private static Path ankiMediaDir() {
+        String v = System.getProperty("zhlearn.anki.media.dir");
+        if (v == null || v.isBlank()) v = System.getProperty("zhlearn.anki.mediaDir");
+        if (v == null || v.isBlank()) v = System.getProperty("anki.media.dir");
+        if (v == null || v.isBlank()) v = System.getenv("ZHLEARN_ANKI_MEDIA_DIR");
+        if (v == null || v.isBlank()) v = System.getenv("ANKI_MEDIA_DIR");
+
+        if (v != null && !v.isBlank()) {
+            Path dir = Path.of(v).toAbsolutePath();
+            if (!Files.isDirectory(dir)) {
+                throw new IllegalStateException("Configured Anki media directory '" + dir + "' is not a directory");
+            }
+            return dir;
+        }
+
+        String os = System.getProperty("os.name", "").toLowerCase();
+        if (os.contains("mac")) {
+            String home = System.getProperty("user.home");
+            Path macDefault = Path.of(home, "Library", "Application Support", "Anki2", "User 1", "collection.media");
+            if (Files.isDirectory(macDefault)) return macDefault.toAbsolutePath();
+        }
+
+        return null;
     }
 }

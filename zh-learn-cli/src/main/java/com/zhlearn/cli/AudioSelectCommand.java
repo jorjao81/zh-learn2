@@ -48,7 +48,7 @@ public class AudioSelectCommand implements Runnable {
 
         com.zhlearn.application.audio.PronunciationCandidate selected = new com.zhlearn.cli.audio.InteractiveAudioUI().run(session);
         if (selected != null) {
-            System.out.println("Selected: " + selected.soundNotation());
+            System.out.println("Selected: " + selected.file().toAbsolutePath());
         } else {
             System.out.println("Skipped.");
         }

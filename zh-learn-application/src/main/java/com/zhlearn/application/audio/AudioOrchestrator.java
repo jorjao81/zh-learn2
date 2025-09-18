@@ -29,41 +29,52 @@ public class AudioOrchestrator {
             Optional<AudioProvider> providerOpt = registry.getAudioProvider(providerName);
             if (providerOpt.isEmpty()) continue;
             AudioProvider provider = providerOpt.get();
-            java.util.List<String> sounds = provider.getPronunciations(word, pinyin);
-            for (String s : sounds) {
-                if (s == null || s.isBlank()) continue;
+            List<Path> paths = provider.getPronunciations(word, pinyin);
+            for (Path path : paths) {
+                if (path == null) continue;
                 list.add(new PronunciationCandidate(
                     provider.getName(),
-                    s,
-                    resolvePath(extractFileName(s))
+                    resolvePath(provider.getName(), path)
                 ));
             }
         }
         return list;
     }
 
-    static String extractFileName(String soundNotation) {
-        // Expect format: [sound:filename.mp3]
-        if (soundNotation == null) return "";
-        int colon = soundNotation.indexOf(':');
-        int end = soundNotation.indexOf(']');
-        if (colon != -1 && end != -1 && end > colon + 1) {
-            return soundNotation.substring(colon + 1, end);
+    static Path resolvePath(String providerName, Path provided) {
+        if (provided == null) {
+            throw new IllegalArgumentException("Audio provider returned null path");
         }
-        return soundNotation;
-    }
 
-    static Path resolvePath(String fileName) {
-        Path original = Path.of(fileName);
-        if (Files.exists(original)) {
-            return original.toAbsolutePath();
+        Path candidate = provided;
+        if (candidate.isAbsolute() && Files.exists(candidate)) {
+            return candidate.toAbsolutePath();
+        }
+
+        String fileName = candidate.getFileName() != null ? candidate.getFileName().toString() : candidate.toString();
+
+        if (!candidate.isAbsolute()) {
+            Path providerCache = audioDir().resolve(providerName).resolve(fileName);
+            if (Files.exists(providerCache)) {
+                return providerCache.toAbsolutePath();
+            }
+
+            Path sharedCache = audioDir().resolve(fileName);
+            if (Files.exists(sharedCache)) {
+                return sharedCache.toAbsolutePath();
+            }
+
+            Path relative = Path.of(candidate.toString());
+            if (Files.exists(relative)) {
+                return relative.toAbsolutePath();
+            }
         }
 
         Path anki = ankiMediaDir();
         if (anki != null) {
-            Path candidate = anki.resolve(fileName);
-            if (Files.exists(candidate)) {
-                return candidate.toAbsolutePath();
+            Path fromAnki = anki.resolve(fileName);
+            if (Files.exists(fromAnki)) {
+                return fromAnki.toAbsolutePath();
             }
         }
 
@@ -79,7 +90,34 @@ public class AudioOrchestrator {
             throw new UncheckedIOException("Failed to resolve audio resource '" + fileName + "'", e);
         }
 
-        return original;
+        return candidate.isAbsolute() ? candidate.toAbsolutePath() : candidate.toAbsolutePath();
+    }
+
+    private static Path audioDir() {
+        Path base = audioHome();
+        Path audio = base.resolve("audio");
+        try {
+            Files.createDirectories(audio);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to prepare audio directory at " + audio, e);
+        }
+        return audio;
+    }
+
+    private static Path audioHome() {
+        String override = System.getProperty("zhlearn.home");
+        if (override == null || override.isBlank()) {
+            override = System.getenv("ZHLEARN_HOME");
+        }
+        Path base = (override == null || override.isBlank())
+            ? Path.of(System.getProperty("user.home"), ".zh-learn")
+            : Path.of(override);
+        try {
+            Files.createDirectories(base);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to prepare zh-learn home at " + base, e);
+        }
+        return base.toAbsolutePath();
     }
 
     private static InputStream openResourceStream(String resourcePath) {

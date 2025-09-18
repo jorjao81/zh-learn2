@@ -6,6 +6,7 @@ import com.zhlearn.domain.provider.AudioProvider;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,8 +17,8 @@ class AudioProviderRegistrationTest {
         @Override public String getName() { return "fake-audio"; }
         @Override public String getDescription() { return "Fake audio provider for tests"; }
         @Override public ProviderType getType() { return ProviderType.DUMMY; }
-        @Override public Optional<String> getPronunciation(Hanzi word, Pinyin pinyin) {
-            return Optional.of("[sound:test.mp3]");
+        @Override public Optional<Path> getPronunciation(Hanzi word, Pinyin pinyin) {
+            return Optional.of(Path.of("test.mp3"));
         }
     }
 
@@ -44,7 +45,8 @@ class AudioProviderRegistrationTest {
 
         service.addAudioProvider("fake-audio", new FakeAudioProvider());
 
-        Optional<String> result = service.getPronunciation(new Hanzi("学"), new Pinyin("xué"), "fake-audio");
-        assertThat(result).contains("[sound:test.mp3]");
+        Optional<Path> result = service.getPronunciation(new Hanzi("学"), new Pinyin("xué"), "fake-audio");
+        assertThat(result).isPresent();
+        assertThat(result.get().getFileName().toString()).isEqualTo("test.mp3");
     }
 }
