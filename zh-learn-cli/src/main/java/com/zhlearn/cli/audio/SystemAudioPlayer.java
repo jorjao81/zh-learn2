@@ -1,6 +1,7 @@
 package com.zhlearn.cli.audio;
 
 import com.zhlearn.application.audio.AudioPlayer;
+import com.zhlearn.application.audio.AnkiMediaLocator;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -67,13 +68,11 @@ public class SystemAudioPlayer implements AudioPlayer {
     private Path tryFromAnkiMedia(Path file) {
         String name = (file == null) ? null : file.getFileName().toString();
         if (name == null || name.isBlank()) return null;
-        String cfg = System.getProperty("anki.media.dir");
-        if (cfg == null || cfg.isBlank()) cfg = System.getProperty("zhlearn.anki.media.dir");
-        if (cfg == null || cfg.isBlank()) cfg = System.getenv("ANKI_MEDIA_DIR");
-        if (cfg == null || cfg.isBlank()) cfg = System.getenv("ZHLEARN_ANKI_MEDIA_DIR");
-        if (cfg == null || cfg.isBlank()) return null;
-        Path dir = Path.of(cfg);
-        Path candidate = dir.resolve(name);
+        java.util.Optional<Path> mediaDir = AnkiMediaLocator.locate();
+        if (mediaDir.isEmpty()) {
+            return null;
+        }
+        Path candidate = mediaDir.get().resolve(name);
         if (!Files.exists(candidate)) {
             throw new IllegalStateException("Configured Anki media file not found: " + candidate.toAbsolutePath());
         }

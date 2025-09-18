@@ -70,9 +70,9 @@ public class AudioOrchestrator {
             }
         }
 
-        Path anki = ankiMediaDir();
-        if (anki != null) {
-            Path fromAnki = anki.resolve(fileName);
+        Optional<Path> ankiDir = AnkiMediaLocator.locate();
+        if (ankiDir.isPresent()) {
+            Path fromAnki = ankiDir.get().resolve(fileName);
             if (Files.exists(fromAnki)) {
                 return fromAnki.toAbsolutePath();
             }
@@ -129,29 +129,4 @@ public class AudioOrchestrator {
         return in;
     }
 
-    private static Path ankiMediaDir() {
-        // priority: system property -> env vars -> OS default (macOS)
-        String v = System.getProperty("zhlearn.anki.media.dir");
-        if (v == null || v.isBlank()) v = System.getProperty("zhlearn.anki.mediaDir");
-        if (v == null || v.isBlank()) v = System.getProperty("anki.media.dir");
-        if (v == null || v.isBlank()) v = System.getenv("ZHLEARN_ANKI_MEDIA_DIR");
-        if (v == null || v.isBlank()) v = System.getenv("ANKI_MEDIA_DIR");
-
-        if (v != null && !v.isBlank()) {
-            Path dir = Path.of(v).toAbsolutePath();
-            if (!Files.isDirectory(dir)) {
-                throw new IllegalStateException("Configured Anki media directory '" + dir + "' is not a directory");
-            }
-            return dir;
-        }
-
-        String os = System.getProperty("os.name", "").toLowerCase();
-        if (os.contains("mac")) {
-            String home = System.getProperty("user.home");
-            Path macDefault = Path.of(home, "Library", "Application Support", "Anki2", "User 1", "collection.media");
-            if (Files.isDirectory(macDefault)) return macDefault.toAbsolutePath();
-        }
-
-        return null;
-    }
 }

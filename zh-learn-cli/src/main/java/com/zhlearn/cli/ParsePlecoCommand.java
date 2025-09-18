@@ -1,12 +1,18 @@
 package com.zhlearn.cli;
 
-import com.zhlearn.application.service.WordAnalysisServiceImpl;
-import com.zhlearn.application.service.ParallelWordAnalysisService;
+import com.zhlearn.application.audio.AudioOrchestrator;
+import com.zhlearn.application.audio.PronunciationCandidate;
+import com.zhlearn.application.audio.SelectionSession;
 import com.zhlearn.application.service.AnkiExporter;
+import com.zhlearn.application.service.ParallelWordAnalysisService;
+import com.zhlearn.application.service.WordAnalysisServiceImpl;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.ProviderConfiguration;
 import com.zhlearn.domain.model.WordAnalysis;
 import com.zhlearn.domain.service.WordAnalysisService;
+import com.zhlearn.cli.audio.InteractiveAudioUI;
+import com.zhlearn.cli.audio.PrePlayback;
+import com.zhlearn.cli.audio.SystemAudioPlayer;
 import com.zhlearn.infrastructure.dictionary.PlecoExportDictionary;
 import com.zhlearn.infrastructure.dictionary.DictionaryDefinitionProvider;
 import com.zhlearn.infrastructure.dictionary.DictionaryPinyinProvider;
@@ -22,12 +28,16 @@ import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
+
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 
 /**
  * CLI command to parse Pleco export files and process all words through the analysis pipeline.
@@ -153,6 +163,10 @@ public class ParsePlecoCommand implements Runnable {
                 .limit(maxToProcess)
                 .collect(Collectors.toList());
             
+            if (!entriesToProcess.isEmpty()) {
+                ensureInteractiveAudioSupported();
+            }
+
             // Thread-safe collection to store successful analyses for export
             List<WordAnalysis> successfulAnalyses = new CopyOnWriteArrayList<>();
             
@@ -179,19 +193,20 @@ public class ParsePlecoCommand implements Runnable {
         }
     }
     
-    private void processWordsSequentially(List<PlecoEntry> entries, WordAnalysisService wordAnalysisService, 
+    private void processWordsSequentially(List<PlecoEntry> entries, WordAnalysisService wordAnalysisService,
                                         ProviderConfiguration config, int maxToProcess, List<WordAnalysis> successfulAnalyses) {
         int processedCount = 0;
-        
+        AudioOrchestrator audioOrchestrator = new AudioOrchestrator(parent.getProviderRegistry());
+        InteractiveAudioUI audioUI = new InteractiveAudioUI();
+
         for (PlecoEntry entry : entries) {
             try {
                 Hanzi word = new Hanzi(entry.hanzi());
                 WordAnalysis analysis = wordAnalysisService.getCompleteAnalysis(word, config);
-                
                 printWordAnalysis(analysis, processedCount + 1, maxToProcess);
-                successfulAnalyses.add(analysis); // Collect for export
+                WordAnalysis updated = runAudioSelection(audioOrchestrator, audioUI, analysis);
+                successfulAnalyses.add(updated); // Collect for export
                 processedCount++;
-                
             } catch (RuntimeException e) {
                 System.err.println("Error analyzing word '" + entry.hanzi() + "': " + e.getMessage());
             }
@@ -261,10 +276,19 @@ public class ParsePlecoCommand implements Runnable {
             
             // Wait for all displays to complete
             CompletableFuture.allOf(displayFutures.toArray(new CompletableFuture[0])).join();
-            
+
+            if (!successfulAnalyses.isEmpty()) {
+                AudioOrchestrator audioOrchestrator = new AudioOrchestrator(parent.getProviderRegistry());
+                InteractiveAudioUI audioUI = new InteractiveAudioUI();
+                for (int i = 0; i < successfulAnalyses.size(); i++) {
+                    WordAnalysis updated = runAudioSelection(audioOrchestrator, audioUI, successfulAnalyses.get(i));
+                    successfulAnalyses.set(i, updated);
+                }
+            }
+
             long overallDuration = System.currentTimeMillis() - overallStartTime;
             System.out.println("=".repeat(80));
-            System.out.printf("Processing complete! %d words successful, %d errors in %.2fs%n", 
+            System.out.printf("Processing complete! %d words successful, %d errors in %.2fs%n",
                 successCount.get(), errorCount.get(), overallDuration / 1000.0);
             
         } finally {
@@ -284,6 +308,72 @@ public class ParsePlecoCommand implements Runnable {
         }
         
         System.out.println();
+    }
+
+    private WordAnalysis runAudioSelection(AudioOrchestrator orchestrator, InteractiveAudioUI audioUI, WordAnalysis analysis) {
+        List<PronunciationCandidate> rawCandidates = orchestrator.candidatesFor(analysis.word(), analysis.pinyin());
+        if (rawCandidates.isEmpty()) {
+            System.out.printf("No pronunciation candidates available for '%s'.%n%n", analysis.word().characters());
+            return analysis;
+        }
+
+        List<PronunciationCandidate> candidates = PrePlayback.preprocessCandidates(analysis.word(), analysis.pinyin(), rawCandidates);
+        if (candidates.isEmpty()) {
+            System.out.printf("No playable pronunciation candidates available for '%s'.%n%n", analysis.word().characters());
+            return analysis;
+        }
+
+        System.out.printf("Selecting audio for '%s' (%s)%n", analysis.word().characters(), analysis.pinyin().pinyin());
+        SystemAudioPlayer player = new SystemAudioPlayer();
+        SelectionSession session = new SelectionSession(candidates, player);
+        PronunciationCandidate choice;
+        try {
+            choice = audioUI.run(session);
+        } finally {
+            player.stop();
+        }
+
+        if (choice == null) {
+            System.out.println("No audio selected.");
+            System.out.println();
+            return analysis;
+        }
+
+        System.out.println("Selected audio: " + choice.file().toAbsolutePath());
+        System.out.println();
+
+        return new WordAnalysis(
+            analysis.word(),
+            analysis.pinyin(),
+            analysis.definition(),
+            analysis.structuralDecomposition(),
+            analysis.examples(),
+            analysis.explanation(),
+            Optional.of(choice.file().toAbsolutePath())
+        );
+    }
+
+    private void ensureInteractiveAudioSupported() {
+        if (System.console() != null) {
+            return;
+        }
+
+        try (Terminal terminal = TerminalBuilder.builder().system(true).build()) {
+            if (terminal == null || "dumb".equalsIgnoreCase(terminal.getType())) {
+                failNonInteractiveTerminal();
+            }
+        } catch (IOException e) {
+            System.err.println("Unable to initialize terminal for audio selection: " + e.getMessage());
+            System.exit(1);
+        } catch (IllegalStateException e) {
+            failNonInteractiveTerminal();
+        }
+    }
+
+    private void failNonInteractiveTerminal() {
+        System.err.println("parse-pleco requires an interactive terminal that supports raw mode for audio selection.");
+        System.err.println("Run zh-learn from a terminal (no piping or redirection) to continue.");
+        System.exit(1);
     }
     
     /**

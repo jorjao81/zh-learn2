@@ -1,7 +1,8 @@
 package com.zhlearn.application.service;
 
-import com.zhlearn.application.format.ExamplesHtmlFormatter;
+import com.zhlearn.application.audio.AnkiMediaLocator;
 import com.zhlearn.application.export.AnkiExportEntry;
+import com.zhlearn.application.format.ExamplesHtmlFormatter;
 import com.zhlearn.domain.model.WordAnalysis;
 
 import java.io.IOException;
@@ -9,7 +10,9 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service for exporting WordAnalysis results to Anki-compatible TSV format.
@@ -25,13 +28,12 @@ public class AnkiExporter {
         try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(outputFile, StandardCharsets.UTF_8))) {
             // Write Anki TSV headers
             writeAnkiHeaders(writer);
-            
+            Optional<Path> ankiMediaDir = AnkiMediaLocator.locate();
+
             // Write data rows
             for (WordAnalysis analysis : analyses) {
                 String examplesHtml = ExamplesHtmlFormatter.format(analysis.examples());
-                String soundNotation = analysis.pronunciation()
-                    .map(path -> "[sound:" + path.getFileName().toString() + "]")
-                    .orElse("");
+                String soundNotation = buildSoundNotation(analysis.pronunciation(), ankiMediaDir);
 
                 AnkiExportEntry entry = new AnkiExportEntry(
                     "Chinese 2",
@@ -58,6 +60,48 @@ public class AnkiExporter {
      */
     public void exportToFile(List<WordAnalysis> analyses, String filename) throws IOException {
         exportToFile(analyses, Path.of(filename));
+    }
+
+    private String buildSoundNotation(Optional<Path> pronunciation, Optional<Path> ankiMediaDir) throws IOException {
+        if (pronunciation.isEmpty()) {
+            return "";
+        }
+        Path target = ensureAudioInAnkiMedia(pronunciation.get(), ankiMediaDir);
+        Path fileName = target.getFileName();
+        if (fileName == null) {
+            throw new IOException("Unable to derive filename for pronunciation audio: " + target);
+        }
+        return "[sound:" + fileName.toString() + "]";
+    }
+
+    private Path ensureAudioInAnkiMedia(Path audioFile, Optional<Path> ankiMediaDir) throws IOException {
+        Path source = audioFile.toAbsolutePath().normalize();
+        if (!Files.exists(source)) {
+            throw new IOException("Pronunciation audio file not found: " + source);
+        }
+
+        if (ankiMediaDir.isEmpty()) {
+            return source;
+        }
+
+        Path mediaDir = ankiMediaDir.get().toAbsolutePath().normalize();
+        Files.createDirectories(mediaDir);
+
+        if (source.startsWith(mediaDir)) {
+            return source;
+        }
+
+        Path target = mediaDir.resolve(source.getFileName());
+        if (Files.exists(target)) {
+            if (Files.isSameFile(source, target)) {
+                return target.toAbsolutePath();
+            }
+            Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+            return target.toAbsolutePath();
+        }
+
+        Files.copy(source, target);
+        return target.toAbsolutePath();
     }
 
     /**

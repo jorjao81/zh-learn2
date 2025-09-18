@@ -46,6 +46,13 @@ cd zh-learn-cli && mvn native:compile-no-fork -Pnative
 #   ANKI_MEDIA_DIR=/path/to/Anki2/User\ 1/collection.media
 ```
 
+### Parse Pleco export with interactive audio
+- `./zh-learn.sh parse-pleco Chinese.txt`
+- Requires an interactive terminal (JLine raw mode). Run from a real TTY; piping or redirecting output will exit immediately.
+- Each analyzed word launches the audio selector (arrow keys navigate, Space replays, Enter selects, Esc skips).
+- Selected audio is normalized into `~/.zh-learn/audio/<provider>/...` and copied into the configured Anki media directory before TSV export.
+- Configure the Anki media directory via `ZHLEARN_ANKI_MEDIA_DIR` or `-Dzhlearn.anki.media.dir=/path/to/collection.media` so the exported `[sound:...]` references resolve inside Anki.
+
 ### Native executable
 ```bash
 ./zh-learn-cli/target/zh-learn word 学习
