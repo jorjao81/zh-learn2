@@ -6,33 +6,14 @@ import com.zhlearn.domain.provider.StructuralDecompositionProvider;
 import com.zhlearn.domain.provider.PinyinProvider;
 import com.zhlearn.domain.provider.DefinitionProvider;
 import com.zhlearn.domain.provider.AudioProvider;
-import com.zhlearn.domain.model.Example;
-import com.zhlearn.domain.model.Explanation;
-import com.zhlearn.domain.model.StructuralDecomposition;
-import com.zhlearn.infrastructure.common.ConfigurableExampleProvider;
-import com.zhlearn.infrastructure.common.ConfigurableExplanationProvider;
-import com.zhlearn.infrastructure.common.ConfigurableStructuralDecompositionProvider;
-import com.zhlearn.infrastructure.common.SimpleProviderConfig;
-import com.zhlearn.infrastructure.common.ZhipuChatModelProvider;
-import com.zhlearn.infrastructure.common.ConfigurableGLMProvider;
-import com.zhlearn.infrastructure.common.DashScopeConfig;
-import com.zhlearn.infrastructure.common.GenericChatModelProvider;
-import com.zhlearn.infrastructure.common.ConfigurableQwenProvider;
+import com.zhlearn.infrastructure.common.AIProviderFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import com.zhlearn.infrastructure.pinyin4j.Pinyin4jProvider;
 import com.zhlearn.infrastructure.dummy.DummyDefinitionProvider;
-import com.zhlearn.infrastructure.dummy.DummyExampleProvider;
-import com.zhlearn.infrastructure.dummy.DummyExplanationProvider;
-import com.zhlearn.infrastructure.dummy.DummyStructuralDecompositionProvider;
 import com.zhlearn.infrastructure.anki.AnkiPronunciationProvider;
 import com.zhlearn.infrastructure.qwen.QwenAudioProvider;
 import com.zhlearn.infrastructure.forvo.ForvoAudioProvider;
-
-import java.util.List;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.ScopeType;
 
@@ -66,93 +47,15 @@ public class MainCommand implements Runnable {
 
     // AI Provider factory methods - create on demand and crash if fails
     public ExampleProvider createExampleProvider(String providerName) {
-        if (providerName == null) providerName = "deepseek-chat";
-
-        return switch (providerName) {
-            case "dummy" -> new DummyExampleProvider();
-            case "deepseek-chat" -> {
-                requireAPIKey("DEEPSEEK_API_KEY", providerName);
-                var config = new SimpleProviderConfig(
-                    "deepseek-chat", "DeepSeek AI provider", "https://api.deepseek.com/v1",
-                    "deepseek-chat", SimpleProviderConfig.readEnv("DEEPSEEK_API_KEY"), 0.3, 8000);
-                yield new ConfigurableExampleProvider(
-                    config.toInternalConfig(Example.class), "deepseek-chat", "DeepSeek AI-powered example provider");
-            }
-            case "glm-4-flash" -> {
-                requireAPIKey("ZHIPU_API_KEY", providerName);
-                yield new ConfigurableGLMProvider("glm-4-flash", "glm-4-flash", "GLM-4 Flash AI provider");
-            }
-            case "glm-4.5" -> {
-                requireAPIKey("ZHIPU_API_KEY", providerName);
-                yield new ConfigurableGLMProvider("glm-4.5", "glm-4.5", "GLM-4.5 AI provider");
-            }
-            case "qwen-max", "qwen-plus", "qwen-turbo" -> {
-                requireAPIKey("DASHSCOPE_API_KEY", providerName);
-                yield new ConfigurableQwenProvider(providerName, providerName, "Qwen AI provider (" + providerName + ")");
-            }
-            default -> throw new RuntimeException("Unknown example provider: " + providerName +
-                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo");
-        };
+        return AIProviderFactory.createExampleProvider(providerName);
     }
 
     public ExplanationProvider createExplanationProvider(String providerName) {
-        if (providerName == null) providerName = "deepseek-chat";
-
-        return switch (providerName) {
-            case "dummy" -> new DummyExplanationProvider();
-            case "deepseek-chat" -> {
-                requireAPIKey("DEEPSEEK_API_KEY", providerName);
-                var config = new SimpleProviderConfig(
-                    "deepseek-chat", "DeepSeek AI provider", "https://api.deepseek.com/v1",
-                    "deepseek-chat", SimpleProviderConfig.readEnv("DEEPSEEK_API_KEY"), 0.3, 8000);
-                yield new ConfigurableExplanationProvider(
-                    config.toInternalConfig(Explanation.class), "deepseek-chat", "DeepSeek AI-powered explanation provider");
-            }
-            case "glm-4-flash" -> {
-                requireAPIKey("ZHIPU_API_KEY", providerName);
-                yield new ConfigurableGLMProvider("glm-4-flash", "glm-4-flash", "GLM-4 Flash AI provider");
-            }
-            case "glm-4.5" -> {
-                requireAPIKey("ZHIPU_API_KEY", providerName);
-                yield new ConfigurableGLMProvider("glm-4.5", "glm-4.5", "GLM-4.5 AI provider");
-            }
-            case "qwen-max", "qwen-plus", "qwen-turbo" -> {
-                requireAPIKey("DASHSCOPE_API_KEY", providerName);
-                yield new ConfigurableQwenProvider(providerName, providerName, "Qwen AI provider (" + providerName + ")");
-            }
-            default -> throw new RuntimeException("Unknown explanation provider: " + providerName +
-                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo");
-        };
+        return AIProviderFactory.createExplanationProvider(providerName);
     }
 
     public StructuralDecompositionProvider createDecompositionProvider(String providerName) {
-        if (providerName == null) providerName = "deepseek-chat";
-
-        return switch (providerName) {
-            case "dummy" -> new DummyStructuralDecompositionProvider();
-            case "deepseek-chat" -> {
-                requireAPIKey("DEEPSEEK_API_KEY", providerName);
-                var config = new SimpleProviderConfig(
-                    "deepseek-chat", "DeepSeek AI provider", "https://api.deepseek.com/v1",
-                    "deepseek-chat", SimpleProviderConfig.readEnv("DEEPSEEK_API_KEY"), 0.3, 8000);
-                yield new ConfigurableStructuralDecompositionProvider(
-                    config.toInternalConfig(StructuralDecomposition.class), "deepseek-chat", "DeepSeek AI-powered structural decomposition provider");
-            }
-            case "glm-4-flash" -> {
-                requireAPIKey("ZHIPU_API_KEY", providerName);
-                yield new ConfigurableGLMProvider("glm-4-flash", "glm-4-flash", "GLM-4 Flash AI provider");
-            }
-            case "glm-4.5" -> {
-                requireAPIKey("ZHIPU_API_KEY", providerName);
-                yield new ConfigurableGLMProvider("glm-4.5", "glm-4.5", "GLM-4.5 AI provider");
-            }
-            case "qwen-max", "qwen-plus", "qwen-turbo" -> {
-                requireAPIKey("DASHSCOPE_API_KEY", providerName);
-                yield new ConfigurableQwenProvider(providerName, providerName, "Qwen AI provider (" + providerName + ")");
-            }
-            default -> throw new RuntimeException("Unknown decomposition provider: " + providerName +
-                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo");
-        };
+        return AIProviderFactory.createDecompositionProvider(providerName);
     }
 
     public PinyinProvider createPinyinProvider(String providerName) {
@@ -175,12 +78,6 @@ public class MainCommand implements Runnable {
         };
     }
 
-    private void requireAPIKey(String keyName, String providerName) {
-        String key = SimpleProviderConfig.readEnv(keyName);
-        if (key == null || key.trim().isEmpty()) {
-            throw new RuntimeException("Provider '" + providerName + "' requires " + keyName + " environment variable to be set");
-        }
-    }
 
 
 

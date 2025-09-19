@@ -1,0 +1,34 @@
+package com.zhlearn.infrastructure.common;
+
+import com.zhlearn.domain.model.Example;
+
+import java.util.function.Function;
+
+public class ExampleProviderConfig {
+
+    public static final String TEMPLATE_PATH = "/examples/prompt-template.md";
+    public static final String EXAMPLES_DIRECTORY = "/examples/examples/";
+    public static final Function<String, Example> RESPONSE_MAPPER = new ExampleResponseMapper();
+    public static final Double DEFAULT_TEMPERATURE = 0.3;
+    public static final Integer DEFAULT_MAX_TOKENS = 8000;
+
+    public static String templatePath() {
+        return TEMPLATE_PATH;
+    }
+
+    public static String examplesDirectory() {
+        return EXAMPLES_DIRECTORY;
+    }
+
+    public static Function<String, Example> responseMapper() {
+        return RESPONSE_MAPPER;
+    }
+
+    public static Double defaultTemperature() {
+        return DEFAULT_TEMPERATURE;
+    }
+
+    public static Integer defaultMaxTokens() {
+        return DEFAULT_MAX_TOKENS;
+    }
+}
