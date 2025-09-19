@@ -1,16 +1,8 @@
 package com.zhlearn.cli;
 
-import com.zhlearn.application.service.ProviderRegistry;
 import com.zhlearn.domain.model.ProviderInfo;
 import com.zhlearn.domain.model.ProviderInfo.ProviderClass;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
-import com.zhlearn.infrastructure.deepseek.DeepSeekExampleProvider;
-import com.zhlearn.infrastructure.deepseek.DeepSeekExplanationProvider;
-import com.zhlearn.infrastructure.deepseek.DeepSeekStructuralDecompositionProvider;
-import com.zhlearn.infrastructure.dummy.*;
-import com.zhlearn.infrastructure.gpt5nano.GPT5NanoExampleProvider;
-import com.zhlearn.infrastructure.gpt5nano.GPT5NanoExplanationProvider;
-import com.zhlearn.infrastructure.gpt5nano.GPT5NanoStructuralDecompositionProvider;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -40,26 +32,36 @@ public class ProvidersCommand implements Runnable {
 
     @Override
     public void run() {
-        List<ProviderInfo> providers = parent.getProviderRegistry().getAllProviderInfo();
-        
+        // Create fixed provider info for the current configuration
+        List<ProviderInfo> providers = List.of(
+            new ProviderInfo("deepseek-chat", "DeepSeek AI provider",
+                ProviderType.AI, EnumSet.of(ProviderClass.EXAMPLE, ProviderClass.EXPLANATION, ProviderClass.STRUCTURAL_DECOMPOSITION)),
+            new ProviderInfo("pinyin4j", "Pinyin4j local provider",
+                ProviderType.LOCAL, EnumSet.of(ProviderClass.PINYIN)),
+            new ProviderInfo("dictionary", "Dictionary-based definition provider",
+                ProviderType.DICTIONARY, EnumSet.of(ProviderClass.DEFINITION)),
+            new ProviderInfo("anki", "Anki audio pronunciation provider",
+                ProviderType.LOCAL, EnumSet.of(ProviderClass.AUDIO))
+        );
+
         // Apply filters
         if (filterType != null) {
             providers = providers.stream()
                 .filter(p -> p.type() == filterType)
                 .collect(Collectors.toList());
         }
-        
+
         if (filterClass != null) {
             providers = providers.stream()
                 .filter(p -> p.supportedClasses().contains(filterClass))
                 .collect(Collectors.toList());
         }
-        
+
         if (providers.isEmpty()) {
             System.out.println("No providers found matching the specified criteria.");
             return;
         }
-        
+
         displayProviders(providers);
     }
     

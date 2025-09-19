@@ -1,6 +1,7 @@
 package com.zhlearn.application.service;
 
 import com.zhlearn.domain.model.*;
+import com.zhlearn.domain.provider.*;
 import com.zhlearn.domain.service.WordAnalysisService;
 
 import java.nio.file.Path;
@@ -19,13 +20,27 @@ public class ParallelWordAnalysisService implements WordAnalysisService {
     private final WordAnalysisServiceImpl delegate;
     private final ExecutorService executorService;
 
-    public ParallelWordAnalysisService(ProviderRegistry registry, int threadPoolSize) {
-        this.delegate = new WordAnalysisServiceImpl(registry);
+    public ParallelWordAnalysisService(ExampleProvider exampleProvider,
+                                     ExplanationProvider explanationProvider,
+                                     StructuralDecompositionProvider decompositionProvider,
+                                     PinyinProvider pinyinProvider,
+                                     DefinitionProvider definitionProvider,
+                                     AudioProvider audioProvider,
+                                     int threadPoolSize) {
+        this.delegate = new WordAnalysisServiceImpl(exampleProvider, explanationProvider,
+                                                   decompositionProvider, pinyinProvider,
+                                                   definitionProvider, audioProvider);
         this.executorService = Executors.newFixedThreadPool(threadPoolSize);
     }
 
-    public ParallelWordAnalysisService(ProviderRegistry registry) {
-        this(registry, 10); // Default to 10 threads
+    public ParallelWordAnalysisService(ExampleProvider exampleProvider,
+                                     ExplanationProvider explanationProvider,
+                                     StructuralDecompositionProvider decompositionProvider,
+                                     PinyinProvider pinyinProvider,
+                                     DefinitionProvider definitionProvider,
+                                     AudioProvider audioProvider) {
+        this(exampleProvider, explanationProvider, decompositionProvider, pinyinProvider,
+             definitionProvider, audioProvider, 10); // Default to 10 threads
     }
 
     @Override

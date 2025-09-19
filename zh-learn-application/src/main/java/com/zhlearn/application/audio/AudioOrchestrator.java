@@ -1,6 +1,5 @@
 package com.zhlearn.application.audio;
 
-import com.zhlearn.application.service.ProviderRegistry;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.provider.AudioProvider;
@@ -8,22 +7,18 @@ import com.zhlearn.domain.provider.AudioProvider;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class AudioOrchestrator {
 
-    private final ProviderRegistry registry;
+    private final List<AudioProvider> audioProviders;
 
-    public AudioOrchestrator(ProviderRegistry registry) {
-        this.registry = registry;
+    public AudioOrchestrator(List<AudioProvider> audioProviders) {
+        this.audioProviders = audioProviders;
     }
 
     public List<PronunciationCandidate> candidatesFor(Hanzi word, Pinyin pinyin) {
         List<PronunciationCandidate> list = new ArrayList<>();
-        for (String providerName : registry.getAvailableAudioProviders()) {
-            Optional<AudioProvider> providerOpt = registry.getAudioProvider(providerName);
-            if (providerOpt.isEmpty()) continue;
-            AudioProvider provider = providerOpt.get();
+        for (AudioProvider provider : audioProviders) {
             List<Path> paths = provider.getPronunciations(word, pinyin);
             for (Path path : paths) {
                 if (path == null) continue;

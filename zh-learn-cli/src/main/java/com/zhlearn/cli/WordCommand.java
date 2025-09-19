@@ -1,6 +1,5 @@
 package com.zhlearn.cli;
 
-import com.zhlearn.application.service.ProviderRegistry;
 import com.zhlearn.application.service.WordAnalysisServiceImpl;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.ProviderConfiguration;
@@ -50,33 +49,31 @@ public class WordCommand implements Runnable {
 
     @Override
     public void run() {
-        WordAnalysisServiceImpl wordAnalysisService = new WordAnalysisServiceImpl(parent.getProviderRegistry());
-        // Validate providers before processing
-        String validationError = validateProviders();
-        if (validationError != null) {
-            System.err.println(validationError);
-            System.exit(1);
-        }
-        
-        String effectiveAudioProvider = audioProvider;
-        if (effectiveAudioProvider == null || effectiveAudioProvider.isBlank()) {
-            effectiveAudioProvider = parent.getProviderRegistry().getAudioProvider("anki").isPresent()
-                ? "anki" : null;
-        }
-
-        ProviderConfiguration config = new ProviderConfiguration(
-            defaultProvider,
-            pinyinProvider,
-            definitionProvider,
-            decompositionProvider,
-            exampleProvider,
-            explanationProvider,
-            effectiveAudioProvider
+        // Create service with providers from MainCommand
+        WordAnalysisServiceImpl wordAnalysisService = new WordAnalysisServiceImpl(
+            parent.getExampleProvider(),
+            parent.getExplanationProvider(),
+            parent.getDecompositionProvider(),
+            parent.getPinyinProvider(),
+            parent.getDefinitionProvider(),
+            parent.getAudioProvider()
         );
-        
+
+        // Provider names are no longer used for selection - providers are fixed at startup
+        // But we keep the config for backward compatibility
+        ProviderConfiguration config = new ProviderConfiguration(
+            "deepseek-chat", // Fixed provider
+            "pinyin4j",      // Fixed provider
+            "dictionary",    // Fixed provider
+            "deepseek-chat", // Fixed provider
+            "deepseek-chat", // Fixed provider
+            "deepseek-chat", // Fixed provider
+            "anki"           // Fixed provider
+        );
+
         Hanzi word = new Hanzi(chineseWord);
         WordAnalysis analysis = wordAnalysisService.getCompleteAnalysis(word, config);
-        
+
         if (rawOutput) {
             AnalysisPrinter.printRaw(analysis);
         } else {
@@ -84,64 +81,6 @@ public class WordCommand implements Runnable {
         }
     }
     
-    private String validateProviders() {
-        ProviderRegistry registry = parent.getProviderRegistry();
-        
-        // Check each provider
-        String[] providers = {
-            defaultProvider, pinyinProvider, definitionProvider, 
-            decompositionProvider, exampleProvider, explanationProvider,
-            audioProvider
-        };
-        String[] providerTypes = {
-            "default", "pinyin", "definition", 
-            "decomposition", "example", "explanation",
-            "audio"
-        };
-        
-        for (int i = 0; i < providers.length; i++) {
-            String provider = providers[i];
-            String type = providerTypes[i];
-            
-            if (provider != null && !isProviderAvailable(registry, provider)) {
-                return createProviderNotFoundError(registry, provider, type);
-            }
-        }
-        
-        return null; // All providers valid
-    }
-    
-    private boolean isProviderAvailable(ProviderRegistry registry, String providerName) {
-        return registry.getPinyinProvider(providerName).isPresent() ||
-               registry.getDefinitionProvider(providerName).isPresent() ||
-               registry.getStructuralDecompositionProvider(providerName).isPresent() ||
-               registry.getExampleProvider(providerName).isPresent() ||
-               registry.getExplanationProvider(providerName).isPresent() ||
-               registry.getAudioProvider(providerName).isPresent();
-    }
-    
-    private String createProviderNotFoundError(ProviderRegistry registry, String requestedProvider, String providerType) {
-        StringBuilder error = new StringBuilder();
-        error.append("Provider '").append(requestedProvider).append("' not found");
-        if (!providerType.equals("default")) {
-            error.append(" for ").append(providerType);
-        }
-        error.append(".\n\n");
-        
-        // Find similar providers
-        List<String> similarProviders = registry.findSimilarProviders(requestedProvider);
-        if (!similarProviders.isEmpty()) {
-            error.append("Did you mean one of these?\n");
-            for (String similar : similarProviders) {
-                error.append("  - ").append(similar).append("\n");
-            }
-            error.append("\n");
-        }
-        
-        error.append("Use 'zh-learn providers' to see all available providers.");
-        
-        return error.toString();
-    }
     
     private void printAnalysisFormatted(WordAnalysis analysis) { AnalysisPrinter.printFormatted(analysis); }
     private void printAnalysisRaw(WordAnalysis analysis) { AnalysisPrinter.printRaw(analysis); }

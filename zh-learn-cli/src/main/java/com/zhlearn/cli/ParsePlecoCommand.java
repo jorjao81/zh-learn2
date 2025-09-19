@@ -5,7 +5,6 @@ import com.zhlearn.application.audio.PronunciationCandidate;
 import com.zhlearn.application.audio.SelectionSession;
 import com.zhlearn.application.service.AnkiExporter;
 import com.zhlearn.application.service.ParallelWordAnalysisService;
-import com.zhlearn.application.service.ProviderRegistry;
 import com.zhlearn.application.service.WordAnalysisServiceImpl;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.ProviderConfiguration;
@@ -105,20 +104,33 @@ public class ParsePlecoCommand implements Runnable {
             // Create dictionary for any dictionary-based providers
             PlecoExportDictionary dictionary = new PlecoExportDictionary(entries);
 
-            // Register dictionary-backed providers so users can opt-in via --*-provider flags
-            var registry = parent.getProviderRegistry();
-            registry.registerDefinitionProvider(new DictionaryDefinitionProvider(dictionary));
-            registry.registerPinyinProvider(new DictionaryPinyinProvider(dictionary));
+            // Note: Dictionary providers are no longer dynamically registered
+            // They are created at startup in MainCommand
             
             // Set up word analysis service (parallel or sequential)
             WordAnalysisService wordAnalysisService;
             ParallelWordAnalysisService parallelService = null;
             
             if (disableParallelism) {
-                wordAnalysisService = new WordAnalysisServiceImpl(parent.getProviderRegistry());
+                wordAnalysisService = new WordAnalysisServiceImpl(
+                    parent.getExampleProvider(),
+                    parent.getExplanationProvider(),
+                    parent.getDecompositionProvider(),
+                    parent.getPinyinProvider(),
+                    parent.getDefinitionProvider(),
+                    parent.getAudioProvider()
+                );
                 System.out.println("Using sequential processing (parallelism disabled)");
             } else {
-                parallelService = new ParallelWordAnalysisService(parent.getProviderRegistry(), parallelThreads);
+                parallelService = new ParallelWordAnalysisService(
+                    parent.getExampleProvider(),
+                    parent.getExplanationProvider(),
+                    parent.getDecompositionProvider(),
+                    parent.getPinyinProvider(),
+                    parent.getDefinitionProvider(),
+                    parent.getAudioProvider(),
+                    parallelThreads
+                );
                 wordAnalysisService = parallelService;
                 System.out.println("Using parallel processing with " + parallelThreads + " threads");
             }
@@ -145,18 +157,7 @@ public class ParsePlecoCommand implements Runnable {
             );
 
             // Validate all providers before processing
-            String validationError = validateProviders(parent.getProviderRegistry(),
-                    effectiveDefaultProvider,
-                    effectivePinyinProvider,
-                    effectiveDefinitionProvider,
-                    effectiveDecompositionProvider,
-                    effectiveExampleProvider,
-                    effectiveExplanationProvider,
-                    effectiveAudioProvider);
-            if (validationError != null) {
-                System.err.println(validationError);
-                System.exit(1);
-            }
+            // Provider validation is no longer needed since providers are fixed
             
             // Process words through the analysis pipeline
             int maxToProcess = limit != null ? limit : entries.size();
@@ -197,7 +198,7 @@ public class ParsePlecoCommand implements Runnable {
     private void processWordsSequentially(List<PlecoEntry> entries, WordAnalysisService wordAnalysisService,
                                         ProviderConfiguration config, int maxToProcess, List<WordAnalysis> successfulAnalyses) {
         int processedCount = 0;
-        AudioOrchestrator audioOrchestrator = new AudioOrchestrator(parent.getProviderRegistry());
+        AudioOrchestrator audioOrchestrator = new AudioOrchestrator(List.of(parent.getAudioProvider()));
         InteractiveAudioUI audioUI = new InteractiveAudioUI();
 
         for (PlecoEntry entry : entries) {
@@ -279,7 +280,7 @@ public class ParsePlecoCommand implements Runnable {
             CompletableFuture.allOf(displayFutures.toArray(new CompletableFuture[0])).join();
 
             if (!successfulAnalyses.isEmpty()) {
-                AudioOrchestrator audioOrchestrator = new AudioOrchestrator(parent.getProviderRegistry());
+                AudioOrchestrator audioOrchestrator = new AudioOrchestrator(List.of(parent.getAudioProvider()));
                 InteractiveAudioUI audioUI = new InteractiveAudioUI();
                 for (int i = 0; i < successfulAnalyses.size(); i++) {
                     WordAnalysis updated = runAudioSelection(audioOrchestrator, audioUI, successfulAnalyses.get(i));
@@ -409,66 +410,6 @@ public class ParsePlecoCommand implements Runnable {
             throw new UncheckedIOException("Failed to export Anki file to " + filename, e);
         }
     }
-    
+
     // Printing is delegated to AnalysisPrinter to match 'word' command output
-
-    private String validateProviders(
-            com.zhlearn.application.service.ProviderRegistry registry,
-            String defaultProv,
-            String pinyinProv,
-            String definitionProv,
-            String decompositionProv,
-            String exampleProv,
-            String explanationProv,
-            String audioProv) {
-        String[] providers = { defaultProv, pinyinProv, definitionProv, decompositionProv, exampleProv, explanationProv, audioProv };
-        String[] providerTypes = { "default", "pinyin", "definition", "decomposition", "example", "explanation", "audio" };
-
-        for (int i = 0; i < providers.length; i++) {
-            String provider = providers[i];
-            String type = providerTypes[i];
-
-            // The default provider in this command is a label only (e.g., "custom");
-            // do not require it to be a registered provider.
-            if ("default".equals(type)) {
-                continue;
-            }
-
-            if (provider != null && !isProviderAvailable(registry, provider)) {
-                return createProviderNotFoundError(registry, provider, type);
-            }
-        }
-        return null;
-    }
-
-    private boolean isProviderAvailable(ProviderRegistry registry, String providerName) {
-        return registry.getPinyinProvider(providerName).isPresent() ||
-               registry.getDefinitionProvider(providerName).isPresent() ||
-               registry.getStructuralDecompositionProvider(providerName).isPresent() ||
-               registry.getExampleProvider(providerName).isPresent() ||
-               registry.getExplanationProvider(providerName).isPresent() ||
-               registry.getAudioProvider(providerName).isPresent();
-    }
-
-    private String createProviderNotFoundError(ProviderRegistry registry, String requestedProvider, String providerType) {
-        StringBuilder error = new StringBuilder();
-        error.append("Provider '").append(requestedProvider).append("' not found");
-        if (!providerType.equals("default")) {
-            error.append(" for ").append(providerType);
-        }
-        error.append(".\n\n");
-
-        // Find similar providers
-        List<String> similarProviders = registry.findSimilarProviders(requestedProvider);
-        if (!similarProviders.isEmpty()) {
-            error.append("Did you mean one of these?\n");
-            for (String similar : similarProviders) {
-                error.append("  - ").append(similar).append("\n");
-            }
-            error.append("\n");
-        }
-
-        error.append("Use 'zh-learn providers' to see all available providers.");
-        return error.toString();
-    }
 }
