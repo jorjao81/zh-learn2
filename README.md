@@ -71,6 +71,32 @@ cd zh-learn-cli && mvn native:compile-no-fork -Pnative
 mvn test
 ```
 
+## Configure AI Providers
+
+Set API keys and optional base URLs via environment variables (or JVM `-D` properties). All AI providers use OpenAI-compatible endpoints through LangChain4j.
+
+- OpenAI GPT-5 Nano
+  - `OPENAI_API_KEY`
+  - `OPENAI_BASE_URL` (default: `https://api.openai.com/v1`)
+  - Provider name: `gpt-5-nano`
+
+- DeepSeek
+  - `DEEPSEEK_API_KEY`
+  - `DEEPSEEK_BASE_URL` (default: `https://api.deepseek.com/v1`)
+  - Provider name: `deepseek-chat`
+
+- ChatGLM via z.ai
+  - `ZAI_API_KEY`
+  - `ZAI_BASE_URL` (default: `https://api.z.ai/openai/v1`; override if your workspace uses a different gateway)
+  - Provider names: `glm-4-flash`, `glm-4.5`
+
+Select providers at runtime:
+```bash
+./zh-learn.sh providers -d
+./zh-learn.sh word 学习 --provider glm-4.5
+./zh-learn.sh word 学习 --explanation-provider glm-4.5 --example-provider glm-4.5
+```
+
 ## Providers: Audio (Pronunciation)
 
 - Audio providers return the path to an mp3 file; conversion to `[sound:filename.mp3]` happens during Anki export.
