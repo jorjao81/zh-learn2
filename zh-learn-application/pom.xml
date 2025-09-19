@@ -21,7 +21,7 @@
             <groupId>com.zhlearn</groupId>
             <artifactId>zh-learn-domain</artifactId>
         </dependency>
-        <!-- Infrastructure is discovered at runtime via ServiceLoader; only needed for tests -->
+        <!-- Infrastructure implementations are instantiated in higher layers; keep test-scope dependency -->
         <dependency>
             <groupId>com.zhlearn</groupId>
             <artifactId>zh-learn-infrastructure</artifactId>
@@ -57,7 +57,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <!-- Run tests on classpath; ServiceLoader uses META-INF/services via TCCL -->
+                    <!-- Run tests on classpath for compatibility with JPMS test tooling -->
                     <useModulePath>false</useModulePath>
                 </configuration>
             </plugin>

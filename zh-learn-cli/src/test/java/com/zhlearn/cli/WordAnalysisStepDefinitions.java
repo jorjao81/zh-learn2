@@ -1,13 +1,11 @@
 package com.zhlearn.cli;
 
-import com.zhlearn.application.service.ProviderRegistry;
 import com.zhlearn.application.service.WordAnalysisServiceImpl;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.WordAnalysis;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.AudioProvider;
-import com.zhlearn.infrastructure.dummy.*;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -26,15 +24,9 @@ public class WordAnalysisStepDefinitions {
     
     @Given("the ZH Learn application is available")
     public void the_zh_learn_application_is_available() {
-        ProviderRegistry registry = new ProviderRegistry();
-        registry.registerDefinitionProvider(new DummyDefinitionProvider());
-        registry.registerExampleProvider(new DummyExampleProvider());
-        registry.registerExplanationProvider(new DummyExplanationProvider());
-        registry.registerPinyinProvider(new DummyPinyinProvider());
-        registry.registerStructuralDecompositionProvider(new DummyStructuralDecompositionProvider());
-        registry.registerAudioProvider(new AbsolutePathAudioProvider());
-        
-        this.wordAnalysisService = new WordAnalysisServiceImpl(registry);
+        MainCommand main = new MainCommand();
+        main.addAudioProvider(new AbsolutePathAudioProvider());
+        this.wordAnalysisService = main.getWordAnalysisService();
     }
     
     @When("I analyze the word {string} using provider {string}")

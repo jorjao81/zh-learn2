@@ -1,16 +1,8 @@
 package com.zhlearn.cli;
 
-import com.zhlearn.application.service.ProviderRegistry;
 import com.zhlearn.domain.model.ProviderInfo;
 import com.zhlearn.domain.model.ProviderInfo.ProviderClass;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
-import com.zhlearn.infrastructure.deepseek.DeepSeekExampleProvider;
-import com.zhlearn.infrastructure.deepseek.DeepSeekExplanationProvider;
-import com.zhlearn.infrastructure.deepseek.DeepSeekStructuralDecompositionProvider;
-import com.zhlearn.infrastructure.dummy.*;
-import com.zhlearn.infrastructure.gpt5nano.GPT5NanoExampleProvider;
-import com.zhlearn.infrastructure.gpt5nano.GPT5NanoExplanationProvider;
-import com.zhlearn.infrastructure.gpt5nano.GPT5NanoStructuralDecompositionProvider;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -40,7 +32,7 @@ public class ProvidersCommand implements Runnable {
 
     @Override
     public void run() {
-        List<ProviderInfo> providers = parent.getProviderRegistry().getAllProviderInfo();
+        List<ProviderInfo> providers = parent.getAllProviderInfo();
         
         // Apply filters
         if (filterType != null) {

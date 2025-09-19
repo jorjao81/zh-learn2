@@ -1,6 +1,5 @@
 package com.zhlearn.cli;
 
-import com.zhlearn.application.service.ProviderRegistry;
 import com.zhlearn.application.service.WordAnalysisServiceImpl;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.ProviderConfiguration;
@@ -50,7 +49,7 @@ public class WordCommand implements Runnable {
 
     @Override
     public void run() {
-        WordAnalysisServiceImpl wordAnalysisService = new WordAnalysisServiceImpl(parent.getProviderRegistry());
+        WordAnalysisServiceImpl wordAnalysisService = parent.getWordAnalysisService();
         // Validate providers before processing
         String validationError = validateProviders();
         if (validationError != null) {
@@ -60,8 +59,7 @@ public class WordCommand implements Runnable {
         
         String effectiveAudioProvider = audioProvider;
         if (effectiveAudioProvider == null || effectiveAudioProvider.isBlank()) {
-            effectiveAudioProvider = parent.getProviderRegistry().getAudioProvider("anki").isPresent()
-                ? "anki" : null;
+            effectiveAudioProvider = parent.getAudioProvider("anki").isPresent() ? "anki" : null;
         }
 
         ProviderConfiguration config = new ProviderConfiguration(
@@ -85,7 +83,7 @@ public class WordCommand implements Runnable {
     }
     
     private String validateProviders() {
-        ProviderRegistry registry = parent.getProviderRegistry();
+        MainCommand command = parent;
         
         // Check each provider
         String[] providers = {
@@ -103,24 +101,15 @@ public class WordCommand implements Runnable {
             String provider = providers[i];
             String type = providerTypes[i];
             
-            if (provider != null && !isProviderAvailable(registry, provider)) {
-                return createProviderNotFoundError(registry, provider, type);
+            if (provider != null && !command.providerExists(provider)) {
+                return createProviderNotFoundError(provider, type);
             }
         }
         
         return null; // All providers valid
     }
     
-    private boolean isProviderAvailable(ProviderRegistry registry, String providerName) {
-        return registry.getPinyinProvider(providerName).isPresent() ||
-               registry.getDefinitionProvider(providerName).isPresent() ||
-               registry.getStructuralDecompositionProvider(providerName).isPresent() ||
-               registry.getExampleProvider(providerName).isPresent() ||
-               registry.getExplanationProvider(providerName).isPresent() ||
-               registry.getAudioProvider(providerName).isPresent();
-    }
-    
-    private String createProviderNotFoundError(ProviderRegistry registry, String requestedProvider, String providerType) {
+    private String createProviderNotFoundError(String requestedProvider, String providerType) {
         StringBuilder error = new StringBuilder();
         error.append("Provider '").append(requestedProvider).append("' not found");
         if (!providerType.equals("default")) {
@@ -129,7 +118,7 @@ public class WordCommand implements Runnable {
         error.append(".\n\n");
         
         // Find similar providers
-        List<String> similarProviders = registry.findSimilarProviders(requestedProvider);
+        List<String> similarProviders = parent.findSimilarProviders(requestedProvider);
         if (!similarProviders.isEmpty()) {
             error.append("Did you mean one of these?\n");
             for (String similar : similarProviders) {

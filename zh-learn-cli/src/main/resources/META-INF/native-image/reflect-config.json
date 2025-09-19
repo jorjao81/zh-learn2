@@ -35,48 +35,6 @@
     "allPublicMethods": true
   },
   {
-    "name": "com.zhlearn.infrastructure.deepseek.DeepSeekExplanationProvider",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true
-  },
-  {
-    "name": "com.zhlearn.infrastructure.deepseek.DeepSeekExampleProvider",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true
-  },
-  {
-    "name": "com.zhlearn.infrastructure.deepseek.DeepSeekStructuralDecompositionProvider",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true
-  },
-  {
-    "name": "com.zhlearn.infrastructure.gpt5nano.GPT5NanoExplanationProvider",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true
-  },
-  {
-    "name": "com.zhlearn.infrastructure.gpt5nano.GPT5NanoExampleProvider",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true
-  },
-  {
-    "name": "com.zhlearn.infrastructure.gpt5nano.GPT5NanoStructuralDecompositionProvider",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true
-  },
-  {
     "name": "org.apache.commons.csv.CSVFormat",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,

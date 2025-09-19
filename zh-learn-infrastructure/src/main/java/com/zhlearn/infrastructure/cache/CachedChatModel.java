@@ -27,7 +27,7 @@ public class CachedChatModel implements ChatModel {
     }
 
     public <T> CachedChatModel(ChatModel baseChatModel, ProviderConfig<T> config) {
-        this(baseChatModel, config.getBaseUrl(), config.getModelName(), config.getTemperature(), config.getMaxTokens());
+        this(baseChatModel, config.baseUrl(), config.modelName(), config.temperature(), config.maxTokens());
     }
 
     @Override

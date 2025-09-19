@@ -5,54 +5,72 @@ import com.zhlearn.domain.provider.*;
 import com.zhlearn.domain.service.WordAnalysisService;
 
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Optional;
 
 public class WordAnalysisServiceImpl implements WordAnalysisService {
-    
-    private final ProviderRegistry providerRegistry;
-    
-    public WordAnalysisServiceImpl(ProviderRegistry registry) {
-        this.providerRegistry = registry;
+
+    private final Map<String, PinyinProvider> pinyinProviders;
+    private final Map<String, DefinitionProvider> definitionProviders;
+    private final Map<String, StructuralDecompositionProvider> decompositionProviders;
+    private final Map<String, ExampleProvider> exampleProviders;
+    private final Map<String, ExplanationProvider> explanationProviders;
+    private final Map<String, AudioProvider> audioProviders;
+
+    public WordAnalysisServiceImpl(
+        Map<String, PinyinProvider> pinyinProviders,
+        Map<String, DefinitionProvider> definitionProviders,
+        Map<String, StructuralDecompositionProvider> decompositionProviders,
+        Map<String, ExampleProvider> exampleProviders,
+        Map<String, ExplanationProvider> explanationProviders,
+        Map<String, AudioProvider> audioProviders
+    ) {
+        this.pinyinProviders = pinyinProviders;
+        this.definitionProviders = definitionProviders;
+        this.decompositionProviders = decompositionProviders;
+        this.exampleProviders = exampleProviders;
+        this.explanationProviders = explanationProviders;
+        this.audioProviders = audioProviders;
     }
 
     @Override
     public Pinyin getPinyin(Hanzi word, String providerName) {
-        return providerRegistry.getPinyinProvider(providerName)
+        return optionalProvider(pinyinProviders, providerName)
             .orElseThrow(() -> new IllegalArgumentException("Pinyin provider not found: " + providerName))
             .getPinyin(word);
     }
-    
+
     @Override
     public Definition getDefinition(Hanzi word, String providerName) {
-        return providerRegistry.getDefinitionProvider(providerName)
+        return optionalProvider(definitionProviders, providerName)
             .orElseThrow(() -> new IllegalArgumentException("Definition provider not found: " + providerName))
             .getDefinition(word);
     }
-    
+
     @Override
     public StructuralDecomposition getStructuralDecomposition(Hanzi word, String providerName) {
-        return providerRegistry.getStructuralDecompositionProvider(providerName)
+        return optionalProvider(decompositionProviders, providerName)
             .orElseThrow(() -> new IllegalArgumentException("Structural decomposition provider not found: " + providerName))
             .getStructuralDecomposition(word);
     }
-    
+
     @Override
     public Example getExamples(Hanzi word, String providerName) {
-        return providerRegistry.getExampleProvider(providerName)
+        return optionalProvider(exampleProviders, providerName)
             .orElseThrow(() -> new IllegalArgumentException("Example provider not found: " + providerName))
             .getExamples(word, Optional.empty());
     }
-    
+
     @Override
     public Example getExamples(Hanzi word, String providerName, String definition) {
-        return providerRegistry.getExampleProvider(providerName)
+        return optionalProvider(exampleProviders, providerName)
             .orElseThrow(() -> new IllegalArgumentException("Example provider not found: " + providerName))
             .getExamples(word, Optional.of(definition));
     }
-    
+
     @Override
     public Explanation getExplanation(Hanzi word, String providerName) {
-        return providerRegistry.getExplanationProvider(providerName)
+        return optionalProvider(explanationProviders, providerName)
             .orElseThrow(() -> new IllegalArgumentException("Explanation provider not found: " + providerName))
             .getExplanation(word);
     }
@@ -62,11 +80,11 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
         if (providerName == null || providerName.isBlank()) {
             return Optional.empty();
         }
-        return providerRegistry.getAudioProvider(providerName)
+        return optionalProvider(audioProviders, providerName)
             .map(p -> p.getPronunciation(word, pinyin))
             .orElse(Optional.empty());
     }
-    
+
     @Override
     public WordAnalysis getCompleteAnalysis(Hanzi word, String providerName) {
         Definition definition = getDefinition(word, providerName);
@@ -97,28 +115,34 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
         );
     }
 
-    @Override
-    public void addPinyinProvider(String name, PinyinProvider provider) {
-        providerRegistry.registerPinyinProvider(provider);
+    public Map<String, PinyinProvider> getPinyinProviders() {
+        return pinyinProviders;
     }
 
-    @Override
-    public void addDefinitionProvider(String name, DefinitionProvider provider) {
-        providerRegistry.registerDefinitionProvider(provider);
+    public Map<String, DefinitionProvider> getDefinitionProviders() {
+        return definitionProviders;
     }
 
-    @Override
-    public void addStructuralDecompositionProvider(String name, StructuralDecompositionProvider provider) {
-        providerRegistry.registerStructuralDecompositionProvider(provider);
+    public Map<String, StructuralDecompositionProvider> getDecompositionProviders() {
+        return decompositionProviders;
     }
 
-    @Override
-    public void addExplanationProvider(String name, ExplanationProvider provider) {
-        providerRegistry.registerExplanationProvider(provider);
+    public Map<String, ExampleProvider> getExampleProviders() {
+        return exampleProviders;
     }
 
-    @Override
-    public void addAudioProvider(String name, AudioProvider provider) {
-        providerRegistry.registerAudioProvider(provider);
+    public Map<String, ExplanationProvider> getExplanationProviders() {
+        return explanationProviders;
+    }
+
+    public Map<String, AudioProvider> getAudioProviders() {
+        return audioProviders;
+    }
+
+    private <T> Optional<T> optionalProvider(Map<String, T> providers, String name) {
+        if (name == null) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(providers.get(name));
     }
 }

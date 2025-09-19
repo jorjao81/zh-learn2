@@ -1,7 +1,6 @@
 package com.zhlearn.domain.service;
 
 import com.zhlearn.domain.model.*;
-import com.zhlearn.domain.provider.*;
 import com.zhlearn.domain.model.ProviderConfiguration;
 
 import java.nio.file.Path;
@@ -18,11 +17,4 @@ public interface WordAnalysisService {
     
     WordAnalysis getCompleteAnalysis(Hanzi word, String providerName);
     WordAnalysis getCompleteAnalysis(Hanzi word, ProviderConfiguration config);
-
-    void addPinyinProvider(String name, PinyinProvider provider);
-    void addDefinitionProvider(String name, DefinitionProvider provider);
-    void addStructuralDecompositionProvider(String name, StructuralDecompositionProvider provider);
-    void addExplanationProvider(String name, ExplanationProvider provider);
-    void addAudioProvider(String name, com.zhlearn.domain.provider.AudioProvider provider);
-
 }

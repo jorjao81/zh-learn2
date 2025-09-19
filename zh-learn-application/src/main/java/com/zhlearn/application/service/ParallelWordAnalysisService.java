@@ -1,31 +1,50 @@
 package com.zhlearn.application.service;
 
 import com.zhlearn.domain.model.*;
+import com.zhlearn.domain.provider.AudioProvider;
+import com.zhlearn.domain.provider.ExampleProvider;
+import com.zhlearn.domain.provider.ExplanationProvider;
+import com.zhlearn.domain.provider.StructuralDecompositionProvider;
+import com.zhlearn.domain.model.ProviderInfo;
 import com.zhlearn.domain.service.WordAnalysisService;
 
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * Parallel implementation of WordAnalysisService that executes AI provider calls concurrently
- * for better performance. Non-AI providers (like pleco-export, pinyin4j) are called synchronously.
- */
 public class ParallelWordAnalysisService implements WordAnalysisService {
 
     private final WordAnalysisServiceImpl delegate;
     private final ExecutorService executorService;
+    private final Map<String, StructuralDecompositionProvider> decompositionProviders;
+    private final Map<String, ExampleProvider> exampleProviders;
+    private final Map<String, ExplanationProvider> explanationProviders;
+    private final Map<String, AudioProvider> audioProviders;
 
-    public ParallelWordAnalysisService(ProviderRegistry registry, int threadPoolSize) {
-        this.delegate = new WordAnalysisServiceImpl(registry);
+    public ParallelWordAnalysisService(WordAnalysisServiceImpl delegate,
+                                       Map<String, StructuralDecompositionProvider> decompositionProviders,
+                                       Map<String, ExampleProvider> exampleProviders,
+                                       Map<String, ExplanationProvider> explanationProviders,
+                                       Map<String, AudioProvider> audioProviders,
+                                       int threadPoolSize) {
+        this.delegate = delegate;
+        this.decompositionProviders = decompositionProviders;
+        this.exampleProviders = exampleProviders;
+        this.explanationProviders = explanationProviders;
+        this.audioProviders = audioProviders;
         this.executorService = Executors.newFixedThreadPool(threadPoolSize);
     }
 
-    public ParallelWordAnalysisService(ProviderRegistry registry) {
-        this(registry, 10); // Default to 10 threads
+    public ParallelWordAnalysisService(WordAnalysisServiceImpl delegate,
+                                       Map<String, StructuralDecompositionProvider> decompositionProviders,
+                                       Map<String, ExampleProvider> exampleProviders,
+                                       Map<String, ExplanationProvider> explanationProviders,
+                                       Map<String, AudioProvider> audioProviders) {
+        this(delegate, decompositionProviders, exampleProviders, explanationProviders, audioProviders, 10);
     }
 
     @Override
@@ -70,29 +89,25 @@ public class ParallelWordAnalysisService implements WordAnalysisService {
 
     @Override
     public WordAnalysis getCompleteAnalysis(Hanzi word, ProviderConfiguration config) {
-        // Call fast, non-AI providers synchronously first
         Definition definition = getDefinition(word, config.getDefinitionProvider());
         Pinyin pinyin = getPinyin(word, config.getPinyinProvider());
 
-        // Determine which providers are AI-based and should be called in parallel
         boolean isDecompositionAI = isAIProvider(config.getDecompositionProvider());
         boolean isExampleAI = isAIProvider(config.getExampleProvider());
         boolean isExplanationAI = isAIProvider(config.getExplanationProvider());
         boolean isAudioAI = isAIProvider(config.getAudioProvider());
 
-        // If no AI providers, call everything synchronously
         if (!isDecompositionAI && !isExampleAI && !isExplanationAI && !isAudioAI) {
             return delegate.getCompleteAnalysis(word, config);
         }
 
-        // Call AI providers in parallel
         CompletableFuture<StructuralDecomposition> decompositionFuture;
         CompletableFuture<Example> examplesFuture;
         CompletableFuture<Explanation> explanationFuture;
         CompletableFuture<Optional<Path>> pronunciationFuture;
 
         if (isDecompositionAI) {
-            decompositionFuture = CompletableFuture.supplyAsync(() -> 
+            decompositionFuture = CompletableFuture.supplyAsync(() ->
                 getStructuralDecomposition(word, config.getDecompositionProvider()), executorService);
         } else {
             decompositionFuture = CompletableFuture.completedFuture(
@@ -100,7 +115,7 @@ public class ParallelWordAnalysisService implements WordAnalysisService {
         }
 
         if (isExampleAI) {
-            examplesFuture = CompletableFuture.supplyAsync(() -> 
+            examplesFuture = CompletableFuture.supplyAsync(() ->
                 getExamples(word, config.getExampleProvider(), definition.meaning()), executorService);
         } else {
             examplesFuture = CompletableFuture.completedFuture(
@@ -108,7 +123,7 @@ public class ParallelWordAnalysisService implements WordAnalysisService {
         }
 
         if (isExplanationAI) {
-            explanationFuture = CompletableFuture.supplyAsync(() -> 
+            explanationFuture = CompletableFuture.supplyAsync(() ->
                 getExplanation(word, config.getExplanationProvider()), executorService);
         } else {
             explanationFuture = CompletableFuture.completedFuture(
@@ -116,17 +131,15 @@ public class ParallelWordAnalysisService implements WordAnalysisService {
         }
 
         if (isAudioAI) {
-            pronunciationFuture = CompletableFuture.supplyAsync(() -> 
+            pronunciationFuture = CompletableFuture.supplyAsync(() ->
                 getPronunciation(word, pinyin, config.getAudioProvider()), executorService);
         } else {
             pronunciationFuture = CompletableFuture.completedFuture(
                 getPronunciation(word, pinyin, config.getAudioProvider()));
         }
 
-        // Wait for all AI providers to complete
         try {
             CompletableFuture.allOf(decompositionFuture, examplesFuture, explanationFuture, pronunciationFuture).join();
-
             return new WordAnalysis(
                 word,
                 pinyin,
@@ -144,46 +157,25 @@ public class ParallelWordAnalysisService implements WordAnalysisService {
         }
     }
 
-    /**
-     * Determine if a provider is AI-based and should be called in parallel.
-     * AI providers typically have longer response times and benefit from parallelism.
-     */
     private boolean isAIProvider(String providerName) {
-        return providerName.contains("deepseek") || 
-               providerName.contains("gpt") || 
-               providerName.contains("openai") ||
-               providerName.contains("qwen");
+        if (providerName == null) {
+            return false;
+        }
+        if (exampleProviders.containsKey(providerName)) {
+            return exampleProviders.get(providerName).getType() == ProviderInfo.ProviderType.AI;
+        }
+        if (explanationProviders.containsKey(providerName)) {
+            return explanationProviders.get(providerName).getType() == ProviderInfo.ProviderType.AI;
+        }
+        if (decompositionProviders.containsKey(providerName)) {
+            return decompositionProviders.get(providerName).getType() == ProviderInfo.ProviderType.AI;
+        }
+        if (audioProviders.containsKey(providerName)) {
+            return audioProviders.get(providerName).getType() == ProviderInfo.ProviderType.AI;
+        }
+        return providerName.contains("deepseek") || providerName.contains("gpt") || providerName.contains("qwen") || providerName.contains("glm");
     }
 
-    @Override
-    public void addPinyinProvider(String name, com.zhlearn.domain.provider.PinyinProvider provider) {
-        delegate.addPinyinProvider(name, provider);
-    }
-
-    @Override
-    public void addDefinitionProvider(String name, com.zhlearn.domain.provider.DefinitionProvider provider) {
-        delegate.addDefinitionProvider(name, provider);
-    }
-
-    @Override
-    public void addStructuralDecompositionProvider(String name, com.zhlearn.domain.provider.StructuralDecompositionProvider provider) {
-        delegate.addStructuralDecompositionProvider(name, provider);
-    }
-
-    @Override
-    public void addExplanationProvider(String name, com.zhlearn.domain.provider.ExplanationProvider provider) {
-        delegate.addExplanationProvider(name, provider);
-    }
-
-    @Override
-    public void addAudioProvider(String name, com.zhlearn.domain.provider.AudioProvider provider) {
-        delegate.addAudioProvider(name, provider);
-    }
-
-    /**
-     * Shutdown the executor service when done.
-     * Should be called when the service is no longer needed.
-     */
     public void shutdown() {
         executorService.shutdown();
     }

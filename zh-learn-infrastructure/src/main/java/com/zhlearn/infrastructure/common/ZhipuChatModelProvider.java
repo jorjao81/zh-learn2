@@ -30,22 +30,22 @@ public class ZhipuChatModelProvider<T> {
     public ZhipuChatModelProvider(ProviderConfig<T> config) {
         this.config = config;
         this.chatModel = createChatModel(config);
-        this.promptTemplate = loadPromptTemplate(config.getTemplateResourcePath());
-        this.examples = loadExamples(config.getExamplesResourcePath());
+        this.promptTemplate = loadPromptTemplate(config.templateResourcePath());
+        this.examples = loadExamples(config.examplesResourcePath());
     }
 
     private ChatModel createChatModel(ProviderConfig<T> config) {
         ChatModel base = new ZaiOpenAiChatModel(
-            config.getApiKey(),
-            config.getBaseUrl(),
-            config.getModelName(),
-            config.getTemperature(),
-            config.getMaxTokens()
+            config.apiKey(),
+            config.baseUrl(),
+            config.modelName(),
+            config.temperature(),
+            config.maxTokens()
         );
         return new CachedChatModel(base, config);
     }
 
-    public String getName() { return config.getProviderName(); }
+    public String getName() { return config.providerName(); }
 
     public T process(Hanzi word) { return processWithContext(word, Optional.empty()); }
 
@@ -57,16 +57,16 @@ public class ZhipuChatModelProvider<T> {
 
             long startTime = System.currentTimeMillis();
             String timestamp = Instant.now().toString();
-            log.info("[AI Call] {} for '{}': sent at {}", config.getProviderName(), word.characters(), timestamp);
+            log.info("[AI Call] {} for '{}': sent at {}", config.providerName(), word.characters(), timestamp);
 
             String response = chatModel.chat(prompt);
 
             long duration = System.currentTimeMillis() - startTime;
-            log.info("[AI Call] {} for '{}': received after {}ms", config.getProviderName(), word.characters(), duration);
+            log.info("[AI Call] {} for '{}': received after {}ms", config.providerName(), word.characters(), duration);
 
-            return config.getResponseMapper().apply(response);
+            return config.responseMapper().apply(response);
         } catch (Exception e) {
-            throw new RuntimeException(config.getErrorMessagePrefix() + ": " + e.getMessage(), e);
+            throw new RuntimeException(config.errorMessagePrefix() + ": " + e.getMessage(), e);
         }
     }
 

@@ -28,22 +28,22 @@ public class GenericChatModelProvider<T> {
     public GenericChatModelProvider(ProviderConfig<T> config) {
         this.config = config;
         this.chatModel = createChatModel(config);
-        this.promptTemplate = loadPromptTemplate(config.getTemplateResourcePath());
-        this.examples = loadExamples(config.getExamplesResourcePath());
+        this.promptTemplate = loadPromptTemplate(config.templateResourcePath());
+        this.examples = loadExamples(config.examplesResourcePath());
     }
     
     private ChatModel createChatModel(ProviderConfig<T> config) {
         var builder = OpenAiChatModel.builder()
-                .baseUrl(config.getBaseUrl())
-                .apiKey(config.getApiKey())
-                .modelName(config.getModelName());
+                .baseUrl(config.baseUrl())
+                .apiKey(config.apiKey())
+                .modelName(config.modelName());
                 
-        if (config.getTemperature() != null) {
-            builder.temperature(config.getTemperature());
+        if (config.temperature() != null) {
+            builder.temperature(config.temperature());
         }
         
-        if (config.getMaxTokens() != null) {
-            builder.maxTokens(config.getMaxTokens());
+        if (config.maxTokens() != null) {
+            builder.maxTokens(config.maxTokens());
         }
         
         ChatModel baseChatModel = builder.build();
@@ -51,7 +51,7 @@ public class GenericChatModelProvider<T> {
     }
     
     public String getName() {
-        return config.getProviderName();
+        return config.providerName();
     }
     
     public T process(Hanzi word) {
@@ -69,16 +69,16 @@ public class GenericChatModelProvider<T> {
             // Add timing information for AI provider calls
             long startTime = System.currentTimeMillis();
             String timestamp = Instant.now().toString();
-            log.info("[AI Call] {} for '{}': sent at {}", config.getProviderName(), word.characters(), timestamp);
+            log.info("[AI Call] {} for '{}': sent at {}", config.providerName(), word.characters(), timestamp);
             
             String response = chatModel.chat(prompt);
             
             long duration = System.currentTimeMillis() - startTime;
-            log.info("[AI Call] {} for '{}': received after {}ms", config.getProviderName(), word.characters(), duration);
+            log.info("[AI Call] {} for '{}': received after {}ms", config.providerName(), word.characters(), duration);
             
-            return config.getResponseMapper().apply(response);
+            return config.responseMapper().apply(response);
         } catch (RuntimeException e) {
-            throw new RuntimeException(config.getErrorMessagePrefix() + ": " + e.getMessage(), e);
+            throw new RuntimeException(config.errorMessagePrefix() + ": " + e.getMessage(), e);
         }
     }
 

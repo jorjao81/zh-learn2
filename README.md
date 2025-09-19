@@ -73,7 +73,7 @@ mvn test
 
 ## Configure AI Providers
 
-Set API keys and optional base URLs via environment variables (or JVM `-D` properties). All AI providers use OpenAI-compatible endpoints through LangChain4j.
+Set API keys and optional base URLs via environment variables (or JVM `-D` properties). All AI providers use OpenAI-compatible endpoints through LangChain4j. Defaults are wired directly in `com.zhlearn.cli.MainCommand`; update that constructor to add or tweak models.
 
 - OpenAI GPT-5 Nano
   - `OPENAI_API_KEY`

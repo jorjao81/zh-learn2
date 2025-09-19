@@ -32,7 +32,7 @@ All functionality exposed via command-line interface:
 ### V. Provider Pattern for Extensions
 External integrations implemented as providers:
 - Providers follow consistent interface
-- Service loader pattern for runtime discovery
+- Providers are registered explicitly through immutable configuration definitions; no reflection or ServiceLoader indirection
 - Each provider is self-contained and independently testable
 - Clear separation between core logic and external service integration
 
@@ -86,4 +86,4 @@ This constitution supersedes all other development practices. All code changes m
 
 **Implementation over Configuration**: If implementation doesn't match instructions exactly, fail rather than implementing differently.
 
-**Version**: 1.0.0 | **Ratified**: 2025-09-13 | **Last Amended**: 2025-09-13
+**Version**: 1.1.0 | **Ratified**: 2025-09-13 | **Last Amended**: 2025-09-19

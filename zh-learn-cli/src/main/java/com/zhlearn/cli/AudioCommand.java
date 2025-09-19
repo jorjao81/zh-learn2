@@ -28,7 +28,7 @@ public class AudioCommand implements Runnable {
 
     @Override
     public void run() {
-        WordAnalysisServiceImpl service = new WordAnalysisServiceImpl(parent.getProviderRegistry());
+        WordAnalysisServiceImpl service = parent.getWordAnalysisService();
 
         Hanzi word = new Hanzi(chineseWord);
         Pinyin p = new Pinyin(pinyin);
