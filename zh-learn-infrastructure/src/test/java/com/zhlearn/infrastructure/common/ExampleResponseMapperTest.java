@@ -63,7 +63,6 @@ class ExampleResponseMapperTest {
     @Test
     void shouldThrowOnInvalidYaml() {
         String invalidYaml = "invalid yaml content [[[";
-
         assertThatThrownBy(() -> mapper.apply(invalidYaml))
             .isInstanceOf(RuntimeException.class)
             .hasMessageContaining("Failed to parse YAML response");

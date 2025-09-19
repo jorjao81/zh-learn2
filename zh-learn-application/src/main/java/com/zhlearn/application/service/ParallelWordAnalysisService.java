@@ -151,7 +151,8 @@ public class ParallelWordAnalysisService implements WordAnalysisService {
     private boolean isAIProvider(String providerName) {
         return providerName.contains("deepseek") || 
                providerName.contains("gpt") || 
-               providerName.contains("openai");
+               providerName.contains("openai") ||
+               providerName.contains("qwen");
     }
 
     @Override

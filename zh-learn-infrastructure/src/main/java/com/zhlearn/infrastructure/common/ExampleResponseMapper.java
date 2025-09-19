@@ -6,7 +6,6 @@ import com.zhlearn.domain.model.Example;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -65,10 +64,14 @@ public class ExampleResponseMapper implements Function<String, Example> {
             
             return new Example(allUsages, seriesItems);
             
-        } catch (IOException e) {
-            log.error("Failed to parse YAML response: {}", e.getMessage(), e);
+        } catch (IllegalStateException e) {
+            throw e;
+        } catch (Exception e) {
+            String errorMessage = e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
+            log.warn("Failed to parse examples YAML: {}", e.getMessage());
             log.debug("Original response: {}", yamlResponse);
-            throw new RuntimeException("Failed to parse YAML response", e);
+            log.debug("YAML parse exception", e);
+            throw new RuntimeException("Failed to parse YAML response: " + errorMessage, e);
         }
     }
 

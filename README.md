@@ -96,3 +96,24 @@ List providers and capabilities:
 ./zh-learn.sh audio 学习 xuéxí --audio-provider qwen-tts
 # → returns three absolute paths (Cherry, Serena, Chelsie) once `DASHSCOPE_API_KEY` is configured
 ```
+
+### Providers: Qwen3 (DashScope)
+
+- Requires `DASHSCOPE_API_KEY` (China Mainland region). Optional `DASHSCOPE_BASE_URL` defaults to `https://dashscope.aliyuncs.com/compatible-mode/v1`.
+- Supported models (provider names): `qwen3-max`, `qwen3-plus`, `qwen3-flash`.
+- Internally, these map to current DashScope model IDs:
+  - `qwen3-max` -> `qwen3-max-preview`
+  - `qwen3-plus` -> `qwen-plus-latest`
+  - `qwen3-flash` -> `qwen-turbo-latest`
+
+Examples:
+```bash
+# Analyze a single word with Qwen3 Flash
+./zh-learn.sh word 学习 --provider qwen3-flash
+
+# Parse TSV and analyze with Qwen3 Plus
+./zh-learn.sh parse-pleco flash-test.txt \
+  --decomposition-provider qwen3-plus \
+  --example-provider qwen3-plus \
+  --explanation-provider qwen3-plus --limit 1
+```

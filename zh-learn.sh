@@ -27,6 +27,7 @@ fi
 
 exec java $JAVA_OPTS \
     --module-path "$MODULE_PATH" \
+    --enable-preview \
     --enable-native-access=org.fusesource.jansi,org.jline.nativ,ALL-UNNAMED \
     --module com.zhlearn.cli/com.zhlearn.cli.ZhLearnApplication \
     "$@"
