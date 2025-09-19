@@ -78,16 +78,20 @@ public class MainCommand implements Runnable {
                 yield new ConfigurableExampleProvider(
                     config.toInternalConfig(Example.class), "deepseek-chat", "DeepSeek AI-powered example provider");
             }
+            case "glm-4-flash" -> {
+                requireAPIKey("ZHIPU_API_KEY", providerName);
+                yield new ConfigurableGLMProvider("glm-4-flash", "glm-4-flash", "GLM-4 Flash AI provider");
+            }
             case "glm-4.5" -> {
                 requireAPIKey("ZHIPU_API_KEY", providerName);
-                yield new ConfigurableGLMProvider("glm-4-flash", "glm-4.5", "GLM-4.5 AI provider");
+                yield new ConfigurableGLMProvider("glm-4.5", "glm-4.5", "GLM-4.5 AI provider");
             }
             case "qwen-max", "qwen-plus", "qwen-turbo" -> {
                 requireAPIKey("DASHSCOPE_API_KEY", providerName);
                 yield new ConfigurableQwenProvider(providerName, providerName, "Qwen AI provider (" + providerName + ")");
             }
             default -> throw new RuntimeException("Unknown example provider: " + providerName +
-                ". Available: dummy, deepseek-chat, glm-4.5, qwen-max, qwen-plus, qwen-turbo");
+                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo");
         };
     }
 
@@ -104,16 +108,20 @@ public class MainCommand implements Runnable {
                 yield new ConfigurableExplanationProvider(
                     config.toInternalConfig(Explanation.class), "deepseek-chat", "DeepSeek AI-powered explanation provider");
             }
+            case "glm-4-flash" -> {
+                requireAPIKey("ZHIPU_API_KEY", providerName);
+                yield new ConfigurableGLMProvider("glm-4-flash", "glm-4-flash", "GLM-4 Flash AI provider");
+            }
             case "glm-4.5" -> {
                 requireAPIKey("ZHIPU_API_KEY", providerName);
-                yield new ConfigurableGLMProvider("glm-4-flash", "glm-4.5", "GLM-4.5 AI provider");
+                yield new ConfigurableGLMProvider("glm-4.5", "glm-4.5", "GLM-4.5 AI provider");
             }
             case "qwen-max", "qwen-plus", "qwen-turbo" -> {
                 requireAPIKey("DASHSCOPE_API_KEY", providerName);
                 yield new ConfigurableQwenProvider(providerName, providerName, "Qwen AI provider (" + providerName + ")");
             }
             default -> throw new RuntimeException("Unknown explanation provider: " + providerName +
-                ". Available: dummy, deepseek-chat, glm-4.5, qwen-max, qwen-plus, qwen-turbo");
+                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo");
         };
     }
 
@@ -130,16 +138,20 @@ public class MainCommand implements Runnable {
                 yield new ConfigurableStructuralDecompositionProvider(
                     config.toInternalConfig(StructuralDecomposition.class), "deepseek-chat", "DeepSeek AI-powered structural decomposition provider");
             }
+            case "glm-4-flash" -> {
+                requireAPIKey("ZHIPU_API_KEY", providerName);
+                yield new ConfigurableGLMProvider("glm-4-flash", "glm-4-flash", "GLM-4 Flash AI provider");
+            }
             case "glm-4.5" -> {
                 requireAPIKey("ZHIPU_API_KEY", providerName);
-                yield new ConfigurableGLMProvider("glm-4-flash", "glm-4.5", "GLM-4.5 AI provider");
+                yield new ConfigurableGLMProvider("glm-4.5", "glm-4.5", "GLM-4.5 AI provider");
             }
             case "qwen-max", "qwen-plus", "qwen-turbo" -> {
                 requireAPIKey("DASHSCOPE_API_KEY", providerName);
                 yield new ConfigurableQwenProvider(providerName, providerName, "Qwen AI provider (" + providerName + ")");
             }
             default -> throw new RuntimeException("Unknown decomposition provider: " + providerName +
-                ". Available: dummy, deepseek-chat, glm-4.5, qwen-max, qwen-plus, qwen-turbo");
+                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo");
         };
     }
 

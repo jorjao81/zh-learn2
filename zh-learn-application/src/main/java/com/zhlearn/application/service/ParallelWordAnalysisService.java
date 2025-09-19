@@ -167,7 +167,8 @@ public class ParallelWordAnalysisService implements WordAnalysisService {
         return providerName.contains("deepseek") || 
                providerName.contains("gpt") || 
                providerName.contains("openai") ||
-               providerName.contains("qwen");
+               providerName.contains("qwen") ||
+               providerName.contains("glm");
     }
 
     @Override

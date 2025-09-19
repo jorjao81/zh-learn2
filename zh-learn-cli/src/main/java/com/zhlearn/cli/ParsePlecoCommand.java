@@ -13,11 +13,11 @@ import com.zhlearn.domain.service.WordAnalysisService;
 import com.zhlearn.cli.audio.InteractiveAudioUI;
 import com.zhlearn.cli.audio.PrePlayback;
 import com.zhlearn.cli.audio.SystemAudioPlayer;
+import com.zhlearn.infrastructure.pleco.PlecoEntry;
+import com.zhlearn.infrastructure.pleco.PlecoExportParser;
 import com.zhlearn.infrastructure.dictionary.PlecoExportDictionary;
 import com.zhlearn.infrastructure.dictionary.DictionaryDefinitionProvider;
 import com.zhlearn.infrastructure.dictionary.DictionaryPinyinProvider;
-import com.zhlearn.infrastructure.pleco.PlecoEntry;
-import com.zhlearn.infrastructure.pleco.PlecoExportParser;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -67,7 +67,7 @@ public class ParsePlecoCommand implements Runnable {
     @Option(names = {"--example-provider"}, description = "Set specific provider for examples (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash, glm-4-flash, glm-4.5")
     private String exampleProvider;
 
-    @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation (default: deepseek-chat). Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4.5")
+    @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation (default: deepseek-chat). Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5")
     private String explanationProvider;
     
     @Option(names = {"--audio-provider"}, description = "Set specific provider for audio pronunciation (default: anki). Available: anki, forvo, qwen-tts")
@@ -111,25 +111,22 @@ public class ParsePlecoCommand implements Runnable {
             WordAnalysisService wordAnalysisService;
             ParallelWordAnalysisService parallelService = null;
             
+            // Create providers with special handling for pleco-export which needs the dictionary
+            var exampleProv = parent.createExampleProvider(exampleProvider);
+            var explanationProv = parent.createExplanationProvider(explanationProvider);
+            var decompositionProv = parent.createDecompositionProvider(decompositionProvider);
+            var pinyinProv = "pleco-export".equals(pinyinProvider) ? new DictionaryPinyinProvider(dictionary) : parent.createPinyinProvider(pinyinProvider);
+            var definitionProv = "pleco-export".equals(definitionProvider) ? new DictionaryDefinitionProvider(dictionary) : parent.createDefinitionProvider(definitionProvider);
+            var audioProv = parent.getAudioProvider();
+
             if (disableParallelism) {
                 wordAnalysisService = new WordAnalysisServiceImpl(
-                    parent.createExampleProvider(exampleProvider),
-                    parent.createExplanationProvider(explanationProvider),
-                    parent.createDecompositionProvider(decompositionProvider),
-                    parent.createPinyinProvider(pinyinProvider),
-                    parent.createDefinitionProvider(definitionProvider),
-                    parent.getAudioProvider()
+                    exampleProv, explanationProv, decompositionProv, pinyinProv, definitionProv, audioProv
                 );
                 System.out.println("Using sequential processing (parallelism disabled)");
             } else {
                 parallelService = new ParallelWordAnalysisService(
-                    parent.createExampleProvider(exampleProvider),
-                    parent.createExplanationProvider(explanationProvider),
-                    parent.createDecompositionProvider(decompositionProvider),
-                    parent.createPinyinProvider(pinyinProvider),
-                    parent.createDefinitionProvider(definitionProvider),
-                    parent.getAudioProvider(),
-                    parallelThreads
+                    exampleProv, explanationProv, decompositionProv, pinyinProv, definitionProv, audioProv, parallelThreads
                 );
                 wordAnalysisService = parallelService;
                 System.out.println("Using parallel processing with " + parallelThreads + " threads");

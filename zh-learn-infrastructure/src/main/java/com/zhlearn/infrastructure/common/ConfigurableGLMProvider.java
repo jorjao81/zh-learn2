@@ -24,6 +24,9 @@ public class ConfigurableGLMProvider implements ExampleProvider, ExplanationProv
     private final String description;
 
     public ConfigurableGLMProvider(String modelName, String name, String description) {
+        this.name = name;
+        this.description = description;
+
         // Create configs for each type using the same model but different templates
         var exampleConfig = createGLMConfig(modelName, Example.class);
         var explanationConfig = createGLMConfig(modelName, Explanation.class);
@@ -32,8 +35,6 @@ public class ConfigurableGLMProvider implements ExampleProvider, ExplanationProv
         this.exampleProvider = new ZhipuChatModelProvider<>(exampleConfig);
         this.explanationProvider = new ZhipuChatModelProvider<>(explanationConfig);
         this.decompositionProvider = new ZhipuChatModelProvider<>(decompositionConfig);
-        this.name = name;
-        this.description = description;
     }
 
     private <T> ProviderConfig<T> createGLMConfig(String modelName, Class<T> type) {
