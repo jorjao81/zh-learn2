@@ -98,33 +98,4 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
         );
     }
 
-    @Override
-    public void addPinyinProvider(String name, PinyinProvider provider) {
-        // No longer supported - providers are created at startup
-        throw new UnsupportedOperationException("Dynamic provider registration no longer supported");
-    }
-
-    @Override
-    public void addDefinitionProvider(String name, DefinitionProvider provider) {
-        // No longer supported - providers are created at startup
-        throw new UnsupportedOperationException("Dynamic provider registration no longer supported");
-    }
-
-    @Override
-    public void addStructuralDecompositionProvider(String name, StructuralDecompositionProvider provider) {
-        // No longer supported - providers are created at startup
-        throw new UnsupportedOperationException("Dynamic provider registration no longer supported");
-    }
-
-    @Override
-    public void addExplanationProvider(String name, ExplanationProvider provider) {
-        // No longer supported - providers are created at startup
-        throw new UnsupportedOperationException("Dynamic provider registration no longer supported");
-    }
-
-    @Override
-    public void addAudioProvider(String name, AudioProvider provider) {
-        // No longer supported - providers are created at startup
-        throw new UnsupportedOperationException("Dynamic provider registration no longer supported");
-    }
 }

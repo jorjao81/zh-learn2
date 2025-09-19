@@ -171,31 +171,6 @@ public class ParallelWordAnalysisService implements WordAnalysisService {
                providerName.contains("glm");
     }
 
-    @Override
-    public void addPinyinProvider(String name, com.zhlearn.domain.provider.PinyinProvider provider) {
-        delegate.addPinyinProvider(name, provider);
-    }
-
-    @Override
-    public void addDefinitionProvider(String name, com.zhlearn.domain.provider.DefinitionProvider provider) {
-        delegate.addDefinitionProvider(name, provider);
-    }
-
-    @Override
-    public void addStructuralDecompositionProvider(String name, com.zhlearn.domain.provider.StructuralDecompositionProvider provider) {
-        delegate.addStructuralDecompositionProvider(name, provider);
-    }
-
-    @Override
-    public void addExplanationProvider(String name, com.zhlearn.domain.provider.ExplanationProvider provider) {
-        delegate.addExplanationProvider(name, provider);
-    }
-
-    @Override
-    public void addAudioProvider(String name, com.zhlearn.domain.provider.AudioProvider provider) {
-        delegate.addAudioProvider(name, provider);
-    }
-
     /**
      * Shutdown the executor service when done.
      * Should be called when the service is no longer needed.
