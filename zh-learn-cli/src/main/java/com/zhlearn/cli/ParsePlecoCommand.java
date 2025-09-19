@@ -67,7 +67,7 @@ public class ParsePlecoCommand implements Runnable {
     @Option(names = {"--example-provider"}, description = "Set specific provider for examples (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash, glm-4-flash, glm-4.5")
     private String exampleProvider;
 
-    @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash, glm-4-flash, glm-4.5")
+    @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation (default: deepseek-chat). Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4.5")
     private String explanationProvider;
     
     @Option(names = {"--audio-provider"}, description = "Set specific provider for audio pronunciation (default: anki). Available: anki, forvo, qwen-tts")
@@ -113,21 +113,21 @@ public class ParsePlecoCommand implements Runnable {
             
             if (disableParallelism) {
                 wordAnalysisService = new WordAnalysisServiceImpl(
-                    parent.getExampleProvider(),
-                    parent.getExplanationProvider(),
-                    parent.getDecompositionProvider(),
-                    parent.getPinyinProvider(),
-                    parent.getDefinitionProvider(),
+                    parent.createExampleProvider(exampleProvider),
+                    parent.createExplanationProvider(explanationProvider),
+                    parent.createDecompositionProvider(decompositionProvider),
+                    parent.createPinyinProvider(pinyinProvider),
+                    parent.createDefinitionProvider(definitionProvider),
                     parent.getAudioProvider()
                 );
                 System.out.println("Using sequential processing (parallelism disabled)");
             } else {
                 parallelService = new ParallelWordAnalysisService(
-                    parent.getExampleProvider(),
-                    parent.getExplanationProvider(),
-                    parent.getDecompositionProvider(),
-                    parent.getPinyinProvider(),
-                    parent.getDefinitionProvider(),
+                    parent.createExampleProvider(exampleProvider),
+                    parent.createExplanationProvider(explanationProvider),
+                    parent.createDecompositionProvider(decompositionProvider),
+                    parent.createPinyinProvider(pinyinProvider),
+                    parent.createDefinitionProvider(definitionProvider),
                     parent.getAudioProvider(),
                     parallelThreads
                 );

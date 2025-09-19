@@ -51,14 +51,14 @@ public class ProvidersCommand implements Runnable {
                 ProviderType.AI, EnumSet.of(ProviderClass.EXAMPLE, ProviderClass.EXPLANATION, ProviderClass.STRUCTURAL_DECOMPOSITION)));
         }
 
-        // Show other Qwen3 variants if DASHSCOPE key is available
+        // Show other Qwen variants if DASHSCOPE key is available
         if (hasAPIKey("DASHSCOPE_API_KEY")) {
-            if (!currentAI.equals("qwen3-plus")) {
-                providers.add(new ProviderInfo("qwen3-plus", "Qwen3 Plus AI provider (available)",
+            if (!currentAI.equals("qwen-plus")) {
+                providers.add(new ProviderInfo("qwen-plus", "Qwen Plus AI provider (available)",
                     ProviderType.AI, EnumSet.of(ProviderClass.EXAMPLE, ProviderClass.EXPLANATION, ProviderClass.STRUCTURAL_DECOMPOSITION)));
             }
-            if (!currentAI.equals("qwen3-flash")) {
-                providers.add(new ProviderInfo("qwen3-flash", "Qwen3 Flash AI provider (available)",
+            if (!currentAI.equals("qwen-turbo")) {
+                providers.add(new ProviderInfo("qwen-turbo", "Qwen Turbo AI provider (available)",
                     ProviderType.AI, EnumSet.of(ProviderClass.EXAMPLE, ProviderClass.EXPLANATION, ProviderClass.STRUCTURAL_DECOMPOSITION)));
             }
         }
@@ -197,7 +197,7 @@ public class ProvidersCommand implements Runnable {
             return "glm-4.5";
         }
         if (hasAPIKey("DASHSCOPE_API_KEY")) {
-            return "qwen3-max";
+            return "qwen-max";
         }
         return "deepseek-chat";
     }
@@ -205,9 +205,9 @@ public class ProvidersCommand implements Runnable {
     private String getAIProviderDescription(String provider) {
         return switch (provider) {
             case "glm-4.5" -> "GLM-4.5 AI provider (active)";
-            case "qwen3-max" -> "Qwen3 Max AI provider (active)";
-            case "qwen3-plus" -> "Qwen3 Plus AI provider (active)";
-            case "qwen3-flash" -> "Qwen3 Flash AI provider (active)";
+            case "qwen-max" -> "Qwen Max AI provider (active)";
+            case "qwen-plus" -> "Qwen Plus AI provider (active)";
+            case "qwen-turbo" -> "Qwen Turbo AI provider (active)";
             case "deepseek-chat" -> "DeepSeek AI provider (active)";
             default -> provider + " AI provider (active)";
         };

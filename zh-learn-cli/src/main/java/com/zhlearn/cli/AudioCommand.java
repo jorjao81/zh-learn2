@@ -29,11 +29,11 @@ public class AudioCommand implements Runnable {
     @Override
     public void run() {
         WordAnalysisServiceImpl service = new WordAnalysisServiceImpl(
-            parent.getExampleProvider(),
-            parent.getExplanationProvider(),
-            parent.getDecompositionProvider(),
-            parent.getPinyinProvider(),
-            parent.getDefinitionProvider(),
+            parent.createExampleProvider(null), // Use default
+            parent.createExplanationProvider(null), // Use default
+            parent.createDecompositionProvider(null), // Use default
+            parent.createPinyinProvider(null), // Use default
+            parent.createDefinitionProvider(null), // Use default
             parent.getAudioProvider()
         );
 
