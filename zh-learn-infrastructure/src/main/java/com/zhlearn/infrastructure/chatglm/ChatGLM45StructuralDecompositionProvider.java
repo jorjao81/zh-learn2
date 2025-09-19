@@ -31,6 +31,23 @@ public class ChatGLM45StructuralDecompositionProvider implements StructuralDecom
         this.provider = new ZhipuChatModelProvider<>(cfg);
     }
 
+    public ChatGLM45StructuralDecompositionProvider(String apiKey) {
+        ProviderConfig<StructuralDecomposition> base = ChatGLMConfig.forStructuralDecomposition();
+        ProviderConfig<StructuralDecomposition> cfg = new ProviderConfig<>(
+            apiKey,
+            base.getBaseUrl(),
+            MODEL,
+            base.getTemperature(),
+            base.getMaxTokens(),
+            base.getTemplateResourcePath(),
+            base.getExamplesResourcePath(),
+            base.getResponseMapper(),
+            MODEL,
+            base.getErrorMessagePrefix()
+        );
+        this.provider = new ZhipuChatModelProvider<>(cfg);
+    }
+
     @Override
     public String getName() { return provider.getName(); }
 

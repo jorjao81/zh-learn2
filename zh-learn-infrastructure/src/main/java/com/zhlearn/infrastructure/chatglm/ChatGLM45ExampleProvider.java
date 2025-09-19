@@ -33,6 +33,23 @@ public class ChatGLM45ExampleProvider implements ExampleProvider {
         this.provider = new ZhipuChatModelProvider<>(cfg);
     }
 
+    public ChatGLM45ExampleProvider(String apiKey) {
+        ProviderConfig<Example> base = ChatGLMConfig.forExamples();
+        ProviderConfig<Example> cfg = new ProviderConfig<>(
+            apiKey,
+            base.getBaseUrl(),
+            MODEL,
+            base.getTemperature(),
+            base.getMaxTokens(),
+            base.getTemplateResourcePath(),
+            base.getExamplesResourcePath(),
+            base.getResponseMapper(),
+            MODEL,
+            base.getErrorMessagePrefix()
+        );
+        this.provider = new ZhipuChatModelProvider<>(cfg);
+    }
+
     @Override
     public String getName() { return provider.getName(); }
 

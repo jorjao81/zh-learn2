@@ -31,6 +31,23 @@ public class ChatGLM45ExplanationProvider implements ExplanationProvider {
         this.provider = new ZhipuChatModelProvider<>(cfg);
     }
 
+    public ChatGLM45ExplanationProvider(String apiKey) {
+        ProviderConfig<Explanation> base = ChatGLMConfig.forExplanation();
+        ProviderConfig<Explanation> cfg = new ProviderConfig<>(
+            apiKey,
+            base.getBaseUrl(),
+            MODEL,
+            base.getTemperature(),
+            base.getMaxTokens(),
+            base.getTemplateResourcePath(),
+            base.getExamplesResourcePath(),
+            base.getResponseMapper(),
+            MODEL,
+            base.getErrorMessagePrefix()
+        );
+        this.provider = new ZhipuChatModelProvider<>(cfg);
+    }
+
     @Override
     public String getName() { return provider.getName(); }
 
