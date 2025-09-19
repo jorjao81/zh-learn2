@@ -1,15 +1,15 @@
 package com.zhlearn.infrastructure.common;
 
 /**
- * Configuration factory for DeepSeek providers (OpenAI-compatible endpoint).
+ * Configuration factory for Zhipu (GLM) models that rely on the custom ZaiOpenAiChatModel.
  */
-public final class DeepSeekConfig {
+public final class ZhipuConfig {
 
-    private static final String DEFAULT_BASE_URL = "https://api.deepseek.com/v1";
-    private static final String API_KEY_ENVIRONMENT_VARIABLE = "DEEPSEEK_API_KEY";
-    private static final String BASE_URL_ENVIRONMENT_VARIABLE = "DEEPSEEK_BASE_URL";
+    private static final String DEFAULT_BASE_URL = "https://open.bigmodel.cn/api/paas/v4";
+    private static final String API_KEY_ENVIRONMENT_VARIABLE = "ZHIPU_API_KEY";
+    private static final String BASE_URL_ENVIRONMENT_VARIABLE = "ZHIPU_BASE_URL";
 
-    private DeepSeekConfig() {
+    private ZhipuConfig() {
     }
 
     private static String readKey(String key) {

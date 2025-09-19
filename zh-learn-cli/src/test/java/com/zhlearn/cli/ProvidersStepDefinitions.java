@@ -8,6 +8,7 @@ import picocli.CommandLine;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -53,7 +54,7 @@ public class ProvidersStepDefinitions {
             .as("CLI command should exit successfully")
             .isZero();
 
-        for (var row : table.asLists(String.class)) {
+        for (List<String> row : table.asLists(String.class)) {
             if (row.isEmpty()) {
                 continue;
             }

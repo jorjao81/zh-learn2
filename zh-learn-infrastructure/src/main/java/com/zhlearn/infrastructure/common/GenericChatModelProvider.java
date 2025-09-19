@@ -33,19 +33,19 @@ public class GenericChatModelProvider<T> {
     }
     
     private ChatModel createChatModel(ProviderConfig<T> config) {
-        var builder = OpenAiChatModel.builder()
+        OpenAiChatModel.OpenAiChatModelBuilder builder = OpenAiChatModel.builder()
                 .baseUrl(config.getBaseUrl())
                 .apiKey(config.getApiKey())
                 .modelName(config.getModelName());
-                
+
         if (config.getTemperature() != null) {
             builder.temperature(config.getTemperature());
         }
-        
+
         if (config.getMaxTokens() != null) {
             builder.maxTokens(config.getMaxTokens());
         }
-        
+
         ChatModel baseChatModel = builder.build();
         return new CachedChatModel(baseChatModel, config);
     }

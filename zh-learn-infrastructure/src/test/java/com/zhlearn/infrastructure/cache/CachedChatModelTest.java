@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
 
+import java.lang.reflect.Field;
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,7 +56,7 @@ class CachedChatModelTest {
             super(delegate, baseUrl, modelName, temperature, maxTokens);
             // Replace the cache with one using temp directory
             try {
-                var cacheField = CachedChatModel.class.getDeclaredField("cache");
+                Field cacheField = CachedChatModel.class.getDeclaredField("cache");
                 cacheField.setAccessible(true);
                 cacheField.set(this, new FileSystemCache(tempDir, 3600));
             } catch (Exception e) {

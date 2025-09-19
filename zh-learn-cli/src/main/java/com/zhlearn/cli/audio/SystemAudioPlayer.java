@@ -4,6 +4,7 @@ import com.zhlearn.application.audio.AudioPlayer;
 import com.zhlearn.application.audio.AnkiMediaLocator;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -56,7 +57,7 @@ public class SystemAudioPlayer implements AudioPlayer {
         String name = (file == null) ? null : file.getFileName().toString();
         if (name == null || name.isBlank()) return null;
         String resourcePath = "/fixtures/audio/" + name;
-        try (var in = SystemAudioPlayer.class.getResourceAsStream(resourcePath)) {
+        try (InputStream in = SystemAudioPlayer.class.getResourceAsStream(resourcePath)) {
             if (in == null) return null;
             Path out = Files.createTempFile("zhlearn-", "-" + name);
             Files.copy(in, out, StandardCopyOption.REPLACE_EXISTING);

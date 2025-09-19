@@ -5,20 +5,25 @@ import com.zhlearn.application.audio.PronunciationCandidate;
 import com.zhlearn.application.audio.SelectionSession;
 import com.zhlearn.application.service.AnkiExporter;
 import com.zhlearn.application.service.ParallelWordAnalysisService;
-import com.zhlearn.application.service.ProviderRegistry;
 import com.zhlearn.application.service.WordAnalysisServiceImpl;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.ProviderConfiguration;
 import com.zhlearn.domain.model.WordAnalysis;
+import com.zhlearn.domain.provider.AudioProvider;
+import com.zhlearn.domain.provider.DefinitionProvider;
+import com.zhlearn.domain.provider.ExampleProvider;
+import com.zhlearn.domain.provider.ExplanationProvider;
+import com.zhlearn.domain.provider.PinyinProvider;
+import com.zhlearn.domain.provider.StructuralDecompositionProvider;
 import com.zhlearn.domain.service.WordAnalysisService;
 import com.zhlearn.cli.audio.InteractiveAudioUI;
 import com.zhlearn.cli.audio.PrePlayback;
 import com.zhlearn.cli.audio.SystemAudioPlayer;
+import com.zhlearn.infrastructure.pleco.PlecoEntry;
+import com.zhlearn.infrastructure.pleco.PlecoExportParser;
 import com.zhlearn.infrastructure.dictionary.PlecoExportDictionary;
 import com.zhlearn.infrastructure.dictionary.DictionaryDefinitionProvider;
 import com.zhlearn.infrastructure.dictionary.DictionaryPinyinProvider;
-import com.zhlearn.infrastructure.pleco.PlecoEntry;
-import com.zhlearn.infrastructure.pleco.PlecoExportParser;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -53,25 +58,22 @@ public class ParsePlecoCommand implements Runnable {
     @Parameters(index = "0", description = "Path to the Pleco export file (TSV format)")
     private String filePath;
     
-    @Option(names = {"--provider"}, description = "Set default provider for all services (parse-pleco defaults: pleco-export for definition/pinyin, deepseek-chat for analysis, anki for audio). Available: dummy, pinyin4j, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash, pleco-export, anki")
-    private String defaultProvider = "custom";
-    
-    @Option(names = {"--pinyin-provider"}, description = "Set specific provider for pinyin (default: pleco-export). Available: pinyin4j, dummy, pleco-export")
+    @Option(names = {"--pinyin-provider"}, description = "Set specific provider for pinyin (default: pleco-export). Available: pinyin4j, dummy, pleco-export", defaultValue = "pleco-export")
     private String pinyinProvider;
     
-    @Option(names = {"--definition-provider"}, description = "Set specific provider for definition (default: pleco-export). Available: dummy, pleco-export")
+    @Option(names = {"--definition-provider"}, description = "Set specific provider for definition (default: pleco-export). Available: dummy, pleco-export", defaultValue = "pleco-export")
     private String definitionProvider;
     
-    @Option(names = {"--decomposition-provider"}, description = "Set specific provider for structural decomposition (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash, glm-4-flash, glm-4.5")
+    @Option(names = {"--decomposition-provider"}, description = "Set specific provider for structural decomposition (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash, glm-4-flash, glm-4.5", defaultValue = "deepseek-chat")
     private String decompositionProvider;
 
-    @Option(names = {"--example-provider"}, description = "Set specific provider for examples (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash, glm-4-flash, glm-4.5")
+    @Option(names = {"--example-provider"}, description = "Set specific provider for examples (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash, glm-4-flash, glm-4.5", defaultValue = "deepseek-chat")
     private String exampleProvider;
 
-    @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash, glm-4-flash, glm-4.5")
+    @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation (default: deepseek-chat). Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5", defaultValue = "deepseek-chat")
     private String explanationProvider;
     
-    @Option(names = {"--audio-provider"}, description = "Set specific provider for audio pronunciation (default: anki). Available: anki, forvo, qwen-tts")
+    @Option(names = {"--audio-provider"}, description = "Set specific provider for audio pronunciation (default: anki). Available: anki, forvo, qwen-tts", defaultValue = "anki")
     private String audioProvider;
     
     @Option(names = {"--raw", "--raw-output"}, description = "Display raw HTML content instead of formatted output")
@@ -80,8 +82,8 @@ public class ParsePlecoCommand implements Runnable {
     @Option(names = {"--limit"}, description = "Limit the number of words to process (default: all)")
     private Integer limit;
     
-    @Option(names = {"--parallel-threads"}, description = "Number of parallel threads for processing (default: 10)")
-    private Integer parallelThreads = 10;
+    @Option(names = {"--parallel-threads"}, description = "Number of parallel threads for processing (default: 10)", defaultValue = "10")
+    private int parallelThreads;
     
     @Option(names = {"--disable-parallelism"}, description = "Disable parallel processing, use sequential processing instead")
     private boolean disableParallelism = false;
@@ -105,58 +107,46 @@ public class ParsePlecoCommand implements Runnable {
             // Create dictionary for any dictionary-based providers
             PlecoExportDictionary dictionary = new PlecoExportDictionary(entries);
 
-            // Register dictionary-backed providers so users can opt-in via --*-provider flags
-            var registry = parent.getProviderRegistry();
-            registry.registerDefinitionProvider(new DictionaryDefinitionProvider(dictionary));
-            registry.registerPinyinProvider(new DictionaryPinyinProvider(dictionary));
-            
+            // Note: Dictionary providers are no longer dynamically registered
+            // They are created at startup in MainCommand
+
             // Set up word analysis service (parallel or sequential)
             WordAnalysisService wordAnalysisService;
             ParallelWordAnalysisService parallelService = null;
-            
+
+            // Create providers with special handling for pleco-export which needs the dictionary
+            ExampleProvider exampleProv = parent.createExampleProvider(exampleProvider);
+            ExplanationProvider explanationProv = parent.createExplanationProvider(explanationProvider);
+            StructuralDecompositionProvider decompositionProv = parent.createDecompositionProvider(decompositionProvider);
+            PinyinProvider pinyinProv = "pleco-export".equals(pinyinProvider) ? new DictionaryPinyinProvider(dictionary) : parent.createPinyinProvider(pinyinProvider);
+            DefinitionProvider definitionProv = "pleco-export".equals(definitionProvider) ? new DictionaryDefinitionProvider(dictionary) : parent.createDefinitionProvider(definitionProvider);
+            AudioProvider audioProv = resolveAudioProvider(audioProvider);
+
+            WordAnalysisServiceImpl baseService = new WordAnalysisServiceImpl(
+                exampleProv, explanationProv, decompositionProv, pinyinProv, definitionProv, audioProv
+            );
+
             if (disableParallelism) {
-                wordAnalysisService = new WordAnalysisServiceImpl(parent.getProviderRegistry());
+                wordAnalysisService = baseService;
                 System.out.println("Using sequential processing (parallelism disabled)");
             } else {
-                parallelService = new ParallelWordAnalysisService(parent.getProviderRegistry(), parallelThreads);
+                parallelService = new ParallelWordAnalysisService(baseService, parallelThreads);
                 wordAnalysisService = parallelService;
                 System.out.println("Using parallel processing with " + parallelThreads + " threads");
             }
-            
-            // Set parse-pleco specific defaults
-            String effectiveDefinitionProvider = definitionProvider != null ? definitionProvider : "pleco-export";
-            String effectivePinyinProvider = pinyinProvider != null ? pinyinProvider : "pleco-export";
-            String effectiveDecompositionProvider = decompositionProvider != null ? decompositionProvider : "deepseek-chat";
-            String effectiveExampleProvider = exampleProvider != null ? exampleProvider : "deepseek-chat";
-            String effectiveExplanationProvider = explanationProvider != null ? explanationProvider : "deepseek-chat";
-            String effectiveAudioProvider = audioProvider != null ? audioProvider : "anki";
-            
-            // Use a representative label for mixed providers unless overridden via --provider
-            String effectiveDefaultProvider = (defaultProvider == null || defaultProvider.isBlank()) ? "custom" : defaultProvider;
 
             ProviderConfiguration config = new ProviderConfiguration(
-                effectiveDefaultProvider,
-                effectivePinyinProvider,
-                effectiveDefinitionProvider,
-                effectiveDecompositionProvider,
-                effectiveExampleProvider,
-                effectiveExplanationProvider,
-                effectiveAudioProvider
+                exampleProvider,
+                pinyinProvider,
+                definitionProvider,
+                decompositionProvider,
+                exampleProvider,
+                explanationProvider,
+                audioProvider
             );
 
             // Validate all providers before processing
-            String validationError = validateProviders(parent.getProviderRegistry(),
-                    effectiveDefaultProvider,
-                    effectivePinyinProvider,
-                    effectiveDefinitionProvider,
-                    effectiveDecompositionProvider,
-                    effectiveExampleProvider,
-                    effectiveExplanationProvider,
-                    effectiveAudioProvider);
-            if (validationError != null) {
-                System.err.println(validationError);
-                System.exit(1);
-            }
+            // Provider validation is no longer needed since providers are fixed
             
             // Process words through the analysis pipeline
             int maxToProcess = limit != null ? limit : entries.size();
@@ -197,7 +187,7 @@ public class ParsePlecoCommand implements Runnable {
     private void processWordsSequentially(List<PlecoEntry> entries, WordAnalysisService wordAnalysisService,
                                         ProviderConfiguration config, int maxToProcess, List<WordAnalysis> successfulAnalyses) {
         int processedCount = 0;
-        AudioOrchestrator audioOrchestrator = new AudioOrchestrator(parent.getProviderRegistry());
+        AudioOrchestrator audioOrchestrator = new AudioOrchestrator(parent.getAudioProviders());
         InteractiveAudioUI audioUI = new InteractiveAudioUI();
 
         for (PlecoEntry entry : entries) {
@@ -279,7 +269,7 @@ public class ParsePlecoCommand implements Runnable {
             CompletableFuture.allOf(displayFutures.toArray(new CompletableFuture[0])).join();
 
             if (!successfulAnalyses.isEmpty()) {
-                AudioOrchestrator audioOrchestrator = new AudioOrchestrator(parent.getProviderRegistry());
+                AudioOrchestrator audioOrchestrator = new AudioOrchestrator(parent.getAudioProviders());
                 InteractiveAudioUI audioUI = new InteractiveAudioUI();
                 for (int i = 0; i < successfulAnalyses.size(); i++) {
                     WordAnalysis updated = runAudioSelection(audioOrchestrator, audioUI, successfulAnalyses.get(i));
@@ -409,66 +399,13 @@ public class ParsePlecoCommand implements Runnable {
             throw new UncheckedIOException("Failed to export Anki file to " + filename, e);
         }
     }
-    
+
     // Printing is delegated to AnalysisPrinter to match 'word' command output
 
-    private String validateProviders(
-            com.zhlearn.application.service.ProviderRegistry registry,
-            String defaultProv,
-            String pinyinProv,
-            String definitionProv,
-            String decompositionProv,
-            String exampleProv,
-            String explanationProv,
-            String audioProv) {
-        String[] providers = { defaultProv, pinyinProv, definitionProv, decompositionProv, exampleProv, explanationProv, audioProv };
-        String[] providerTypes = { "default", "pinyin", "definition", "decomposition", "example", "explanation", "audio" };
-
-        for (int i = 0; i < providers.length; i++) {
-            String provider = providers[i];
-            String type = providerTypes[i];
-
-            // The default provider in this command is a label only (e.g., "custom");
-            // do not require it to be a registered provider.
-            if ("default".equals(type)) {
-                continue;
-            }
-
-            if (provider != null && !isProviderAvailable(registry, provider)) {
-                return createProviderNotFoundError(registry, provider, type);
-            }
-        }
-        return null;
-    }
-
-    private boolean isProviderAvailable(ProviderRegistry registry, String providerName) {
-        return registry.getPinyinProvider(providerName).isPresent() ||
-               registry.getDefinitionProvider(providerName).isPresent() ||
-               registry.getStructuralDecompositionProvider(providerName).isPresent() ||
-               registry.getExampleProvider(providerName).isPresent() ||
-               registry.getExplanationProvider(providerName).isPresent() ||
-               registry.getAudioProvider(providerName).isPresent();
-    }
-
-    private String createProviderNotFoundError(ProviderRegistry registry, String requestedProvider, String providerType) {
-        StringBuilder error = new StringBuilder();
-        error.append("Provider '").append(requestedProvider).append("' not found");
-        if (!providerType.equals("default")) {
-            error.append(" for ").append(providerType);
-        }
-        error.append(".\n\n");
-
-        // Find similar providers
-        List<String> similarProviders = registry.findSimilarProviders(requestedProvider);
-        if (!similarProviders.isEmpty()) {
-            error.append("Did you mean one of these?\n");
-            for (String similar : similarProviders) {
-                error.append("  - ").append(similar).append("\n");
-            }
-            error.append("\n");
-        }
-
-        error.append("Use 'zh-learn providers' to see all available providers.");
-        return error.toString();
+    private AudioProvider resolveAudioProvider(String providerName) {
+        return parent.getAudioProviders().stream()
+            .filter(provider -> provider.getName().equals(providerName))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("Unknown audio provider: " + providerName));
     }
 }

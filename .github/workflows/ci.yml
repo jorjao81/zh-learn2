@@ -22,10 +22,10 @@ jobs:
       run: mvn -B -Pmoditect -Dmaven.repo.local=$GITHUB_WORKSPACE/.m2 clean install
 
     - name: Run with modular JVM
-      run: ./zh-learn.sh word 学习
+      run: ./zh-learn.sh word 学习 --decomposition-provider dummy --example-provider dummy --explanation-provider dummy
 
     - name: Build native image
       run: ./build-native.sh
 
     - name: Run native executable
-      run: ./zh-learn-cli/target/zh-learn word 学习
+      run: ./zh-learn-cli/target/zh-learn word 学习 --decomposition-provider dummy --example-provider dummy --explanation-provider dummy

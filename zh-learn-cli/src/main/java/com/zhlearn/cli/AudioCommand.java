@@ -3,6 +3,7 @@ package com.zhlearn.cli;
 import com.zhlearn.application.service.WordAnalysisServiceImpl;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
+import com.zhlearn.domain.provider.AudioProvider;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
@@ -20,15 +21,24 @@ public class AudioCommand implements Runnable {
     @Parameters(index = "1", description = "Exact pinyin to match (with tone marks)")
     private String pinyin;
 
-    @Option(names = {"--audio-provider"}, description = "Audio provider name (default: anki)")
-    private String audioProvider = "anki";
+    @Option(names = {"--audio-provider"}, description = "Audio provider name (default: anki)", defaultValue = "anki")
+    private String audioProvider;
 
     @picocli.CommandLine.ParentCommand
     private MainCommand parent;
 
     @Override
     public void run() {
-        WordAnalysisServiceImpl service = new WordAnalysisServiceImpl(parent.getProviderRegistry());
+        AudioProvider selectedAudioProvider = resolveAudioProvider(audioProvider);
+
+        WordAnalysisServiceImpl service = new WordAnalysisServiceImpl(
+            parent.createExampleProvider(null), // Use default
+            parent.createExplanationProvider(null), // Use default
+            parent.createDecompositionProvider(null), // Use default
+            parent.createPinyinProvider(null), // Use default
+            parent.createDefinitionProvider(null), // Use default
+            selectedAudioProvider
+        );
 
         Hanzi word = new Hanzi(chineseWord);
         Pinyin p = new Pinyin(pinyin);
@@ -46,5 +56,12 @@ public class AudioCommand implements Runnable {
                 System.out.println("The parser currently supports note type 'Chinese 2' (columns: 1=simplified, 2=pinyin, 3=pronunciation).");
             }
         }
+    }
+
+    private AudioProvider resolveAudioProvider(String providerName) {
+        return parent.getAudioProviders().stream()
+            .filter(provider -> provider.getName().equals(providerName))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("Unknown audio provider: " + providerName));
     }
 }

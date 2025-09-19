@@ -3,6 +3,7 @@ package com.zhlearn.infrastructure.cache;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -107,7 +108,7 @@ class FileSystemCacheTest {
             Path expectedResponsesDir = expectedCacheDir.resolve("responses");
             assertThat(expectedResponsesDir).exists();
 
-            var cacheDirectoryField = FileSystemCache.class.getDeclaredField("cacheDirectory");
+            Field cacheDirectoryField = FileSystemCache.class.getDeclaredField("cacheDirectory");
             cacheDirectoryField.setAccessible(true);
             Path actualCacheDir = (Path) cacheDirectoryField.get(cache);
             assertThat(actualCacheDir).isEqualTo(expectedCacheDir);

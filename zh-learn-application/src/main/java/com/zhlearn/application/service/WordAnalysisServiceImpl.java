@@ -8,53 +8,56 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 public class WordAnalysisServiceImpl implements WordAnalysisService {
-    
-    private final ProviderRegistry providerRegistry;
-    
-    public WordAnalysisServiceImpl(ProviderRegistry registry) {
-        this.providerRegistry = registry;
+
+    private final ExampleProvider exampleProvider;
+    private final ExplanationProvider explanationProvider;
+    private final StructuralDecompositionProvider decompositionProvider;
+    private final PinyinProvider pinyinProvider;
+    private final DefinitionProvider definitionProvider;
+    private final AudioProvider audioProvider;
+
+    public WordAnalysisServiceImpl(ExampleProvider exampleProvider,
+                                  ExplanationProvider explanationProvider,
+                                  StructuralDecompositionProvider decompositionProvider,
+                                  PinyinProvider pinyinProvider,
+                                  DefinitionProvider definitionProvider,
+                                  AudioProvider audioProvider) {
+        this.exampleProvider = exampleProvider;
+        this.explanationProvider = explanationProvider;
+        this.decompositionProvider = decompositionProvider;
+        this.pinyinProvider = pinyinProvider;
+        this.definitionProvider = definitionProvider;
+        this.audioProvider = audioProvider;
     }
 
     @Override
     public Pinyin getPinyin(Hanzi word, String providerName) {
-        return providerRegistry.getPinyinProvider(providerName)
-            .orElseThrow(() -> new IllegalArgumentException("Pinyin provider not found: " + providerName))
-            .getPinyin(word);
+        return pinyinProvider.getPinyin(word);
     }
-    
+
     @Override
     public Definition getDefinition(Hanzi word, String providerName) {
-        return providerRegistry.getDefinitionProvider(providerName)
-            .orElseThrow(() -> new IllegalArgumentException("Definition provider not found: " + providerName))
-            .getDefinition(word);
+        return definitionProvider.getDefinition(word);
     }
-    
+
     @Override
     public StructuralDecomposition getStructuralDecomposition(Hanzi word, String providerName) {
-        return providerRegistry.getStructuralDecompositionProvider(providerName)
-            .orElseThrow(() -> new IllegalArgumentException("Structural decomposition provider not found: " + providerName))
-            .getStructuralDecomposition(word);
+        return decompositionProvider.getStructuralDecomposition(word);
     }
-    
+
     @Override
     public Example getExamples(Hanzi word, String providerName) {
-        return providerRegistry.getExampleProvider(providerName)
-            .orElseThrow(() -> new IllegalArgumentException("Example provider not found: " + providerName))
-            .getExamples(word, Optional.empty());
+        return exampleProvider.getExamples(word, Optional.empty());
     }
-    
+
     @Override
     public Example getExamples(Hanzi word, String providerName, String definition) {
-        return providerRegistry.getExampleProvider(providerName)
-            .orElseThrow(() -> new IllegalArgumentException("Example provider not found: " + providerName))
-            .getExamples(word, Optional.of(definition));
+        return exampleProvider.getExamples(word, Optional.of(definition));
     }
-    
+
     @Override
     public Explanation getExplanation(Hanzi word, String providerName) {
-        return providerRegistry.getExplanationProvider(providerName)
-            .orElseThrow(() -> new IllegalArgumentException("Explanation provider not found: " + providerName))
-            .getExplanation(word);
+        return explanationProvider.getExplanation(word);
     }
 
     @Override
@@ -62,9 +65,7 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
         if (providerName == null || providerName.isBlank()) {
             return Optional.empty();
         }
-        return providerRegistry.getAudioProvider(providerName)
-            .map(p -> p.getPronunciation(word, pinyin))
-            .orElse(Optional.empty());
+        return audioProvider.getPronunciation(word, pinyin);
     }
     
     @Override
@@ -97,28 +98,4 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
         );
     }
 
-    @Override
-    public void addPinyinProvider(String name, PinyinProvider provider) {
-        providerRegistry.registerPinyinProvider(provider);
-    }
-
-    @Override
-    public void addDefinitionProvider(String name, DefinitionProvider provider) {
-        providerRegistry.registerDefinitionProvider(provider);
-    }
-
-    @Override
-    public void addStructuralDecompositionProvider(String name, StructuralDecompositionProvider provider) {
-        providerRegistry.registerStructuralDecompositionProvider(provider);
-    }
-
-    @Override
-    public void addExplanationProvider(String name, ExplanationProvider provider) {
-        providerRegistry.registerExplanationProvider(provider);
-    }
-
-    @Override
-    public void addAudioProvider(String name, AudioProvider provider) {
-        providerRegistry.registerAudioProvider(provider);
-    }
 }

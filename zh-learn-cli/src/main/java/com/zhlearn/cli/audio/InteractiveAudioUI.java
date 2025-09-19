@@ -6,6 +6,8 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.NonBlockingReader;
 
+import java.io.PrintWriter;
+
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -28,7 +30,7 @@ public class InteractiveAudioUI {
                 return TriState.unavailable(); // fall back in non-interactive environments
             }
             terminal.enterRawMode();
-            var writer = terminal.writer();
+            PrintWriter writer = terminal.writer();
             renderAnsi(writer, session);
             writer.flush();
             NonBlockingReader reader = terminal.reader();

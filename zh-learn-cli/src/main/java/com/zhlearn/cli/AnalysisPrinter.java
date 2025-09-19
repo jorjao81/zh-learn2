@@ -1,6 +1,7 @@
 package com.zhlearn.cli;
 
 import com.zhlearn.application.format.ExamplesHtmlFormatter;
+import com.zhlearn.domain.model.Example;
 import com.zhlearn.domain.model.WordAnalysis;
 
 /**
@@ -58,7 +59,7 @@ public final class AnalysisPrinter {
         System.out.println();
 
         System.out.println("Examples:");
-        for (var usage : analysis.examples().usages()) {
+        for (Example.Usage usage : analysis.examples().usages()) {
             System.out.println("  Chinese: " + usage.sentence());
             System.out.println("  Pinyin: " + usage.pinyin());
             System.out.println("  English: " + usage.translation());
@@ -69,7 +70,7 @@ public final class AnalysisPrinter {
         // No standalone sentences section
         if (analysis.examples().phoneticSeries() != null && !analysis.examples().phoneticSeries().isEmpty()) {
             System.out.println("  Phonetic series:");
-            for (var item : analysis.examples().phoneticSeries()) {
+            for (Example.SeriesItem item : analysis.examples().phoneticSeries()) {
                 String pinyin = item.pinyin() == null ? "" : (" " + item.pinyin());
                 String meaning = item.meaning() == null || item.meaning().isBlank() ? "" : (" " + item.meaning());
                 System.out.println("    • " + item.hanzi() + pinyin + meaning);
