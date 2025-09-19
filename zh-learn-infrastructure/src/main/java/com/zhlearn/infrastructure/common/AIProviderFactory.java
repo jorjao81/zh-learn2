@@ -1,5 +1,8 @@
 package com.zhlearn.infrastructure.common;
 
+import com.zhlearn.domain.model.Example;
+import com.zhlearn.domain.model.Explanation;
+import com.zhlearn.domain.model.StructuralDecomposition;
 import com.zhlearn.domain.provider.ExampleProvider;
 import com.zhlearn.domain.provider.ExplanationProvider;
 import com.zhlearn.domain.provider.StructuralDecompositionProvider;
@@ -16,7 +19,7 @@ public class AIProviderFactory {
             case "dummy" -> new DummyExampleProvider();
             case "deepseek-chat" -> {
                 requireAPIKey("DEEPSEEK_API_KEY", providerName);
-                var config = createProviderConfig(
+                ProviderConfig<Example> config = createProviderConfig(
                     DeepSeekConfig.getApiKey(),
                     DeepSeekConfig.getBaseUrl(),
                     "deepseek-chat",
@@ -30,7 +33,7 @@ public class AIProviderFactory {
             }
             case "glm-4-flash" -> {
                 requireAPIKey("ZHIPU_API_KEY", providerName);
-                var config = createProviderConfig(
+                ProviderConfig<Example> config = createProviderConfig(
                     ZhipuConfig.getApiKey(),
                     ZhipuConfig.getBaseUrl(),
                     "glm-4-flash",
@@ -40,12 +43,12 @@ public class AIProviderFactory {
                     providerName,
                     "Failed to get examples from Zhipu (glm-4-flash)"
                 );
-                var delegate = new ZhipuChatModelProvider<>(config);
+                ZhipuChatModelProvider<Example> delegate = new ZhipuChatModelProvider<>(config);
                 yield new ConfigurableExampleProvider(delegate::process, providerName, "GLM-4 Flash AI provider");
             }
             case "glm-4.5" -> {
                 requireAPIKey("ZHIPU_API_KEY", providerName);
-                var config = createProviderConfig(
+                ProviderConfig<Example> config = createProviderConfig(
                     ZhipuConfig.getApiKey(),
                     ZhipuConfig.getBaseUrl(),
                     "glm-4.5",
@@ -55,12 +58,12 @@ public class AIProviderFactory {
                     providerName,
                     "Failed to get examples from Zhipu (glm-4.5)"
                 );
-                var delegate = new ZhipuChatModelProvider<>(config);
+                ZhipuChatModelProvider<Example> delegate = new ZhipuChatModelProvider<>(config);
                 yield new ConfigurableExampleProvider(delegate::process, providerName, "GLM-4.5 AI provider");
             }
             case "qwen-max", "qwen-plus", "qwen-turbo" -> {
                 requireAPIKey("DASHSCOPE_API_KEY", providerName);
-                var config = createProviderConfig(
+                ProviderConfig<Example> config = createProviderConfig(
                     DashScopeConfig.getApiKey(),
                     DashScopeConfig.getBaseUrl(),
                     providerName,
@@ -84,7 +87,7 @@ public class AIProviderFactory {
             case "dummy" -> new DummyExplanationProvider();
             case "deepseek-chat" -> {
                 requireAPIKey("DEEPSEEK_API_KEY", providerName);
-                var config = createProviderConfig(
+                ProviderConfig<Explanation> config = createProviderConfig(
                     DeepSeekConfig.getApiKey(),
                     DeepSeekConfig.getBaseUrl(),
                     "deepseek-chat",
@@ -98,7 +101,7 @@ public class AIProviderFactory {
             }
             case "glm-4-flash" -> {
                 requireAPIKey("ZHIPU_API_KEY", providerName);
-                var config = createProviderConfig(
+                ProviderConfig<Explanation> config = createProviderConfig(
                     ZhipuConfig.getApiKey(),
                     ZhipuConfig.getBaseUrl(),
                     "glm-4-flash",
@@ -108,12 +111,12 @@ public class AIProviderFactory {
                     providerName,
                     "Failed to get explanation from Zhipu (glm-4-flash)"
                 );
-                var delegate = new ZhipuChatModelProvider<>(config);
+                ZhipuChatModelProvider<Explanation> delegate = new ZhipuChatModelProvider<>(config);
                 yield new ConfigurableExplanationProvider(delegate::process, providerName, "GLM-4 Flash AI provider");
             }
             case "glm-4.5" -> {
                 requireAPIKey("ZHIPU_API_KEY", providerName);
-                var config = createProviderConfig(
+                ProviderConfig<Explanation> config = createProviderConfig(
                     ZhipuConfig.getApiKey(),
                     ZhipuConfig.getBaseUrl(),
                     "glm-4.5",
@@ -123,12 +126,12 @@ public class AIProviderFactory {
                     providerName,
                     "Failed to get explanation from Zhipu (glm-4.5)"
                 );
-                var delegate = new ZhipuChatModelProvider<>(config);
+                ZhipuChatModelProvider<Explanation> delegate = new ZhipuChatModelProvider<>(config);
                 yield new ConfigurableExplanationProvider(delegate::process, providerName, "GLM-4.5 AI provider");
             }
             case "qwen-max", "qwen-plus", "qwen-turbo" -> {
                 requireAPIKey("DASHSCOPE_API_KEY", providerName);
-                var config = createProviderConfig(
+                ProviderConfig<Explanation> config = createProviderConfig(
                     DashScopeConfig.getApiKey(),
                     DashScopeConfig.getBaseUrl(),
                     providerName,
@@ -152,7 +155,7 @@ public class AIProviderFactory {
             case "dummy" -> new DummyStructuralDecompositionProvider();
             case "deepseek-chat" -> {
                 requireAPIKey("DEEPSEEK_API_KEY", providerName);
-                var config = createProviderConfig(
+                ProviderConfig<StructuralDecomposition> config = createProviderConfig(
                     DeepSeekConfig.getApiKey(),
                     DeepSeekConfig.getBaseUrl(),
                     "deepseek-chat",
@@ -167,7 +170,7 @@ public class AIProviderFactory {
             }
             case "glm-4-flash" -> {
                 requireAPIKey("ZHIPU_API_KEY", providerName);
-                var config = createProviderConfig(
+                ProviderConfig<StructuralDecomposition> config = createProviderConfig(
                     ZhipuConfig.getApiKey(),
                     ZhipuConfig.getBaseUrl(),
                     "glm-4-flash",
@@ -177,12 +180,12 @@ public class AIProviderFactory {
                     providerName,
                     "Failed to get structural decomposition from Zhipu (glm-4-flash)"
                 );
-                var delegate = new ZhipuChatModelProvider<>(config);
+                ZhipuChatModelProvider<StructuralDecomposition> delegate = new ZhipuChatModelProvider<>(config);
                 yield new ConfigurableStructuralDecompositionProvider(delegate::process, providerName, "GLM-4 Flash AI provider");
             }
             case "glm-4.5" -> {
                 requireAPIKey("ZHIPU_API_KEY", providerName);
-                var config = createProviderConfig(
+                ProviderConfig<StructuralDecomposition> config = createProviderConfig(
                     ZhipuConfig.getApiKey(),
                     ZhipuConfig.getBaseUrl(),
                     "glm-4.5",
@@ -192,12 +195,12 @@ public class AIProviderFactory {
                     providerName,
                     "Failed to get structural decomposition from Zhipu (glm-4.5)"
                 );
-                var delegate = new ZhipuChatModelProvider<>(config);
+                ZhipuChatModelProvider<StructuralDecomposition> delegate = new ZhipuChatModelProvider<>(config);
                 yield new ConfigurableStructuralDecompositionProvider(delegate::process, providerName, "GLM-4.5 AI provider");
             }
             case "qwen-max", "qwen-plus", "qwen-turbo" -> {
                 requireAPIKey("DASHSCOPE_API_KEY", providerName);
-                var config = createProviderConfig(
+                ProviderConfig<StructuralDecomposition> config = createProviderConfig(
                     DashScopeConfig.getApiKey(),
                     DashScopeConfig.getBaseUrl(),
                     providerName,

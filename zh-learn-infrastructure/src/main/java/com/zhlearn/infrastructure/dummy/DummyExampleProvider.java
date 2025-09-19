@@ -27,7 +27,7 @@ public class DummyExampleProvider implements ExampleProvider {
     public Example getExamples(Hanzi word, Optional<String> definition) {
         String contextSuffix = definition.map(def -> " (meaning: " + def + ")").orElse("");
         
-        var usages = List.of(
+        List<Example.Usage> usages = List.of(
             new Example.Usage(
                 word.characters() + "计",
                 word.characters() + "jì",

@@ -176,8 +176,8 @@ public class DomainModelStepDefinitions {
     // Example step definitions
     @When("I create an Example with valid usages")
     public void i_create_an_example_with_valid_usages() {
-        var usage1 = new Example.Usage("你好", "nǐ hǎo", "hello", "greeting", "Test breakdown for hello");
-        var usage2 = new Example.Usage("再见", "zài jiàn", "goodbye", "parting", "Test breakdown for goodbye");
+        Example.Usage usage1 = new Example.Usage("你好", "nǐ hǎo", "hello", "greeting", "Test breakdown for hello");
+        Example.Usage usage2 = new Example.Usage("再见", "zài jiàn", "goodbye", "parting", "Test breakdown for goodbye");
         example = new Example(List.of(usage1, usage2), List.of());
     }
 

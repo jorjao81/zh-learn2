@@ -2,6 +2,12 @@ package com.zhlearn.cli;
 
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.WordAnalysis;
+import com.zhlearn.domain.provider.AudioProvider;
+import com.zhlearn.domain.provider.DefinitionProvider;
+import com.zhlearn.domain.provider.ExampleProvider;
+import com.zhlearn.domain.provider.ExplanationProvider;
+import com.zhlearn.domain.provider.PinyinProvider;
+import com.zhlearn.domain.provider.StructuralDecompositionProvider;
 import com.zhlearn.infrastructure.dummy.*;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -28,12 +34,12 @@ public class WordAnalysisStepDefinitions {
             Hanzi hanzi = new Hanzi(word);
 
             // Create dummy providers for testing
-            var pinyinProvider = new DummyPinyinProvider();
-            var definitionProvider = new DummyDefinitionProvider();
-            var exampleProvider = new DummyExampleProvider();
-            var explanationProvider = new DummyExplanationProvider();
-            var decompositionProvider = new DummyStructuralDecompositionProvider();
-            var audioProvider = new DummyAudioProvider();
+            PinyinProvider pinyinProvider = new DummyPinyinProvider();
+            DefinitionProvider definitionProvider = new DummyDefinitionProvider();
+            ExampleProvider exampleProvider = new DummyExampleProvider();
+            ExplanationProvider explanationProvider = new DummyExplanationProvider();
+            StructuralDecompositionProvider decompositionProvider = new DummyStructuralDecompositionProvider();
+            AudioProvider audioProvider = new DummyAudioProvider();
 
             // Create a basic analysis
             this.analysis = new WordAnalysis(

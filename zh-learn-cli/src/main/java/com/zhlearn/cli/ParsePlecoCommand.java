@@ -9,6 +9,12 @@ import com.zhlearn.application.service.WordAnalysisServiceImpl;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.ProviderConfiguration;
 import com.zhlearn.domain.model.WordAnalysis;
+import com.zhlearn.domain.provider.AudioProvider;
+import com.zhlearn.domain.provider.DefinitionProvider;
+import com.zhlearn.domain.provider.ExampleProvider;
+import com.zhlearn.domain.provider.ExplanationProvider;
+import com.zhlearn.domain.provider.PinyinProvider;
+import com.zhlearn.domain.provider.StructuralDecompositionProvider;
 import com.zhlearn.domain.service.WordAnalysisService;
 import com.zhlearn.cli.audio.InteractiveAudioUI;
 import com.zhlearn.cli.audio.PrePlayback;
@@ -120,12 +126,12 @@ public class ParsePlecoCommand implements Runnable {
             ParallelWordAnalysisService parallelService = null;
 
             // Create providers with special handling for pleco-export which needs the dictionary
-            var exampleProv = parent.createExampleProvider(effectiveExampleProvider);
-            var explanationProv = parent.createExplanationProvider(effectiveExplanationProvider);
-            var decompositionProv = parent.createDecompositionProvider(effectiveDecompositionProvider);
-            var pinyinProv = "pleco-export".equals(effectivePinyinProvider) ? new DictionaryPinyinProvider(dictionary) : parent.createPinyinProvider(effectivePinyinProvider);
-            var definitionProv = "pleco-export".equals(effectiveDefinitionProvider) ? new DictionaryDefinitionProvider(dictionary) : parent.createDefinitionProvider(effectiveDefinitionProvider);
-            var audioProv = parent.getAudioProvider();
+            ExampleProvider exampleProv = parent.createExampleProvider(effectiveExampleProvider);
+            ExplanationProvider explanationProv = parent.createExplanationProvider(effectiveExplanationProvider);
+            StructuralDecompositionProvider decompositionProv = parent.createDecompositionProvider(effectiveDecompositionProvider);
+            PinyinProvider pinyinProv = "pleco-export".equals(effectivePinyinProvider) ? new DictionaryPinyinProvider(dictionary) : parent.createPinyinProvider(effectivePinyinProvider);
+            DefinitionProvider definitionProv = "pleco-export".equals(effectiveDefinitionProvider) ? new DictionaryDefinitionProvider(dictionary) : parent.createDefinitionProvider(effectiveDefinitionProvider);
+            AudioProvider audioProv = parent.getAudioProvider();
 
             if (disableParallelism) {
                 wordAnalysisService = new WordAnalysisServiceImpl(

@@ -67,6 +67,8 @@ External integrations implemented as providers:
 - Follow existing code conventions and patterns
 - No code comments unless documenting non-obvious behaviour
 - Keep classes focused and modules cohesive
+- Never use Java's `var` keyword - always use explicit type declarations for better code readability and maintainability
+- Always import types and use simple type names, not fully qualified names - unless necessary due to ambiguity
 
 ### Documentation Standards
 - Documentation must be informational, not promotional

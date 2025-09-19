@@ -96,7 +96,7 @@ public class NewProviderConfig {
 ```java
 case "new-model" -> {
     requireAPIKey("NEW_PROVIDER_API_KEY", providerName);
-    var config = createProviderConfig(
+    ProviderConfig<Example> config = createProviderConfig(
         NewProviderConfig.getApiKey(),
         NewProviderConfig.getBaseUrl(),
         "new-model",
@@ -119,8 +119,8 @@ For providers needing custom HTTP handling (like Zhipu):
 ```java
 case "custom-model" -> {
     requireAPIKey("CUSTOM_API_KEY", providerName);
-    var config = createProviderConfig(...);
-    var delegate = new CustomChatModelProvider<>(config);
+    ProviderConfig<Example> config = createProviderConfig(...);
+    CustomChatModelProvider<Example> delegate = new CustomChatModelProvider<>(config);
     yield new ConfigurableExampleProvider(delegate::process, providerName, "Custom AI");
 }
 ```
