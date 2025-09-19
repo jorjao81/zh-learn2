@@ -31,10 +31,7 @@ public class ExampleResponseMapper implements Function<String, Example> {
             }
             
             if (responseList == null || responseList.isEmpty()) {
-                log.warn("No examples found in words/response list");
-                // Try to still parse phonetic series if present; otherwise return empty
-                List<Example.SeriesItem> series = parsePhoneticSeries(response);
-                return new Example(List.of(), series);
+                throw new IllegalStateException("No examples found in words/response list");
             }
             
             List<Example.Usage> allUsages = new ArrayList<>();
@@ -67,12 +64,14 @@ public class ExampleResponseMapper implements Function<String, Example> {
             
             return new Example(allUsages, seriesItems);
             
+        } catch (IllegalStateException e) {
+            throw e;
         } catch (Exception e) {
+            String errorMessage = e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
             log.warn("Failed to parse examples YAML: {}", e.getMessage());
             log.debug("Original response: {}", yamlResponse);
             log.debug("YAML parse exception", e);
-            // Fail fast on invalid YAML
-            throw new RuntimeException("Invalid YAML in examples response: " + e.getMessage(), e);
+            throw new RuntimeException("Failed to parse YAML response: " + errorMessage, e);
         }
     }
 
@@ -92,9 +91,9 @@ public class ExampleResponseMapper implements Function<String, Example> {
                 }
             }
             return result;
-        } catch (Exception ex) {
+        } catch (RuntimeException ex) {
             log.debug("Failed to parse phonetic_series: {}", ex.getMessage());
-            return List.of();
+            throw new RuntimeException("Failed to parse phonetic_series", ex);
         }
     }
 

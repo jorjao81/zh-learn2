@@ -50,22 +50,20 @@ public class AnkiCardParser {
         
         try (CSVParser parser = TSV_FORMAT.parse(reader)) {
             for (CSVRecord record : parser) {
-                // Skip header lines and empty lines
                 if (record.size() == 0 || shouldSkipLine(record.get(0))) {
                     continue;
                 }
-                
+
                 try {
                     AnkiCard card = parseRecord(record);
                     cards.add(card);
-                } catch (Exception e) {
-                    // Log the error but continue processing other records
-                    System.err.println("Warning: Failed to parse record at line " + 
+                } catch (IllegalArgumentException e) {
+                    System.err.println("Warning: Failed to parse record at line " +
                                      record.getRecordNumber() + ": " + e.getMessage());
                 }
             }
         }
-        
+
         return cards;
     }
     

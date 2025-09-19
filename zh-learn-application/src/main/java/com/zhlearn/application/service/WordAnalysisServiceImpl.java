@@ -4,6 +4,7 @@ import com.zhlearn.domain.model.*;
 import com.zhlearn.domain.provider.*;
 import com.zhlearn.domain.service.WordAnalysisService;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 public class WordAnalysisServiceImpl implements WordAnalysisService {
@@ -57,13 +58,13 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
     }
 
     @Override
-    public java.util.Optional<String> getPronunciation(Hanzi word, Pinyin pinyin, String providerName) {
+    public Optional<Path> getPronunciation(Hanzi word, Pinyin pinyin, String providerName) {
         if (providerName == null || providerName.isBlank()) {
-            return java.util.Optional.empty();
+            return Optional.empty();
         }
         return providerRegistry.getAudioProvider(providerName)
             .map(p -> p.getPronunciation(word, pinyin))
-            .orElse(java.util.Optional.empty());
+            .orElse(Optional.empty());
     }
     
     @Override

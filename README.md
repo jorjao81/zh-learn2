@@ -26,9 +26,10 @@ cd zh-learn-cli && mvn native:compile-no-fork -Pnative
 ```
 
 ### Audio lookup (Existing Anki Pronunciation)
-- Ensure a TSV export of your Anki collection is present at `Chinese.txt` in the project root. The file must have the first column as the Note Type and only rows with Note Type `Chinese` or `Chinese 2` are considered. Column order depends on the Note Type:
-  - `Chinese`: 0 Note Type, 1 Pinyin, 2 Simplified, 3 Pronunciation
+- Default location: export your Anki collection (TSV) as `Chinese.txt` to `~/.zh-learn/Chinese.txt`.
+- The file must have the first column as the Note Type. Currently the parser supports the `Chinese 2` note type with the following columns:
   - `Chinese 2`: 0 Note Type, 1 Simplified, 2 Pinyin, 3 Pronunciation
+  - Other note types are ignored by the current parser.
 
 ```bash
 # Query an existing pronunciation by exact pinyin match
@@ -37,8 +38,20 @@ cd zh-learn-cli && mvn native:compile-no-fork -Pnative
 [sound:xuéxí.mp3]
 
 # Specify provider explicitly (optional)
-./zh-learn.sh audio 学 xué --audio-provider existing-anki-pronunciation
+./zh-learn.sh audio 学 xué --audio-provider anki
+
+# Optional: configure Anki media directory (for playback)
+# Use either a system property or environment variable:
+#   -Danki.media.dir="/path/to/Anki2/User 1/collection.media"
+#   ANKI_MEDIA_DIR=/path/to/Anki2/User\ 1/collection.media
 ```
+
+### Parse Pleco export with interactive audio
+- `./zh-learn.sh parse-pleco Chinese.txt`
+- Requires an interactive terminal (JLine raw mode). Run from a real TTY; piping or redirecting output will exit immediately.
+- Each analyzed word launches the audio selector (arrow keys navigate, Space replays, Enter selects, Esc skips).
+- Selected audio is normalized into `~/.zh-learn/audio/<provider>/...` and copied into the configured Anki media directory before TSV export.
+- Configure the Anki media directory via `ZHLEARN_ANKI_MEDIA_DIR` or `-Dzhlearn.anki.media.dir=/path/to/collection.media` so the exported `[sound:...]` references resolve inside Anki.
 
 ### Native executable
 ```bash
@@ -60,13 +73,28 @@ mvn test
 
 ## Providers: Audio (Pronunciation)
 
-- Audio providers return an Anki-ready string (e.g., `[sound:...mp3]`) for a given word and pinyin.
-- Current provider:
-  - `existing-anki-pronunciation`: scans `Chinese.txt` and reuses the pronunciation of any card with the exact same pinyin (tone marks included). If nothing is found, it returns no pronunciation.
+- Audio providers return the path to an mp3 file; conversion to `[sound:filename.mp3]` happens during Anki export.
+- Current providers:
+  - `anki`: scans the Anki export at `~/.zh-learn/Chinese.txt` and reuses the pronunciation of any card with the exact same pinyin (tone marks included). If nothing is found, it returns no pronunciation.
+  - `forvo`: fetches pronunciations from Forvo (manual selection only). Requires `FORVO_API_KEY` in the environment or `-Dforvo.api.key=...`.
+  - `qwen-tts`: calls Alibaba Qwen text-to-speech and normalizes three voices per lookup (`Cherry`, `Serena`, `Chelsie`). Requires `DASHSCOPE_API_KEY` with access to the current Qwen TTS endpoint (Alibaba notes this service is limited to the CN-Beijing region). Each request downloads and caches all three voices so they remain available offline.
+
+Audio playback file resolution:
+- Default Anki media directory on macOS: `~/Library/Application Support/Anki2/User 1/collection.media/`
+- Override with `ZHLEARN_ANKI_MEDIA_DIR` or system property `-Dzhlearn.anki.media.dir=/path/to/collection.media`
+
+Playback resolution order:
+- Absolute/relative path if it exists
+- `anki.media.dir` or `ANKI_MEDIA_DIR` joined with the filename
+- CLI fixtures (sample audio) for development
 
 List providers and capabilities:
 ```bash
 ./zh-learn.sh providers -d
+
+# Qwen TTS (generates three voices per lookup)
+./zh-learn.sh audio 学习 xuéxí --audio-provider qwen-tts
+# → returns three absolute paths (Cherry, Serena, Chelsie) once `DASHSCOPE_API_KEY` is configured
 ```
 
 ### Providers: Qwen3 (DashScope)

@@ -31,10 +31,12 @@ module com.zhlearn.infrastructure {
     exports com.zhlearn.infrastructure.qwen3;
     exports com.zhlearn.infrastructure.anki;
     exports com.zhlearn.infrastructure.dictionary;
+    exports com.zhlearn.infrastructure.audio;
     exports com.zhlearn.infrastructure.cache;
     exports com.zhlearn.infrastructure.pinyin4j;
     // pinyin utility moved to separate module com.zhlearn.pinyin
     exports com.zhlearn.infrastructure.pleco;
+    exports com.zhlearn.infrastructure.qwen;
     
     provides com.zhlearn.domain.provider.PinyinProvider
         with com.zhlearn.infrastructure.pinyin4j.Pinyin4jProvider;
@@ -67,5 +69,7 @@ module com.zhlearn.infrastructure {
              com.zhlearn.infrastructure.qwen3.Qwen3FlashExplanationProvider;
 
     provides com.zhlearn.domain.provider.AudioProvider
-        with com.zhlearn.infrastructure.anki.ExistingAnkiPronunciationProvider;
+        with com.zhlearn.infrastructure.anki.AnkiPronunciationProvider,
+             com.zhlearn.infrastructure.forvo.ForvoAudioProvider,
+             com.zhlearn.infrastructure.qwen.QwenAudioProvider;
 }

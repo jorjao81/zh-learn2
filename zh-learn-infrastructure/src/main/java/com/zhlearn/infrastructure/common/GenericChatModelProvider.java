@@ -77,7 +77,7 @@ public class GenericChatModelProvider<T> {
             log.info("[AI Call] {} for '{}': received after {}ms", config.getProviderName(), word.characters(), duration);
             
             return config.getResponseMapper().apply(response);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new RuntimeException(config.getErrorMessagePrefix() + ": " + e.getMessage(), e);
         }
     }

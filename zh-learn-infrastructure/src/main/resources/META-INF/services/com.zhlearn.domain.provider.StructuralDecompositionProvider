@@ -4,4 +4,3 @@ com.zhlearn.infrastructure.gpt5nano.GPT5NanoStructuralDecompositionProvider
 com.zhlearn.infrastructure.qwen3.Qwen3MaxStructuralDecompositionProvider
 com.zhlearn.infrastructure.qwen3.Qwen3PlusStructuralDecompositionProvider
 com.zhlearn.infrastructure.qwen3.Qwen3FlashStructuralDecompositionProvider
-com.zhlearn.infrastructure.dictionary.DictionaryStructuralDecompositionProvider

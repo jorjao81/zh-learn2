@@ -3,7 +3,10 @@ package com.zhlearn.application.service;
 import com.zhlearn.domain.model.*;
 import com.zhlearn.domain.service.WordAnalysisService;
 
+import java.nio.file.Path;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -56,7 +59,7 @@ public class ParallelWordAnalysisService implements WordAnalysisService {
     }
 
     @Override
-    public java.util.Optional<String> getPronunciation(Hanzi word, Pinyin pinyin, String providerName) {
+    public Optional<Path> getPronunciation(Hanzi word, Pinyin pinyin, String providerName) {
         return delegate.getPronunciation(word, pinyin, providerName);
     }
 
@@ -86,7 +89,7 @@ public class ParallelWordAnalysisService implements WordAnalysisService {
         CompletableFuture<StructuralDecomposition> decompositionFuture;
         CompletableFuture<Example> examplesFuture;
         CompletableFuture<Explanation> explanationFuture;
-        CompletableFuture<java.util.Optional<String>> pronunciationFuture;
+        CompletableFuture<Optional<Path>> pronunciationFuture;
 
         if (isDecompositionAI) {
             decompositionFuture = CompletableFuture.supplyAsync(() -> 
@@ -133,8 +136,11 @@ public class ParallelWordAnalysisService implements WordAnalysisService {
                 explanationFuture.get(),
                 pronunciationFuture.get()
             );
-        } catch (Exception e) {
-            throw new RuntimeException("Error in parallel word analysis: " + e.getMessage(), e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Parallel word analysis interrupted", e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException("Error in parallel word analysis: " + e.getCause().getMessage(), e.getCause());
         }
     }
 

@@ -4,4 +4,3 @@ com.zhlearn.infrastructure.gpt5nano.GPT5NanoExampleProvider
 com.zhlearn.infrastructure.qwen3.Qwen3MaxExampleProvider
 com.zhlearn.infrastructure.qwen3.Qwen3PlusExampleProvider
 com.zhlearn.infrastructure.qwen3.Qwen3FlashExampleProvider
-com.zhlearn.infrastructure.dictionary.DictionaryExampleProvider

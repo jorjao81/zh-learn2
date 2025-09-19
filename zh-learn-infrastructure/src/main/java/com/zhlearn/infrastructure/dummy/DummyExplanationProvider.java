@@ -7,6 +7,7 @@ import com.zhlearn.domain.provider.ExplanationProvider;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 
 public class DummyExplanationProvider implements ExplanationProvider {
@@ -29,11 +30,8 @@ public class DummyExplanationProvider implements ExplanationProvider {
         try {
             String htmlContent = loadExampleHtml();
             return new Explanation(htmlContent);
-        } catch (Exception e) {
-            // Fallback to simple text if file loading fails
-            return new Explanation(
-                "Dummy explanation for " + word.characters() + ": This word has ancient origins and is commonly used in daily conversation. It has cultural significance in Chinese society."
-            );
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to load dummy explanation fixture", e);
         }
     }
     

@@ -3,7 +3,7 @@ package com.zhlearn.infrastructure.common;
 import com.zhlearn.domain.model.Example;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ExampleResponseMapperTest {
     
@@ -50,34 +50,36 @@ class ExampleResponseMapperTest {
     }
     
     @Test
-    void shouldHandleEmptyResponse() {
+    void shouldThrowOnEmptyResponse() {
         String yamlResponse = """
             words: []
             """;
-        
-        Example result = mapper.apply(yamlResponse);
-        
-        assertThat(result.usages()).isEmpty();
+
+        assertThatThrownBy(() -> mapper.apply(yamlResponse))
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessageContaining("No examples found in words/response list");
     }
     
     @Test
-    void shouldHandleInvalidYaml() {
+    void shouldThrowOnInvalidYaml() {
         String invalidYaml = "invalid yaml content [[[";
-        assertThrows(RuntimeException.class, () -> mapper.apply(invalidYaml));
+        assertThatThrownBy(() -> mapper.apply(invalidYaml))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessageContaining("Failed to parse YAML response");
     }
     
     @Test
-    void shouldHandleMissingResponseKey() {
+    void shouldThrowWhenResponseKeyMissing() {
         String yamlResponse = """
             examples:
               - hanzi: "test"
                 pinyin: "test"
                 translation: "test"
             """;
-        
-        Example result = mapper.apply(yamlResponse);
-        
-        assertThat(result.usages()).isEmpty();
+
+        assertThatThrownBy(() -> mapper.apply(yamlResponse))
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessageContaining("No examples found in words/response list");
     }
     
     @Test

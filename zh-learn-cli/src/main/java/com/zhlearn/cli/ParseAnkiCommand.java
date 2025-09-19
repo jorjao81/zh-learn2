@@ -6,6 +6,8 @@ import com.zhlearn.infrastructure.anki.AnkiNoteParser;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -29,7 +31,6 @@ public class ParseAnkiCommand implements Runnable {
             System.out.println("Successfully parsed " + cards.size() + " Anki cards from: " + filePath);
             System.out.println();
             
-            // Display the first few cards as examples
             int displayLimit = Math.min(5, cards.size());
             for (int i = 0; i < displayLimit; i++) {
                 AnkiNote card = cards.get(i);
@@ -40,9 +41,8 @@ public class ParseAnkiCommand implements Runnable {
                 System.out.println("... and " + (cards.size() - displayLimit) + " more cards.");
             }
             
-        } catch (Exception e) {
-            System.err.println("Error parsing Anki file: " + e.getMessage());
-            System.exit(1);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to parse Anki file at " + filePath, e);
         }
     }
     
