@@ -55,6 +55,30 @@ Boundary rules
 - Configuration belongs in infrastructure adapters; application code should consume typed config, not raw environment variables.
 - Qwen TTS provider expectations: emit three pronunciations (Cherry, Serena, Chelsie) per request, fail fast when `DASHSCOPE_API_KEY` is missing, and rely on the shared audio cache for normalization.
 
+### Adding New AI Providers (Simplified Pattern)
+Instead of creating many provider classes, use the existing `GenericChatModelProvider<T>` with appropriate configuration:
+
+1. **Create a config factory** (e.g., `DashScopeConfig`) with static methods returning `ProviderConfig<T>`:
+   ```java
+   public static ProviderConfig<Example> forExamples(String modelName) {
+       return new ProviderConfig<>(apiKey, baseUrl, modelName, temperature,
+           maxTokens, templatePath, examplesPath, responseMapper, providerName, errorPrefix);
+   }
+   ```
+
+2. **Instantiate providers directly** in `MainCommand` constructor:
+   ```java
+   // Instead of creating separate classes, use GenericChatModelProvider
+   this.exampleProvider = new GenericChatModelProvider<>(DashScopeConfig.forExamples("qwen3-max"));
+   this.explanationProvider = new GenericChatModelProvider<>(DashScopeConfig.forExplanation("qwen3-max"));
+   ```
+
+3. **Update provider selection logic** to handle specific model variants (e.g., qwen3-max, qwen3-plus, qwen3-flash).
+
+4. **Update ProvidersCommand** to show all available model variants.
+
+This pattern eliminates the need for multiple wrapper classes while maintaining clean configuration and provider diversity.
+
 ## Configuration & Secrets
 - Source secrets from env vars: e.g., `OPENAI_API_KEY`, `DEEPSEEK_API_KEY`, `DASHSCOPE_API_KEY` (required for Qwen text-to-speech and currently limited to Alibaba's CN-Beijing region accounts). See `.envrc` for local setup patterns.
 - Don’t commit secrets or sensitive files. Avoid printing keys, prompts, or provider responses containing PII.

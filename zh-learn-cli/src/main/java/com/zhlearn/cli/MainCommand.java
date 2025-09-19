@@ -15,6 +15,9 @@ import com.zhlearn.infrastructure.common.ConfigurableStructuralDecompositionProv
 import com.zhlearn.infrastructure.common.SimpleProviderConfig;
 import com.zhlearn.infrastructure.common.ZhipuChatModelProvider;
 import com.zhlearn.infrastructure.common.ConfigurableGLMProvider;
+import com.zhlearn.infrastructure.common.DashScopeConfig;
+import com.zhlearn.infrastructure.common.GenericChatModelProvider;
+import com.zhlearn.infrastructure.common.ConfigurableQwenProvider;
 
 import java.util.ArrayList;
 import com.zhlearn.infrastructure.pinyin4j.Pinyin4jProvider;
@@ -52,6 +55,12 @@ public class MainCommand implements Runnable {
             this.exampleProvider = glmProvider;
             this.explanationProvider = glmProvider;
             this.decompositionProvider = glmProvider;
+        } else if (aiProvider.startsWith("qwen3-")) {
+            // Use Qwen3 providers - instantiate ConfigurableQwenProvider
+            var qwenProvider = new ConfigurableQwenProvider(aiProvider, aiProvider, "Qwen3 AI provider (" + aiProvider + ")");
+            this.exampleProvider = qwenProvider;
+            this.explanationProvider = qwenProvider;
+            this.decompositionProvider = qwenProvider;
         } else {
             // Default to DeepSeek
             var providerConfig = new SimpleProviderConfig(
@@ -125,9 +134,9 @@ public class MainCommand implements Runnable {
         if (SimpleProviderConfig.readEnv("ZHIPU_API_KEY") != null) {
             return "glm-4.5";
         }
-        // Check for Qwen API key
+        // Check for Qwen API key - default to qwen3-max
         if (SimpleProviderConfig.readEnv("DASHSCOPE_API_KEY") != null) {
-            return "qwen";
+            return "qwen3-max";
         }
         // Default to DeepSeek
         return "deepseek";
