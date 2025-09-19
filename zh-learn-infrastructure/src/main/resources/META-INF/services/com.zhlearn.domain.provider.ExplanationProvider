@@ -1,8 +1,0 @@
-com.zhlearn.infrastructure.dummy.DummyExplanationProvider
-com.zhlearn.infrastructure.deepseek.DeepSeekExplanationProvider
-com.zhlearn.infrastructure.gpt5nano.GPT5NanoExplanationProvider
-com.zhlearn.infrastructure.qwen3.Qwen3MaxExplanationProvider
-com.zhlearn.infrastructure.qwen3.Qwen3PlusExplanationProvider
-com.zhlearn.infrastructure.qwen3.Qwen3FlashExplanationProvider
-com.zhlearn.infrastructure.chatglm.ChatGLMExplanationProvider
-com.zhlearn.infrastructure.chatglm.ChatGLM45ExplanationProvider
