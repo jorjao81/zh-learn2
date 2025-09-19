@@ -58,25 +58,22 @@ public class ParsePlecoCommand implements Runnable {
     @Parameters(index = "0", description = "Path to the Pleco export file (TSV format)")
     private String filePath;
     
-    @Option(names = {"--provider"}, description = "Set default provider for all services (parse-pleco defaults: pleco-export for definition/pinyin, deepseek-chat for analysis, anki for audio). Available: dummy, pinyin4j, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash, pleco-export, anki")
-    private String defaultProvider = "custom";
-    
-    @Option(names = {"--pinyin-provider"}, description = "Set specific provider for pinyin (default: pleco-export). Available: pinyin4j, dummy, pleco-export")
+    @Option(names = {"--pinyin-provider"}, description = "Set specific provider for pinyin (default: pleco-export). Available: pinyin4j, dummy, pleco-export", defaultValue = "pleco-export")
     private String pinyinProvider;
     
-    @Option(names = {"--definition-provider"}, description = "Set specific provider for definition (default: pleco-export). Available: dummy, pleco-export")
+    @Option(names = {"--definition-provider"}, description = "Set specific provider for definition (default: pleco-export). Available: dummy, pleco-export", defaultValue = "pleco-export")
     private String definitionProvider;
     
-    @Option(names = {"--decomposition-provider"}, description = "Set specific provider for structural decomposition (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash, glm-4-flash, glm-4.5")
+    @Option(names = {"--decomposition-provider"}, description = "Set specific provider for structural decomposition (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash, glm-4-flash, glm-4.5", defaultValue = "deepseek-chat")
     private String decompositionProvider;
 
-    @Option(names = {"--example-provider"}, description = "Set specific provider for examples (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash, glm-4-flash, glm-4.5")
+    @Option(names = {"--example-provider"}, description = "Set specific provider for examples (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash, glm-4-flash, glm-4.5", defaultValue = "deepseek-chat")
     private String exampleProvider;
 
-    @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation (default: deepseek-chat). Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5")
+    @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation (default: deepseek-chat). Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5", defaultValue = "deepseek-chat")
     private String explanationProvider;
     
-    @Option(names = {"--audio-provider"}, description = "Set specific provider for audio pronunciation (default: anki). Available: anki, forvo, qwen-tts")
+    @Option(names = {"--audio-provider"}, description = "Set specific provider for audio pronunciation (default: anki). Available: anki, forvo, qwen-tts", defaultValue = "anki")
     private String audioProvider;
     
     @Option(names = {"--raw", "--raw-output"}, description = "Display raw HTML content instead of formatted output")
@@ -85,8 +82,8 @@ public class ParsePlecoCommand implements Runnable {
     @Option(names = {"--limit"}, description = "Limit the number of words to process (default: all)")
     private Integer limit;
     
-    @Option(names = {"--parallel-threads"}, description = "Number of parallel threads for processing (default: 10)")
-    private Integer parallelThreads = 10;
+    @Option(names = {"--parallel-threads"}, description = "Number of parallel threads for processing (default: 10)", defaultValue = "10")
+    private int parallelThreads;
     
     @Option(names = {"--disable-parallelism"}, description = "Disable parallel processing, use sequential processing instead")
     private boolean disableParallelism = false;
@@ -113,25 +110,17 @@ public class ParsePlecoCommand implements Runnable {
             // Note: Dictionary providers are no longer dynamically registered
             // They are created at startup in MainCommand
 
-            // Set parse-pleco specific defaults first
-            String effectiveDefinitionProvider = definitionProvider != null ? definitionProvider : "pleco-export";
-            String effectivePinyinProvider = pinyinProvider != null ? pinyinProvider : "pleco-export";
-            String effectiveDecompositionProvider = decompositionProvider != null ? decompositionProvider : "deepseek-chat";
-            String effectiveExampleProvider = exampleProvider != null ? exampleProvider : "deepseek-chat";
-            String effectiveExplanationProvider = explanationProvider != null ? explanationProvider : "deepseek-chat";
-            String effectiveAudioProvider = audioProvider != null ? audioProvider : "anki";
-
             // Set up word analysis service (parallel or sequential)
             WordAnalysisService wordAnalysisService;
             ParallelWordAnalysisService parallelService = null;
 
             // Create providers with special handling for pleco-export which needs the dictionary
-            ExampleProvider exampleProv = parent.createExampleProvider(effectiveExampleProvider);
-            ExplanationProvider explanationProv = parent.createExplanationProvider(effectiveExplanationProvider);
-            StructuralDecompositionProvider decompositionProv = parent.createDecompositionProvider(effectiveDecompositionProvider);
-            PinyinProvider pinyinProv = "pleco-export".equals(effectivePinyinProvider) ? new DictionaryPinyinProvider(dictionary) : parent.createPinyinProvider(effectivePinyinProvider);
-            DefinitionProvider definitionProv = "pleco-export".equals(effectiveDefinitionProvider) ? new DictionaryDefinitionProvider(dictionary) : parent.createDefinitionProvider(effectiveDefinitionProvider);
-            AudioProvider audioProv = parent.getAudioProvider();
+            ExampleProvider exampleProv = parent.createExampleProvider(exampleProvider);
+            ExplanationProvider explanationProv = parent.createExplanationProvider(explanationProvider);
+            StructuralDecompositionProvider decompositionProv = parent.createDecompositionProvider(decompositionProvider);
+            PinyinProvider pinyinProv = "pleco-export".equals(pinyinProvider) ? new DictionaryPinyinProvider(dictionary) : parent.createPinyinProvider(pinyinProvider);
+            DefinitionProvider definitionProv = "pleco-export".equals(definitionProvider) ? new DictionaryDefinitionProvider(dictionary) : parent.createDefinitionProvider(definitionProvider);
+            AudioProvider audioProv = resolveAudioProvider(audioProvider);
 
             if (disableParallelism) {
                 wordAnalysisService = new WordAnalysisServiceImpl(
@@ -146,17 +135,14 @@ public class ParsePlecoCommand implements Runnable {
                 System.out.println("Using parallel processing with " + parallelThreads + " threads");
             }
 
-            // Use a representative label for mixed providers unless overridden via --provider
-            String effectiveDefaultProvider = (defaultProvider == null || defaultProvider.isBlank()) ? "custom" : defaultProvider;
-
             ProviderConfiguration config = new ProviderConfiguration(
-                effectiveDefaultProvider,
-                effectivePinyinProvider,
-                effectiveDefinitionProvider,
-                effectiveDecompositionProvider,
-                effectiveExampleProvider,
-                effectiveExplanationProvider,
-                effectiveAudioProvider
+                exampleProvider,
+                pinyinProvider,
+                definitionProvider,
+                decompositionProvider,
+                exampleProvider,
+                explanationProvider,
+                audioProvider
             );
 
             // Validate all providers before processing
@@ -415,4 +401,11 @@ public class ParsePlecoCommand implements Runnable {
     }
 
     // Printing is delegated to AnalysisPrinter to match 'word' command output
+
+    private AudioProvider resolveAudioProvider(String providerName) {
+        return parent.getAudioProviders().stream()
+            .filter(provider -> provider.getName().equals(providerName))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("Unknown audio provider: " + providerName));
+    }
 }
