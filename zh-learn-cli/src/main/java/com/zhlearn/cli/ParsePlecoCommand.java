@@ -198,7 +198,7 @@ public class ParsePlecoCommand implements Runnable {
     private void processWordsSequentially(List<PlecoEntry> entries, WordAnalysisService wordAnalysisService,
                                         ProviderConfiguration config, int maxToProcess, List<WordAnalysis> successfulAnalyses) {
         int processedCount = 0;
-        AudioOrchestrator audioOrchestrator = new AudioOrchestrator(List.of(parent.getAudioProvider()));
+        AudioOrchestrator audioOrchestrator = new AudioOrchestrator(parent.getAudioProviders());
         InteractiveAudioUI audioUI = new InteractiveAudioUI();
 
         for (PlecoEntry entry : entries) {
@@ -280,7 +280,7 @@ public class ParsePlecoCommand implements Runnable {
             CompletableFuture.allOf(displayFutures.toArray(new CompletableFuture[0])).join();
 
             if (!successfulAnalyses.isEmpty()) {
-                AudioOrchestrator audioOrchestrator = new AudioOrchestrator(List.of(parent.getAudioProvider()));
+                AudioOrchestrator audioOrchestrator = new AudioOrchestrator(parent.getAudioProviders());
                 InteractiveAudioUI audioUI = new InteractiveAudioUI();
                 for (int i = 0; i < successfulAnalyses.size(); i++) {
                     WordAnalysis updated = runAudioSelection(audioOrchestrator, audioUI, successfulAnalyses.get(i));

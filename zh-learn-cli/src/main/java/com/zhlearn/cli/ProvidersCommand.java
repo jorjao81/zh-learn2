@@ -7,6 +7,7 @@ import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
@@ -32,17 +33,37 @@ public class ProvidersCommand implements Runnable {
 
     @Override
     public void run() {
-        // Create fixed provider info for the current configuration
-        List<ProviderInfo> providers = List.of(
-            new ProviderInfo("deepseek-chat", "DeepSeek AI provider",
-                ProviderType.AI, EnumSet.of(ProviderClass.EXAMPLE, ProviderClass.EXPLANATION, ProviderClass.STRUCTURAL_DECOMPOSITION)),
-            new ProviderInfo("pinyin4j", "Pinyin4j local provider",
-                ProviderType.LOCAL, EnumSet.of(ProviderClass.PINYIN)),
-            new ProviderInfo("dictionary", "Dictionary-based definition provider",
-                ProviderType.DICTIONARY, EnumSet.of(ProviderClass.DEFINITION)),
-            new ProviderInfo("anki", "Anki audio pronunciation provider",
-                ProviderType.LOCAL, EnumSet.of(ProviderClass.AUDIO))
-        );
+        // Create provider info for all available providers
+        List<ProviderInfo> providers = new ArrayList<>();
+
+        // AI Providers - show currently active one and available alternatives
+        String currentAI = getCurrentAIProvider();
+        providers.add(new ProviderInfo(currentAI, getAIProviderDescription(currentAI),
+            ProviderType.AI, EnumSet.of(ProviderClass.EXAMPLE, ProviderClass.EXPLANATION, ProviderClass.STRUCTURAL_DECOMPOSITION)));
+
+        // Show other AI providers if their keys are available
+        if (!currentAI.equals("glm-4.5") && hasAPIKey("ZHIPU_API_KEY")) {
+            providers.add(new ProviderInfo("glm-4.5", "GLM-4.5 AI provider (available)",
+                ProviderType.AI, EnumSet.of(ProviderClass.EXAMPLE, ProviderClass.EXPLANATION, ProviderClass.STRUCTURAL_DECOMPOSITION)));
+        }
+        if (!currentAI.equals("deepseek-chat") && hasAPIKey("DEEPSEEK_API_KEY")) {
+            providers.add(new ProviderInfo("deepseek-chat", "DeepSeek AI provider (available)",
+                ProviderType.AI, EnumSet.of(ProviderClass.EXAMPLE, ProviderClass.EXPLANATION, ProviderClass.STRUCTURAL_DECOMPOSITION)));
+        }
+
+        // Non-AI providers
+        providers.add(new ProviderInfo("pinyin4j", "Pinyin4j local provider",
+            ProviderType.LOCAL, EnumSet.of(ProviderClass.PINYIN)));
+        providers.add(new ProviderInfo("dictionary", "Dictionary-based definition provider",
+            ProviderType.DICTIONARY, EnumSet.of(ProviderClass.DEFINITION)));
+
+        // Audio providers - show all available
+        providers.add(new ProviderInfo("anki", "Anki audio pronunciation provider",
+            ProviderType.LOCAL, EnumSet.of(ProviderClass.AUDIO)));
+        providers.add(new ProviderInfo("qwen-tts", "Qwen text-to-speech (voices: Cherry, Serena, Chelsie)",
+            ProviderType.AI, EnumSet.of(ProviderClass.AUDIO)));
+        providers.add(new ProviderInfo("forvo", "Forvo pronunciation dictionary",
+            ProviderType.DICTIONARY, EnumSet.of(ProviderClass.AUDIO)));
 
         // Apply filters
         if (filterType != null) {
@@ -157,6 +178,29 @@ public class ProvidersCommand implements Runnable {
         
         System.out.println(TerminalFormatter.createBox("Legend", legend, terminalWidth));
     }
-    
-    
+
+    private String getCurrentAIProvider() {
+        // Use same logic as MainCommand
+        if (hasAPIKey("ZHIPU_API_KEY")) {
+            return "glm-4.5";
+        }
+        if (hasAPIKey("DASHSCOPE_API_KEY")) {
+            return "qwen";
+        }
+        return "deepseek-chat";
+    }
+
+    private String getAIProviderDescription(String provider) {
+        return switch (provider) {
+            case "glm-4.5" -> "GLM-4.5 AI provider (active)";
+            case "qwen" -> "Qwen AI provider (active)";
+            case "deepseek-chat" -> "DeepSeek AI provider (active)";
+            default -> provider + " AI provider (active)";
+        };
+    }
+
+    private boolean hasAPIKey(String keyName) {
+        String key = System.getenv(keyName);
+        return key != null && !key.isBlank();
+    }
 }
