@@ -17,30 +17,18 @@ import java.util.concurrent.Executors;
  */
 public class ParallelWordAnalysisService implements WordAnalysisService {
 
-    private final WordAnalysisServiceImpl delegate;
+    private static final int DEFAULT_THREAD_POOL_SIZE = 10;
+
+    private final WordAnalysisService delegate;
     private final ExecutorService executorService;
 
-    public ParallelWordAnalysisService(ExampleProvider exampleProvider,
-                                     ExplanationProvider explanationProvider,
-                                     StructuralDecompositionProvider decompositionProvider,
-                                     PinyinProvider pinyinProvider,
-                                     DefinitionProvider definitionProvider,
-                                     AudioProvider audioProvider,
-                                     int threadPoolSize) {
-        this.delegate = new WordAnalysisServiceImpl(exampleProvider, explanationProvider,
-                                                   decompositionProvider, pinyinProvider,
-                                                   definitionProvider, audioProvider);
+    public ParallelWordAnalysisService(WordAnalysisService delegate, int threadPoolSize) {
+        this.delegate = delegate;
         this.executorService = Executors.newFixedThreadPool(threadPoolSize);
     }
 
-    public ParallelWordAnalysisService(ExampleProvider exampleProvider,
-                                     ExplanationProvider explanationProvider,
-                                     StructuralDecompositionProvider decompositionProvider,
-                                     PinyinProvider pinyinProvider,
-                                     DefinitionProvider definitionProvider,
-                                     AudioProvider audioProvider) {
-        this(exampleProvider, explanationProvider, decompositionProvider, pinyinProvider,
-             definitionProvider, audioProvider, 10); // Default to 10 threads
+    public ParallelWordAnalysisService(WordAnalysisService delegate) {
+        this(delegate, DEFAULT_THREAD_POOL_SIZE);
     }
 
     @Override

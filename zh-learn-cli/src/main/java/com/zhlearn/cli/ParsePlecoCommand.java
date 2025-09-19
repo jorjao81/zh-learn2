@@ -122,15 +122,15 @@ public class ParsePlecoCommand implements Runnable {
             DefinitionProvider definitionProv = "pleco-export".equals(definitionProvider) ? new DictionaryDefinitionProvider(dictionary) : parent.createDefinitionProvider(definitionProvider);
             AudioProvider audioProv = resolveAudioProvider(audioProvider);
 
+            WordAnalysisServiceImpl baseService = new WordAnalysisServiceImpl(
+                exampleProv, explanationProv, decompositionProv, pinyinProv, definitionProv, audioProv
+            );
+
             if (disableParallelism) {
-                wordAnalysisService = new WordAnalysisServiceImpl(
-                    exampleProv, explanationProv, decompositionProv, pinyinProv, definitionProv, audioProv
-                );
+                wordAnalysisService = baseService;
                 System.out.println("Using sequential processing (parallelism disabled)");
             } else {
-                parallelService = new ParallelWordAnalysisService(
-                    exampleProv, explanationProv, decompositionProv, pinyinProv, definitionProv, audioProv, parallelThreads
-                );
+                parallelService = new ParallelWordAnalysisService(baseService, parallelThreads);
                 wordAnalysisService = parallelService;
                 System.out.println("Using parallel processing with " + parallelThreads + " threads");
             }
