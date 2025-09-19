@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -18,7 +17,15 @@ public class FileSystemCache {
     private final long ttlSeconds;
     
     public FileSystemCache() {
-        this(Paths.get(".zh-learn-cache"), DEFAULT_TTL_SECONDS);
+        this(resolveDefaultCacheDirectory(), DEFAULT_TTL_SECONDS);
+    }
+
+    private static Path resolveDefaultCacheDirectory() {
+        String userHome = System.getProperty("user.home");
+        if (userHome == null || userHome.isBlank()) {
+            throw new IllegalStateException("user.home system property must be set to resolve the cache directory");
+        }
+        return Path.of(userHome, ".zh-learn", "cache");
     }
     
     public FileSystemCache(Path cacheDirectory, long ttlSeconds) {
