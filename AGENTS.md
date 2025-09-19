@@ -1,6 +1,6 @@
 # AGENTS.md — Contributor Guide
 
-**IMPORTANT: The Constitution in `.specify/memory/constitution.md` is the most important document and supersedes all guidance in this file. Always consult the Constitution first.**
+**IMPORTANT: The Constitution in `constitution.md` is the most important document and supersedes all guidance in this file. Always consult the Constitution first.**
 
 This document is the contributor guide for this repository. It defines project structure, coding standards, build/test workflows, and agent-specific rules. For AI agents and humans alike, follow the Constitution first, then this guide.
 
@@ -44,7 +44,7 @@ Boundary rules
 
 ## Coding Standards
 
-**Constitution First**: All coding standards must comply with `.specify/memory/constitution.md`. In case of conflicts, the Constitution takes precedence.
+**Constitution First**: All coding standards must comply with `constitution.md`. In case of conflicts, the Constitution takes precedence.
 
 Core Rules:
 - Never add fallbacks unless explicitly told to do so
@@ -180,11 +180,11 @@ this.audioProviders = List.of(
 
 ## Pull Requests & Commits
 
-**Constitution Compliance Required**: All PRs must explicitly pass the Constitution Check from `.specify/memory/constitution.md`.
+**Constitution Compliance Required**: All PRs must explicitly pass the Constitution Check from `constitution.md`.
 
 - Conventional Commits: `feat:`, `fix:`, `chore:`, `refactor:`, etc.
 - PR checklist:
-  - **Constitution Check passes** (see `.specify/templates/plan-template.md`)
+  - **Constitution Check passes** (see `constitution.md` for principles)
   - Code follows module boundaries and coding standards.
   - `mvn clean package` and `mvn test` pass locally.
   - Docs updated when behavior or CLI changes (README/AGENTS.md).
@@ -202,22 +202,20 @@ this.audioProviders = List.of(
 
 ## Agent-Specific Guidance
 
-**Constitution is Supreme**: The Constitution in `.specify/memory/constitution.md` supersedes all other guidance. When in doubt, consult the Constitution first.
+**Constitution is Supreme**: The Constitution in `constitution.md` supersedes all other guidance. When in doubt, consult the Constitution first.
 
 - This AGENTS.md provides implementation guidance, but the Constitution provides the principles.
 - If in doubt, prefer:
   - Moving logic to the correct module instead of adding cross-module deps.
   - Explicit interfaces in `domain` and clean adapters in `infrastructure`.
   - Immutable domain types and minimal exports in `module-info.java`.
-- Before significant changes, review the Constitution in `.specify` and ensure your plan and PR explicitly pass the Constitution Check.
+- Before significant changes, review the Constitution and ensure your plan and PR explicitly pass the Constitution Check.
 
-## Constitution (in `.specify`)
-- Location: `.specify/memory/constitution.md` (version referenced in templates: 2.1.1).
-- Principle: “This constitution supersedes all other development practices. All code changes must comply with these principles. Any deviation requires explicit documentation and justification.”
-- Related resources:
-  - `.specify/templates/plan-template.md` — includes a “Constitution Check” section you must satisfy.
-  - `.specify/memory/constitution_update_checklist.md` — process for amending the constitution.
-- Requirement: PR descriptions should include an explicit statement that the Constitution Check passes, or a documented exception with rationale.
+## Constitution
+- Location: `constitution.md` in project root (version 1.0.0).
+- Principle: "This constitution supersedes all other development practices. All code changes must comply with these principles. Any deviation requires explicit documentation and justification."
+- Core principles: Modular Architecture, Fail-Fast Philosophy, Test-First Development, CLI-First Interface, Provider Pattern
+- Requirement: All code changes must comply with Constitutional principles or provide explicit documentation and justification for deviations.
 
 ## Common Tasks
 - Add a new provider:
