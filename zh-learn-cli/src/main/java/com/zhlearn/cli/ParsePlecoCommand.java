@@ -106,17 +106,25 @@ public class ParsePlecoCommand implements Runnable {
 
             // Note: Dictionary providers are no longer dynamically registered
             // They are created at startup in MainCommand
-            
+
+            // Set parse-pleco specific defaults first
+            String effectiveDefinitionProvider = definitionProvider != null ? definitionProvider : "pleco-export";
+            String effectivePinyinProvider = pinyinProvider != null ? pinyinProvider : "pleco-export";
+            String effectiveDecompositionProvider = decompositionProvider != null ? decompositionProvider : "deepseek-chat";
+            String effectiveExampleProvider = exampleProvider != null ? exampleProvider : "deepseek-chat";
+            String effectiveExplanationProvider = explanationProvider != null ? explanationProvider : "deepseek-chat";
+            String effectiveAudioProvider = audioProvider != null ? audioProvider : "anki";
+
             // Set up word analysis service (parallel or sequential)
             WordAnalysisService wordAnalysisService;
             ParallelWordAnalysisService parallelService = null;
-            
+
             // Create providers with special handling for pleco-export which needs the dictionary
-            var exampleProv = parent.createExampleProvider(exampleProvider);
-            var explanationProv = parent.createExplanationProvider(explanationProvider);
-            var decompositionProv = parent.createDecompositionProvider(decompositionProvider);
-            var pinyinProv = "pleco-export".equals(pinyinProvider) ? new DictionaryPinyinProvider(dictionary) : parent.createPinyinProvider(pinyinProvider);
-            var definitionProv = "pleco-export".equals(definitionProvider) ? new DictionaryDefinitionProvider(dictionary) : parent.createDefinitionProvider(definitionProvider);
+            var exampleProv = parent.createExampleProvider(effectiveExampleProvider);
+            var explanationProv = parent.createExplanationProvider(effectiveExplanationProvider);
+            var decompositionProv = parent.createDecompositionProvider(effectiveDecompositionProvider);
+            var pinyinProv = "pleco-export".equals(effectivePinyinProvider) ? new DictionaryPinyinProvider(dictionary) : parent.createPinyinProvider(effectivePinyinProvider);
+            var definitionProv = "pleco-export".equals(effectiveDefinitionProvider) ? new DictionaryDefinitionProvider(dictionary) : parent.createDefinitionProvider(effectiveDefinitionProvider);
             var audioProv = parent.getAudioProvider();
 
             if (disableParallelism) {
@@ -131,15 +139,7 @@ public class ParsePlecoCommand implements Runnable {
                 wordAnalysisService = parallelService;
                 System.out.println("Using parallel processing with " + parallelThreads + " threads");
             }
-            
-            // Set parse-pleco specific defaults
-            String effectiveDefinitionProvider = definitionProvider != null ? definitionProvider : "pleco-export";
-            String effectivePinyinProvider = pinyinProvider != null ? pinyinProvider : "pleco-export";
-            String effectiveDecompositionProvider = decompositionProvider != null ? decompositionProvider : "deepseek-chat";
-            String effectiveExampleProvider = exampleProvider != null ? exampleProvider : "deepseek-chat";
-            String effectiveExplanationProvider = explanationProvider != null ? explanationProvider : "deepseek-chat";
-            String effectiveAudioProvider = audioProvider != null ? audioProvider : "anki";
-            
+
             // Use a representative label for mixed providers unless overridden via --provider
             String effectiveDefaultProvider = (defaultProvider == null || defaultProvider.isBlank()) ? "custom" : defaultProvider;
 
