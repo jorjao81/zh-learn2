@@ -184,6 +184,78 @@ public class ForvoAudioProvider implements AudioProvider {
         return results;
     }
 
+    @Override
+    public List<PronunciationDescription> getPronunciationsWithDescriptions(Hanzi word, Pinyin pinyin) {
+        List<PronunciationDescription> results = new ArrayList<>();
+        String apiKey = getApiKey();
+        if (apiKey == null || apiKey.isBlank()) {
+            log.warn("Forvo API key not configured. Set FORVO_API_KEY env var or -Dforvo.api.key");
+            return results;
+        }
+        try {
+            String encoded = URLEncoder.encode(word.characters(), StandardCharsets.UTF_8);
+            String url = "https://apifree.forvo.com/key/" + apiKey +
+                "/format/json/action/word-pronunciations/word/" + encoded +
+                "/language/zh/porder/rate-desc/perpage/20";
+
+            HttpRequest req = HttpRequest.newBuilder(URI.create(url))
+                .timeout(Duration.ofSeconds(10))
+                .GET()
+                .build();
+            HttpResponse<String> resp = http.send(req, HttpResponse.BodyHandlers.ofString());
+            if (resp.statusCode() != 200) {
+                log.warn("Forvo request failed: HTTP {}", resp.statusCode());
+                return results;
+            }
+            JsonNode root = mapper.readTree(resp.body());
+            JsonNode items = root.get("items");
+            if (items == null || !items.isArray() || items.size() == 0) {
+                log.info("Forvo: no pronunciations for '{}'", word.characters());
+                return results;
+            }
+            int limit = Math.min(items.size(), 8); // cap downloads to avoid over-fetching
+            for (int i = 0; i < limit; i++) {
+                JsonNode n = items.get(i);
+                String mp3 = text(n, "pathmp3");
+                String username = username(n);
+                if (mp3 == null || mp3.isBlank()) continue; // skip non-mp3 entries
+                try {
+                    // First check cache by deterministic file name from source URL
+                    Path cached = AudioPaths.audioDir()
+                        .resolve(getName())
+                        .resolve(fileName(word.characters(), username, mp3));
+                    if (Files.exists(cached)) {
+                        String description = formatForvoDescription(username);
+                        results.add(new PronunciationDescription(cached.toAbsolutePath(), description));
+                        continue;
+                    }
+                    Path tmp = downloadMp3(mp3, word.characters());
+                    if (tmp != null) {
+                        Path norm = AudioCache.ensureCachedNormalized(tmp, getName(), word.characters(), username, mp3);
+                        String description = formatForvoDescription(username);
+                        results.add(new PronunciationDescription(norm.toAbsolutePath(), description));
+                    }
+                } catch (IOException | InterruptedException e) {
+                    if (e instanceof InterruptedException) {
+                        Thread.currentThread().interrupt();
+                    }
+                    throw new RuntimeException("Forvo download failed (" + i + ")", e);
+                }
+            }
+        } catch (IOException | InterruptedException e) {
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+            throw new RuntimeException("Forvo error for '" + word.characters() + "'", e);
+        }
+        return results;
+    }
+
+    private static String formatForvoDescription(String username) {
+        // Add user and Chinese flag emoji (placeholder - could be enhanced with country detection)
+        return username + " 👤🇨🇳";
+    }
+
     private static String shortHash(String s) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");

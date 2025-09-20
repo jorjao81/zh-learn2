@@ -325,7 +325,7 @@ public class ParsePlecoCommand implements Runnable {
         SelectionSession session = new SelectionSession(candidates, player);
         PronunciationCandidate choice;
         try {
-            choice = audioUI.run(session);
+            choice = audioUI.run(session, analysis.word(), analysis.pinyin());
         } finally {
             player.stop();
         }

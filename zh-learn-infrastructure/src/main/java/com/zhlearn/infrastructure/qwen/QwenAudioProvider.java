@@ -101,6 +101,45 @@ public class QwenAudioProvider implements AudioProvider {
         return results;
     }
 
+    @Override
+    public List<PronunciationDescription> getPronunciationsWithDescriptions(Hanzi word, Pinyin pinyin) {
+        QwenTtsClient activeClient = clientOverride;
+        if (activeClient == null) {
+            activeClient = new QwenTtsClient(httpClient, resolveApiKey(), MODEL);
+        }
+        List<PronunciationDescription> results = new ArrayList<>();
+        for (String voice : VOICES) {
+            Path cached = cachedPath(word, pinyin, voice);
+            if (Files.exists(cached)) {
+                String description = formatQwenDescription(voice);
+                results.add(new PronunciationDescription(cached.toAbsolutePath(), description));
+                continue;
+            }
+            try {
+                QwenTtsResult result = activeClient.synthesize(voice, word.characters());
+                Path downloaded = download(result.audioUrl());
+                try {
+                    Path normalized = AudioCache.ensureCachedNormalized(downloaded, NAME,
+                        word.characters(), voice, cacheKey(word, pinyin, voice));
+                    String description = formatQwenDescription(voice);
+                    results.add(new PronunciationDescription(normalized, description));
+                } finally {
+                    Files.deleteIfExists(downloaded);
+                }
+            } catch (IOException | InterruptedException e) {
+                if (e instanceof InterruptedException) {
+                    Thread.currentThread().interrupt();
+                }
+                throw new RuntimeException("Failed to synthesize Qwen TTS for voice " + voice, e);
+            }
+        }
+        return results;
+    }
+
+    private static String formatQwenDescription(String voice) {
+        return voice + " 🤖";
+    }
+
     private Path download(URI audioUrl) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder(audioUrl)
             .timeout(TIMEOUT)

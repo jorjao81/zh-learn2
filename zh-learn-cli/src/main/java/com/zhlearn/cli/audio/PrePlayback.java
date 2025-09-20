@@ -20,11 +20,11 @@ public final class PrePlayback {
         for (PronunciationCandidate c : list) {
             Path absolute = c.file().toAbsolutePath();
             if (shouldBypassCache(c.label())) {
-                out.add(new PronunciationCandidate(c.label(), absolute));
+                out.add(new PronunciationCandidate(c.label(), absolute, c.description()));
                 continue;
             }
             if (isAlreadyCached(absolute, audioBase)) {
-                out.add(new PronunciationCandidate(c.label(), absolute));
+                out.add(new PronunciationCandidate(c.label(), absolute, c.description()));
                 continue;
             }
             try {
@@ -35,7 +35,7 @@ public final class PrePlayback {
                     pinyin.pinyin(),
                     null
                 );
-                out.add(new PronunciationCandidate(c.label(), normalized));
+                out.add(new PronunciationCandidate(c.label(), normalized, c.description()));
             } catch (IOException e) {
                 throw new RuntimeException("Failed to normalize audio candidate '" + c.label() + "'", e);
             } catch (InterruptedException e) {

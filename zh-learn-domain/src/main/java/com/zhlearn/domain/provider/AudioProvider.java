@@ -33,4 +33,21 @@ public interface AudioProvider {
     default List<Path> getPronunciations(Hanzi word, Pinyin pinyin) {
         return getPronunciation(word, pinyin).map(List::of).orElse(List.of());
     }
+
+    /**
+     * Return zero or more pronunciations with descriptions for the given input.
+     * Default implementation converts getPronunciations results to descriptions
+     * using filenames. Providers should override to supply custom descriptions.
+     */
+    default List<PronunciationDescription> getPronunciationsWithDescriptions(Hanzi word, Pinyin pinyin) {
+        return getPronunciations(word, pinyin).stream()
+            .map(path -> new PronunciationDescription(path, null))
+            .toList();
+    }
+
+    /**
+     * Simple record to hold pronunciation path and optional description.
+     */
+    record PronunciationDescription(Path path, String description) {
+    }
 }
