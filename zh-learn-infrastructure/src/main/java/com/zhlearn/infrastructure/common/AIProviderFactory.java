@@ -153,8 +153,33 @@ public class AIProviderFactory {
                 );
                 yield new ConfigurableExampleProvider(singleConfig, multiConfig, providerName, "OpenRouter AI (" + model + ")");
             }
+            case "gemini-2.5-flash", "gemini-2.5-pro" -> {
+                requireAPIKey("GEMINI_API_KEY", providerName);
+                ProviderConfig<Example> singleConfig = createProviderConfig(
+                    GeminiConfig.getApiKey(),
+                    null, // LangChain4j handles base URL internally
+                    GeminiConfig.getModelName(providerName),
+                    SingleCharExampleProviderConfig.templatePath(),
+                    SingleCharExampleProviderConfig.examplesDirectory(),
+                    SingleCharExampleProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to get examples from Gemini (" + providerName + ")"
+                );
+                ProviderConfig<Example> multiConfig = createProviderConfig(
+                    GeminiConfig.getApiKey(),
+                    null,
+                    GeminiConfig.getModelName(providerName),
+                    MultiCharExampleProviderConfig.templatePath(),
+                    MultiCharExampleProviderConfig.examplesDirectory(),
+                    MultiCharExampleProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to get examples from Gemini (" + providerName + ")"
+                );
+                yield new ConfigurableExampleProvider(singleConfig, multiConfig, providerName,
+                    "Gemini AI provider (" + providerName + ")");
+            }
             default -> throw new RuntimeException("Unknown example provider: " + providerName +
-                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter");
+                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter, gemini-2.5-flash, gemini-2.5-pro");
         };
     }
 
@@ -298,8 +323,33 @@ public class AIProviderFactory {
                 );
                 yield new ConfigurableExplanationProvider(singleConfig, multiConfig, providerName, "OpenRouter AI (" + model + ")");
             }
+            case "gemini-2.5-flash", "gemini-2.5-pro" -> {
+                requireAPIKey("GEMINI_API_KEY", providerName);
+                ProviderConfig<Explanation> singleConfig = createProviderConfig(
+                    GeminiConfig.getApiKey(),
+                    null, // LangChain4j handles base URL internally
+                    GeminiConfig.getModelName(providerName),
+                    SingleCharExplanationProviderConfig.templatePath(),
+                    SingleCharExplanationProviderConfig.examplesDirectory(),
+                    SingleCharExplanationProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to get explanation from Gemini (" + providerName + ")"
+                );
+                ProviderConfig<Explanation> multiConfig = createProviderConfig(
+                    GeminiConfig.getApiKey(),
+                    null,
+                    GeminiConfig.getModelName(providerName),
+                    MultiCharExplanationProviderConfig.templatePath(),
+                    MultiCharExplanationProviderConfig.examplesDirectory(),
+                    MultiCharExplanationProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to get explanation from Gemini (" + providerName + ")"
+                );
+                yield new ConfigurableExplanationProvider(singleConfig, multiConfig, providerName,
+                    "Gemini AI provider (" + providerName + ")");
+            }
             default -> throw new RuntimeException("Unknown explanation provider: " + providerName +
-                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter");
+                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter, gemini-2.5-flash, gemini-2.5-pro");
         };
     }
 
@@ -443,8 +493,33 @@ public class AIProviderFactory {
                 );
                 yield new ConfigurableStructuralDecompositionProvider(singleConfig, multiConfig, providerName, "OpenRouter AI (" + model + ")");
             }
+            case "gemini-2.5-flash", "gemini-2.5-pro" -> {
+                requireAPIKey("GEMINI_API_KEY", providerName);
+                ProviderConfig<StructuralDecomposition> singleConfig = createProviderConfig(
+                    GeminiConfig.getApiKey(),
+                    null, // LangChain4j handles base URL internally
+                    GeminiConfig.getModelName(providerName),
+                    SingleCharStructuralDecompositionProviderConfig.templatePath(),
+                    SingleCharStructuralDecompositionProviderConfig.examplesDirectory(),
+                    SingleCharStructuralDecompositionProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to get structural decomposition from Gemini (" + providerName + ")"
+                );
+                ProviderConfig<StructuralDecomposition> multiConfig = createProviderConfig(
+                    GeminiConfig.getApiKey(),
+                    null,
+                    GeminiConfig.getModelName(providerName),
+                    MultiCharStructuralDecompositionProviderConfig.templatePath(),
+                    MultiCharStructuralDecompositionProviderConfig.examplesDirectory(),
+                    MultiCharStructuralDecompositionProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to get structural decomposition from Gemini (" + providerName + ")"
+                );
+                yield new ConfigurableStructuralDecompositionProvider(singleConfig, multiConfig, providerName,
+                    "Gemini AI provider (" + providerName + ")");
+            }
             default -> throw new RuntimeException("Unknown decomposition provider: " + providerName +
-                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter");
+                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter, gemini-2.5-flash, gemini-2.5-pro");
         };
     }
 
@@ -624,8 +699,32 @@ public class AIProviderFactory {
                 );
                 yield new ConfigurableDefinitionFormatterProvider(singleConfig, multiConfig, providerName, "OpenRouter AI (" + model + ")");
             }
+            case "gemini-2.5-flash", "gemini-2.5-pro" -> {
+                requireAPIKey("GEMINI_API_KEY", providerName);
+                ProviderConfig<Definition> singleConfig = createProviderConfig(
+                    GeminiConfig.getApiKey(),
+                    null, // LangChain4j handles base URL internally
+                    GeminiConfig.getModelName(providerName),
+                    SingleCharDefinitionFormatterProviderConfig.templatePath(),
+                    SingleCharDefinitionFormatterProviderConfig.examplesDirectory(),
+                    SingleCharDefinitionFormatterProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to format definition from Gemini (" + providerName + ")"
+                );
+                ProviderConfig<Definition> multiConfig = createProviderConfig(
+                    GeminiConfig.getApiKey(),
+                    null,
+                    GeminiConfig.getModelName(providerName),
+                    MultiCharDefinitionFormatterProviderConfig.templatePath(),
+                    MultiCharDefinitionFormatterProviderConfig.examplesDirectory(),
+                    MultiCharDefinitionFormatterProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to format definition from Gemini (" + providerName + ")"
+                );
+                yield new ConfigurableDefinitionFormatterProvider(singleConfig, multiConfig, providerName, "Gemini AI provider (" + providerName + ")");
+            }
             default -> throw new RuntimeException("Unknown definition formatter provider: " + providerName +
-                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter");
+                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter, gemini-2.5-flash, gemini-2.5-pro");
         };
     }
 }

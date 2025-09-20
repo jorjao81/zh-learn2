@@ -4,6 +4,7 @@ import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.infrastructure.cache.CachedChatModel;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
+import dev.langchain4j.model.googleai.GoogleAiGeminiChatModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,21 +34,28 @@ public class GenericChatModelProvider<T> {
     }
     
     private ChatModel createChatModel(ProviderConfig<T> config) {
-        OpenAiChatModel.OpenAiChatModelBuilder builder = OpenAiChatModel.builder()
+        ChatModel base = switch (config.getModelName()) {
+            case String model when model.startsWith("gemini-") -> {
+                GoogleAiGeminiChatModel.GoogleAiGeminiChatModelBuilder builder = GoogleAiGeminiChatModel.builder()
+                    .apiKey(config.getApiKey())
+                    .modelName(config.getModelName());
+
+                if (config.getTemperature() != null) {
+                    builder.temperature(config.getTemperature());
+                }
+
+                yield builder.build();
+            }
+
+            default -> OpenAiChatModel.builder()
                 .baseUrl(config.getBaseUrl())
                 .apiKey(config.getApiKey())
-                .modelName(config.getModelName());
-
-        if (config.getTemperature() != null) {
-            builder.temperature(config.getTemperature());
-        }
-
-        if (config.getMaxTokens() != null) {
-            builder.maxTokens(config.getMaxTokens());
-        }
-
-        ChatModel baseChatModel = builder.build();
-        return new CachedChatModel(baseChatModel, config);
+                .modelName(config.getModelName())
+                .temperature(config.getTemperature())
+                .maxTokens(config.getMaxTokens())
+                .build();
+        };
+        return new CachedChatModel(base, config);
     }
     
     public String getName() {
