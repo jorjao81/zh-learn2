@@ -33,4 +33,28 @@ class HanziTest {
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Chinese word characters cannot be null or empty");
     }
+
+    @Test
+    void shouldDetectSingleCharacter() {
+        Hanzi single = new Hanzi("学");
+
+        assertThat(single.isSingleCharacter()).isTrue();
+        assertThat(single.isMultiCharacter()).isFalse();
+    }
+
+    @Test
+    void shouldDetectSurrogatePairAsSingleCharacter() {
+        Hanzi single = new Hanzi("\uD840\uDC00");
+
+        assertThat(single.isSingleCharacter()).isTrue();
+        assertThat(single.isMultiCharacter()).isFalse();
+    }
+
+    @Test
+    void shouldDetectMultiCharacterWord() {
+        Hanzi multi = new Hanzi("学校");
+
+        assertThat(multi.isSingleCharacter()).isFalse();
+        assertThat(multi.isMultiCharacter()).isTrue();
+    }
 }

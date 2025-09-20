@@ -36,7 +36,7 @@ public class DummyExplanationProvider implements ExplanationProvider {
     }
     
     private String loadExampleHtml() throws IOException {
-        try (InputStream is = getClass().getResourceAsStream("/explanation/examples/example-01.html")) {
+        try (InputStream is = getClass().getResourceAsStream("/single-char/explanation/examples/example-01.html")) {
             if (is == null) {
                 throw new IOException("Example HTML file not found");
             }

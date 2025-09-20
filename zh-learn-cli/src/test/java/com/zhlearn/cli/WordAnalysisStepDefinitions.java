@@ -1,5 +1,6 @@
 package com.zhlearn.cli;
 
+import com.zhlearn.domain.model.Example;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.WordAnalysis;
 import com.zhlearn.domain.provider.AudioProvider;
@@ -13,12 +14,16 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class WordAnalysisStepDefinitions {
 
     private WordAnalysis analysis;
     private Exception lastException;
+    private String requestedWord;
 
     @Given("the ZH Learn application is available")
     public void the_zh_learn_application_is_available() {
@@ -27,36 +32,25 @@ public class WordAnalysisStepDefinitions {
         assertNotNull(new Hanzi("你好"));
     }
 
+    @Given("I have a multi-character word {string}")
+    public void i_have_a_multi_character_word(String word) {
+        Hanzi hanzi = new Hanzi(word);
+        assertThat(hanzi.isMultiCharacter()).isTrue();
+        this.requestedWord = word;
+    }
+
     @When("I analyze the word {string} using provider {string}")
     public void i_analyze_the_word_using_provider(String word, String providerName) {
-        try {
-            // Create a simple analysis using dummy providers for testing
-            Hanzi hanzi = new Hanzi(word);
+        this.requestedWord = word;
+        performAnalysis(word, providerName);
+    }
 
-            // Create dummy providers for testing
-            PinyinProvider pinyinProvider = new DummyPinyinProvider();
-            DefinitionProvider definitionProvider = new DummyDefinitionProvider();
-            ExampleProvider exampleProvider = new DummyExampleProvider();
-            ExplanationProvider explanationProvider = new DummyExplanationProvider();
-            StructuralDecompositionProvider decompositionProvider = new DummyStructuralDecompositionProvider();
-            AudioProvider audioProvider = new DummyAudioProvider();
-
-            // Create a basic analysis
-            this.analysis = new WordAnalysis(
-                hanzi,
-                pinyinProvider.getPinyin(hanzi),
-                definitionProvider.getDefinition(hanzi),
-                decompositionProvider.getStructuralDecomposition(hanzi),
-                exampleProvider.getExamples(hanzi, java.util.Optional.empty()),
-                explanationProvider.getExplanation(hanzi),
-                audioProvider.getPronunciation(hanzi, pinyinProvider.getPinyin(hanzi))
-            );
-
-            this.lastException = null;
-        } catch (Exception e) {
-            this.lastException = e;
-            this.analysis = null;
+    @When("I analyze the word using {string} providers")
+    public void i_analyze_the_word_using_providers(String providerName) {
+        if (requestedWord == null) {
+            throw new IllegalStateException("Word must be defined before analysis");
         }
+        performAnalysis(requestedWord, providerName);
     }
 
     @Then("the analysis should be successful")
@@ -68,5 +62,52 @@ public class WordAnalysisStepDefinitions {
         assertNotNull(analysis.word(), "Word should not be null");
         assertNotNull(analysis.pinyin(), "Pinyin should not be null");
         assertNotNull(analysis.definition(), "Definition should not be null");
+    }
+
+    @Then("the response should contain sentence examples")
+    public void the_response_should_contain_sentence_examples() {
+        assertNotNull(analysis, "Analysis should not be null");
+        Example examples = analysis.examples();
+        assertNotNull(examples, "Examples should not be null");
+        assertThat(examples.usages()).isNotEmpty();
+        String characters = analysis.word().characters();
+        boolean containsWord = examples.usages().stream()
+            .anyMatch(usage -> usage.sentence().contains(characters));
+        assertThat(containsWord).isTrue();
+    }
+
+    @Then("the structural decomposition should show compound components")
+    public void the_structural_decomposition_should_show_compound_components() {
+        assertNotNull(analysis, "Analysis should not be null");
+        String decompositionText = analysis.structuralDecomposition().decomposition();
+        assertThat(decompositionText).contains(analysis.word().characters());
+        assertThat(decompositionText).contains(":");
+    }
+
+    private void performAnalysis(String word, String providerName) {
+        try {
+            Hanzi hanzi = new Hanzi(word);
+            PinyinProvider pinyinProvider = new DummyPinyinProvider();
+            DefinitionProvider definitionProvider = new DummyDefinitionProvider();
+            ExampleProvider exampleProvider = new DummyExampleProvider();
+            ExplanationProvider explanationProvider = new DummyExplanationProvider();
+            StructuralDecompositionProvider decompositionProvider = new DummyStructuralDecompositionProvider();
+            AudioProvider audioProvider = new DummyAudioProvider();
+
+            this.analysis = new WordAnalysis(
+                hanzi,
+                pinyinProvider.getPinyin(hanzi),
+                definitionProvider.getDefinition(hanzi),
+                decompositionProvider.getStructuralDecomposition(hanzi),
+                exampleProvider.getExamples(hanzi, Optional.empty()),
+                explanationProvider.getExplanation(hanzi),
+                audioProvider.getPronunciation(hanzi, pinyinProvider.getPinyin(hanzi))
+            );
+
+            this.lastException = null;
+        } catch (Exception e) {
+            this.lastException = e;
+            this.analysis = null;
+        }
     }
 }
