@@ -50,7 +50,7 @@ public class AudioSelectCommand implements Runnable {
 
         SelectionSession session = new SelectionSession(candidates, new SystemAudioPlayer());
 
-        PronunciationCandidate selected = new InteractiveAudioUI().run(session);
+        PronunciationCandidate selected = new InteractiveAudioUI().run(session, word, pin);
         if (selected != null) {
             System.out.println("Selected: " + selected.file().toAbsolutePath());
         } else {

@@ -112,6 +112,52 @@ public class TencentAudioProvider implements AudioProvider {
         return results;
     }
 
+    @Override
+    public List<PronunciationDescription> getPronunciationsWithDescriptions(Hanzi word, Pinyin pinyin) {
+        TencentTtsClient activeClient = clientOverride;
+        if (activeClient == null) {
+            activeClient = new TencentTtsClient(resolveSecretId(), resolveSecretKey(), resolveRegion());
+        }
+
+        List<PronunciationDescription> results = new ArrayList<>();
+        for (Map.Entry<Integer, String> voiceEntry : VOICES.entrySet()) {
+            int voiceType = voiceEntry.getKey();
+            String voiceName = voiceEntry.getValue();
+
+            Path cached = cachedPath(word, pinyin, voiceName);
+            if (Files.exists(cached)) {
+                String description = formatTencentDescription(voiceName);
+                results.add(new PronunciationDescription(cached.toAbsolutePath(), description));
+                continue;
+            }
+
+            try {
+                TencentTtsResult result = activeClient.synthesize(voiceType, word.characters());
+                Path audioFile = decodeAudioData(result.audioData());
+                try {
+                    Path normalized = AudioCache.ensureCachedNormalized(audioFile, NAME,
+                        word.characters(), voiceName, cacheKey(word, pinyin, voiceName));
+                    String description = formatTencentDescription(voiceName);
+                    results.add(new PronunciationDescription(normalized, description));
+                } finally {
+                    Files.deleteIfExists(audioFile);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to process audio data for voice " + voiceName, e);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Audio normalization was interrupted for voice " + voiceName, e);
+            } catch (RuntimeException e) {
+                throw new RuntimeException("Failed to synthesize Tencent TTS for voice " + voiceName, e);
+            }
+        }
+        return results;
+    }
+
+    private static String formatTencentDescription(String voice) {
+        return voice + " 🤖";
+    }
+
     private Path decodeAudioData(String base64Audio) throws IOException {
         byte[] audioBytes = Base64.getDecoder().decode(base64Audio);
         Path tmp = Files.createTempFile(NAME + "-", ".mp3");
