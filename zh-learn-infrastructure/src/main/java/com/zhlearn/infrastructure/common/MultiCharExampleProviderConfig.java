@@ -4,13 +4,16 @@ import com.zhlearn.domain.model.Example;
 
 import java.util.function.Function;
 
-public class ExampleProviderConfig {
+public final class MultiCharExampleProviderConfig {
 
-    public static final String TEMPLATE_PATH = "/single-char/examples/prompt-template.md";
-    public static final String EXAMPLES_DIRECTORY = "/single-char/examples/examples/";
-    public static final Function<String, Example> RESPONSE_MAPPER = new ExampleResponseMapper();
-    public static final Double DEFAULT_TEMPERATURE = 0.3;
-    public static final Integer DEFAULT_MAX_TOKENS = 8000;
+    private static final String TEMPLATE_PATH = "/multi-char/examples/prompt-template.md";
+    private static final String EXAMPLES_DIRECTORY = "/multi-char/examples/examples/";
+    private static final Function<String, Example> RESPONSE_MAPPER = new ExampleResponseMapper();
+    private static final Double DEFAULT_TEMPERATURE = 0.3;
+    private static final Integer DEFAULT_MAX_TOKENS = 8000;
+
+    private MultiCharExampleProviderConfig() {
+    }
 
     public static String templatePath() {
         return TEMPLATE_PATH;
