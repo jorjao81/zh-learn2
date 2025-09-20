@@ -72,10 +72,12 @@ public class ProvidersCommand implements Runnable {
         // Audio providers - show all available
         providers.add(new ProviderInfo("anki", "Anki audio pronunciation provider",
             ProviderType.LOCAL, EnumSet.of(ProviderClass.AUDIO)));
-        providers.add(new ProviderInfo("qwen-tts", "Qwen text-to-speech (voices: Cherry, Serena, Chelsie)",
-            ProviderType.AI, EnumSet.of(ProviderClass.AUDIO)));
         providers.add(new ProviderInfo("forvo", "Forvo pronunciation dictionary",
             ProviderType.DICTIONARY, EnumSet.of(ProviderClass.AUDIO)));
+        providers.add(new ProviderInfo("qwen-tts", "Qwen text-to-speech (voices: Cherry, Serena, Chelsie)",
+            ProviderType.AI, EnumSet.of(ProviderClass.AUDIO)));
+        providers.add(new ProviderInfo("tencent-tts", "Tencent text-to-speech (voices: zhiwei, zhiling)",
+            ProviderType.AI, EnumSet.of(ProviderClass.AUDIO)));
 
         // Apply filters
         if (filterType != null) {

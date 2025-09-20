@@ -2,6 +2,7 @@ module com.zhlearn.infrastructure {
     requires com.zhlearn.domain;
     requires java.logging;
     requires java.net.http;
+    requires java.sql;
     
     // LangChain4j automatic modules (using jar names)
     requires transitive langchain4j.core;
@@ -21,6 +22,13 @@ module com.zhlearn.infrastructure {
     
     // Pinyin4j for Chinese to Pinyin conversion
     requires pinyin4j;
+
+    // Tencent Cloud SDK for TTS
+    requires tencentcloud.sdk.java.common;
+    requires tencentcloud.sdk.java.tts;
+    requires com.google.gson;
+    requires kotlin.stdlib;
+
     // Internal pinyin utilities (tone converter)
     requires com.zhlearn.pinyin;
 
@@ -35,4 +43,5 @@ module com.zhlearn.infrastructure {
     exports com.zhlearn.infrastructure.pleco;
     exports com.zhlearn.infrastructure.qwen;
     exports com.zhlearn.infrastructure.forvo;
+    exports com.zhlearn.infrastructure.tencent;
 }
