@@ -54,6 +54,8 @@ public class ProvidersStepDefinitions {
             .as("CLI command should exit successfully")
             .isZero();
 
+        String strippedOutput = stripAnsi(lastOutput);
+
         for (List<String> row : table.asLists(String.class)) {
             if (row.isEmpty()) {
                 continue;
@@ -65,9 +67,16 @@ public class ProvidersStepDefinitions {
             if ("substring".equalsIgnoreCase(substring.trim())) {
                 continue;
             }
-            assertThat(lastOutput)
-                .as("Output should contain \"%s\" but was:%n%s", substring, lastOutput)
+            assertThat(strippedOutput)
+                .as("Output should contain \"%s\" but was:%n%s", substring, strippedOutput)
                 .contains(substring);
         }
+    }
+
+    private String stripAnsi(String text) {
+        if (text == null) {
+            return null;
+        }
+        return text.replaceAll("\\u001B\\[[0-9;]*[mK]", "");
     }
 }

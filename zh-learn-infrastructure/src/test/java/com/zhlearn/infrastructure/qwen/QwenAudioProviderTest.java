@@ -48,7 +48,7 @@ class QwenAudioProviderTest {
             .thenReturn((HttpResponse) serenaResp)
             .thenReturn((HttpResponse) chelsieResp);
 
-        AudioProvider provider = new QwenAudioProvider(client, http);
+        QwenAudioProvider provider = new QwenAudioProvider(client, http);
 
         Hanzi word = new Hanzi("学习");
         Pinyin pinyin = new Pinyin("xuéxí");
@@ -88,7 +88,7 @@ class QwenAudioProviderTest {
         when(failure.statusCode()).thenReturn(500);
         when(http.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn((HttpResponse) failure);
 
-        AudioProvider provider = new QwenAudioProvider(client, http);
+        QwenAudioProvider provider = new QwenAudioProvider(client, http);
 
         Hanzi word = new Hanzi("语音");
         Pinyin pinyin = new Pinyin("yǔyīn");
@@ -102,7 +102,7 @@ class QwenAudioProviderTest {
 
     @Test
     void reportsMetadataAccurately() {
-        AudioProvider provider = new QwenAudioProvider(new FakeQwenClient(), HttpClient.newHttpClient());
+        QwenAudioProvider provider = new QwenAudioProvider(new FakeQwenClient(), HttpClient.newHttpClient());
         assertThat(provider.getName()).isEqualTo("qwen-tts");
         assertThat(provider.getType()).isEqualTo(ProviderType.AI);
         assertThat(provider.getDescription()).contains("Cherry").contains("Serena").contains("Chelsie");

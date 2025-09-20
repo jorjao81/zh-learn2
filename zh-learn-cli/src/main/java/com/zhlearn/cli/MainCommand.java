@@ -14,6 +14,7 @@ import com.zhlearn.infrastructure.dummy.DummyDefinitionProvider;
 import com.zhlearn.infrastructure.anki.AnkiPronunciationProvider;
 import com.zhlearn.infrastructure.qwen.QwenAudioProvider;
 import com.zhlearn.infrastructure.forvo.ForvoAudioProvider;
+import com.zhlearn.infrastructure.tencent.TencentAudioProvider;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.ScopeType;
 
@@ -32,7 +33,8 @@ public class MainCommand implements Runnable {
         this.audioProviders = List.of(
             new AnkiPronunciationProvider(),
             new QwenAudioProvider(),
-            new ForvoAudioProvider()
+            new ForvoAudioProvider(),
+            new TencentAudioProvider()
         );
     }
 

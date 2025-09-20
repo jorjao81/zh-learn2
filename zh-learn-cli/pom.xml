@@ -177,6 +177,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <excludeArtifactIds>okio</excludeArtifactIds>
                         </configuration>
                     </execution>
                     <execution>

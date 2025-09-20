@@ -18,18 +18,26 @@ Never add fallbacks or catch exceptions unless explicitly required:
 
 ### III. Test-First Development (NON-NEGOTIABLE)
 All functionality must have tests before implementation:
-- All features must start with Cucumber acceptance tests 
+- All features must start with Cucumber acceptance tests
 - Unit tests for domain logic using JUnit 5 and AssertJ
 - All tests must pass before commits - no exceptions
 - Test structure follows modular boundaries
 
-### IV. CLI-First Interface
+### IV. Always-Passing Tests (NON-NEGOTIABLE)
+The codebase always starts with passing tests - any test failure is developer fault:
+- NEVER claim a task is complete while tests are failing
+- All tests must pass at all times - if a test breaks, it is your responsibility to fix it
+- No work is considered done until the full test suite passes
+- Breaking existing functionality while adding new features is unacceptable
+- When tests fail, stop all other work and fix them immediately
+
+### V. CLI-First Interface
 All functionality exposed via command-line interface:
 - Text in/out protocol: arguments → stdout, errors → stderr
 - Support both human-readable and structured output
 - GraalVM native compilation required for distribution
 
-### V. Provider Pattern for Extensions
+### VI. Provider Pattern for Extensions
 External integrations implemented as providers:
 - Providers follow consistent interface
 - Service loader pattern for runtime discovery
@@ -103,4 +111,4 @@ This constitution supersedes all other development practices. All code changes m
 
 **Implementation over Configuration**: If implementation doesn't match instructions exactly, fail rather than implementing differently.
 
-**Version**: 1.0.0 | **Ratified**: 2025-09-13 | **Last Amended**: 2025-09-13
+**Version**: 1.1.0 | **Ratified**: 2025-09-13 | **Last Amended**: 2025-09-20
