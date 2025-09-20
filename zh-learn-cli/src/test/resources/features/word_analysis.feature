@@ -12,3 +12,10 @@ Feature: Chinese Word Analysis
 #    And the structural decomposition should be "Dummy structural decomposition for 你好: Component breakdown with radicals and meanings."
 #    And the explanation should be "Dummy explanation for 你好: This word has ancient origins and is commonly used in daily conversation. It has cultural significance in Chinese society."
 
+  Scenario: Analyze a multi-character word using dummy provider
+    Given I have a multi-character word "学校"
+    When I analyze the word "学校" using provider "dummy"
+    Then the analysis should be successful
+    And the response should contain sentence examples
+    And the structural decomposition should show compound components
+

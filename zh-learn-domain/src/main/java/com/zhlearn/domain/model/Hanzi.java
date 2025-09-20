@@ -6,4 +6,13 @@ public record Hanzi(String characters) {
             throw new IllegalArgumentException("Chinese word characters cannot be null or empty");
         }
     }
+
+    public boolean isSingleCharacter() {
+        int codePointCount = characters.codePointCount(0, characters.length());
+        return codePointCount == 1;
+    }
+
+    public boolean isMultiCharacter() {
+        return !isSingleCharacter();
+    }
 }

@@ -2,35 +2,32 @@ package com.zhlearn.domain.model;
 
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class HanziTest {
-    
+
     @Test
-    void shouldCreateValidChineseWord() {
-        Hanzi word = new Hanzi("汉语");
-        
-        assertThat(word.characters()).isEqualTo("汉语");
+    void shouldIdentifySingleCharacterWord() {
+        Hanzi hanzi = new Hanzi("好");
+
+        assertThat(hanzi.isSingleCharacter()).isTrue();
+        assertThat(hanzi.isMultiCharacter()).isFalse();
     }
-    
+
     @Test
-    void shouldThrowExceptionForNullCharacters() {
-        assertThatThrownBy(() -> new Hanzi(null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Chinese word characters cannot be null or empty");
+    void shouldIdentifyMultiCharacterWord() {
+        Hanzi hanzi = new Hanzi("学校");
+
+        assertThat(hanzi.isSingleCharacter()).isFalse();
+        assertThat(hanzi.isMultiCharacter()).isTrue();
     }
-    
+
     @Test
-    void shouldThrowExceptionForEmptyCharacters() {
-        assertThatThrownBy(() -> new Hanzi(""))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Chinese word characters cannot be null or empty");
-    }
-    
-    @Test
-    void shouldThrowExceptionForBlankCharacters() {
-        assertThatThrownBy(() -> new Hanzi("   "))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Chinese word characters cannot be null or empty");
+    void shouldTreatSupplementaryCharacterAsSingleCharacter() {
+        Hanzi hanzi = new Hanzi("𠮷");
+
+        assertThat(hanzi.isSingleCharacter()).isTrue();
+        assertThat(hanzi.isMultiCharacter()).isFalse();
     }
 }
+

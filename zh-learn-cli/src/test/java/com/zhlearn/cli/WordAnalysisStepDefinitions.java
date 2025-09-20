@@ -19,6 +19,7 @@ public class WordAnalysisStepDefinitions {
 
     private WordAnalysis analysis;
     private Exception lastException;
+    private Hanzi analyzedWord;
 
     @Given("the ZH Learn application is available")
     public void the_zh_learn_application_is_available() {
@@ -31,7 +32,7 @@ public class WordAnalysisStepDefinitions {
     public void i_analyze_the_word_using_provider(String word, String providerName) {
         try {
             // Create a simple analysis using dummy providers for testing
-            Hanzi hanzi = new Hanzi(word);
+            this.analyzedWord = new Hanzi(word);
 
             // Create dummy providers for testing
             PinyinProvider pinyinProvider = new DummyPinyinProvider();
@@ -43,13 +44,13 @@ public class WordAnalysisStepDefinitions {
 
             // Create a basic analysis
             this.analysis = new WordAnalysis(
-                hanzi,
-                pinyinProvider.getPinyin(hanzi),
-                definitionProvider.getDefinition(hanzi),
-                decompositionProvider.getStructuralDecomposition(hanzi),
-                exampleProvider.getExamples(hanzi, java.util.Optional.empty()),
-                explanationProvider.getExplanation(hanzi),
-                audioProvider.getPronunciation(hanzi, pinyinProvider.getPinyin(hanzi))
+                analyzedWord,
+                pinyinProvider.getPinyin(analyzedWord),
+                definitionProvider.getDefinition(analyzedWord),
+                decompositionProvider.getStructuralDecomposition(analyzedWord),
+                exampleProvider.getExamples(analyzedWord, java.util.Optional.empty()),
+                explanationProvider.getExplanation(analyzedWord),
+                audioProvider.getPronunciation(analyzedWord, pinyinProvider.getPinyin(analyzedWord))
             );
 
             this.lastException = null;
@@ -68,5 +69,28 @@ public class WordAnalysisStepDefinitions {
         assertNotNull(analysis.word(), "Word should not be null");
         assertNotNull(analysis.pinyin(), "Pinyin should not be null");
         assertNotNull(analysis.definition(), "Definition should not be null");
+    }
+
+    @Given("I have a multi-character word {string}")
+    public void i_have_a_multi_character_word(String word) {
+        Hanzi hanzi = new Hanzi(word);
+
+        assertTrue(hanzi.isMultiCharacter(), "Expected a multi-character word");
+        this.analyzedWord = hanzi;
+    }
+
+    @Then("the response should contain sentence examples")
+    public void the_response_should_contain_sentence_examples() {
+        assertNotNull(analysis, "Analysis should have been performed");
+        assertFalse(analysis.examples().usages().isEmpty(), "Expected at least one example usage");
+    }
+
+    @Then("the structural decomposition should show compound components")
+    public void the_structural_decomposition_should_show_compound_components() {
+        assertNotNull(analysis, "Analysis should have been performed");
+        String decompositionText = analysis.structuralDecomposition().text();
+        assertNotNull(decompositionText, "Structural decomposition text should not be null");
+        assertTrue(decompositionText.toLowerCase().contains("component"),
+            "Expected compound component details in structural decomposition");
     }
 }

@@ -4,7 +4,10 @@ import com.zhlearn.domain.model.StructuralDecomposition;
 
 import java.util.function.Function;
 
-public class StructuralDecompositionProviderConfig {
+public final class SingleCharStructuralDecompositionProviderConfig {
+
+    private SingleCharStructuralDecompositionProviderConfig() {
+    }
 
     public static final String TEMPLATE_PATH = "/single-char/structural-decomposition/prompt-template.md";
     public static final String EXAMPLES_DIRECTORY = "/single-char/structural-decomposition/examples/";
