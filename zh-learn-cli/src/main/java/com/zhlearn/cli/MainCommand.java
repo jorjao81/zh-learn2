@@ -53,12 +53,24 @@ public class MainCommand implements Runnable {
         return AIProviderFactory.createExampleProvider(providerName);
     }
 
+    public ExampleProvider createExampleProvider(String providerName, String model) {
+        return AIProviderFactory.createExampleProvider(providerName, model);
+    }
+
     public ExplanationProvider createExplanationProvider(String providerName) {
         return AIProviderFactory.createExplanationProvider(providerName);
     }
 
+    public ExplanationProvider createExplanationProvider(String providerName, String model) {
+        return AIProviderFactory.createExplanationProvider(providerName, model);
+    }
+
     public StructuralDecompositionProvider createDecompositionProvider(String providerName) {
         return AIProviderFactory.createDecompositionProvider(providerName);
+    }
+
+    public StructuralDecompositionProvider createDecompositionProvider(String providerName, String model) {
+        return AIProviderFactory.createDecompositionProvider(providerName, model);
     }
 
     public PinyinProvider createPinyinProvider(String providerName) {
@@ -83,6 +95,10 @@ public class MainCommand implements Runnable {
 
     public DefinitionFormatterProvider createDefinitionFormatterProvider(String providerName) {
         return AIProviderFactory.createDefinitionFormatterProvider(providerName);
+    }
+
+    public DefinitionFormatterProvider createDefinitionFormatterProvider(String providerName, String model) {
+        return AIProviderFactory.createDefinitionFormatterProvider(providerName, model);
     }
 
 
