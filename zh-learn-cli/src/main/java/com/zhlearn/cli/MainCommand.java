@@ -32,8 +32,8 @@ public class MainCommand implements Runnable {
         // Initialize audio providers (keep existing working approach)
         this.audioProviders = List.of(
             new AnkiPronunciationProvider(),
-            new QwenAudioProvider(),
             new ForvoAudioProvider(),
+            new QwenAudioProvider(),
             new TencentAudioProvider()
         );
     }
