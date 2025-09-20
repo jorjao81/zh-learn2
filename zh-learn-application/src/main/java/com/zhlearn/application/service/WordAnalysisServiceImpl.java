@@ -14,6 +14,7 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
     private final StructuralDecompositionProvider decompositionProvider;
     private final PinyinProvider pinyinProvider;
     private final DefinitionProvider definitionProvider;
+    private final DefinitionFormatterProvider definitionFormatterProvider;
     private final AudioProvider audioProvider;
 
     public WordAnalysisServiceImpl(ExampleProvider exampleProvider,
@@ -21,12 +22,14 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
                                   StructuralDecompositionProvider decompositionProvider,
                                   PinyinProvider pinyinProvider,
                                   DefinitionProvider definitionProvider,
+                                  DefinitionFormatterProvider definitionFormatterProvider,
                                   AudioProvider audioProvider) {
         this.exampleProvider = exampleProvider;
         this.explanationProvider = explanationProvider;
         this.decompositionProvider = decompositionProvider;
         this.pinyinProvider = pinyinProvider;
         this.definitionProvider = definitionProvider;
+        this.definitionFormatterProvider = definitionFormatterProvider;
         this.audioProvider = audioProvider;
     }
 
@@ -37,7 +40,20 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
 
     @Override
     public Definition getDefinition(Hanzi word, String providerName) {
-        return definitionProvider.getDefinition(word);
+        Definition rawDefinition = definitionProvider.getDefinition(word);
+
+        // Format definition if formatter is available
+        if (definitionFormatterProvider != null) {
+            Optional<String> rawText = rawDefinition != null
+                ? Optional.of(rawDefinition.meaning())
+                : Optional.empty();
+            Definition formatted = definitionFormatterProvider.formatDefinition(word, rawText);
+            if (formatted != null) {
+                return formatted;
+            }
+        }
+
+        return rawDefinition;
     }
 
     @Override

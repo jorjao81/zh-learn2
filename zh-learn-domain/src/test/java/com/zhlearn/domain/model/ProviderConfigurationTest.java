@@ -12,6 +12,7 @@ class ProviderConfigurationTest {
             "dummy-default", // default
             null, // pinyin
             null, // definition
+            null, // definitionFormatter
             null, // decomposition
             null, // example
             null, // explanation
@@ -25,6 +26,7 @@ class ProviderConfigurationTest {
     void returnsExplicitAudioProviderWhenProvided() {
         ProviderConfiguration cfg = new ProviderConfiguration(
             "dummy-default",
+            null,
             null,
             null,
             null,

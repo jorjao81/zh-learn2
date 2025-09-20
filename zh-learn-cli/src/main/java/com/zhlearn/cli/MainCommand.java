@@ -1,5 +1,6 @@
 package com.zhlearn.cli;
 
+import com.zhlearn.domain.provider.DefinitionFormatterProvider;
 import com.zhlearn.domain.provider.ExampleProvider;
 import com.zhlearn.domain.provider.ExplanationProvider;
 import com.zhlearn.domain.provider.StructuralDecompositionProvider;
@@ -78,6 +79,10 @@ public class MainCommand implements Runnable {
             default -> throw new RuntimeException("Unknown definition provider: " + providerName +
                 ". Available: dummy");
         };
+    }
+
+    public DefinitionFormatterProvider createDefinitionFormatterProvider(String providerName) {
+        return AIProviderFactory.createDefinitionFormatterProvider(providerName);
     }
 
 

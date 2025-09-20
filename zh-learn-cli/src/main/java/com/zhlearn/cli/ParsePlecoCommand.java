@@ -10,6 +10,7 @@ import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.ProviderConfiguration;
 import com.zhlearn.domain.model.WordAnalysis;
 import com.zhlearn.domain.provider.AudioProvider;
+import com.zhlearn.domain.provider.DefinitionFormatterProvider;
 import com.zhlearn.domain.provider.DefinitionProvider;
 import com.zhlearn.domain.provider.ExampleProvider;
 import com.zhlearn.domain.provider.ExplanationProvider;
@@ -63,7 +64,10 @@ public class ParsePlecoCommand implements Runnable {
     
     @Option(names = {"--definition-provider"}, description = "Set specific provider for definition (default: pleco-export). Available: dummy, pleco-export", defaultValue = "pleco-export")
     private String definitionProvider;
-    
+
+    @Option(names = {"--definition-formatter-provider"}, description = "Set specific provider for definition formatting (default: deepseek-chat). Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo", defaultValue = "deepseek-chat")
+    private String definitionFormatterProvider;
+
     @Option(names = {"--decomposition-provider"}, description = "Set specific provider for structural decomposition (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash, glm-4-flash, glm-4.5", defaultValue = "deepseek-chat")
     private String decompositionProvider;
 
@@ -120,10 +124,11 @@ public class ParsePlecoCommand implements Runnable {
             StructuralDecompositionProvider decompositionProv = parent.createDecompositionProvider(decompositionProvider);
             PinyinProvider pinyinProv = "pleco-export".equals(pinyinProvider) ? new DictionaryPinyinProvider(dictionary) : parent.createPinyinProvider(pinyinProvider);
             DefinitionProvider definitionProv = "pleco-export".equals(definitionProvider) ? new DictionaryDefinitionProvider(dictionary) : parent.createDefinitionProvider(definitionProvider);
+            DefinitionFormatterProvider defFormatterProv = parent.createDefinitionFormatterProvider(definitionFormatterProvider);
             AudioProvider audioProv = resolveAudioProvider(audioProvider);
 
             WordAnalysisServiceImpl baseService = new WordAnalysisServiceImpl(
-                exampleProv, explanationProv, decompositionProv, pinyinProv, definitionProv, audioProv
+                exampleProv, explanationProv, decompositionProv, pinyinProv, definitionProv, defFormatterProv, audioProv
             );
 
             if (disableParallelism) {
@@ -139,6 +144,7 @@ public class ParsePlecoCommand implements Runnable {
                 exampleProvider,
                 pinyinProvider,
                 definitionProvider,
+                definitionFormatterProvider,
                 decompositionProvider,
                 exampleProvider,
                 explanationProvider,

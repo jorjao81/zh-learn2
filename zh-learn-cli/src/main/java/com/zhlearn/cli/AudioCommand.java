@@ -37,6 +37,7 @@ public class AudioCommand implements Runnable {
             parent.createDecompositionProvider(null), // Use default
             parent.createPinyinProvider(null), // Use default
             parent.createDefinitionProvider(null), // Use default
+            parent.createDefinitionFormatterProvider(null), // Use default
             selectedAudioProvider
         );
 
