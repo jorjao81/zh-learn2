@@ -36,6 +36,14 @@ External integrations implemented as providers:
 - Each provider is self-contained and independently testable
 - Clear separation between core logic and external service integration
 
+### VI. Module Preference over Implementation
+Always prefer existing modules and libraries over custom implementations:
+- Search the web thoroughly to find existing solutions before implementing any feature
+- Use existing libraries and modules unless there's a compelling reason not to
+- Never implement functionality that already exists in well-maintained open source modules
+- Document why existing solutions were rejected if implementing custom code
+- Prioritize modules with active maintenance, good documentation, and community support
+
 ## Technical Standards
 
 ### Java Platform Requirements
@@ -67,8 +75,15 @@ External integrations implemented as providers:
 - Follow existing code conventions and patterns
 - No code comments unless documenting non-obvious behaviour
 - Keep classes focused and modules cohesive
-- Never use Java's `var` keyword - always use explicit type declarations for better code readability and maintainability
-- Always import types and use simple type names, not fully qualified names - unless necessary due to ambiguity
+
+#### Java Style Guide
+- **Never use Java's `var` keyword** - always use explicit type declarations for better code readability and maintainability
+- **Always use Records** when possible - prefer immutable data carriers over traditional classes
+- **Prefer switch expressions** over long if-else chains for better readability and maintainability
+- **Always import types** and use simple type names, not fully qualified names - unless necessary due to ambiguity
+- **Use final fields** by default - make fields mutable only when absolutely necessary
+- **Prefer immutable collections** - use `List.of()`, `Map.of()`, etc., over mutable alternatives
+- **Use pattern matching** where appropriate - instanceof patterns, record patterns, etc.
 
 ### Documentation Standards
 - Documentation must be informational, not promotional
