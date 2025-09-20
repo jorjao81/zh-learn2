@@ -70,8 +70,8 @@ class ConfigurableExampleProviderTest {
             "model",
             0.1,
             100,
-            "/template",
-            "/examples/",
+            "/single-char/examples/prompt-template.md",
+            "/single-char/examples/examples/",
             response -> createExample(response),
             "name",
             "error"
@@ -82,8 +82,8 @@ class ConfigurableExampleProviderTest {
             "model2",
             0.1,
             100,
-            "/template2",
-            "/examples2/",
+            "/multi-char/examples/prompt-template.md",
+            "/multi-char/examples/examples/",
             response -> createExample(response),
             "name2",
             "error2"

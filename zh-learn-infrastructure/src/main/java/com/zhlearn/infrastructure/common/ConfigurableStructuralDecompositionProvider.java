@@ -21,7 +21,7 @@ public class ConfigurableStructuralDecompositionProvider implements StructuralDe
     public ConfigurableStructuralDecompositionProvider(ProviderConfig<StructuralDecomposition> config,
                                                        String name,
                                                        String description) {
-        this(new GenericChatModelProvider<>(config), new GenericChatModelProvider<>(config),
+        this(new GenericChatModelProvider<>(config)::process, new GenericChatModelProvider<>(config)::process,
             Optional.of(config), Optional.of(config), name, description);
     }
 

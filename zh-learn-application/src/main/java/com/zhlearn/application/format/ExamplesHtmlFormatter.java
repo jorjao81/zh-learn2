@@ -34,20 +34,20 @@ public final class ExamplesHtmlFormatter {
             List<Example.Usage> list = entry.getValue();
 
             if (!context.isEmpty()) {
-                html.append("<h4>").append(escape(context)).append("</h4>\n");
+                html.append("<h4>").append(context).append("</h4>\n");
             }
             html.append("<ul>\n");
             for (Example.Usage u : list) {
                 html.append("<li class=\"example\">\n");
-                html.append("<span class=\"hanzi\">").append(escape(nz(u.sentence()))).append("</span>\n");
-                html.append("<span class=\"pinyin\">").append(escape(nz(u.pinyin()))).append("</span>\n");
+                html.append("<span class=\"hanzi\">").append(nz(u.sentence())).append("</span>\n");
+                html.append("<span class=\"pinyin\">").append(nz(u.pinyin())).append("</span>\n");
                 if (u.translation() != null && !u.translation().isBlank()) {
                     html.append("<span class=\"translation\">- ")
-                        .append(escape(u.translation())).append("</span>\n");
+                        .append(u.translation()).append("</span>\n");
                 }
                 if (u.breakdown() != null && !u.breakdown().isBlank()) {
                     html.append("<span class=\"breakdown\">")
-                        .append(escape(prefixBreakdown(u.breakdown())))
+                        .append(prefixBreakdown(u.breakdown()))
                         .append("</span>\n");
                 }
                 html.append("</li>\n");
@@ -73,11 +73,11 @@ public final class ExamplesHtmlFormatter {
         html.append("<h4>Phonetic series</h4>\n<ul>\n");
         for (Example.SeriesItem item : example.phoneticSeries()) {
             html.append("<li class=\"example\">\n");
-            html.append("<span class=\"hanzi\">").append(escape(nz(item.hanzi()))).append("</span>\n");
-            html.append("<span class=\"pinyin\">").append(escape(nz(item.pinyin()))).append("</span>\n");
+            html.append("<span class=\"hanzi\">").append(nz(item.hanzi())).append("</span>\n");
+            html.append("<span class=\"pinyin\">").append(nz(item.pinyin())).append("</span>\n");
             if (item.meaning() != null && !item.meaning().isBlank()) {
                 html.append("<span class=\"translation\">- ")
-                    .append(escape(item.meaning())).append("</span>\n");
+                    .append(item.meaning()).append("</span>\n");
             }
             html.append("</li>\n");
         }
@@ -93,13 +93,5 @@ public final class ExamplesHtmlFormatter {
 
     private static String nz(String s) { return s == null ? "" : s; }
 
-    private static String escape(String s) {
-        return s
-            .replace("&", "&amp;")
-            .replace("<", "&lt;")
-            .replace(">", "&gt;")
-            .replace("\"", "&quot;")
-            .replace("'", "&#39;");
-    }
 }
 

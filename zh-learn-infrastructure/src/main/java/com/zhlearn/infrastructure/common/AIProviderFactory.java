@@ -65,7 +65,7 @@ public class AIProviderFactory {
                 );
                 ZhipuChatModelProvider<Example> singleDelegate = new ZhipuChatModelProvider<>(singleConfig);
                 ZhipuChatModelProvider<Example> multiDelegate = new ZhipuChatModelProvider<>(multiConfig);
-                yield new ConfigurableExampleProvider(singleDelegate::process, singleConfig, multiDelegate::process, multiConfig,
+                yield new ConfigurableExampleProvider(singleDelegate::process, multiDelegate::process,
                     providerName, "GLM-4 Flash AI provider");
             }
             case "glm-4.5" -> {
@@ -92,7 +92,7 @@ public class AIProviderFactory {
                 );
                 ZhipuChatModelProvider<Example> singleDelegate = new ZhipuChatModelProvider<>(singleConfig);
                 ZhipuChatModelProvider<Example> multiDelegate = new ZhipuChatModelProvider<>(multiConfig);
-                yield new ConfigurableExampleProvider(singleDelegate::process, singleConfig, multiDelegate::process, multiConfig,
+                yield new ConfigurableExampleProvider(singleDelegate::process, multiDelegate::process,
                     providerName, "GLM-4.5 AI provider");
             }
             case "qwen-max", "qwen-plus", "qwen-turbo" -> {
@@ -178,7 +178,7 @@ public class AIProviderFactory {
                 );
                 ZhipuChatModelProvider<Explanation> singleDelegate = new ZhipuChatModelProvider<>(singleConfig);
                 ZhipuChatModelProvider<Explanation> multiDelegate = new ZhipuChatModelProvider<>(multiConfig);
-                yield new ConfigurableExplanationProvider(singleDelegate::process, singleConfig, multiDelegate::process, multiConfig,
+                yield new ConfigurableExplanationProvider(singleDelegate::process, multiDelegate::process,
                     providerName, "GLM-4 Flash AI provider");
             }
             case "glm-4.5" -> {
@@ -205,7 +205,7 @@ public class AIProviderFactory {
                 );
                 ZhipuChatModelProvider<Explanation> singleDelegate = new ZhipuChatModelProvider<>(singleConfig);
                 ZhipuChatModelProvider<Explanation> multiDelegate = new ZhipuChatModelProvider<>(multiConfig);
-                yield new ConfigurableExplanationProvider(singleDelegate::process, singleConfig, multiDelegate::process, multiConfig,
+                yield new ConfigurableExplanationProvider(singleDelegate::process, multiDelegate::process,
                     providerName, "GLM-4.5 AI provider");
             }
             case "qwen-max", "qwen-plus", "qwen-turbo" -> {
@@ -292,8 +292,8 @@ public class AIProviderFactory {
                 );
                 ZhipuChatModelProvider<StructuralDecomposition> singleDelegate = new ZhipuChatModelProvider<>(singleConfig);
                 ZhipuChatModelProvider<StructuralDecomposition> multiDelegate = new ZhipuChatModelProvider<>(multiConfig);
-                yield new ConfigurableStructuralDecompositionProvider(singleDelegate::process, singleConfig, multiDelegate::process,
-                    multiConfig, providerName, "GLM-4 Flash AI provider");
+                yield new ConfigurableStructuralDecompositionProvider(singleDelegate::process, multiDelegate::process,
+                    providerName, "GLM-4 Flash AI provider");
             }
             case "glm-4.5" -> {
                 requireAPIKey("ZHIPU_API_KEY", providerName);
@@ -319,8 +319,8 @@ public class AIProviderFactory {
                 );
                 ZhipuChatModelProvider<StructuralDecomposition> singleDelegate = new ZhipuChatModelProvider<>(singleConfig);
                 ZhipuChatModelProvider<StructuralDecomposition> multiDelegate = new ZhipuChatModelProvider<>(multiConfig);
-                yield new ConfigurableStructuralDecompositionProvider(singleDelegate::process, singleConfig, multiDelegate::process,
-                    multiConfig, providerName, "GLM-4.5 AI provider");
+                yield new ConfigurableStructuralDecompositionProvider(singleDelegate::process, multiDelegate::process,
+                    providerName, "GLM-4.5 AI provider");
             }
             case "qwen-max", "qwen-plus", "qwen-turbo" -> {
                 requireAPIKey("DASHSCOPE_API_KEY", providerName);
