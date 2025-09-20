@@ -25,16 +25,16 @@ public class WordCommand implements Runnable {
     @Option(names = {"--definition-provider"}, description = "Set specific provider for definition. Available: dummy", defaultValue = "dummy")
     private String definitionProvider;
 
-    @Option(names = {"--definition-formatter-provider"}, description = "Set specific provider for definition formatting. Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter", defaultValue = "deepseek-chat")
+    @Option(names = {"--definition-formatter-provider"}, description = "Set specific provider for definition formatting. Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter", defaultValue = "dummy")
     private String definitionFormatterProvider;
 
-    @Option(names = {"--decomposition-provider"}, description = "Set specific provider for structural decomposition. Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5, openrouter", defaultValue = "deepseek-chat")
+    @Option(names = {"--decomposition-provider"}, description = "Set specific provider for structural decomposition. Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5, openrouter", defaultValue = "dummy")
     private String decompositionProvider;
 
-    @Option(names = {"--example-provider"}, description = "Set specific provider for examples. Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5, openrouter", defaultValue = "deepseek-chat")
+    @Option(names = {"--example-provider"}, description = "Set specific provider for examples. Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5, openrouter", defaultValue = "dummy")
     private String exampleProvider;
 
-    @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation. Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5, openrouter", defaultValue = "deepseek-chat")
+    @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation. Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5, openrouter", defaultValue = "dummy")
     private String explanationProvider;
     
     @Option(names = {"--audio-provider"}, description = "Set specific provider for audio pronunciation. Available: anki, forvo, qwen-tts", defaultValue = "anki")
