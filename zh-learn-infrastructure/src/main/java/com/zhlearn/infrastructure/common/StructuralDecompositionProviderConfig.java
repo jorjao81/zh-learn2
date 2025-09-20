@@ -6,8 +6,8 @@ import java.util.function.Function;
 
 public class StructuralDecompositionProviderConfig {
 
-    public static final String TEMPLATE_PATH = "/structural-decomposition/prompt-template.md";
-    public static final String EXAMPLES_DIRECTORY = "/structural-decomposition/examples/";
+    public static final String TEMPLATE_PATH = "/single-char/structural-decomposition/prompt-template.md";
+    public static final String EXAMPLES_DIRECTORY = "/single-char/structural-decomposition/examples/";
     public static final Function<String, StructuralDecomposition> RESPONSE_MAPPER = StructuralDecomposition::new;
     public static final Double DEFAULT_TEMPERATURE = 0.3;
     public static final Integer DEFAULT_MAX_TOKENS = 8000;

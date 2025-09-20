@@ -6,8 +6,8 @@ import java.util.function.Function;
 
 public class ExplanationProviderConfig {
 
-    public static final String TEMPLATE_PATH = "/explanation/prompt-template.md";
-    public static final String EXAMPLES_DIRECTORY = "/explanation/examples/";
+    public static final String TEMPLATE_PATH = "/single-char/explanation/prompt-template.md";
+    public static final String EXAMPLES_DIRECTORY = "/single-char/explanation/examples/";
     public static final Function<String, Explanation> RESPONSE_MAPPER = Explanation::new;
     public static final Double DEFAULT_TEMPERATURE = 0.3;
     public static final Integer DEFAULT_MAX_TOKENS = 8000;

@@ -6,8 +6,8 @@ import java.util.function.Function;
 
 public class ExampleProviderConfig {
 
-    public static final String TEMPLATE_PATH = "/examples/prompt-template.md";
-    public static final String EXAMPLES_DIRECTORY = "/examples/examples/";
+    public static final String TEMPLATE_PATH = "/single-char/examples/prompt-template.md";
+    public static final String EXAMPLES_DIRECTORY = "/single-char/examples/examples/";
     public static final Function<String, Example> RESPONSE_MAPPER = new ExampleResponseMapper();
     public static final Double DEFAULT_TEMPERATURE = 0.3;
     public static final Integer DEFAULT_MAX_TOKENS = 8000;
