@@ -10,11 +10,15 @@ Java modules are strictly enforced for separation of concerns, in a Clean Code A
 - CLI layer handles user interaction only - delegates to application layer
 - Module exports/imports must be explicit - never bypass or disable module system
 
-### II. Fail-Fast Philosophy
-Never add fallbacks or catch exceptions unless explicitly required:
+### II. Fail-Fast Philosophy (NON-NEGOTIABLE)
+Never add fallbacks, error handling, or graceful degradation unless explicitly told to do so:
 - Let exceptions bubble up and crash the application - debugging is more important than graceful degradation
 - No defensive programming - if something is wrong, fail immediately and visibly
 - No "best effort" implementations - either work correctly or fail clearly
+- No rate limiting handling, retry logic, or API error recovery unless explicitly instructed
+- No fallback providers, default values, or alternative implementations unless explicitly required
+- Crash the application rather than continue with degraded functionality
+- Error handling is ONLY added when explicitly told to handle specific errors
 
 ### III. Test-First Development (NON-NEGOTIABLE)
 All functionality must have tests before implementation:
@@ -99,11 +103,13 @@ Always prefer existing modules and libraries over custom implementations:
 - Focus on how to use the application, not how awesome it is
 - Provide clear, factual instructions without marketing language
 
-### Exception Handling
-- Never catch exceptions unless explicitly instructed
-- No generic exception handlers
-- Let application crash on unexpected conditions
-- Use checked exceptions for expected failure modes only
+### Exception Handling (NON-NEGOTIABLE)
+- Never catch exceptions unless explicitly instructed to handle specific exceptions
+- No generic exception handlers, no try-catch blocks without explicit instruction
+- Let application crash on unexpected conditions - this is the desired behavior
+- Use checked exceptions for expected failure modes only when explicitly told to do so
+- No error recovery, graceful degradation, or fallback handling unless explicitly instructed
+- Prefer RuntimeException over checked exceptions unless specifically told otherwise
 
 ## Governance
 
@@ -111,4 +117,4 @@ This constitution supersedes all other development practices. All code changes m
 
 **Implementation over Configuration**: If implementation doesn't match instructions exactly, fail rather than implementing differently.
 
-**Version**: 1.1.0 | **Ratified**: 2025-09-13 | **Last Amended**: 2025-09-20
+**Version**: 1.2.0 | **Ratified**: 2025-09-13 | **Last Amended**: 2025-09-20

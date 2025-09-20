@@ -25,21 +25,26 @@ public class WordCommand implements Runnable {
     @Option(names = {"--definition-provider"}, description = "Set specific provider for definition. Available: dummy", defaultValue = "dummy")
     private String definitionProvider;
 
-    @Option(names = {"--definition-formatter-provider"}, description = "Set specific provider for definition formatting. Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo", defaultValue = "deepseek-chat")
+    @Option(names = {"--definition-formatter-provider"}, description = "Set specific provider for definition formatting. Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter", defaultValue = "deepseek-chat")
     private String definitionFormatterProvider;
 
-    @Option(names = {"--decomposition-provider"}, description = "Set specific provider for structural decomposition. Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5", defaultValue = "deepseek-chat")
+    @Option(names = {"--decomposition-provider"}, description = "Set specific provider for structural decomposition. Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5, openrouter", defaultValue = "deepseek-chat")
     private String decompositionProvider;
 
-    @Option(names = {"--example-provider"}, description = "Set specific provider for examples. Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5", defaultValue = "deepseek-chat")
+    @Option(names = {"--example-provider"}, description = "Set specific provider for examples. Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5, openrouter", defaultValue = "deepseek-chat")
     private String exampleProvider;
 
-    @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation. Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5", defaultValue = "deepseek-chat")
+    @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation. Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5, openrouter", defaultValue = "deepseek-chat")
     private String explanationProvider;
     
     @Option(names = {"--audio-provider"}, description = "Set specific provider for audio pronunciation. Available: anki, forvo, qwen-tts", defaultValue = "anki")
     private String audioProvider;
-    
+
+    @Option(names = {"--model"},
+            description = "AI model to use with provider (e.g., for OpenRouter: gpt-4, claude-3-sonnet, llama-2-70b-chat)",
+            defaultValue = "")
+    private String model;
+
     @Option(names = {"--raw", "--raw-output"}, description = "Display raw HTML content instead of formatted output")
     private boolean rawOutput = false;
 
@@ -50,12 +55,12 @@ public class WordCommand implements Runnable {
     public void run() {
         // Create service with providers selected via CLI options
         WordAnalysisServiceImpl wordAnalysisService = new WordAnalysisServiceImpl(
-            parent.createExampleProvider(exampleProvider),
-            parent.createExplanationProvider(explanationProvider),
-            parent.createDecompositionProvider(decompositionProvider),
+            parent.createExampleProvider(exampleProvider, model),
+            parent.createExplanationProvider(explanationProvider, model),
+            parent.createDecompositionProvider(decompositionProvider, model),
             parent.createPinyinProvider(pinyinProvider),
             parent.createDefinitionProvider(definitionProvider),
-            parent.createDefinitionFormatterProvider(definitionFormatterProvider),
+            parent.createDefinitionFormatterProvider(definitionFormatterProvider, model),
             resolveAudioProvider(audioProvider)
         );
 

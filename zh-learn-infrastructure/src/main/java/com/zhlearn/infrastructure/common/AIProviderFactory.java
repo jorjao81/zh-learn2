@@ -16,7 +16,14 @@ import com.zhlearn.infrastructure.dummy.DummyStructuralDecompositionProvider;
 public class AIProviderFactory {
 
     public static ExampleProvider createExampleProvider(String providerName) {
+        return createExampleProvider(providerName, null);
+    }
+
+    public static ExampleProvider createExampleProvider(String providerName, String model) {
         if (providerName == null) providerName = "deepseek-chat";
+        if (providerName.equals("openrouter") && (model == null || model.trim().isEmpty())) {
+            model = "gpt-3.5-turbo";
+        }
 
         return switch (providerName) {
             case "dummy" -> new DummyExampleProvider();
@@ -122,13 +129,44 @@ public class AIProviderFactory {
                 );
                 yield new ConfigurableExampleProvider(singleConfig, multiConfig, providerName, "Qwen AI provider (" + providerName + ")");
             }
+            case "openrouter" -> {
+                requireAPIKey("OPENROUTER_API_KEY", providerName);
+                ProviderConfig<Example> singleConfig = createProviderConfig(
+                    OpenRouterConfig.getApiKey(),
+                    OpenRouterConfig.getBaseUrl(),
+                    model,
+                    SingleCharExampleProviderConfig.templatePath(),
+                    SingleCharExampleProviderConfig.examplesDirectory(),
+                    SingleCharExampleProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to get examples from OpenRouter (" + model + ")"
+                );
+                ProviderConfig<Example> multiConfig = createProviderConfig(
+                    OpenRouterConfig.getApiKey(),
+                    OpenRouterConfig.getBaseUrl(),
+                    model,
+                    MultiCharExampleProviderConfig.templatePath(),
+                    MultiCharExampleProviderConfig.examplesDirectory(),
+                    MultiCharExampleProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to get examples from OpenRouter (" + model + ")"
+                );
+                yield new ConfigurableExampleProvider(singleConfig, multiConfig, providerName, "OpenRouter AI (" + model + ")");
+            }
             default -> throw new RuntimeException("Unknown example provider: " + providerName +
-                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo");
+                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter");
         };
     }
 
     public static ExplanationProvider createExplanationProvider(String providerName) {
+        return createExplanationProvider(providerName, null);
+    }
+
+    public static ExplanationProvider createExplanationProvider(String providerName, String model) {
         if (providerName == null) providerName = "deepseek-chat";
+        if (providerName.equals("openrouter") && (model == null || model.trim().isEmpty())) {
+            model = "gpt-3.5-turbo";
+        }
 
         return switch (providerName) {
             case "dummy" -> new DummyExplanationProvider();
@@ -236,13 +274,44 @@ public class AIProviderFactory {
                 yield new ConfigurableExplanationProvider(singleConfig, multiConfig, providerName,
                     "Qwen AI provider (" + providerName + ")");
             }
+            case "openrouter" -> {
+                requireAPIKey("OPENROUTER_API_KEY", providerName);
+                ProviderConfig<Explanation> singleConfig = createProviderConfig(
+                    OpenRouterConfig.getApiKey(),
+                    OpenRouterConfig.getBaseUrl(),
+                    model,
+                    SingleCharExplanationProviderConfig.templatePath(),
+                    SingleCharExplanationProviderConfig.examplesDirectory(),
+                    SingleCharExplanationProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to get explanation from OpenRouter (" + model + ")"
+                );
+                ProviderConfig<Explanation> multiConfig = createProviderConfig(
+                    OpenRouterConfig.getApiKey(),
+                    OpenRouterConfig.getBaseUrl(),
+                    model,
+                    MultiCharExplanationProviderConfig.templatePath(),
+                    MultiCharExplanationProviderConfig.examplesDirectory(),
+                    MultiCharExplanationProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to get explanation from OpenRouter (" + model + ")"
+                );
+                yield new ConfigurableExplanationProvider(singleConfig, multiConfig, providerName, "OpenRouter AI (" + model + ")");
+            }
             default -> throw new RuntimeException("Unknown explanation provider: " + providerName +
-                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo");
+                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter");
         };
     }
 
     public static StructuralDecompositionProvider createDecompositionProvider(String providerName) {
+        return createDecompositionProvider(providerName, null);
+    }
+
+    public static StructuralDecompositionProvider createDecompositionProvider(String providerName, String model) {
         if (providerName == null) providerName = "deepseek-chat";
+        if (providerName.equals("openrouter") && (model == null || model.trim().isEmpty())) {
+            model = "gpt-3.5-turbo";
+        }
 
         return switch (providerName) {
             case "dummy" -> new DummyStructuralDecompositionProvider();
@@ -350,8 +419,32 @@ public class AIProviderFactory {
                 yield new ConfigurableStructuralDecompositionProvider(singleConfig, multiConfig, providerName,
                     "Qwen AI provider (" + providerName + ")");
             }
+            case "openrouter" -> {
+                requireAPIKey("OPENROUTER_API_KEY", providerName);
+                ProviderConfig<StructuralDecomposition> singleConfig = createProviderConfig(
+                    OpenRouterConfig.getApiKey(),
+                    OpenRouterConfig.getBaseUrl(),
+                    model,
+                    SingleCharStructuralDecompositionProviderConfig.templatePath(),
+                    SingleCharStructuralDecompositionProviderConfig.examplesDirectory(),
+                    SingleCharStructuralDecompositionProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to get structural decomposition from OpenRouter (" + model + ")"
+                );
+                ProviderConfig<StructuralDecomposition> multiConfig = createProviderConfig(
+                    OpenRouterConfig.getApiKey(),
+                    OpenRouterConfig.getBaseUrl(),
+                    model,
+                    MultiCharStructuralDecompositionProviderConfig.templatePath(),
+                    MultiCharStructuralDecompositionProviderConfig.examplesDirectory(),
+                    MultiCharStructuralDecompositionProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to get structural decomposition from OpenRouter (" + model + ")"
+                );
+                yield new ConfigurableStructuralDecompositionProvider(singleConfig, multiConfig, providerName, "OpenRouter AI (" + model + ")");
+            }
             default -> throw new RuntimeException("Unknown decomposition provider: " + providerName +
-                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo");
+                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter");
         };
     }
 
@@ -394,7 +487,14 @@ public class AIProviderFactory {
     }
 
     public static DefinitionFormatterProvider createDefinitionFormatterProvider(String providerName) {
+        return createDefinitionFormatterProvider(providerName, null);
+    }
+
+    public static DefinitionFormatterProvider createDefinitionFormatterProvider(String providerName, String model) {
         if (providerName == null) providerName = "deepseek-chat";
+        if (providerName.equals("openrouter") && (model == null || model.trim().isEmpty())) {
+            model = "gpt-3.5-turbo";
+        }
 
         return switch (providerName) {
             case "dummy" -> new DummyDefinitionFormatterProvider();
@@ -500,8 +600,32 @@ public class AIProviderFactory {
                 );
                 yield new ConfigurableDefinitionFormatterProvider(singleConfig, multiConfig, providerName, "Qwen AI definition formatter (" + providerName + ")");
             }
+            case "openrouter" -> {
+                requireAPIKey("OPENROUTER_API_KEY", providerName);
+                ProviderConfig<Definition> singleConfig = createProviderConfig(
+                    OpenRouterConfig.getApiKey(),
+                    OpenRouterConfig.getBaseUrl(),
+                    model,
+                    SingleCharDefinitionFormatterProviderConfig.templatePath(),
+                    SingleCharDefinitionFormatterProviderConfig.examplesDirectory(),
+                    SingleCharDefinitionFormatterProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to format definition from OpenRouter (" + model + ")"
+                );
+                ProviderConfig<Definition> multiConfig = createProviderConfig(
+                    OpenRouterConfig.getApiKey(),
+                    OpenRouterConfig.getBaseUrl(),
+                    model,
+                    MultiCharDefinitionFormatterProviderConfig.templatePath(),
+                    MultiCharDefinitionFormatterProviderConfig.examplesDirectory(),
+                    MultiCharDefinitionFormatterProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to format definition from OpenRouter (" + model + ")"
+                );
+                yield new ConfigurableDefinitionFormatterProvider(singleConfig, multiConfig, providerName, "OpenRouter AI (" + model + ")");
+            }
             default -> throw new RuntimeException("Unknown definition formatter provider: " + providerName +
-                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo");
+                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter");
         };
     }
 }
