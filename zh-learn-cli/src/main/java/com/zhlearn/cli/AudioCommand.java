@@ -32,9 +32,9 @@ public class AudioCommand implements Runnable {
         AudioProvider selectedAudioProvider = resolveAudioProvider(audioProvider);
 
         WordAnalysisServiceImpl service = new WordAnalysisServiceImpl(
-            parent.createExampleProvider(null), // Use default
-            parent.createExplanationProvider(null), // Use default
-            parent.createDecompositionProvider(null), // Use default
+            parent.createExampleProvider(null, null), // Use default
+            parent.createExplanationProvider(null, null), // Use default
+            parent.createDecompositionProvider(null, null), // Use default
             parent.createPinyinProvider(null), // Use default
             parent.createDefinitionProvider(null), // Use default
             selectedAudioProvider

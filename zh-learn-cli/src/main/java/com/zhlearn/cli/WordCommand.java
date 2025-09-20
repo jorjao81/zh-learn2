@@ -40,6 +40,9 @@ public class WordCommand implements Runnable {
     @Option(names = {"--raw", "--raw-output"}, description = "Display raw HTML content instead of formatted output")
     private boolean rawOutput = false;
 
+    @Option(names = {"--open-router-model"}, description = "Set the model for OpenRouter provider")
+    private String openRouterModel;
+
     @picocli.CommandLine.ParentCommand
     private MainCommand parent;
 
@@ -47,9 +50,9 @@ public class WordCommand implements Runnable {
     public void run() {
         // Create service with providers selected via CLI options
         WordAnalysisServiceImpl wordAnalysisService = new WordAnalysisServiceImpl(
-            parent.createExampleProvider(exampleProvider),
-            parent.createExplanationProvider(explanationProvider),
-            parent.createDecompositionProvider(decompositionProvider),
+            parent.createExampleProvider(exampleProvider, openRouterModel),
+            parent.createExplanationProvider(explanationProvider, openRouterModel),
+            parent.createDecompositionProvider(decompositionProvider, openRouterModel),
             parent.createPinyinProvider(pinyinProvider),
             parent.createDefinitionProvider(definitionProvider),
             resolveAudioProvider(audioProvider)

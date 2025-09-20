@@ -46,16 +46,16 @@ public class MainCommand implements Runnable {
     }
 
     // AI Provider factory methods - create on demand and crash if fails
-    public ExampleProvider createExampleProvider(String providerName) {
-        return AIProviderFactory.createExampleProvider(providerName);
+    public ExampleProvider createExampleProvider(String providerName, String openRouterModel) {
+        return AIProviderFactory.createExampleProvider(providerName, openRouterModel);
     }
 
-    public ExplanationProvider createExplanationProvider(String providerName) {
-        return AIProviderFactory.createExplanationProvider(providerName);
+    public ExplanationProvider createExplanationProvider(String providerName, String openRouterModel) {
+        return AIProviderFactory.createExplanationProvider(providerName, openRouterModel);
     }
 
-    public StructuralDecompositionProvider createDecompositionProvider(String providerName) {
-        return AIProviderFactory.createDecompositionProvider(providerName);
+    public StructuralDecompositionProvider createDecompositionProvider(String providerName, String openRouterModel) {
+        return AIProviderFactory.createDecompositionProvider(providerName, openRouterModel);
     }
 
     public PinyinProvider createPinyinProvider(String providerName) {

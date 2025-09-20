@@ -12,7 +12,7 @@ import com.zhlearn.infrastructure.dummy.DummyStructuralDecompositionProvider;
 
 public class AIProviderFactory {
 
-    public static ExampleProvider createExampleProvider(String providerName) {
+    public static ExampleProvider createExampleProvider(String providerName, String openRouterModel) {
         if (providerName == null) providerName = "deepseek-chat";
 
         return switch (providerName) {
@@ -31,6 +31,7 @@ public class AIProviderFactory {
                 );
                 yield new ConfigurableExampleProvider(config, providerName, "DeepSeek AI-powered example provider");
             }
+            case "open-router" -> createOpenRouterExampleProvider(openRouterModel);
             case "glm-4-flash" -> {
                 requireAPIKey("ZHIPU_API_KEY", providerName);
                 ProviderConfig<Example> config = createProviderConfig(
@@ -76,11 +77,11 @@ public class AIProviderFactory {
                 yield new ConfigurableExampleProvider(config, providerName, "Qwen AI provider (" + providerName + ")");
             }
             default -> throw new RuntimeException("Unknown example provider: " + providerName +
-                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo");
+                ". Available: dummy, deepseek-chat, open-router, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo");
         };
     }
 
-    public static ExplanationProvider createExplanationProvider(String providerName) {
+    public static ExplanationProvider createExplanationProvider(String providerName, String openRouterModel) {
         if (providerName == null) providerName = "deepseek-chat";
 
         return switch (providerName) {
@@ -99,6 +100,7 @@ public class AIProviderFactory {
                 );
                 yield new ConfigurableExplanationProvider(config, providerName, "DeepSeek AI-powered explanation provider");
             }
+            case "open-router" -> createOpenRouterExplanationProvider(openRouterModel);
             case "glm-4-flash" -> {
                 requireAPIKey("ZHIPU_API_KEY", providerName);
                 ProviderConfig<Explanation> config = createProviderConfig(
@@ -144,11 +146,11 @@ public class AIProviderFactory {
                 yield new ConfigurableExplanationProvider(config, providerName, "Qwen AI provider (" + providerName + ")");
             }
             default -> throw new RuntimeException("Unknown explanation provider: " + providerName +
-                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo");
+                ". Available: dummy, deepseek-chat, open-router, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo");
         };
     }
 
-    public static StructuralDecompositionProvider createDecompositionProvider(String providerName) {
+    public static StructuralDecompositionProvider createDecompositionProvider(String providerName, String openRouterModel) {
         if (providerName == null) providerName = "deepseek-chat";
 
         return switch (providerName) {
@@ -168,6 +170,7 @@ public class AIProviderFactory {
                 yield new ConfigurableStructuralDecompositionProvider(
                     config, providerName, "DeepSeek AI-powered structural decomposition provider");
             }
+            case "open-router" -> createOpenRouterDecompositionProvider(openRouterModel);
             case "glm-4-flash" -> {
                 requireAPIKey("ZHIPU_API_KEY", providerName);
                 ProviderConfig<StructuralDecomposition> config = createProviderConfig(
@@ -213,7 +216,7 @@ public class AIProviderFactory {
                 yield new ConfigurableStructuralDecompositionProvider(config, providerName, "Qwen AI provider (" + providerName + ")");
             }
             default -> throw new RuntimeException("Unknown decomposition provider: " + providerName +
-                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo");
+                ". Available: dummy, deepseek-chat, open-router, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo");
         };
     }
 
@@ -238,6 +241,60 @@ public class AIProviderFactory {
             providerName,
             errorMessagePrefix
         );
+    }
+
+    private static ConfigurableExampleProvider createOpenRouterExampleProvider(String openRouterModel) {
+        if (openRouterModel == null || openRouterModel.isBlank()) {
+            throw new IllegalArgumentException("OpenRouter provider requires a model to be specified via --open-router-model");
+        }
+        requireAPIKey("OPENROUTER_API_KEY", "open-router");
+        ProviderConfig<Example> config = createProviderConfig(
+            OpenRouterConfig.getApiKey(),
+            OpenRouterConfig.getBaseUrl(),
+            openRouterModel,
+            ExampleProviderConfig.templatePath(),
+            ExampleProviderConfig.examplesDirectory(),
+            ExampleProviderConfig.responseMapper(),
+            "open-router",
+            "Failed to get example from OpenRouter (" + openRouterModel + ")"
+        );
+        return new ConfigurableExampleProvider(config, "open-router", "OpenRouter AI-powered example provider");
+    }
+
+    private static ConfigurableExplanationProvider createOpenRouterExplanationProvider(String openRouterModel) {
+        if (openRouterModel == null || openRouterModel.isBlank()) {
+            throw new IllegalArgumentException("OpenRouter provider requires a model to be specified via --open-router-model");
+        }
+        requireAPIKey("OPENROUTER_API_KEY", "open-router");
+        ProviderConfig<Explanation> config = createProviderConfig(
+            OpenRouterConfig.getApiKey(),
+            OpenRouterConfig.getBaseUrl(),
+            openRouterModel,
+            ExplanationProviderConfig.templatePath(),
+            ExplanationProviderConfig.examplesDirectory(),
+            ExplanationProviderConfig.responseMapper(),
+            "open-router",
+            "Failed to get explanation from OpenRouter (" + openRouterModel + ")"
+        );
+        return new ConfigurableExplanationProvider(config, "open-router", "OpenRouter AI-powered explanation provider");
+    }
+
+    private static ConfigurableStructuralDecompositionProvider createOpenRouterDecompositionProvider(String openRouterModel) {
+        if (openRouterModel == null || openRouterModel.isBlank()) {
+            throw new IllegalArgumentException("OpenRouter provider requires a model to be specified via --open-router-model");
+        }
+        requireAPIKey("OPENROUTER_API_KEY", "open-router");
+        ProviderConfig<StructuralDecomposition> config = createProviderConfig(
+            OpenRouterConfig.getApiKey(),
+            OpenRouterConfig.getBaseUrl(),
+            openRouterModel,
+            StructuralDecompositionProviderConfig.templatePath(),
+            StructuralDecompositionProviderConfig.examplesDirectory(),
+            StructuralDecompositionProviderConfig.responseMapper(),
+            "open-router",
+            "Failed to get structural decomposition from OpenRouter (" + openRouterModel + ")"
+        );
+        return new ConfigurableStructuralDecompositionProvider(config, "open-router", "OpenRouter AI-powered structural decomposition provider");
     }
 
     private static void requireAPIKey(String keyName, String providerName) {

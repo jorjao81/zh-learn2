@@ -115,9 +115,9 @@ public class ParsePlecoCommand implements Runnable {
             ParallelWordAnalysisService parallelService = null;
 
             // Create providers with special handling for pleco-export which needs the dictionary
-            ExampleProvider exampleProv = parent.createExampleProvider(exampleProvider);
-            ExplanationProvider explanationProv = parent.createExplanationProvider(explanationProvider);
-            StructuralDecompositionProvider decompositionProv = parent.createDecompositionProvider(decompositionProvider);
+            ExampleProvider exampleProv = parent.createExampleProvider(exampleProvider, null);
+            ExplanationProvider explanationProv = parent.createExplanationProvider(explanationProvider, null);
+            StructuralDecompositionProvider decompositionProv = parent.createDecompositionProvider(decompositionProvider, null);
             PinyinProvider pinyinProv = "pleco-export".equals(pinyinProvider) ? new DictionaryPinyinProvider(dictionary) : parent.createPinyinProvider(pinyinProvider);
             DefinitionProvider definitionProv = "pleco-export".equals(definitionProvider) ? new DictionaryDefinitionProvider(dictionary) : parent.createDefinitionProvider(definitionProvider);
             AudioProvider audioProv = resolveAudioProvider(audioProvider);
