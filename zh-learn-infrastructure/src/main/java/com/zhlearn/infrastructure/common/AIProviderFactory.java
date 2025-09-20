@@ -1,11 +1,14 @@
 package com.zhlearn.infrastructure.common;
 
+import com.zhlearn.domain.model.Definition;
 import com.zhlearn.domain.model.Example;
 import com.zhlearn.domain.model.Explanation;
 import com.zhlearn.domain.model.StructuralDecomposition;
+import com.zhlearn.domain.provider.DefinitionFormatterProvider;
 import com.zhlearn.domain.provider.ExampleProvider;
 import com.zhlearn.domain.provider.ExplanationProvider;
 import com.zhlearn.domain.provider.StructuralDecompositionProvider;
+import com.zhlearn.infrastructure.dummy.DummyDefinitionFormatterProvider;
 import com.zhlearn.infrastructure.dummy.DummyExampleProvider;
 import com.zhlearn.infrastructure.dummy.DummyExplanationProvider;
 import com.zhlearn.infrastructure.dummy.DummyStructuralDecompositionProvider;
@@ -388,5 +391,117 @@ public class AIProviderFactory {
             value = System.getenv(key);
         }
         return value;
+    }
+
+    public static DefinitionFormatterProvider createDefinitionFormatterProvider(String providerName) {
+        if (providerName == null) providerName = "deepseek-chat";
+
+        return switch (providerName) {
+            case "dummy" -> new DummyDefinitionFormatterProvider();
+            case "deepseek-chat" -> {
+                requireAPIKey("DEEPSEEK_API_KEY", providerName);
+                ProviderConfig<Definition> singleConfig = createProviderConfig(
+                    DeepSeekConfig.getApiKey(),
+                    DeepSeekConfig.getBaseUrl(),
+                    "deepseek-chat",
+                    SingleCharDefinitionFormatterProviderConfig.templatePath(),
+                    SingleCharDefinitionFormatterProviderConfig.examplesDirectory(),
+                    SingleCharDefinitionFormatterProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to format definition from DeepSeek (deepseek-chat)"
+                );
+                ProviderConfig<Definition> multiConfig = createProviderConfig(
+                    DeepSeekConfig.getApiKey(),
+                    DeepSeekConfig.getBaseUrl(),
+                    "deepseek-chat",
+                    MultiCharDefinitionFormatterProviderConfig.templatePath(),
+                    MultiCharDefinitionFormatterProviderConfig.examplesDirectory(),
+                    MultiCharDefinitionFormatterProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to format definition from DeepSeek (deepseek-chat)"
+                );
+                yield new ConfigurableDefinitionFormatterProvider(singleConfig, multiConfig, providerName, "DeepSeek AI-powered definition formatter");
+            }
+            case "glm-4-flash" -> {
+                requireAPIKey("ZHIPU_API_KEY", providerName);
+                ProviderConfig<Definition> singleConfig = createProviderConfig(
+                    ZhipuConfig.getApiKey(),
+                    ZhipuConfig.getBaseUrl(),
+                    "glm-4-flash",
+                    SingleCharDefinitionFormatterProviderConfig.templatePath(),
+                    SingleCharDefinitionFormatterProviderConfig.examplesDirectory(),
+                    SingleCharDefinitionFormatterProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to format definition from Zhipu (glm-4-flash)"
+                );
+                ProviderConfig<Definition> multiConfig = createProviderConfig(
+                    ZhipuConfig.getApiKey(),
+                    ZhipuConfig.getBaseUrl(),
+                    "glm-4-flash",
+                    MultiCharDefinitionFormatterProviderConfig.templatePath(),
+                    MultiCharDefinitionFormatterProviderConfig.examplesDirectory(),
+                    MultiCharDefinitionFormatterProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to format definition from Zhipu (glm-4-flash)"
+                );
+                ZhipuChatModelProvider<Definition> singleDelegate = new ZhipuChatModelProvider<>(singleConfig);
+                ZhipuChatModelProvider<Definition> multiDelegate = new ZhipuChatModelProvider<>(multiConfig);
+                yield new ConfigurableDefinitionFormatterProvider(singleDelegate::process, multiDelegate::process,
+                    providerName, "GLM-4 Flash AI definition formatter");
+            }
+            case "glm-4.5" -> {
+                requireAPIKey("ZHIPU_API_KEY", providerName);
+                ProviderConfig<Definition> singleConfig = createProviderConfig(
+                    ZhipuConfig.getApiKey(),
+                    ZhipuConfig.getBaseUrl(),
+                    "glm-4.5",
+                    SingleCharDefinitionFormatterProviderConfig.templatePath(),
+                    SingleCharDefinitionFormatterProviderConfig.examplesDirectory(),
+                    SingleCharDefinitionFormatterProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to format definition from Zhipu (glm-4.5)"
+                );
+                ProviderConfig<Definition> multiConfig = createProviderConfig(
+                    ZhipuConfig.getApiKey(),
+                    ZhipuConfig.getBaseUrl(),
+                    "glm-4.5",
+                    MultiCharDefinitionFormatterProviderConfig.templatePath(),
+                    MultiCharDefinitionFormatterProviderConfig.examplesDirectory(),
+                    MultiCharDefinitionFormatterProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to format definition from Zhipu (glm-4.5)"
+                );
+                ZhipuChatModelProvider<Definition> singleDelegate = new ZhipuChatModelProvider<>(singleConfig);
+                ZhipuChatModelProvider<Definition> multiDelegate = new ZhipuChatModelProvider<>(multiConfig);
+                yield new ConfigurableDefinitionFormatterProvider(singleDelegate::process, multiDelegate::process,
+                    providerName, "GLM-4.5 AI definition formatter");
+            }
+            case "qwen-max", "qwen-plus", "qwen-turbo" -> {
+                requireAPIKey("DASHSCOPE_API_KEY", providerName);
+                ProviderConfig<Definition> singleConfig = createProviderConfig(
+                    DashScopeConfig.getApiKey(),
+                    DashScopeConfig.getBaseUrl(),
+                    providerName,
+                    SingleCharDefinitionFormatterProviderConfig.templatePath(),
+                    SingleCharDefinitionFormatterProviderConfig.examplesDirectory(),
+                    SingleCharDefinitionFormatterProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to format definition from DashScope (" + providerName + ")"
+                );
+                ProviderConfig<Definition> multiConfig = createProviderConfig(
+                    DashScopeConfig.getApiKey(),
+                    DashScopeConfig.getBaseUrl(),
+                    providerName,
+                    MultiCharDefinitionFormatterProviderConfig.templatePath(),
+                    MultiCharDefinitionFormatterProviderConfig.examplesDirectory(),
+                    MultiCharDefinitionFormatterProviderConfig.responseMapper(),
+                    providerName,
+                    "Failed to format definition from DashScope (" + providerName + ")"
+                );
+                yield new ConfigurableDefinitionFormatterProvider(singleConfig, multiConfig, providerName, "Qwen AI definition formatter (" + providerName + ")");
+            }
+            default -> throw new RuntimeException("Unknown definition formatter provider: " + providerName +
+                ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo");
+        };
     }
 }

@@ -25,6 +25,9 @@ public class WordCommand implements Runnable {
     @Option(names = {"--definition-provider"}, description = "Set specific provider for definition. Available: dummy", defaultValue = "dummy")
     private String definitionProvider;
 
+    @Option(names = {"--definition-formatter-provider"}, description = "Set specific provider for definition formatting. Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo", defaultValue = "deepseek-chat")
+    private String definitionFormatterProvider;
+
     @Option(names = {"--decomposition-provider"}, description = "Set specific provider for structural decomposition. Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5", defaultValue = "deepseek-chat")
     private String decompositionProvider;
 
@@ -52,6 +55,7 @@ public class WordCommand implements Runnable {
             parent.createDecompositionProvider(decompositionProvider),
             parent.createPinyinProvider(pinyinProvider),
             parent.createDefinitionProvider(definitionProvider),
+            parent.createDefinitionFormatterProvider(definitionFormatterProvider),
             resolveAudioProvider(audioProvider)
         );
 
@@ -59,6 +63,7 @@ public class WordCommand implements Runnable {
             exampleProvider,
             pinyinProvider,
             definitionProvider,
+            definitionFormatterProvider,
             decompositionProvider,
             exampleProvider,
             explanationProvider,

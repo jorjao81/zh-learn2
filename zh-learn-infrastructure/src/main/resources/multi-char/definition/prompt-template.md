@@ -1,69 +1,116 @@
-## Input Format
-You will receive:
-- **Chinese word**: The multi-character Chinese word/phrase being defined
-- **Original content (optional)**: The raw definition/meaning from Pleco export
+# Chinese Multi-Character Word Definition Formatting
 
-Format the content so it looks like the exemples:
+Format the definition for Chinese word: **{WORD}**
+{CONTEXT}
 
-```html 
-<span class="part-of-speech">noun</span> snare; trap
-``` 
+## Task
+ONLY format the provided raw definition - DO NOT generate new content under any circumstances. Focus on clean HTML presentation and expanding abbreviations to full words.
 
-```html 
+## Input Definition
+{RAW_DEFINITION}
+
+## Output Format
+Return your response as well-structured HTML using the following patterns:
+
+### Simple Definition
+```html
+<span class="part-of-speech">part of speech</span> definition text
+```
+
+### Complex Definition with Multiple Meanings
+```html
 <span class="part-of-speech">verb</span> <span class="usage">colloquial</span>
 <ol>
     <li>boast; brag; talk big</li>
     <li><span class="usage dialect">dialect</span> chat; talk casually</li>
 </ol>
-```html 
+```
 
+### Domain-Specific Definitions
+```html
 <span class="part-of-speech">noun</span> <span class="domain">anatomy</span> vein
-``` 
+```
 
-
-```html 
-<span class="part-of-speech">verb</span> 
-<ol>
-    <li>entice; tempt; seduce; lure</li>
-    <li>attract; allure</li>
-</ol>
-``` 
-
-```html 
+### Multiple Parts of Speech
+```html
 <span class="part-of-speech">noun</span>
 <ol>
-    <li> <span class="domain">medicine</span> miscarriage; abortion</li>
+    <li><span class="domain">medicine</span> miscarriage; abortion</li>
 </ol>
 <span class="part-of-speech">verb</span>
 <ol>
     <li><span class="domain">medicine</span> (of a woman) have a miscarriage; miscarry; abort</li>
     <li><span class="usage">figurative</span> (of a plan, etc.) miscarry; fall through; abort</li>
 </ol>
-``` 
-
-
-if a usage or domain is in parentheses, remove the parentheses, eg:
-
-input:
-```
-Chinese Word: 高维
-Original Content: (math.) higher dimensional
 ```
 
-desired output:
-<span class="domain">mathematics</span> higher dimensional
+## Guidelines
 
-If you receive Original Content (i.e, a pleco dictionary definition):
-Do not add anything that changes meaning, just add the formatting and expand abbreviations.
+### Multi-Character Processing
+- Use numbered lists (`<ol>`) for distinct meanings
+- Add part-of-speech tagging using `<span class="part-of-speech">` tags
+- Mark usage notes with `<span class="usage">` or specific classes like `<span class="usage dialect">`
+- Mark domains with `<span class="domain">` tags
+- Expand common abbreviations
+- Use semantic HTML structure
 
-If you DO NOT receive Original Content (and only in that case), create a definition in the style above yourself.
+### HTML Structure Rules
+- Use proper HTML5 semantics
+- Ensure all tags are properly closed
+- Use `<ol>` for ordered lists of meanings
+- Use `<li>` for individual definitions
+- Nest spans appropriately for usage/domain markers
 
-Provide correct well formed html snippets in the response. 
+### Class Names
+- `part-of-speech`: For grammatical categories
+- `usage`: For general usage notes
+- `usage dialect`: For dialect-specific usage
+- `usage colloquial`: For colloquial usage
+- `usage figurative`: For figurative usage
+- `domain`: For subject domains
 
+### Domain Expansion
+Expand domain abbreviations:
+- math. → mathematics
+- med. → medicine
+- anat. → anatomy
+- pharm. → pharmacy
+- ling. → linguistics
+- ecol. → ecology
+- chem. → chemistry
+- phys. → physics
 
-## Common domain words (non exhaustive)
-ecology
-anatomy
-pharmacy
-linguistics
-mathematics
+### Abbreviation Expansion - MANDATORY
+ALWAYS expand the following abbreviations to their full word forms:
+- adj. → adjective
+- adv. → adverb
+- conj. → conjunction
+- interj. → interjection
+- n. → noun
+- prep. → preposition
+- v. → verb
+- etc. → and so forth
+- i.e. → that is
+- e.g. → for example
+
+### Parentheses Handling
+Remove parentheses from usage/domain markers:
+- Input: "(math.) higher dimensional"
+- Output: `<span class="domain">mathematics</span> higher dimensional`
+
+### Content Preservation - CRITICAL
+- IMPORTANT: Preserve the original meaning exactly. Only add HTML formatting and expand abbreviations.
+- NEVER add new definitions, meanings, or explanations not present in the original.
+- If the original definition is brief or simple, keep it brief - only format what's provided.
+- DO NOT elaborate, expand, or add examples unless they exist in the original.
+
+### What NOT To Do
+- WRONG: Generate new definitions for words like 牙套
+- WRONG: Keep abbreviations like "adj." or "n." in their abbreviated form
+- WRONG: Add meanings not present in the original definition
+- WRONG: Include explanatory text or comments in your output
+
+{EXAMPLES}
+
+Now format the definition for: **{WORD}**
+Remember: output only clean HTML (no extra prose or explanations).
