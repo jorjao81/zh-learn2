@@ -7,6 +7,7 @@ import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.AudioProvider;
 import com.zhlearn.infrastructure.audio.AudioCache;
+import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;
 import com.zhlearn.infrastructure.audio.AudioPaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -49,6 +51,14 @@ public class ForvoAudioProvider implements AudioProvider {
     }
 
     public ForvoAudioProvider(HttpClient http, ObjectMapper mapper) {
+        this(http, mapper, null);
+    }
+
+    public ForvoAudioProvider(AudioDownloadExecutor audioExecutor) {
+        this(HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build(), new ObjectMapper(), null);
+    }
+
+    public ForvoAudioProvider(HttpClient http, ObjectMapper mapper, ExecutorService executorService) {
         this.http = http;
         this.mapper = mapper;
     }
@@ -64,11 +74,15 @@ public class ForvoAudioProvider implements AudioProvider {
 
     @Override
     public Optional<Path> getPronunciation(Hanzi word, Pinyin pinyin) {
+        long startTime = System.currentTimeMillis();
+        log.info("[Forvo] Starting pronunciation lookup for '{}'", word.characters());
+
         String apiKey = getApiKey();
         if (apiKey == null || apiKey.isBlank()) {
-            log.warn("Forvo API key not configured. Set FORVO_API_KEY env var or -Dforvo.api.key");
+            log.warn("[Forvo] API key not configured for '{}'. Set FORVO_API_KEY env var or -Dforvo.api.key", word.characters());
             return Optional.empty();
         }
+
         // Query by Hanzi; Forvo handles the language filter
         try {
             String encoded = URLEncoder.encode(word.characters(), StandardCharsets.UTF_8);
@@ -77,44 +91,69 @@ public class ForvoAudioProvider implements AudioProvider {
                     "/format/json/action/word-pronunciations/word/" + encoded +
                     "/language/zh/porder/rate-desc/perpage/10";
 
+            log.debug("[Forvo] Making API request for '{}'", word.characters());
             HttpRequest req = HttpRequest.newBuilder(URI.create(url))
                     .timeout(Duration.ofSeconds(10))
                     .GET()
                     .build();
             HttpResponse<String> resp = http.send(req, HttpResponse.BodyHandlers.ofString());
+
+            long apiDuration = System.currentTimeMillis() - startTime;
+            log.debug("[Forvo] API call completed for '{}' in {}ms, status: {}",
+                word.characters(), apiDuration, resp.statusCode());
+
             if (resp.statusCode() != 200) {
-                log.warn("Forvo request failed: HTTP {}", resp.statusCode());
+                log.warn("[Forvo] Request failed for '{}': HTTP {}", word.characters(), resp.statusCode());
                 return Optional.empty();
             }
             String body = resp.body();
             JsonNode root = mapper.readTree(body);
             JsonNode items = root.get("items");
             if (items == null || !items.isArray() || items.size() == 0) {
-                log.info("Forvo: no pronunciations for '{}'", word.characters());
+                long totalDuration = System.currentTimeMillis() - startTime;
+                log.info("[Forvo] No pronunciations found for '{}' ({}ms)", word.characters(), totalDuration);
                 return Optional.empty();
             }
+
+            log.debug("[Forvo] Found {} pronunciations for '{}'", items.size(), word.characters());
+
             // Pick first item (already rate-desc). Only manual path for now.
             JsonNode first = items.get(0);
             String mp3 = text(first, "pathmp3");
             String username = username(first);
             if (mp3 == null || mp3.isBlank()) {
-                // fallback to ogg if present? we need mp3 only by spec
-                log.info("Forvo: top pronunciation missing mp3 for '{}'", word.characters());
+                long totalDuration = System.currentTimeMillis() - startTime;
+                log.info("[Forvo] Top pronunciation missing mp3 for '{}' ({}ms)", word.characters(), totalDuration);
                 return Optional.empty();
             }
+
             Path cached = AudioPaths.audioDir()
                 .resolve(getName())
                 .resolve(fileName(word.characters(), username, mp3));
             if (Files.exists(cached)) {
+                long totalDuration = System.currentTimeMillis() - startTime;
+                log.info("[Forvo] Using cached audio for '{}' ({}ms)", word.characters(), totalDuration);
                 return Optional.of(cached.toAbsolutePath());
             }
+
             // Download to a temp file
+            log.debug("[Forvo] Downloading audio for '{}' from: {}", word.characters(), mp3);
             Path out = downloadMp3(mp3, word.characters());
-            if (out == null) return Optional.empty();
+            if (out == null) {
+                long totalDuration = System.currentTimeMillis() - startTime;
+                log.warn("[Forvo] Download failed for '{}' ({}ms)", word.characters(), totalDuration);
+                return Optional.empty();
+            }
+
+            log.debug("[Forvo] Normalizing audio for '{}'", word.characters());
             Path normalized = AudioCache.ensureCachedNormalized(out, getName(), word.characters(), username, mp3);
+
+            long totalDuration = System.currentTimeMillis() - startTime;
+            log.info("[Forvo] Successfully processed audio for '{}' ({}ms)", word.characters(), totalDuration);
             return Optional.of(normalized.toAbsolutePath());
         } catch (IOException | InterruptedException e) {
-            log.warn("Forvo error for '{}': {}", word.characters(), e.getMessage());
+            long totalDuration = System.currentTimeMillis() - startTime;
+            log.error("[Forvo] Error processing '{}' after {}ms: {}", word.characters(), totalDuration, e.getMessage(), e);
             return Optional.empty();
         }
     }

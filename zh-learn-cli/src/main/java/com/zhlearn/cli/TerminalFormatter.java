@@ -308,7 +308,7 @@ public class TerminalFormatter {
                 
                 if (example.breakdown() != null && !example.breakdown().isEmpty()) {
                     result.append("\n  ");
-                    result.append(Ansi.ansi().fgBright(Colors.PROVIDER).a("Breakdown: ").a(example.breakdown()).reset());
+                    result.append(Ansi.ansi().fgBright(Colors.PROVIDER).a(example.breakdown()).reset());
                 }
                 result.append("\n");
             }

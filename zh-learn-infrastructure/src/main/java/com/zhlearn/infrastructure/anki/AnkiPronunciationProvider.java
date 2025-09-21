@@ -104,10 +104,34 @@ public class AnkiPronunciationProvider implements AudioProvider {
 
     @Override
     public Optional<Path> getPronunciation(Hanzi word, Pinyin pinyin) {
-        if (pinyin == null || pinyin.pinyin() == null) return Optional.empty();
+        long startTime = System.currentTimeMillis();
+        log.info("[Anki] Looking up pronunciation for '{}' ({})", word.characters(), pinyin == null ? "null" : pinyin.pinyin());
+
+        if (pinyin == null || pinyin.pinyin() == null) {
+            long duration = System.currentTimeMillis() - startTime;
+            log.debug("[Anki] No pinyin provided for '{}' ({}ms)", word.characters(), duration);
+            return Optional.empty();
+        }
+
         String key = normalizePinyin(pinyin.pinyin().trim());
-        if (key.isEmpty()) return Optional.empty();
+        if (key.isEmpty()) {
+            long duration = System.currentTimeMillis() - startTime;
+            log.debug("[Anki] Empty pinyin key for '{}' ({}ms)", word.characters(), duration);
+            return Optional.empty();
+        }
+
+        log.debug("[Anki] Searching for pinyin key '{}' for '{}'", key, word.characters());
         Path result = pinyinToPronunciation.get(key);
+
+        long duration = System.currentTimeMillis() - startTime;
+        if (result != null) {
+            log.info("[Anki] Found pronunciation for '{}' ({}) at {} ({}ms)",
+                word.characters(), pinyin.pinyin(), result, duration);
+        } else {
+            log.debug("[Anki] No pronunciation found for '{}' ({}) ({}ms)",
+                word.characters(), pinyin.pinyin(), duration);
+        }
+
         return Optional.ofNullable(result);
     }
 

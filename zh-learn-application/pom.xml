@@ -21,11 +21,9 @@
             <groupId>com.zhlearn</groupId>
             <artifactId>zh-learn-domain</artifactId>
         </dependency>
-        <!-- Infrastructure is discovered at runtime via ServiceLoader; only needed for tests -->
         <dependency>
             <groupId>com.zhlearn</groupId>
             <artifactId>zh-learn-infrastructure</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <!-- Testing -->

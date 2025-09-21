@@ -26,21 +26,25 @@ public class DummyExampleProvider implements ExampleProvider {
     @Override
     public Example getExamples(Hanzi word, Optional<String> definition) {
         String contextSuffix = definition.map(def -> " (meaning: " + def + ")").orElse("");
-        
+
+        // Only provide breakdown for single characters
+        String breakdown1 = word.characters().length() == 1 ? word.characters() + " + 计 (calculation)" : null;
+        String breakdown2 = word.characters().length() == 1 ? word.characters() + " + 价 (price/value)" : null;
+
         List<Example.Usage> usages = List.of(
             new Example.Usage(
                 word.characters() + "计",
                 word.characters() + "jì",
                 "to estimate; calculation",
                 "dummy context" + contextSuffix,
-                "Breakdown: " + word.characters() + " + 计 (calculation)"
+                breakdown1
             ),
             new Example.Usage(
                 word.characters() + "价",
-                word.characters() + "jià", 
+                word.characters() + "jià",
                 "to appraise; valuation",
                 "dummy context 2" + contextSuffix,
-                "Breakdown: " + word.characters() + " + 价 (price/value)"
+                breakdown2
             )
         );
         return new Example(usages, List.of());

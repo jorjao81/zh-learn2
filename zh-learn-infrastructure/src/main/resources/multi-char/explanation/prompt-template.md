@@ -12,7 +12,6 @@ you must use the same HTML style.
 
 Now, please explain **{WORD}** in the same detailed style, covering:
 - Word formation and etymology: explain why these characters were combined, semantic relationships between components
-- Character breakdown: show how individual character meanings contribute to the overall word meaning
 - Usage instructions and context
 - Compare with similar words or related terms if applicable
 - For technical terms, include domain-specific context

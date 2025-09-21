@@ -1,6 +1,8 @@
 module com.zhlearn.application {
     requires com.zhlearn.domain;
-    
+    requires com.zhlearn.infrastructure;
+    requires org.slf4j;
+
     exports com.zhlearn.application.service;
     exports com.zhlearn.application.format;
     exports com.zhlearn.application.audio;

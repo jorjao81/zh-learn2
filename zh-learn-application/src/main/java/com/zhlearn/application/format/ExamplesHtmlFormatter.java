@@ -87,8 +87,11 @@ public final class ExamplesHtmlFormatter {
 
     private static String prefixBreakdown(String text) {
         String t = text.trim();
-        if (t.toLowerCase().startsWith("breakdown:")) return t;
-        return "Breakdown: " + t;
+        if (t.toLowerCase().startsWith("breakdown:")) {
+            // Remove "breakdown:" prefix if present
+            return t.substring(10).trim();
+        }
+        return t;
     }
 
     private static String nz(String s) { return s == null ? "" : s; }
