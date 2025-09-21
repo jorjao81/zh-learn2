@@ -148,7 +148,7 @@ public class TencentAudioProvider implements AudioProvider {
                         } catch (IOException | InterruptedException e) {
                             throw new RuntimeException("Failed to download voice for " + word.characters(), e);
                         }
-                    }, executorService))
+                    })) // Use ForkJoinPool.commonPool() to avoid deadlock
                     .toList();
 
                 results = voiceFutures.stream()

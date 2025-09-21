@@ -4,7 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class AudioDownloadExecutor {
-    private static final int THREAD_POOL_SIZE = 6;
+    private static final int THREAD_POOL_SIZE = 32; // Increased to handle nested parallelism
     private final ExecutorService executor;
 
     public AudioDownloadExecutor() {

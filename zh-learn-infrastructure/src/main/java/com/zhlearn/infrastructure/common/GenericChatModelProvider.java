@@ -38,7 +38,9 @@ public class GenericChatModelProvider<T> {
             case String model when model.startsWith("gemini-") -> {
                 GoogleAiGeminiChatModel.GoogleAiGeminiChatModelBuilder builder = GoogleAiGeminiChatModel.builder()
                     .apiKey(config.getApiKey())
-                    .modelName(config.getModelName());
+                    .modelName(config.getModelName())
+                    .timeout(java.time.Duration.ofSeconds(30))
+                    .maxRetries(2);
 
                 if (config.getTemperature() != null) {
                     builder.temperature(config.getTemperature());
@@ -53,6 +55,8 @@ public class GenericChatModelProvider<T> {
                 .modelName(config.getModelName())
                 .temperature(config.getTemperature())
                 .maxTokens(config.getMaxTokens())
+                .timeout(java.time.Duration.ofSeconds(30))
+                .maxRetries(2)
                 .build();
         };
         return new CachedChatModel(base, config);

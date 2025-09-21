@@ -137,7 +137,7 @@ public class QwenAudioProvider implements AudioProvider {
                         } catch (IOException | InterruptedException e) {
                             throw new RuntimeException("Failed to download voice " + voice + " for " + word.characters(), e);
                         }
-                    }, executorService))
+                    })) // Use ForkJoinPool.commonPool() to avoid deadlock
                     .toList();
 
                 results = voiceFutures.stream()
