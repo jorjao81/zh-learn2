@@ -5,7 +5,10 @@ import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.AudioProvider;
 import com.zhlearn.infrastructure.audio.AudioCache;
+import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;
 import com.zhlearn.infrastructure.audio.AudioPaths;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -23,8 +26,13 @@ import java.util.HexFormat;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
 
 public class QwenAudioProvider implements AudioProvider {
+    private static final Logger log = LoggerFactory.getLogger(QwenAudioProvider.class);
+
     private static final String NAME = "qwen-tts";
     private static final String MODEL = "qwen-tts-latest";
     private static final List<String> VOICES = List.of("Cherry", "Serena", "Chelsie");
@@ -34,14 +42,24 @@ public class QwenAudioProvider implements AudioProvider {
 
     private final QwenTtsClient clientOverride;
     private final HttpClient httpClient;
+    private final ExecutorService executorService;
 
     public QwenAudioProvider() {
         this(null, HttpClient.newBuilder().connectTimeout(TIMEOUT).build());
     }
 
     public QwenAudioProvider(QwenTtsClient clientOverride, HttpClient httpClient) {
+        this(clientOverride, httpClient, null);
+    }
+
+    public QwenAudioProvider(AudioDownloadExecutor audioExecutor) {
+        this(null, HttpClient.newBuilder().connectTimeout(TIMEOUT).build(), audioExecutor.getExecutor());
+    }
+
+    public QwenAudioProvider(QwenTtsClient clientOverride, HttpClient httpClient, ExecutorService executorService) {
         this.clientOverride = clientOverride;
         this.httpClient = Objects.requireNonNull(httpClient, "httpClient");
+        this.executorService = executorService;
     }
 
     @Override
@@ -103,37 +121,94 @@ public class QwenAudioProvider implements AudioProvider {
 
     @Override
     public List<PronunciationDescription> getPronunciationsWithDescriptions(Hanzi word, Pinyin pinyin) {
-        QwenTtsClient activeClient = clientOverride;
-        if (activeClient == null) {
-            activeClient = new QwenTtsClient(httpClient, resolveApiKey(), MODEL);
+        long startTime = System.currentTimeMillis();
+        log.info("[Qwen] Starting TTS synthesis for '{}' with {} voices", word.characters(), VOICES.size());
+
+        final QwenTtsClient activeClient = clientOverride != null ? clientOverride : new QwenTtsClient(httpClient, resolveApiKey(), MODEL);
+
+        try {
+            List<PronunciationDescription> results;
+            if (executorService != null) {
+                log.debug("[Qwen] Using parallel voice synthesis for '{}'", word.characters());
+                List<CompletableFuture<PronunciationDescription>> voiceFutures = VOICES.stream()
+                    .map(voice -> CompletableFuture.supplyAsync(() -> {
+                        try {
+                            return downloadVoiceDescription(activeClient, voice, word, pinyin);
+                        } catch (IOException | InterruptedException e) {
+                            throw new RuntimeException("Failed to download voice " + voice + " for " + word.characters(), e);
+                        }
+                    })) // Use ForkJoinPool.commonPool() to avoid deadlock
+                    .toList();
+
+                results = voiceFutures.stream()
+                    .map(CompletableFuture::join)
+                    .collect(Collectors.toList());
+            } else {
+                log.debug("[Qwen] Using sequential voice synthesis for '{}'", word.characters());
+                results = getPronunciationsWithDescriptionsSequential(activeClient, word, pinyin);
+            }
+
+            long duration = System.currentTimeMillis() - startTime;
+            log.info("[Qwen] Completed TTS synthesis for '{}' in {}ms - {} pronunciations",
+                word.characters(), duration, results.size());
+            return results;
+
+        } catch (IOException | InterruptedException e) {
+            long duration = System.currentTimeMillis() - startTime;
+            log.error("[Qwen] Failed TTS synthesis for '{}' after {}ms: {}", word.characters(), duration, e.getMessage(), e);
+            throw new RuntimeException("Failed to get audio pronunciations for " + word.characters(), e);
+        } catch (Exception e) {
+            long duration = System.currentTimeMillis() - startTime;
+            log.error("[Qwen] Unexpected error for '{}' after {}ms: {}", word.characters(), duration, e.getMessage(), e);
+            throw e;
         }
+    }
+
+    private List<PronunciationDescription> getPronunciationsWithDescriptionsSequential(QwenTtsClient activeClient, Hanzi word, Pinyin pinyin) throws IOException, InterruptedException {
         List<PronunciationDescription> results = new ArrayList<>();
         for (String voice : VOICES) {
-            Path cached = cachedPath(word, pinyin, voice);
-            if (Files.exists(cached)) {
-                String description = formatQwenDescription(voice);
-                results.add(new PronunciationDescription(cached.toAbsolutePath(), description));
-                continue;
-            }
-            try {
-                QwenTtsResult result = activeClient.synthesize(voice, word.characters());
-                Path downloaded = download(result.audioUrl());
-                try {
-                    Path normalized = AudioCache.ensureCachedNormalized(downloaded, NAME,
-                        word.characters(), voice, cacheKey(word, pinyin, voice));
-                    String description = formatQwenDescription(voice);
-                    results.add(new PronunciationDescription(normalized, description));
-                } finally {
-                    Files.deleteIfExists(downloaded);
-                }
-            } catch (IOException | InterruptedException e) {
-                if (e instanceof InterruptedException) {
-                    Thread.currentThread().interrupt();
-                }
-                throw new RuntimeException("Failed to synthesize Qwen TTS for voice " + voice, e);
-            }
+            PronunciationDescription desc = downloadVoiceDescription(activeClient, voice, word, pinyin);
+            results.add(desc);
         }
         return results;
+    }
+
+    private PronunciationDescription downloadVoiceDescription(QwenTtsClient activeClient, String voice, Hanzi word, Pinyin pinyin) throws IOException, InterruptedException {
+        long startTime = System.currentTimeMillis();
+        log.debug("[Qwen] Processing voice '{}' for '{}'", voice, word.characters());
+
+        Path cached = cachedPath(word, pinyin, voice);
+        if (Files.exists(cached)) {
+            long duration = System.currentTimeMillis() - startTime;
+            log.debug("[Qwen] Using cached audio for '{}' voice '{}' ({}ms)", word.characters(), voice, duration);
+            String description = formatQwenDescription(voice);
+            return new PronunciationDescription(cached.toAbsolutePath(), description);
+        }
+
+        log.debug("[Qwen] Synthesizing voice '{}' for '{}'", voice, word.characters());
+        QwenTtsResult result = activeClient.synthesize(voice, word.characters());
+
+        log.debug("[Qwen] Downloading audio for '{}' voice '{}'", word.characters(), voice);
+        Path downloaded = download(result.audioUrl());
+
+        try {
+            log.debug("[Qwen] Normalizing audio for '{}' voice '{}'", word.characters(), voice);
+            Path normalized = AudioCache.ensureCachedNormalized(downloaded, NAME,
+                word.characters(), voice, cacheKey(word, pinyin, voice));
+
+            long duration = System.currentTimeMillis() - startTime;
+            log.debug("[Qwen] Completed voice '{}' for '{}' in {}ms", voice, word.characters(), duration);
+
+            String description = formatQwenDescription(voice);
+            return new PronunciationDescription(normalized, description);
+        } finally {
+            try {
+                Files.deleteIfExists(downloaded);
+            } catch (IOException e) {
+                log.warn("[Qwen] Failed to delete temp file for '{}' voice '{}': {}", word.characters(), voice, e.getMessage());
+                throw new RuntimeException("Failed to delete temporary file", e);
+            }
+        }
     }
 
     private static String formatQwenDescription(String voice) {

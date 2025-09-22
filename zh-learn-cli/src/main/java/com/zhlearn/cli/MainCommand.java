@@ -8,6 +8,7 @@ import com.zhlearn.domain.provider.PinyinProvider;
 import com.zhlearn.domain.provider.DefinitionProvider;
 import com.zhlearn.domain.provider.AudioProvider;
 import com.zhlearn.infrastructure.common.AIProviderFactory;
+import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;
 
 import java.util.List;
 import com.zhlearn.infrastructure.pinyin4j.Pinyin4jProvider;
@@ -28,14 +29,16 @@ public class MainCommand implements Runnable {
 
     // Audio providers - keep as list like before
     private final List<AudioProvider> audioProviders;
+    private final AudioDownloadExecutor audioExecutor;
 
     public MainCommand() {
-        // Initialize audio providers (keep existing working approach)
+        // Initialize audio executor and providers
+        this.audioExecutor = new AudioDownloadExecutor();
         this.audioProviders = List.of(
             new AnkiPronunciationProvider(),
-            new ForvoAudioProvider(),
-            new QwenAudioProvider(),
-            new TencentAudioProvider()
+            new ForvoAudioProvider(audioExecutor),
+            new QwenAudioProvider(audioExecutor),
+            new TencentAudioProvider(audioExecutor)
         );
     }
 
@@ -46,6 +49,10 @@ public class MainCommand implements Runnable {
 
     public AudioProvider getAudioProvider() {
         return audioProviders.isEmpty() ? null : audioProviders.get(0);
+    }
+
+    public AudioDownloadExecutor getAudioExecutor() {
+        return audioExecutor;
     }
 
     // AI Provider factory methods - create on demand and crash if fails
@@ -101,8 +108,11 @@ public class MainCommand implements Runnable {
         return AIProviderFactory.createDefinitionFormatterProvider(providerName, model);
     }
 
-
-
+    public void shutdown() {
+        if (audioExecutor != null) {
+            audioExecutor.shutdown();
+        }
+    }
 
     @Override
     public void run() {

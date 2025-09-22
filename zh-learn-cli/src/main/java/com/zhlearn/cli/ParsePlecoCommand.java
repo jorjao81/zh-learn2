@@ -7,6 +7,7 @@ import com.zhlearn.application.service.AnkiExporter;
 import com.zhlearn.application.service.ParallelWordAnalysisService;
 import com.zhlearn.application.service.WordAnalysisServiceImpl;
 import com.zhlearn.domain.model.Hanzi;
+import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.ProviderConfiguration;
 import com.zhlearn.domain.model.WordAnalysis;
 import com.zhlearn.domain.provider.AudioProvider;
@@ -193,7 +194,7 @@ public class ParsePlecoCommand implements Runnable {
     private void processWordsSequentially(List<PlecoEntry> entries, WordAnalysisService wordAnalysisService,
                                         ProviderConfiguration config, int maxToProcess, List<WordAnalysis> successfulAnalyses) {
         int processedCount = 0;
-        AudioOrchestrator audioOrchestrator = new AudioOrchestrator(parent.getAudioProviders());
+        AudioOrchestrator audioOrchestrator = new AudioOrchestrator(parent.getAudioProviders(), parent.getAudioExecutor());
         InteractiveAudioUI audioUI = new InteractiveAudioUI();
 
         for (PlecoEntry entry : entries) {
@@ -215,70 +216,112 @@ public class ParsePlecoCommand implements Runnable {
     private void processWordsInParallel(List<PlecoEntry> entries, WordAnalysisService wordAnalysisService,
                                       ProviderConfiguration config, int maxToProcess, int threadCount, List<WordAnalysis> successfulAnalyses) {
         ExecutorService executor = Executors.newFixedThreadPool(threadCount);
-        
+        AudioOrchestrator audioOrchestrator = new AudioOrchestrator(parent.getAudioProviders(), parent.getAudioExecutor());
+
         // Thread-safe counters for progress tracking
         AtomicInteger completedCount = new AtomicInteger(0);
         AtomicInteger successCount = new AtomicInteger(0);
         AtomicInteger errorCount = new AtomicInteger(0);
+
+        // Thread-safe collection to store successful analysis with audio candidates
+        List<WordWithAudioCandidates> wordsWithAudio = new CopyOnWriteArrayList<>();
         
         try {
             long overallStartTime = System.currentTimeMillis();
             
-            // Create futures that display results immediately upon completion
+            // Create futures that display results immediately upon completion and generate audio candidates in parallel
             List<CompletableFuture<Void>> displayFutures = entries.stream()
-                .map(entry -> CompletableFuture.supplyAsync(() -> {
-                    long wordStartTime = System.currentTimeMillis();
-                    try {
-                        Hanzi word = new Hanzi(entry.hanzi());
-                        WordAnalysis analysis = wordAnalysisService.getCompleteAnalysis(word, config);
-                        long wordDuration = System.currentTimeMillis() - wordStartTime;
-                        return new WordAnalysisResult(entry, analysis, null, wordDuration);
-                    } catch (RuntimeException e) {
-                        long wordDuration = System.currentTimeMillis() - wordStartTime;
-                        return new WordAnalysisResult(entry, null, e, wordDuration);
-                    }
-                }, executor)
-                .thenAccept(result -> {
-                    // Display result immediately when ready
-                    synchronized(this) {
-                        int completed = completedCount.incrementAndGet();
-                        double percentage = (completed * 100.0) / maxToProcess;
-                        
-                        if (result.analysis != null) {
-                            int successIndex = successCount.incrementAndGet();
-                            
-                            System.out.println("=".repeat(80));
-                            System.out.printf("Word %d/%d (%.1f%%) - '%s' (completed in %.2fs)%n", 
-                                completed, maxToProcess, percentage, result.entry.hanzi(), result.duration / 1000.0);
-                            System.out.println("=".repeat(80));
-                            
-                            if (rawOutput) {
-                                AnalysisPrinter.printRaw(result.analysis);
-                            } else {
-                                AnalysisPrinter.printFormatted(result.analysis);
-                            }
-                            
-                            System.out.println();
-                            
-                            // Collect for export
-                            successfulAnalyses.add(result.analysis);
-                        } else {
-                            errorCount.incrementAndGet();
-                            System.err.printf("Error analyzing word '%s' (%.2fs): %s%n", 
-                                result.entry.hanzi(), result.duration / 1000.0, result.error.getMessage());
+                .map(entry -> {
+                    // Launch word analysis and audio candidate generation in parallel
+                    CompletableFuture<WordAnalysisResult> analysisFuture = CompletableFuture.supplyAsync(() -> {
+                        long wordStartTime = System.currentTimeMillis();
+                        try {
+                            Hanzi word = new Hanzi(entry.hanzi());
+                            WordAnalysis analysis = wordAnalysisService.getCompleteAnalysis(word, config);
+                            long wordDuration = System.currentTimeMillis() - wordStartTime;
+                            return new WordAnalysisResult(entry, analysis, null, wordDuration);
+                        } catch (RuntimeException e) {
+                            long wordDuration = System.currentTimeMillis() - wordStartTime;
+                            return new WordAnalysisResult(entry, null, e, wordDuration);
                         }
-                    }
-                }))
+                    }, executor);
+
+                    CompletableFuture<List<PronunciationCandidate>> audioCandidatesFuture = CompletableFuture.supplyAsync(() -> {
+                        Hanzi word = new Hanzi(entry.hanzi());
+                        // We need pinyin for audio candidates, so we get it directly
+                        if (wordAnalysisService instanceof ParallelWordAnalysisService parallelService) {
+                            // Access the delegate to get pinyin synchronously to avoid double work
+                            Pinyin pinyin = parallelService.getPinyin(word, config.getPinyinProvider());
+                            System.out.printf("[INFO] Starting audio download for '%s' (%s)%n", word.characters(), pinyin.pinyin());
+                            List<PronunciationCandidate> candidates = audioOrchestrator.candidatesFor(word, pinyin);
+                            System.out.printf("[INFO] Completed audio download for '%s' - found %d candidates%n", word.characters(), candidates.size());
+                            return candidates;
+                        } else {
+                            // Fallback for non-parallel service
+                            Pinyin pinyin = wordAnalysisService.getPinyin(word, config.getPinyinProvider());
+                            System.out.printf("[INFO] Starting audio download for '%s' (%s)%n", word.characters(), pinyin.pinyin());
+                            List<PronunciationCandidate> candidates = audioOrchestrator.candidatesFor(word, pinyin);
+                            System.out.printf("[INFO] Completed audio download for '%s' - found %d candidates%n", word.characters(), candidates.size());
+                            return candidates;
+                        }
+                    }, executor);
+
+                    // Combine both futures and return a CompletableFuture<Void> that processes the display
+                    return CompletableFuture.allOf(analysisFuture, audioCandidatesFuture)
+                        .thenAccept(ignored -> {
+                            try {
+                                WordAnalysisResult analysisResult = analysisFuture.get();
+                                List<PronunciationCandidate> audioCandidates = audioCandidatesFuture.get();
+                                CombinedResult combinedResult = new CombinedResult(analysisResult, audioCandidates);
+
+                                // Display result immediately when ready
+                                synchronized(this) {
+                                    WordAnalysisResult result = combinedResult.analysisResult();
+                                    List<PronunciationCandidate> audioCandsFromResult = combinedResult.audioCandidates();
+
+                                    int completed = completedCount.incrementAndGet();
+                                    double percentage = (completed * 100.0) / maxToProcess;
+
+                                    if (result.analysis != null) {
+                                        int successIndex = successCount.incrementAndGet();
+
+                                        System.out.println("=".repeat(80));
+                                        System.out.printf("Word %d/%d (%.1f%%) - '%s' (completed in %.2fs)%n",
+                                            completed, maxToProcess, percentage, result.entry.hanzi(), result.duration / 1000.0);
+                                        System.out.println("=".repeat(80));
+
+                                        if (rawOutput) {
+                                            AnalysisPrinter.printRaw(result.analysis);
+                                        } else {
+                                            AnalysisPrinter.printFormatted(result.analysis);
+                                        }
+
+                                        System.out.println();
+
+                                        // Collect for export and store with audio candidates for later selection
+                                        successfulAnalyses.add(result.analysis);
+                                        wordsWithAudio.add(new WordWithAudioCandidates(result.analysis, audioCandsFromResult));
+                                    } else {
+                                        errorCount.incrementAndGet();
+                                        System.err.printf("Error analyzing word '%s' (%.2fs): %s%n",
+                                            result.entry.hanzi(), result.duration / 1000.0, result.error.getMessage());
+                                    }
+                                }
+                            } catch (Exception e) {
+                                throw new RuntimeException("Error processing combined analysis and audio results", e);
+                            }
+                        });
+                })
                 .collect(Collectors.toList());
             
             // Wait for all displays to complete
             CompletableFuture.allOf(displayFutures.toArray(new CompletableFuture[0])).join();
 
-            if (!successfulAnalyses.isEmpty()) {
-                AudioOrchestrator audioOrchestrator = new AudioOrchestrator(parent.getAudioProviders());
+            if (!wordsWithAudio.isEmpty()) {
                 InteractiveAudioUI audioUI = new InteractiveAudioUI();
-                for (int i = 0; i < successfulAnalyses.size(); i++) {
-                    WordAnalysis updated = runAudioSelection(audioOrchestrator, audioUI, successfulAnalyses.get(i));
+                for (int i = 0; i < wordsWithAudio.size(); i++) {
+                    WordWithAudioCandidates wordWithAudio = wordsWithAudio.get(i);
+                    WordAnalysis updated = runAudioSelectionWithCandidates(audioUI, wordWithAudio.analysis(), wordWithAudio.candidates());
                     successfulAnalyses.set(i, updated);
                 }
             }
@@ -309,6 +352,48 @@ public class ParsePlecoCommand implements Runnable {
 
     private WordAnalysis runAudioSelection(AudioOrchestrator orchestrator, InteractiveAudioUI audioUI, WordAnalysis analysis) {
         List<PronunciationCandidate> rawCandidates = orchestrator.candidatesFor(analysis.word(), analysis.pinyin());
+        if (rawCandidates.isEmpty()) {
+            System.out.printf("No pronunciation candidates available for '%s'.%n%n", analysis.word().characters());
+            return analysis;
+        }
+
+        List<PronunciationCandidate> candidates = PrePlayback.preprocessCandidates(analysis.word(), analysis.pinyin(), rawCandidates);
+        if (candidates.isEmpty()) {
+            System.out.printf("No playable pronunciation candidates available for '%s'.%n%n", analysis.word().characters());
+            return analysis;
+        }
+
+        System.out.printf("Selecting audio for '%s' (%s)%n", analysis.word().characters(), analysis.pinyin().pinyin());
+        SystemAudioPlayer player = new SystemAudioPlayer();
+        SelectionSession session = new SelectionSession(candidates, player);
+        PronunciationCandidate choice;
+        try {
+            choice = audioUI.run(session, analysis.word(), analysis.pinyin());
+        } finally {
+            player.stop();
+        }
+
+        if (choice == null) {
+            System.out.println("No audio selected.");
+            System.out.println();
+            return analysis;
+        }
+
+        System.out.println("Selected audio: " + choice.file().toAbsolutePath());
+        System.out.println();
+
+        return new WordAnalysis(
+            analysis.word(),
+            analysis.pinyin(),
+            analysis.definition(),
+            analysis.structuralDecomposition(),
+            analysis.examples(),
+            analysis.explanation(),
+            Optional.of(choice.file().toAbsolutePath())
+        );
+    }
+
+    private WordAnalysis runAudioSelectionWithCandidates(InteractiveAudioUI audioUI, WordAnalysis analysis, List<PronunciationCandidate> rawCandidates) {
         if (rawCandidates.isEmpty()) {
             System.out.printf("No pronunciation candidates available for '%s'.%n%n", analysis.word().characters());
             return analysis;
@@ -381,7 +466,7 @@ public class ParsePlecoCommand implements Runnable {
         final WordAnalysis analysis;
         final RuntimeException error;
         final long duration; // Duration in milliseconds
-        
+
         WordAnalysisResult(PlecoEntry entry, WordAnalysis analysis, RuntimeException error, long duration) {
             this.entry = entry;
             this.analysis = analysis;
@@ -389,6 +474,22 @@ public class ParsePlecoCommand implements Runnable {
             this.duration = duration;
         }
     }
+
+    /**
+     * Record to hold both word analysis and pre-generated audio candidates
+     */
+    private record WordWithAudioCandidates(
+        WordAnalysis analysis,
+        List<PronunciationCandidate> candidates
+    ) {}
+
+    /**
+     * Helper class to combine analysis result with audio candidates from parallel processing
+     */
+    private record CombinedResult(
+        WordAnalysisResult analysisResult,
+        List<PronunciationCandidate> audioCandidates
+    ) {}
     
     /**
      * Export the successful WordAnalysis results to an Anki-compatible TSV file.

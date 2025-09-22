@@ -12,6 +12,9 @@ module com.zhlearn.infrastructure {
     // SLF4J logging modules
     requires org.slf4j;
 
+    // Helidon Fault Tolerance for retry with exponential backoff
+    requires io.helidon.faulttolerance;
+
     // Jackson JSON processing modules
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
