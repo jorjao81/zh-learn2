@@ -34,8 +34,8 @@ public class QwenAudioProvider implements AudioProvider {
     private static final Logger log = LoggerFactory.getLogger(QwenAudioProvider.class);
 
     private static final String NAME = "qwen-tts";
-    private static final String MODEL = "qwen-tts-latest";
-    private static final List<String> VOICES = List.of("Cherry", "Serena", "Chelsie");
+    private static final String MODEL = "qwen3-tts-flash";
+    private static final List<String> VOICES = List.of("Cherry", "Ethan", "Nofish", "Jennifer", "Ryan", "Katerina", "Elias");
     private static final Duration TIMEOUT = Duration.ofSeconds(15);
     private static final String API_KEY_ENV = "DASHSCOPE_API_KEY";
     private static final String USER_AGENT = "zh-learn-cli/1.0 (QwenAudioProvider)";
@@ -69,7 +69,7 @@ public class QwenAudioProvider implements AudioProvider {
 
     @Override
     public String getDescription() {
-        return "Qwen text-to-speech (voices: " + String.join(", ", VOICES) + ")";
+        return "Qwen3-TTS-Flash with 7 standard Mandarin voices (" + String.join(", ", VOICES) + ")";
     }
 
     @Override

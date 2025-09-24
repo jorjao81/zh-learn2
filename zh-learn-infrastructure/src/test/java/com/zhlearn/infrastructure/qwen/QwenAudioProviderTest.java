@@ -33,20 +33,28 @@ class QwenAudioProviderTest {
     }
 
     @Test
-    void returnsThreeVoicesAndCachesResults() throws Exception {
+    void returnsSevenVoicesAndCachesResults() throws Exception {
         System.setProperty("zhlearn.home", tmpHome.toString());
 
         FakeQwenClient client = new FakeQwenClient();
         HttpClient http = mock(HttpClient.class);
 
         HttpResponse<byte[]> cherryResp = mockBinaryResponse(new byte[]{1, 2, 3});
-        HttpResponse<byte[]> serenaResp = mockBinaryResponse(new byte[]{4, 5});
-        HttpResponse<byte[]> chelsieResp = mockBinaryResponse(new byte[]{6});
+        HttpResponse<byte[]> ethanResp = mockBinaryResponse(new byte[]{4, 5});
+        HttpResponse<byte[]> nofishResp = mockBinaryResponse(new byte[]{6});
+        HttpResponse<byte[]> jenniferResp = mockBinaryResponse(new byte[]{7, 8});
+        HttpResponse<byte[]> ryanResp = mockBinaryResponse(new byte[]{9});
+        HttpResponse<byte[]> katerinaResp = mockBinaryResponse(new byte[]{10, 11});
+        HttpResponse<byte[]> eliasResp = mockBinaryResponse(new byte[]{12});
 
         when(http.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
             .thenReturn((HttpResponse) cherryResp)
-            .thenReturn((HttpResponse) serenaResp)
-            .thenReturn((HttpResponse) chelsieResp);
+            .thenReturn((HttpResponse) ethanResp)
+            .thenReturn((HttpResponse) nofishResp)
+            .thenReturn((HttpResponse) jenniferResp)
+            .thenReturn((HttpResponse) ryanResp)
+            .thenReturn((HttpResponse) katerinaResp)
+            .thenReturn((HttpResponse) eliasResp);
 
         QwenAudioProvider provider = new QwenAudioProvider(client, http);
 
@@ -55,25 +63,29 @@ class QwenAudioProviderTest {
 
         List<Path> pronunciations = provider.getPronunciations(word, pinyin);
 
-        assertThat(pronunciations).hasSize(3);
-        assertThat(pronunciations.get(0)).isAbsolute();
-        assertThat(pronunciations.get(1)).isAbsolute();
-        assertThat(pronunciations.get(2)).isAbsolute();
+        assertThat(pronunciations).hasSize(7);
+        for (Path path : pronunciations) {
+            assertThat(path).isAbsolute();
+        }
 
         assertThat(pronunciations.get(0).getFileName().toString()).contains("Cherry").doesNotContain("xuéxí");
-        assertThat(pronunciations.get(1).getFileName().toString()).contains("Serena");
-        assertThat(pronunciations.get(2).getFileName().toString()).contains("Chelsie");
+        assertThat(pronunciations.get(1).getFileName().toString()).contains("Ethan");
+        assertThat(pronunciations.get(2).getFileName().toString()).contains("Nofish");
+        assertThat(pronunciations.get(3).getFileName().toString()).contains("Jennifer");
+        assertThat(pronunciations.get(4).getFileName().toString()).contains("Ryan");
+        assertThat(pronunciations.get(5).getFileName().toString()).contains("Katerina");
+        assertThat(pronunciations.get(6).getFileName().toString()).contains("Elias");
 
-        assertThat(Files.exists(pronunciations.get(0))).isTrue();
-        assertThat(Files.exists(pronunciations.get(1))).isTrue();
-        assertThat(Files.exists(pronunciations.get(2))).isTrue();
+        for (Path path : pronunciations) {
+            assertThat(Files.exists(path)).isTrue();
+        }
 
         assertThat(provider.getPronunciation(word, pinyin)).contains(pronunciations.get(0));
 
         List<Path> cached = provider.getPronunciations(word, pinyin);
         assertThat(cached).containsExactlyElementsOf(pronunciations);
 
-        verify(http, times(3)).send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class));
+        verify(http, times(7)).send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class));
         verifyNoMoreInteractions(http);
     }
 
@@ -105,7 +117,7 @@ class QwenAudioProviderTest {
         QwenAudioProvider provider = new QwenAudioProvider(new FakeQwenClient(), HttpClient.newHttpClient());
         assertThat(provider.getName()).isEqualTo("qwen-tts");
         assertThat(provider.getType()).isEqualTo(ProviderType.AI);
-        assertThat(provider.getDescription()).contains("Cherry").contains("Serena").contains("Chelsie");
+        assertThat(provider.getDescription()).contains("Cherry").contains("Ethan").contains("Nofish").contains("Jennifer").contains("Ryan").contains("Katerina").contains("Elias");
     }
 
     private HttpResponse<byte[]> mockBinaryResponse(byte[] data) {
@@ -120,7 +132,7 @@ class QwenAudioProviderTest {
         private int callCount = 0;
 
         FakeQwenClient() {
-            super(HttpClient.newHttpClient(), "test-key", "qwen-tts-latest");
+            super(HttpClient.newHttpClient(), "test-key", "qwen3-tts-flash");
         }
 
         @Override
