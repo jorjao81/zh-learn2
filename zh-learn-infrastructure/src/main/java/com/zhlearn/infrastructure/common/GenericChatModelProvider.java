@@ -39,7 +39,7 @@ public class GenericChatModelProvider<T> {
                 GoogleAiGeminiChatModel.GoogleAiGeminiChatModelBuilder builder = GoogleAiGeminiChatModel.builder()
                     .apiKey(config.getApiKey())
                     .modelName(config.getModelName())
-                    .timeout(java.time.Duration.ofSeconds(30))
+                    .timeout(java.time.Duration.ofSeconds(120))
                     .maxRetries(2);
 
                 if (config.getTemperature() != null) {
@@ -55,7 +55,7 @@ public class GenericChatModelProvider<T> {
                 .modelName(config.getModelName())
                 .temperature(config.getTemperature())
                 .maxTokens(config.getMaxTokens())
-                .timeout(java.time.Duration.ofSeconds(30))
+                .timeout(java.time.Duration.ofSeconds(120))
                 .maxRetries(2)
                 .build();
         };

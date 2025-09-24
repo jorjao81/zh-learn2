@@ -66,21 +66,24 @@ public class ParsePlecoCommand implements Runnable {
     @Option(names = {"--definition-provider"}, description = "Set specific provider for definition (default: pleco-export). Available: dummy, pleco-export", defaultValue = "pleco-export")
     private String definitionProvider;
 
-    @Option(names = {"--definition-formatter-provider"}, description = "Set specific provider for definition formatting (default: deepseek-chat). Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo", defaultValue = "deepseek-chat")
+    @Option(names = {"--definition-formatter-provider"}, description = "Set specific provider for definition formatting (default: deepseek-chat). Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter", defaultValue = "deepseek-chat")
     private String definitionFormatterProvider;
 
-    @Option(names = {"--decomposition-provider"}, description = "Set specific provider for structural decomposition (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash, glm-4-flash, glm-4.5", defaultValue = "deepseek-chat")
+    @Option(names = {"--decomposition-provider"}, description = "Set specific provider for structural decomposition (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash, glm-4-flash, glm-4.5, openrouter", defaultValue = "deepseek-chat")
     private String decompositionProvider;
 
-    @Option(names = {"--example-provider"}, description = "Set specific provider for examples (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash, glm-4-flash, glm-4.5", defaultValue = "deepseek-chat")
+    @Option(names = {"--example-provider"}, description = "Set specific provider for examples (default: deepseek-chat). Available: dummy, gpt-5-nano, deepseek-chat, qwen3-max, qwen3-plus, qwen3-flash, glm-4-flash, glm-4.5, openrouter", defaultValue = "deepseek-chat")
     private String exampleProvider;
 
-    @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation (default: deepseek-chat). Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5", defaultValue = "deepseek-chat")
+    @Option(names = {"--explanation-provider"}, description = "Set specific provider for explanation (default: deepseek-chat). Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5, openrouter", defaultValue = "deepseek-chat")
     private String explanationProvider;
     
     @Option(names = {"--audio-provider"}, description = "Set specific provider for audio pronunciation (default: anki). Available: anki, forvo, qwen-tts", defaultValue = "anki")
     private String audioProvider;
-    
+
+    @Option(names = {"--model"}, description = "AI model to use with provider (e.g., for OpenRouter: gpt-4, claude-3-sonnet, llama-2-70b-chat)")
+    private String model;
+
     @Option(names = {"--raw", "--raw-output"}, description = "Display raw HTML content instead of formatted output")
     private boolean rawOutput = false;
     
@@ -120,12 +123,12 @@ public class ParsePlecoCommand implements Runnable {
             ParallelWordAnalysisService parallelService = null;
 
             // Create providers with special handling for pleco-export which needs the dictionary
-            ExampleProvider exampleProv = parent.createExampleProvider(exampleProvider);
-            ExplanationProvider explanationProv = parent.createExplanationProvider(explanationProvider);
-            StructuralDecompositionProvider decompositionProv = parent.createDecompositionProvider(decompositionProvider);
+            ExampleProvider exampleProv = model != null ? parent.createExampleProvider(exampleProvider, model) : parent.createExampleProvider(exampleProvider);
+            ExplanationProvider explanationProv = model != null ? parent.createExplanationProvider(explanationProvider, model) : parent.createExplanationProvider(explanationProvider);
+            StructuralDecompositionProvider decompositionProv = model != null ? parent.createDecompositionProvider(decompositionProvider, model) : parent.createDecompositionProvider(decompositionProvider);
             PinyinProvider pinyinProv = "pleco-export".equals(pinyinProvider) ? new DictionaryPinyinProvider(dictionary) : parent.createPinyinProvider(pinyinProvider);
             DefinitionProvider definitionProv = "pleco-export".equals(definitionProvider) ? new DictionaryDefinitionProvider(dictionary) : parent.createDefinitionProvider(definitionProvider);
-            DefinitionFormatterProvider defFormatterProv = parent.createDefinitionFormatterProvider(definitionFormatterProvider);
+            DefinitionFormatterProvider defFormatterProv = model != null ? parent.createDefinitionFormatterProvider(definitionFormatterProvider, model) : parent.createDefinitionFormatterProvider(definitionFormatterProvider);
             AudioProvider audioProv = resolveAudioProvider(audioProvider);
 
             WordAnalysisServiceImpl baseService = new WordAnalysisServiceImpl(
@@ -198,16 +201,12 @@ public class ParsePlecoCommand implements Runnable {
         InteractiveAudioUI audioUI = new InteractiveAudioUI();
 
         for (PlecoEntry entry : entries) {
-            try {
-                Hanzi word = new Hanzi(entry.hanzi());
-                WordAnalysis analysis = wordAnalysisService.getCompleteAnalysis(word, config);
-                printWordAnalysis(analysis, processedCount + 1, maxToProcess);
-                WordAnalysis updated = runAudioSelection(audioOrchestrator, audioUI, analysis);
-                successfulAnalyses.add(updated); // Collect for export
-                processedCount++;
-            } catch (RuntimeException e) {
-                System.err.println("Error analyzing word '" + entry.hanzi() + "': " + e.getMessage());
-            }
+            Hanzi word = new Hanzi(entry.hanzi());
+            WordAnalysis analysis = wordAnalysisService.getCompleteAnalysis(word, config);
+            printWordAnalysis(analysis, processedCount + 1, maxToProcess);
+            WordAnalysis updated = runAudioSelection(audioOrchestrator, audioUI, analysis);
+            successfulAnalyses.add(updated); // Collect for export
+            processedCount++;
         }
         
         System.out.println("Processed " + processedCount + " words successfully.");
@@ -235,15 +234,10 @@ public class ParsePlecoCommand implements Runnable {
                     // Launch word analysis and audio candidate generation in parallel
                     CompletableFuture<WordAnalysisResult> analysisFuture = CompletableFuture.supplyAsync(() -> {
                         long wordStartTime = System.currentTimeMillis();
-                        try {
-                            Hanzi word = new Hanzi(entry.hanzi());
-                            WordAnalysis analysis = wordAnalysisService.getCompleteAnalysis(word, config);
-                            long wordDuration = System.currentTimeMillis() - wordStartTime;
-                            return new WordAnalysisResult(entry, analysis, null, wordDuration);
-                        } catch (RuntimeException e) {
-                            long wordDuration = System.currentTimeMillis() - wordStartTime;
-                            return new WordAnalysisResult(entry, null, e, wordDuration);
-                        }
+                        Hanzi word = new Hanzi(entry.hanzi());
+                        WordAnalysis analysis = wordAnalysisService.getCompleteAnalysis(word, config);
+                        long wordDuration = System.currentTimeMillis() - wordStartTime;
+                        return new WordAnalysisResult(entry, analysis, wordDuration);
                     }, executor);
 
                     CompletableFuture<List<PronunciationCandidate>> audioCandidatesFuture = CompletableFuture.supplyAsync(() -> {
@@ -282,30 +276,24 @@ public class ParsePlecoCommand implements Runnable {
                                     int completed = completedCount.incrementAndGet();
                                     double percentage = (completed * 100.0) / maxToProcess;
 
-                                    if (result.analysis != null) {
-                                        int successIndex = successCount.incrementAndGet();
+                                    int successIndex = successCount.incrementAndGet();
 
-                                        System.out.println("=".repeat(80));
-                                        System.out.printf("Word %d/%d (%.1f%%) - '%s' (completed in %.2fs)%n",
-                                            completed, maxToProcess, percentage, result.entry.hanzi(), result.duration / 1000.0);
-                                        System.out.println("=".repeat(80));
+                                    System.out.println("=".repeat(80));
+                                    System.out.printf("Word %d/%d (%.1f%%) - '%s' (completed in %.2fs)%n",
+                                        completed, maxToProcess, percentage, result.entry.hanzi(), result.duration / 1000.0);
+                                    System.out.println("=".repeat(80));
 
-                                        if (rawOutput) {
-                                            AnalysisPrinter.printRaw(result.analysis);
-                                        } else {
-                                            AnalysisPrinter.printFormatted(result.analysis);
-                                        }
-
-                                        System.out.println();
-
-                                        // Collect for export and store with audio candidates for later selection
-                                        successfulAnalyses.add(result.analysis);
-                                        wordsWithAudio.add(new WordWithAudioCandidates(result.analysis, audioCandsFromResult));
+                                    if (rawOutput) {
+                                        AnalysisPrinter.printRaw(result.analysis);
                                     } else {
-                                        errorCount.incrementAndGet();
-                                        System.err.printf("Error analyzing word '%s' (%.2fs): %s%n",
-                                            result.entry.hanzi(), result.duration / 1000.0, result.error.getMessage());
+                                        AnalysisPrinter.printFormatted(result.analysis);
                                     }
+
+                                    System.out.println();
+
+                                    // Collect for export and store with audio candidates for later selection
+                                    successfulAnalyses.add(result.analysis);
+                                    wordsWithAudio.add(new WordWithAudioCandidates(result.analysis, audioCandsFromResult));
                                 }
                             } catch (Exception e) {
                                 throw new RuntimeException("Error processing combined analysis and audio results", e);
@@ -464,13 +452,11 @@ public class ParsePlecoCommand implements Runnable {
     private static class WordAnalysisResult {
         final PlecoEntry entry;
         final WordAnalysis analysis;
-        final RuntimeException error;
         final long duration; // Duration in milliseconds
 
-        WordAnalysisResult(PlecoEntry entry, WordAnalysis analysis, RuntimeException error, long duration) {
+        WordAnalysisResult(PlecoEntry entry, WordAnalysis analysis, long duration) {
             this.entry = entry;
             this.analysis = analysis;
-            this.error = error;
             this.duration = duration;
         }
     }

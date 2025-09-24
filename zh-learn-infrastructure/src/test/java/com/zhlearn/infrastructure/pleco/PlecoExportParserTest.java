@@ -42,15 +42,99 @@ class PlecoExportParserTest {
     }
 
     @Test
-    void skipsInvalidRows() throws Exception {
-        String data = "not-enough-cols\n" +
-                      "\t\t\n" +
-                      "冗\t\tdefinition only\n" +
-                      "燃\tran2\tverb burn\n";
+    void crashesOnInvalidRows() throws Exception {
+        // Test that parser crashes on invalid records (Constitutional compliance)
+        String dataWithOneColumn = "not-enough-cols\n";
+        PlecoExportParser parser = new PlecoExportParser();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            parser.parseFromReader(new StringReader(dataWithOneColumn));
+        });
+        assertTrue(exception.getMessage().contains("Record must have at least 2 columns"));
+
+        // Test that parser crashes on too many columns
+        String dataWithTooManyColumns = "汉字\tpinyin\tdefinition\textra\n";
+        IllegalArgumentException exception2 = assertThrows(IllegalArgumentException.class, () -> {
+            parser.parseFromReader(new StringReader(dataWithTooManyColumns));
+        });
+        assertTrue(exception2.getMessage().contains("Record must have at most 3 columns"));
+
+        // Test that parser crashes on empty hanzi
+        String dataWithEmptyHanzi = "\tpinyin\tdefinition\n";
+        IllegalArgumentException exception3 = assertThrows(IllegalArgumentException.class, () -> {
+            parser.parseFromReader(new StringReader(dataWithEmptyHanzi));
+        });
+        assertTrue(exception3.getMessage().contains("Invalid or empty hanzi"));
+
+        // Test that parser crashes on empty pinyin
+        String dataWithEmptyPinyin = "汉字\t\tdefinition\n";
+        IllegalArgumentException exception4 = assertThrows(IllegalArgumentException.class, () -> {
+            parser.parseFromReader(new StringReader(dataWithEmptyPinyin));
+        });
+        assertTrue(exception4.getMessage().contains("Invalid or empty pinyin"));
+    }
+
+    @Test
+    void parsesTwoColumnFormatWithEmptyDefinitions() throws Exception {
+        // Test parsing flash card format without definitions
+        String data = "人类历史\tren2lei4 li4shi3\n" +
+                      "残暴不仁\tcan2bao4 bu4ren2\n" +
+                      "善射\tshan4 she4\n";
         PlecoExportParser parser = new PlecoExportParser();
         List<PlecoEntry> entries = parser.parseFromReader(new StringReader(data));
 
-        assertEquals(1, entries.size());
-        assertEquals("燃", entries.get(0).hanzi());
+        assertEquals(3, entries.size());
+
+        PlecoEntry e1 = entries.get(0);
+        assertEquals("人类历史", e1.hanzi());
+        assertEquals("rénlèi lìshǐ", e1.pinyin());
+        assertEquals("", e1.definitionText()); // Empty definition
+
+        PlecoEntry e2 = entries.get(1);
+        assertEquals("残暴不仁", e2.hanzi());
+        assertEquals("cánbào bùrén", e2.pinyin());
+        assertEquals("", e2.definitionText()); // Empty definition
+
+        PlecoEntry e3 = entries.get(2);
+        assertEquals("善射", e3.hanzi());
+        assertEquals("shàn shè", e3.pinyin());
+        assertEquals("", e3.definitionText()); // Empty definition
+    }
+
+    @Test
+    void parsesMixedTwoAndThreeColumnFormat() throws Exception {
+        // Test parsing mixed format (some with definitions, some without)
+        String data = "人类历史\tren2lei4 li4shi3\n" +
+                      "遗腹子\tyi2fu4zi3\tnoun posthumous child\n" +
+                      "善射\tshan4 she4\n" +
+                      "作揖\tzuo4//yi1\tverb slight bow with hands clasped in front\n";
+        PlecoExportParser parser = new PlecoExportParser();
+        List<PlecoEntry> entries = parser.parseFromReader(new StringReader(data));
+
+        assertEquals(4, entries.size());
+
+        // Entry without definition
+        PlecoEntry e1 = entries.get(0);
+        assertEquals("人类历史", e1.hanzi());
+        assertEquals("rénlèi lìshǐ", e1.pinyin());
+        assertEquals("", e1.definitionText());
+
+        // Entry with definition
+        PlecoEntry e2 = entries.get(1);
+        assertEquals("遗腹子", e2.hanzi());
+        assertEquals("yífùzǐ", e2.pinyin());
+        assertEquals("noun posthumous child", e2.definitionText());
+
+        // Entry without definition
+        PlecoEntry e3 = entries.get(2);
+        assertEquals("善射", e3.hanzi());
+        assertEquals("shàn shè", e3.pinyin());
+        assertEquals("", e3.definitionText());
+
+        // Entry with definition
+        PlecoEntry e4 = entries.get(3);
+        assertEquals("作揖", e4.hanzi());
+        assertEquals("zuò//yī", e4.pinyin());
+        assertEquals("verb slight bow with hands clasped in front", e4.definitionText());
     }
 }

@@ -45,65 +45,68 @@ public class PlecoExportParser {
     
     /**
      * Parse Pleco export data from a Reader.
-     * 
+     *
      * @param reader reader containing the TSV data
-     * @return list of parsed PlecoEntry objects  
+     * @return list of parsed PlecoEntry objects
      * @throws IOException if data cannot be read
+     * @throws IllegalArgumentException if any record cannot be parsed
      */
     public List<PlecoEntry> parseFromReader(Reader reader) throws IOException {
         List<PlecoEntry> entries = new ArrayList<>();
-        
+
         try (CSVParser parser = TSV.parse(reader)) {
             for (CSVRecord record : parser) {
                 if (record.size() == 0) continue;
-                
-                PlecoEntry entry = parseRecord(record);
-                if (entry != null) {
+
+                try {
+                    PlecoEntry entry = parseRecord(record);
                     entries.add(entry);
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalArgumentException("Failed to parse record " + record.getRecordNumber() + ": " + e.getMessage(), e);
                 }
             }
         }
-        
+
         return entries;
     }
     
     /**
      * Parse a single TSV record into a PlecoEntry.
-     * Expected format: 汉字	pinyin	definition_text
-     * 
+     * Expected format: 汉字	pinyin	[definition_text]
+     * Definition text is optional (supports 2 or 3 column format)
+     *
      * @param record the CSV record to parse
-     * @return PlecoEntry or null if record is invalid
+     * @return PlecoEntry
+     * @throws IllegalArgumentException if record cannot be parsed
      */
     private PlecoEntry parseRecord(CSVRecord record) {
-        if (record.size() < 3) {
-            return null;
+        if (record.size() < 2) {
+            throw new IllegalArgumentException("Record must have at least 2 columns (hanzi, pinyin), got " + record.size() + " columns");
         }
-        
+        if (record.size() > 3) {
+            throw new IllegalArgumentException("Record must have at most 3 columns (hanzi, pinyin, definition), got " + record.size() + " columns");
+        }
+
         String firstColumn = get(record, 0);
-        String pinyinColumn = get(record, 1);  
-        String definitionColumn = get(record, 2);
-        
+        String pinyinColumn = get(record, 1);
+        String definitionColumn = record.size() >= 3 ? get(record, 2) : null;
+
         // Extract hanzi from first column (remove sequence number prefix)
         String hanzi = extractHanzi(firstColumn);
         if (hanzi == null || hanzi.isEmpty()) {
-            return null;
+            throw new IllegalArgumentException("Invalid or empty hanzi in first column: '" + firstColumn + "'");
         }
-        
+
         // Convert numbered pinyin to tone marks
         String pinyin = PinyinToneConverter.convertToToneMarks(pinyinColumn);
         if (pinyin == null || pinyin.isEmpty()) {
-            return null;
+            throw new IllegalArgumentException("Invalid or empty pinyin in second column: '" + pinyinColumn + "'");
         }
-        
-        // Definition text is used as-is
+
+        // Definition text is used as-is (empty if not provided)
         String definitionText = definitionColumn != null ? definitionColumn : "";
-        
-        try {
-            return new PlecoEntry(hanzi, pinyin, definitionText);
-        } catch (IllegalArgumentException e) {
-            // Skip invalid entries
-            return null;
-        }
+
+        return new PlecoEntry(hanzi, pinyin, definitionText);
     }
     
     /**
