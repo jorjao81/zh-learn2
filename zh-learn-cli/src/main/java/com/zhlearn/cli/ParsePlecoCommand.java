@@ -198,16 +198,12 @@ public class ParsePlecoCommand implements Runnable {
         InteractiveAudioUI audioUI = new InteractiveAudioUI();
 
         for (PlecoEntry entry : entries) {
-            try {
-                Hanzi word = new Hanzi(entry.hanzi());
-                WordAnalysis analysis = wordAnalysisService.getCompleteAnalysis(word, config);
-                printWordAnalysis(analysis, processedCount + 1, maxToProcess);
-                WordAnalysis updated = runAudioSelection(audioOrchestrator, audioUI, analysis);
-                successfulAnalyses.add(updated); // Collect for export
-                processedCount++;
-            } catch (RuntimeException e) {
-                System.err.println("Error analyzing word '" + entry.hanzi() + "': " + e.getMessage());
-            }
+            Hanzi word = new Hanzi(entry.hanzi());
+            WordAnalysis analysis = wordAnalysisService.getCompleteAnalysis(word, config);
+            printWordAnalysis(analysis, processedCount + 1, maxToProcess);
+            WordAnalysis updated = runAudioSelection(audioOrchestrator, audioUI, analysis);
+            successfulAnalyses.add(updated); // Collect for export
+            processedCount++;
         }
         
         System.out.println("Processed " + processedCount + " words successfully.");
@@ -235,15 +231,10 @@ public class ParsePlecoCommand implements Runnable {
                     // Launch word analysis and audio candidate generation in parallel
                     CompletableFuture<WordAnalysisResult> analysisFuture = CompletableFuture.supplyAsync(() -> {
                         long wordStartTime = System.currentTimeMillis();
-                        try {
-                            Hanzi word = new Hanzi(entry.hanzi());
-                            WordAnalysis analysis = wordAnalysisService.getCompleteAnalysis(word, config);
-                            long wordDuration = System.currentTimeMillis() - wordStartTime;
-                            return new WordAnalysisResult(entry, analysis, null, wordDuration);
-                        } catch (RuntimeException e) {
-                            long wordDuration = System.currentTimeMillis() - wordStartTime;
-                            return new WordAnalysisResult(entry, null, e, wordDuration);
-                        }
+                        Hanzi word = new Hanzi(entry.hanzi());
+                        WordAnalysis analysis = wordAnalysisService.getCompleteAnalysis(word, config);
+                        long wordDuration = System.currentTimeMillis() - wordStartTime;
+                        return new WordAnalysisResult(entry, analysis, wordDuration);
                     }, executor);
 
                     CompletableFuture<List<PronunciationCandidate>> audioCandidatesFuture = CompletableFuture.supplyAsync(() -> {
@@ -282,30 +273,24 @@ public class ParsePlecoCommand implements Runnable {
                                     int completed = completedCount.incrementAndGet();
                                     double percentage = (completed * 100.0) / maxToProcess;
 
-                                    if (result.analysis != null) {
-                                        int successIndex = successCount.incrementAndGet();
+                                    int successIndex = successCount.incrementAndGet();
 
-                                        System.out.println("=".repeat(80));
-                                        System.out.printf("Word %d/%d (%.1f%%) - '%s' (completed in %.2fs)%n",
-                                            completed, maxToProcess, percentage, result.entry.hanzi(), result.duration / 1000.0);
-                                        System.out.println("=".repeat(80));
+                                    System.out.println("=".repeat(80));
+                                    System.out.printf("Word %d/%d (%.1f%%) - '%s' (completed in %.2fs)%n",
+                                        completed, maxToProcess, percentage, result.entry.hanzi(), result.duration / 1000.0);
+                                    System.out.println("=".repeat(80));
 
-                                        if (rawOutput) {
-                                            AnalysisPrinter.printRaw(result.analysis);
-                                        } else {
-                                            AnalysisPrinter.printFormatted(result.analysis);
-                                        }
-
-                                        System.out.println();
-
-                                        // Collect for export and store with audio candidates for later selection
-                                        successfulAnalyses.add(result.analysis);
-                                        wordsWithAudio.add(new WordWithAudioCandidates(result.analysis, audioCandsFromResult));
+                                    if (rawOutput) {
+                                        AnalysisPrinter.printRaw(result.analysis);
                                     } else {
-                                        errorCount.incrementAndGet();
-                                        System.err.printf("Error analyzing word '%s' (%.2fs): %s%n",
-                                            result.entry.hanzi(), result.duration / 1000.0, result.error.getMessage());
+                                        AnalysisPrinter.printFormatted(result.analysis);
                                     }
+
+                                    System.out.println();
+
+                                    // Collect for export and store with audio candidates for later selection
+                                    successfulAnalyses.add(result.analysis);
+                                    wordsWithAudio.add(new WordWithAudioCandidates(result.analysis, audioCandsFromResult));
                                 }
                             } catch (Exception e) {
                                 throw new RuntimeException("Error processing combined analysis and audio results", e);
@@ -464,13 +449,11 @@ public class ParsePlecoCommand implements Runnable {
     private static class WordAnalysisResult {
         final PlecoEntry entry;
         final WordAnalysis analysis;
-        final RuntimeException error;
         final long duration; // Duration in milliseconds
 
-        WordAnalysisResult(PlecoEntry entry, WordAnalysis analysis, RuntimeException error, long duration) {
+        WordAnalysisResult(PlecoEntry entry, WordAnalysis analysis, long duration) {
             this.entry = entry;
             this.analysis = analysis;
-            this.error = error;
             this.duration = duration;
         }
     }

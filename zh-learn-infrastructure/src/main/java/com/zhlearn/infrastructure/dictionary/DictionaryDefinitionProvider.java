@@ -30,7 +30,15 @@ public class DictionaryDefinitionProvider implements DefinitionProvider {
     @Override
     public Definition getDefinition(Hanzi word) {
         return dictionary.lookup(word.characters())
-            .map(analysis -> analysis.definition())
+            .map(analysis -> {
+                // If the dictionary definition is a placeholder for empty definitions,
+                // return null to trigger AI generation
+                String defText = analysis.definition().meaning();
+                if ("[No definition available in dictionary]".equals(defText)) {
+                    return null;
+                }
+                return analysis.definition();
+            })
             .orElse(null);
     }
 }

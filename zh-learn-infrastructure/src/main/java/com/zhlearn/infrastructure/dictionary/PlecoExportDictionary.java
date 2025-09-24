@@ -58,29 +58,42 @@ public class PlecoExportDictionary implements Dictionary {
         if (simplifiedCharacters == null || simplifiedCharacters.trim().isEmpty()) {
             return Optional.empty();
         }
-        
+
         PlecoEntry entry = wordMap.get(simplifiedCharacters.trim());
         if (entry == null) {
             return Optional.empty();
         }
-        
+
         return Optional.of(convertToWordAnalysis(entry));
     }
     
     /**
      * Convert a PlecoEntry to WordAnalysis using direct field mapping.
      * No parsing of internal content - uses fields as-is.
-     * 
+     *
      * @param entry the PlecoEntry to convert
      * @return WordAnalysis object
      */
     private WordAnalysis convertToWordAnalysis(PlecoEntry entry) {
         Hanzi hanzi = new Hanzi(entry.hanzi());
         Pinyin pinyin = new Pinyin(entry.pinyin());
-        Definition definition = new Definition(entry.definitionText());
+
+        // Handle empty definitions by using a placeholder
+        String defText = entry.definitionText();
+        if (defText == null || defText.trim().isEmpty()) {
+            defText = "[No definition available in dictionary]";
+        }
+
+        Definition definition = new Definition(defText);
         StructuralDecomposition decomposition = new StructuralDecomposition("unknown");
         Example examples = new Example(List.of(), List.of());
-        Explanation explanation = new Explanation(entry.definitionText());
+
+        // Use the same placeholder for explanation when definition is empty
+        String explText = entry.definitionText();
+        if (explText == null || explText.trim().isEmpty()) {
+            explText = "[No definition available in dictionary]";
+        }
+        Explanation explanation = new Explanation(explText);
 
         return new WordAnalysis(
             hanzi,

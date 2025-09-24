@@ -47,7 +47,7 @@ public class ZaiOpenAiChatModel implements ChatModel {
                 String body = buildRequestBody(prompt);
                 HttpRequest req = HttpRequest.newBuilder()
                         .uri(URI.create(endpoint))
-                        .timeout(Duration.ofSeconds(30))
+                        .timeout(Duration.ofSeconds(120))
                         .header("Content-Type", "application/json")
                         .header("Authorization", "Bearer " + apiKey)
                         // Some gateways use custom header; include both to maximize compatibility
