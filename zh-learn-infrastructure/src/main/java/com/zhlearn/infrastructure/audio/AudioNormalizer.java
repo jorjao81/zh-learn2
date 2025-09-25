@@ -28,7 +28,7 @@ public class AudioNormalizer {
             ProcessBuilder pb = new ProcessBuilder(
                 "ffmpeg", "-y",
                 "-i", input.toAbsolutePath().toString(),
-                "-af", "loudnorm=I=-16:LRA=11:TP=-1.5",
+                "-af", "loudnorm=I=-16:LRA=11:TP=-1.5,areverse,atrim=start=0.01,areverse",
                 "-ar", "44100",
                 "-ac", "1",
                 "-codec:a", "libmp3lame",

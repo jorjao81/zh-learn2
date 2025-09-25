@@ -131,7 +131,7 @@ public class QwenAudioProvider implements AudioProvider {
             if (executorService != null) {
                 log.debug("[Qwen] Using parallel voice synthesis for '{}'", word.characters());
                 List<CompletableFuture<PronunciationDescription>> voiceFutures = VOICES.stream()
-                    .map(voice -> CompletableFuture.supplyAsync(() -> {
+                    .map(voice -> CompletableFuture.<PronunciationDescription>supplyAsync(() -> {
                         try {
                             return downloadVoiceDescription(activeClient, voice, word, pinyin);
                         } catch (IOException | InterruptedException e) {

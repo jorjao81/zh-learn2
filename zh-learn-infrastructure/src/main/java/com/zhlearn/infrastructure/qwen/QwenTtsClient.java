@@ -21,7 +21,7 @@ class QwenTtsClient {
     private static final Logger log = LoggerFactory.getLogger(QwenTtsClient.class);
 
     private static final URI ENDPOINT = URI.create(
-        "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation");
+        "https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation");
     private static final Duration TIMEOUT = Duration.ofSeconds(15);
 
     private final HttpClient httpClient;
