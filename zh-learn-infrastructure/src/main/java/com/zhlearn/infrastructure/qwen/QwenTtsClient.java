@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletionStage;
+import java.util.Set;
 
 class QwenTtsClient {
     private static final Logger log = LoggerFactory.getLogger(QwenTtsClient.class);
@@ -23,6 +23,11 @@ class QwenTtsClient {
     private static final URI ENDPOINT = URI.create(
         "https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation");
     private static final Duration TIMEOUT = Duration.ofSeconds(15);
+
+    private static final int MAX_ATTEMPTS = 5;
+    private static final Duration INITIAL_BACKOFF = Duration.ofSeconds(5);
+    private static final double BACKOFF_FACTOR = 3.0D;
+    private static final Duration OVERALL_TIMEOUT = Duration.ofMinutes(15);
 
     private final HttpClient httpClient;
     private final ObjectMapper mapper;
@@ -35,6 +40,10 @@ class QwenTtsClient {
     }
 
     QwenTtsClient(HttpClient httpClient, String apiKey, String model, ObjectMapper mapper) {
+        this(httpClient, apiKey, model, mapper, defaultRetry());
+    }
+
+    QwenTtsClient(HttpClient httpClient, String apiKey, String model, ObjectMapper mapper, Retry retry) {
         if (apiKey == null || apiKey.isBlank()) {
             throw new IllegalArgumentException("API key missing for DashScope request");
         }
@@ -45,38 +54,35 @@ class QwenTtsClient {
         this.mapper = mapper;
         this.apiKey = apiKey;
         this.model = model;
-
-        // Configure exponential backoff retry for rate limiting
-        this.retry = Retry.builder()
-            .retryPolicy(Retry.DelayingRetryPolicy.builder()
-                .calls(5)                           // Total calls (1 initial + 4 retries)
-                .delay(Duration.ofMillis(5000))     // Initial delay: 5 seconds
-                .delayFactor(3.0)                   // Exponential factor: 3x
-                .build())
-            .overallTimeout(Duration.ofMinutes(15))
-            .build();
+        this.retry = retry;
     }
 
     public QwenTtsResult synthesize(String voice, String text) throws IOException, InterruptedException {
-        return retry.invoke(() -> {
-            try {
-                return synthesizeInternal(voice, text);
-            } catch (Exception e) {
-                if (e instanceof IOException ioException) {
-                    // Check if this is a rate limit error (HTTP 429)
-                    if (ioException.getMessage().contains("HTTP 429")) {
-                        log.warn("[QwenTTS] Rate limit exceeded for voice '{}', text length {}, retrying with exponential backoff",
-                            voice, text.length());
-                        throw new RateLimitException(ioException);
-                    }
+        try {
+            return retry.invoke(() -> {
+                try {
+                    return synthesizeOnce(voice, text);
+                } catch (IOException | InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
-                // Re-throw all other exceptions as-is (no retry)
-                throw new RuntimeException(e);
+            });
+        } catch (RateLimitException rateLimit) {
+            log.warn("[QwenTTS] Rate limit exhausted after {} attempts for voice '{}'", MAX_ATTEMPTS, voice);
+            throw new IOException("DashScope rate limit exhausted after retries", rateLimit);
+        } catch (RuntimeException runtime) {
+            Throwable cause = runtime.getCause();
+            if (cause instanceof IOException io) {
+                throw io;
             }
-        });
+            if (cause instanceof InterruptedException interrupted) {
+                Thread.currentThread().interrupt();
+                throw interrupted;
+            }
+            throw runtime;
+        }
     }
 
-    private QwenTtsResult synthesizeInternal(String voice, String text) throws IOException, InterruptedException {
+    private QwenTtsResult synthesizeOnce(String voice, String text) throws IOException, InterruptedException {
         Map<String, Object> payload = new HashMap<>();
         payload.put("model", model);
         Map<String, Object> input = new HashMap<>();
@@ -102,6 +108,7 @@ class QwenTtsClient {
             String errorMessage = "DashScope TTS failed: HTTP " + response.statusCode() + " - " + response.body();
             if (response.statusCode() == 429) {
                 log.warn("[QwenTTS] Rate limit hit (HTTP 429) for voice '{}': {}", voice, response.body());
+                throw new RateLimitException(errorMessage);
             } else {
                 log.error("[QwenTTS] TTS request failed with HTTP {} for voice '{}': {}",
                     response.statusCode(), voice, response.body());
@@ -120,10 +127,18 @@ class QwenTtsClient {
         return new QwenTtsResult(URI.create(urlNode.asText()), requestId);
     }
 
-    // Custom exception to signal retryable rate limit errors
-    private static class RateLimitException extends RuntimeException {
-        public RateLimitException(IOException cause) {
-            super(cause);
+    private static Retry defaultRetry() {
+        return Retry.create(builder -> builder
+            .calls(MAX_ATTEMPTS)
+            .delay(INITIAL_BACKOFF)
+            .delayFactor(BACKOFF_FACTOR)
+            .overallTimeout(OVERALL_TIMEOUT)
+            .applyOn(Set.of(RateLimitException.class)));
+    }
+
+    static final class RateLimitException extends RuntimeException {
+        RateLimitException(String message) {
+            super(message);
         }
     }
 }

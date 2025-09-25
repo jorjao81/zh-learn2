@@ -347,71 +347,7 @@ sequenceDiagram
 
 ### Provider Error Strategy
 
-```mermaid
-flowchart TD
-    A[Provider Call] --> B{Validation}
-    B -->|Invalid Config| C[Fail Fast - Configuration Error]
-    B -->|Valid| D[Execute Operation]
-
-    D --> E{Result Status}
-    E -->|Success| F[Return Result]
-    E -->|Retryable Error| G[Apply Retry Policy]
-    E -->|Fatal Error| H[Log and Propagate]
-
-    G --> I{Retry Attempts Left?}
-    I -->|Yes| J[Exponential Backoff]
-    I -->|No| K[Fail with Context]
-
-    J --> L[Wait and Retry]
-    L --> D
-
-    C --> M[Runtime Exception]
-    H --> M
-    K --> M
-    F --> N[Success]
-```
-
-### Retry Mechanism Implementation
-
-```mermaid
-classDiagram
-    class QwenTtsClient {
-        -Retry retry
-        -HttpClient httpClient
-        -String apiKey
-        +synthesize(String, String) QwenTtsResult
-        -synthesizeInternal(String, String) QwenTtsResult
-    }
-
-    class Retry {
-        -DelayingRetryPolicy retryPolicy
-        -Duration overallTimeout
-        +invoke(Supplier~T~) T
-    }
-
-    class DelayingRetryPolicy {
-        -int calls
-        -Duration delay
-        -double delayFactor
-        +builder() Builder
-    }
-
-    class RateLimitException {
-        <<custom exception>>
-        +RateLimitException(IOException)
-    }
-
-    QwenTtsClient --> Retry
-    Retry --> DelayingRetryPolicy
-    QwenTtsClient --> RateLimitException
-```
-
-**Retry Configuration:**
-- **Initial Delay**: 5 seconds
-- **Delay Factor**: 3x exponential backoff
-- **Max Attempts**: 5 total calls (1 initial + 4 retries)
-- **Overall Timeout**: 15 minutes
-- **Retryable Conditions**: HTTP 429 (rate limiting)
+Qwen TTS continues to follow the fail-fast rule: configuration is validated up front and any non-rate-limit failure immediately propagates as an exception. The only tolerance is for HTTP 429 responses, where we delegate backoff handling to Helidon Fault Tolerance. The Helidon retry policy performs exponential backoff (5s initial, ×3 factor, maximum five attempts within a 15 minute window). If the API still returns 429 after the final attempt, the provider throws an `IOException` and the CLI crashes as required by the constitution.
 
 ## Provider Extension Patterns
 
@@ -581,7 +517,7 @@ flowchart TD
 
     C --> I[Successful Requests]
     C --> J[Failed Requests]
-    C --> K[Retry Success Rate]
+    C --> K[Failure Rate]
 
     D --> L[Cache Efficiency]
     D --> M[Storage Usage]

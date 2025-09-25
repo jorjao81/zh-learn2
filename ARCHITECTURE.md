@@ -392,56 +392,7 @@ flowchart TD
 
 ## Error Handling and Resilience
 
-### Error Handling Strategy
-
-```mermaid
-flowchart TD
-    A[Operation] --> B{Error Type}
-    B -->|Configuration| C[Fail Fast]
-    B -->|Network| D[Retry with Backoff]
-    B -->|Rate Limit| E[Exponential Backoff]
-    B -->|Provider Failure| F[Graceful Degradation]
-
-    C --> G[Clear Error Message]
-    D --> H[Limited Retries]
-    E --> I[5s → 15s → 45s delays]
-    F --> J[Continue with Available Data]
-
-    G --> K[Exit with Error Code]
-    H --> L[Log and Continue/Fail]
-    I --> M[Success or Final Failure]
-    J --> N[Partial Results]
-```
-
-### Retry Mechanism
-
-```mermaid
-sequenceDiagram
-    participant Client as Client Code
-    participant Retry as Retry Handler
-    participant API as External API
-
-    Client->>Retry: Call with retry policy
-    Retry->>API: Initial request
-    API-->>Retry: HTTP 429 (Rate Limited)
-
-    Note over Retry: Wait 5 seconds
-    Retry->>API: Retry attempt 1
-    API-->>Retry: HTTP 429 (Rate Limited)
-
-    Note over Retry: Wait 15 seconds (3x)
-    Retry->>API: Retry attempt 2
-    API-->>Retry: HTTP 200 (Success)
-
-    Retry-->>Client: Successful response
-```
-
-**Retry Configuration:**
-- Initial delay: 5 seconds
-- Backoff factor: 3x
-- Maximum attempts: 5
-- Overall timeout: 15 minutes
-- Retryable conditions: HTTP 429, network timeouts
+The project adheres to the fail-fast principle. Providers validate configuration and execute external calls once, surfacing failures immediately with contextual logging. The single exception is Qwen TTS HTTP 429 handling: Helidon Fault Tolerance performs an exponential backoff (5 attempts, 5s base delay, ×3 factor, 15 minute cap). If the service still returns 429 after the final attempt, the provider raises an `IOException` to terminate the command.
 
 ## Security and Configuration
 
