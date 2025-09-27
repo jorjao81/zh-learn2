@@ -57,12 +57,12 @@ class QwenTtsClient {
         this.retry = retry;
     }
 
-    public QwenTtsResult synthesize(String voice, String text) throws IOException, InterruptedException {
+    public QwenTtsResult synthesize(String voice, String text) throws IOException, InterruptedException, ContentModerationException {
         try {
             return retry.invoke(() -> {
                 try {
                     return synthesizeOnce(voice, text);
-                } catch (IOException | InterruptedException e) {
+                } catch (IOException | InterruptedException | ContentModerationException e) {
                     throw new RuntimeException(e);
                 }
             });
@@ -78,11 +78,14 @@ class QwenTtsClient {
                 Thread.currentThread().interrupt();
                 throw interrupted;
             }
+            if (cause instanceof ContentModerationException moderation) {
+                throw moderation;
+            }
             throw runtime;
         }
     }
 
-    private QwenTtsResult synthesizeOnce(String voice, String text) throws IOException, InterruptedException {
+    private QwenTtsResult synthesizeOnce(String voice, String text) throws IOException, InterruptedException, ContentModerationException {
         Map<String, Object> payload = new HashMap<>();
         payload.put("model", model);
         Map<String, Object> input = new HashMap<>();
@@ -109,11 +112,14 @@ class QwenTtsClient {
             if (response.statusCode() == 429) {
                 log.warn("[QwenTTS] Rate limit hit (HTTP 429) for voice '{}': {}", voice, response.body());
                 throw new RateLimitException(errorMessage);
+            } else if (response.statusCode() == 400 && response.body().contains("DataInspectionFailed")) {
+                log.warn("[QwenTTS] Content moderation failed for voice '{}': {}", voice, response.body());
+                throw new ContentModerationException("Content rejected by moderation policy: " + response.body());
             } else {
                 log.error("[QwenTTS] TTS request failed with HTTP {} for voice '{}': {}",
                     response.statusCode(), voice, response.body());
+                throw new IOException(errorMessage);
             }
-            throw new IOException(errorMessage);
         }
 
         log.debug("[QwenTTS] TTS request successful for voice '{}', status: {}", voice, response.statusCode());
