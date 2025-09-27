@@ -103,7 +103,7 @@ Select providers at runtime:
 - Current providers:
   - `anki`: scans the Anki export at `~/.zh-learn/Chinese.txt` and reuses the pronunciation of any card with the exact same pinyin (tone marks included). If nothing is found, it returns no pronunciation.
   - `forvo`: fetches pronunciations from Forvo (manual selection only). Requires `FORVO_API_KEY` in the environment or `-Dforvo.api.key=...`.
-  - `qwen-tts`: calls Alibaba Qwen text-to-speech and normalizes three voices per lookup (`Cherry`, `Serena`, `Chelsie`). Requires `DASHSCOPE_API_KEY` with access to the current Qwen TTS endpoint (Alibaba notes this service is limited to the CN-Beijing region). Each request downloads and caches all three voices so they remain available offline.
+  - `qwen-tts`: calls Alibaba Qwen text-to-speech and normalizes three voices per lookup (`Cherry`, `Serena`, `Chelsie`). Requires `DASHSCOPE_API_KEY` with access to the international DashScope endpoint hosted in the Singapore region. Each request downloads and caches all three voices so they remain available offline.
 
 Audio playback file resolution:
 - Default Anki media directory on macOS: `~/Library/Application Support/Anki2/User 1/collection.media/`

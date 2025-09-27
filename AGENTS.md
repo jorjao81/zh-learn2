@@ -167,7 +167,7 @@ this.audioProviders = List.of(
 3. **Test thoroughly** - Audio providers are used in interactive audio selection
 
 ## Configuration & Secrets
-- Source secrets from env vars: e.g., `OPENAI_API_KEY`, `DEEPSEEK_API_KEY`, `DASHSCOPE_API_KEY` (required for Qwen text-to-speech and currently limited to Alibaba's CN-Beijing region accounts). See `.envrc` for local setup patterns.
+- Source secrets from env vars: e.g., `OPENAI_API_KEY`, `DEEPSEEK_API_KEY`, `DASHSCOPE_API_KEY` (required for Qwen text-to-speech and must target Alibaba's international Singapore region endpoint). See `.envrc` for local setup patterns.
 - Don’t commit secrets or sensitive files. Avoid printing keys, prompts, or provider responses containing PII.
 
 ## CLI Usage (quick reference)

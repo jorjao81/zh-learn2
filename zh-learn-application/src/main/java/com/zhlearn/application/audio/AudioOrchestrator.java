@@ -1,5 +1,6 @@
 package com.zhlearn.application.audio;
 
+import com.zhlearn.domain.exception.GracefulProviderFailureException;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.provider.AudioProvider;
@@ -66,9 +67,15 @@ public class AudioOrchestrator {
             return candidates;
         } catch (Exception e) {
             long duration = System.currentTimeMillis() - startTime;
-            log.error("[Audio] Provider '{}' failed for '{}' after {}ms: {}",
-                provider.getName(), word.characters(), duration, e.getMessage(), e);
-            return List.of();
+            if (e instanceof GracefulProviderFailureException) {
+                log.warn("[Audio] Provider '{}' gracefully failed for '{}' after {}ms: {}",
+                    provider.getName(), word.characters(), duration, e.getMessage());
+                return List.of();
+            } else {
+                log.error("[Audio] Provider '{}' failed for '{}' after {}ms: {}",
+                    provider.getName(), word.characters(), duration, e.getMessage(), e);
+                throw e;
+            }
         }
     }
 

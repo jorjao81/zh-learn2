@@ -34,8 +34,8 @@ public class QwenAudioProvider implements AudioProvider {
     private static final Logger log = LoggerFactory.getLogger(QwenAudioProvider.class);
 
     private static final String NAME = "qwen-tts";
-    private static final String MODEL = "qwen-tts-latest";
-    private static final List<String> VOICES = List.of("Cherry", "Serena", "Chelsie");
+    private static final String MODEL = "qwen3-tts-flash";
+    private static final List<String> VOICES = List.of("Cherry", "Ethan", "Nofish", "Jennifer", "Ryan", "Katerina", "Elias");
     private static final Duration TIMEOUT = Duration.ofSeconds(15);
     private static final String API_KEY_ENV = "DASHSCOPE_API_KEY";
     private static final String USER_AGENT = "zh-learn-cli/1.0 (QwenAudioProvider)";
@@ -69,7 +69,7 @@ public class QwenAudioProvider implements AudioProvider {
 
     @Override
     public String getDescription() {
-        return "Qwen text-to-speech (voices: " + String.join(", ", VOICES) + ")";
+        return "Qwen3-TTS-Flash with 7 standard Mandarin voices (" + String.join(", ", VOICES) + ")";
     }
 
     @Override
@@ -109,6 +109,9 @@ public class QwenAudioProvider implements AudioProvider {
                 } finally {
                     Files.deleteIfExists(downloaded);
                 }
+            } catch (ContentModerationException e) {
+                log.warn("[Qwen] Skipping voice '{}' for '{}' due to content moderation: {}",
+                    voice, word.characters(), e.getMessage());
             } catch (IOException | InterruptedException e) {
                 if (e instanceof InterruptedException) {
                     Thread.currentThread().interrupt();
@@ -131,9 +134,13 @@ public class QwenAudioProvider implements AudioProvider {
             if (executorService != null) {
                 log.debug("[Qwen] Using parallel voice synthesis for '{}'", word.characters());
                 List<CompletableFuture<PronunciationDescription>> voiceFutures = VOICES.stream()
-                    .map(voice -> CompletableFuture.supplyAsync(() -> {
+                    .map(voice -> CompletableFuture.<PronunciationDescription>supplyAsync(() -> {
                         try {
                             return downloadVoiceDescription(activeClient, voice, word, pinyin);
+                        } catch (ContentModerationException e) {
+                            log.warn("[Qwen] Skipping voice '{}' for '{}' due to content moderation: {}",
+                                voice, word.characters(), e.getMessage());
+                            return null;
                         } catch (IOException | InterruptedException e) {
                             throw new RuntimeException("Failed to download voice " + voice + " for " + word.characters(), e);
                         }
@@ -142,6 +149,7 @@ public class QwenAudioProvider implements AudioProvider {
 
                 results = voiceFutures.stream()
                     .map(CompletableFuture::join)
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toList());
             } else {
                 log.debug("[Qwen] Using sequential voice synthesis for '{}'", word.characters());
@@ -167,13 +175,18 @@ public class QwenAudioProvider implements AudioProvider {
     private List<PronunciationDescription> getPronunciationsWithDescriptionsSequential(QwenTtsClient activeClient, Hanzi word, Pinyin pinyin) throws IOException, InterruptedException {
         List<PronunciationDescription> results = new ArrayList<>();
         for (String voice : VOICES) {
-            PronunciationDescription desc = downloadVoiceDescription(activeClient, voice, word, pinyin);
-            results.add(desc);
+            try {
+                PronunciationDescription desc = downloadVoiceDescription(activeClient, voice, word, pinyin);
+                results.add(desc);
+            } catch (ContentModerationException e) {
+                log.warn("[Qwen] Skipping voice '{}' for '{}' due to content moderation: {}",
+                    voice, word.characters(), e.getMessage());
+            }
         }
         return results;
     }
 
-    private PronunciationDescription downloadVoiceDescription(QwenTtsClient activeClient, String voice, Hanzi word, Pinyin pinyin) throws IOException, InterruptedException {
+    private PronunciationDescription downloadVoiceDescription(QwenTtsClient activeClient, String voice, Hanzi word, Pinyin pinyin) throws IOException, InterruptedException, ContentModerationException {
         long startTime = System.currentTimeMillis();
         log.debug("[Qwen] Processing voice '{}' for '{}'", voice, word.characters());
 
