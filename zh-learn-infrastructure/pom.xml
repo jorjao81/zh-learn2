@@ -48,15 +48,16 @@
         </dependency>
 
         <!-- Helidon Fault Tolerance for retry with exponential backoff -->
-        <dependency>
-            <groupId>io.helidon.fault-tolerance</groupId>
-            <artifactId>helidon-fault-tolerance</artifactId>
-        </dependency>
-
         <!-- Jackson YAML for parsing example responses -->
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
+        </dependency>
+
+        <!-- Helidon Fault Tolerance for backoff on HTTP 429 -->
+        <dependency>
+            <groupId>io.helidon.fault-tolerance</groupId>
+            <artifactId>helidon-fault-tolerance</artifactId>
         </dependency>
 
         <!-- Apache Commons CSV for robust CSV/TSV parsing -->

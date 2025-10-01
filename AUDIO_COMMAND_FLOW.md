@@ -115,7 +115,7 @@ sequenceDiagram
     participant TTS as TTS Provider
     participant API as TTS API
     participant Cache as AudioCache
-    participant Retry as RetryMechanism
+    participant Retry as HelidonRetry
 
     Cmd->>TTS: getPronunciation(hanzi, pinyin)
     TTS->>Cache: Check existing cache
@@ -125,22 +125,22 @@ sequenceDiagram
         TTS-->>Cmd: Cached audio path
     else Cache miss
         TTS->>Retry: synthesize(voice, text)
-        Retry->>API: HTTP POST to TTS endpoint
+        Retry->>API: HTTP POST
 
         alt Success
-            API-->>Retry: Audio data (base64 or URL)
-            Retry-->>TTS: TTS result
+            API-->>Retry: Audio URL response
+            Retry-->>TTS: Result
             TTS->>Cache: Decode and normalize audio
             Cache-->>TTS: Normalized file path
             TTS-->>Cmd: Audio file path
-        else Rate Limited (HTTP 429)
-            API-->>Retry: Rate limit error
-            Note over Retry: Exponential backoff<br/>5s initial, 3x multiplier
-            Retry->>API: Retry request after delay
-        else Other Error
+        else HTTP 429
+            API-->>Retry: Rate limit response
+            Note over Retry: Helidon backoff (5 attempts, 5s base, ×3 factor)
+            Retry-->>API: Retry request
+        else Error
             API-->>Retry: Error response
-            Retry-->>TTS: Exception
-            TTS-->>Cmd: Optional.empty()
+            Retry-->>TTS: Exception propagated
+            TTS-->>Cmd: Exception propagated
         end
     end
 ```
