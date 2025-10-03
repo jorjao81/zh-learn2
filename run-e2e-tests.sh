@@ -23,7 +23,7 @@ mvn -B $MAVEN_REPO_LOCAL_ARG clean package
 
 echo ""
 echo "Step 2/2: Running end-to-end tests..."
-mvn -B $MAVEN_REPO_LOCAL_ARG -pl zh-learn-e2e test
+mvn -B $MAVEN_REPO_LOCAL_ARG -pl zh-learn-e2e -Prun-e2e-tests test
 
 echo ""
 echo "✓ All builds and tests passed successfully!"

@@ -97,6 +97,15 @@ public class ConfigurableDefinitionFormatterProvider implements DefinitionFormat
     @Override
     public Definition formatDefinition(Hanzi word, Optional<String> rawDefinition) {
         WordType type = WordType.from(word);
+
+        // Skip formatting for single-character words with etymology markers
+        if (type == WordType.SINGLE_CHARACTER && rawDefinition.isPresent()) {
+            String raw = rawDefinition.get();
+            if (containsEtymologyMarkers(raw)) {
+                return new Definition(raw);
+            }
+        }
+
         return selectProcessor(type).apply(word, rawDefinition);
     }
 
@@ -113,5 +122,12 @@ public class ConfigurableDefinitionFormatterProvider implements DefinitionFormat
             case SINGLE_CHARACTER -> singleCharProcessor;
             case MULTI_CHARACTER -> multiCharProcessor;
         };
+    }
+
+    private boolean containsEtymologyMarkers(String text) {
+        return text.contains("=>") ||
+               text.contains("⇒") ||
+               text.contains("→") ||
+               text.contains("(orig.)");
     }
 }

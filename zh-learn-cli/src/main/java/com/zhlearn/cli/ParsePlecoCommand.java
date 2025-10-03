@@ -99,6 +99,9 @@ public class ParsePlecoCommand implements Runnable {
     @Option(names = {"--export-anki"}, description = "Export results to Anki-compatible TSV file (Chinese 2 format)")
     private String ankiExportFile;
 
+    @Option(names = {"--skip-audio"}, description = "Skip interactive audio selection")
+    private boolean skipAudio = false;
+
     @picocli.CommandLine.ParentCommand
     private MainCommand parent;
     
@@ -164,7 +167,7 @@ public class ParsePlecoCommand implements Runnable {
                 .limit(maxToProcess)
                 .collect(Collectors.toList());
             
-            if (!entriesToProcess.isEmpty()) {
+            if (!entriesToProcess.isEmpty() && !skipAudio) {
                 ensureInteractiveAudioSupported();
             }
 
@@ -173,10 +176,10 @@ public class ParsePlecoCommand implements Runnable {
             
             if (disableParallelism) {
                 // Sequential processing
-                processWordsSequentially(entriesToProcess, wordAnalysisService, config, maxToProcess, successfulAnalyses);
+                processWordsSequentially(entriesToProcess, wordAnalysisService, config, maxToProcess, successfulAnalyses, skipAudio);
             } else {
                 // Parallel word-level processing
-                processWordsInParallel(entriesToProcess, wordAnalysisService, config, maxToProcess, parallelThreads, successfulAnalyses);
+                processWordsInParallel(entriesToProcess, wordAnalysisService, config, maxToProcess, parallelThreads, successfulAnalyses, skipAudio);
                 
                 // Shutdown the parallel service
                 if (parallelService != null) {
@@ -195,27 +198,27 @@ public class ParsePlecoCommand implements Runnable {
     }
     
     private void processWordsSequentially(List<PlecoEntry> entries, WordAnalysisService wordAnalysisService,
-                                        ProviderConfiguration config, int maxToProcess, List<WordAnalysis> successfulAnalyses) {
+                                        ProviderConfiguration config, int maxToProcess, List<WordAnalysis> successfulAnalyses, boolean skipAudio) {
         int processedCount = 0;
-        AudioOrchestrator audioOrchestrator = new AudioOrchestrator(parent.getAudioProviders(), parent.getAudioExecutor());
-        InteractiveAudioUI audioUI = new InteractiveAudioUI();
+        AudioOrchestrator audioOrchestrator = skipAudio ? null : new AudioOrchestrator(parent.getAudioProviders(), parent.getAudioExecutor());
+        InteractiveAudioUI audioUI = skipAudio ? null : new InteractiveAudioUI();
 
         for (PlecoEntry entry : entries) {
             Hanzi word = new Hanzi(entry.hanzi());
             WordAnalysis analysis = wordAnalysisService.getCompleteAnalysis(word, config);
             printWordAnalysis(analysis, processedCount + 1, maxToProcess);
-            WordAnalysis updated = runAudioSelection(audioOrchestrator, audioUI, analysis);
+            WordAnalysis updated = skipAudio ? analysis : runAudioSelection(audioOrchestrator, audioUI, analysis);
             successfulAnalyses.add(updated); // Collect for export
             processedCount++;
         }
-        
+
         System.out.println("Processed " + processedCount + " words successfully.");
     }
     
     private void processWordsInParallel(List<PlecoEntry> entries, WordAnalysisService wordAnalysisService,
-                                      ProviderConfiguration config, int maxToProcess, int threadCount, List<WordAnalysis> successfulAnalyses) {
+                                      ProviderConfiguration config, int maxToProcess, int threadCount, List<WordAnalysis> successfulAnalyses, boolean skipAudio) {
         ExecutorService executor = Executors.newFixedThreadPool(threadCount);
-        AudioOrchestrator audioOrchestrator = new AudioOrchestrator(parent.getAudioProviders(), parent.getAudioExecutor());
+        AudioOrchestrator audioOrchestrator = skipAudio ? null : new AudioOrchestrator(parent.getAudioProviders(), parent.getAudioExecutor());
 
         // Thread-safe counters for progress tracking
         AtomicInteger completedCount = new AtomicInteger(0);
@@ -240,25 +243,27 @@ public class ParsePlecoCommand implements Runnable {
                         return new WordAnalysisResult(entry, analysis, wordDuration);
                     }, executor);
 
-                    CompletableFuture<List<PronunciationCandidate>> audioCandidatesFuture = CompletableFuture.supplyAsync(() -> {
-                        Hanzi word = new Hanzi(entry.hanzi());
-                        // We need pinyin for audio candidates, so we get it directly
-                        if (wordAnalysisService instanceof ParallelWordAnalysisService parallelService) {
-                            // Access the delegate to get pinyin synchronously to avoid double work
-                            Pinyin pinyin = parallelService.getPinyin(word, config.getPinyinProvider());
-                            System.out.printf("[INFO] Starting audio download for '%s' (%s)%n", word.characters(), pinyin.pinyin());
-                            List<PronunciationCandidate> candidates = audioOrchestrator.candidatesFor(word, pinyin);
-                            System.out.printf("[INFO] Completed audio download for '%s' - found %d candidates%n", word.characters(), candidates.size());
-                            return candidates;
-                        } else {
-                            // Fallback for non-parallel service
-                            Pinyin pinyin = wordAnalysisService.getPinyin(word, config.getPinyinProvider());
-                            System.out.printf("[INFO] Starting audio download for '%s' (%s)%n", word.characters(), pinyin.pinyin());
-                            List<PronunciationCandidate> candidates = audioOrchestrator.candidatesFor(word, pinyin);
-                            System.out.printf("[INFO] Completed audio download for '%s' - found %d candidates%n", word.characters(), candidates.size());
-                            return candidates;
-                        }
-                    }, executor);
+                    CompletableFuture<List<PronunciationCandidate>> audioCandidatesFuture = skipAudio
+                        ? CompletableFuture.completedFuture(List.of())
+                        : CompletableFuture.supplyAsync(() -> {
+                            Hanzi word = new Hanzi(entry.hanzi());
+                            // We need pinyin for audio candidates, so we get it directly
+                            if (wordAnalysisService instanceof ParallelWordAnalysisService parallelService) {
+                                // Access the delegate to get pinyin synchronously to avoid double work
+                                Pinyin pinyin = parallelService.getPinyin(word, config.getPinyinProvider());
+                                System.out.printf("[INFO] Starting audio download for '%s' (%s)%n", word.characters(), pinyin.pinyin());
+                                List<PronunciationCandidate> candidates = audioOrchestrator.candidatesFor(word, pinyin);
+                                System.out.printf("[INFO] Completed audio download for '%s' - found %d candidates%n", word.characters(), candidates.size());
+                                return candidates;
+                            } else {
+                                // Fallback for non-parallel service
+                                Pinyin pinyin = wordAnalysisService.getPinyin(word, config.getPinyinProvider());
+                                System.out.printf("[INFO] Starting audio download for '%s' (%s)%n", word.characters(), pinyin.pinyin());
+                                List<PronunciationCandidate> candidates = audioOrchestrator.candidatesFor(word, pinyin);
+                                System.out.printf("[INFO] Completed audio download for '%s' - found %d candidates%n", word.characters(), candidates.size());
+                                return candidates;
+                            }
+                        }, executor);
 
                     // Combine both futures and return a CompletableFuture<Void> that processes the display
                     return CompletableFuture.allOf(analysisFuture, audioCandidatesFuture)
@@ -305,7 +310,7 @@ public class ParsePlecoCommand implements Runnable {
             // Wait for all displays to complete
             CompletableFuture.allOf(displayFutures.toArray(new CompletableFuture[0])).join();
 
-            if (!wordsWithAudio.isEmpty()) {
+            if (!skipAudio && !wordsWithAudio.isEmpty()) {
                 InteractiveAudioUI audioUI = new InteractiveAudioUI();
                 for (int i = 0; i < wordsWithAudio.size(); i++) {
                     WordWithAudioCandidates wordWithAudio = wordsWithAudio.get(i);
