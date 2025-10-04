@@ -102,6 +102,11 @@ public class ParsePlecoCommand implements Runnable {
     @Option(names = {"--skip-audio"}, description = "Skip interactive audio selection")
     private boolean skipAudio = false;
 
+    @Option(names = {"--audio-selections"}, description = "Pre-configured audio selections (format: word:provider:description;word:provider:description)")
+    private String audioSelectionsParam;
+
+    private java.util.Map<String, AudioSelection> audioSelections;
+
     @picocli.CommandLine.ParentCommand
     private MainCommand parent;
     
@@ -111,9 +116,12 @@ public class ParsePlecoCommand implements Runnable {
             Path path = Paths.get(filePath);
             PlecoExportParser parser = new PlecoExportParser();
             List<PlecoEntry> entries = parser.parseFile(path);
-            
+
             System.out.println("Successfully parsed " + entries.size() + " entries from: " + filePath);
             System.out.println();
+
+            // Parse audio selections if provided
+            audioSelections = parseAudioSelections(audioSelectionsParam);
             
             // Create dictionary for any dictionary-based providers
             PlecoExportDictionary dictionary = new PlecoExportDictionary(entries);
@@ -356,23 +364,40 @@ public class ParsePlecoCommand implements Runnable {
             return analysis;
         }
 
-        System.out.printf("Selecting audio for '%s' (%s)%n", analysis.word().characters(), analysis.pinyin().pinyin());
-        SystemAudioPlayer player = new SystemAudioPlayer();
-        SelectionSession session = new SelectionSession(candidates, player);
         PronunciationCandidate choice;
-        try {
-            choice = audioUI.run(session, analysis.word(), analysis.pinyin());
-        } finally {
-            player.stop();
+
+        // Check for programmatic selection
+        AudioSelection selection = audioSelections.get(analysis.word().characters());
+        if (selection != null) {
+            choice = findMatchingCandidate(candidates, selection);
+            if (choice == null) {
+                throw new IllegalStateException(
+                    String.format("No matching audio candidate found for '%s' with provider '%s' and description '%s'",
+                        analysis.word().characters(), selection.provider(), selection.description())
+                );
+            }
+            System.out.printf("Programmatically selected audio for '%s' (%s): %s - %s%n",
+                analysis.word().characters(), analysis.pinyin().pinyin(), choice.label(), choice.description());
+        } else {
+            // Interactive selection
+            System.out.printf("Selecting audio for '%s' (%s)%n", analysis.word().characters(), analysis.pinyin().pinyin());
+            SystemAudioPlayer player = new SystemAudioPlayer();
+            SelectionSession session = new SelectionSession(candidates, player);
+            try {
+                choice = audioUI.run(session, analysis.word(), analysis.pinyin());
+            } finally {
+                player.stop();
+            }
+
+            if (choice == null) {
+                System.out.println("No audio selected.");
+                System.out.println();
+                return analysis;
+            }
+
+            System.out.println("Selected audio: " + choice.file().toAbsolutePath());
         }
 
-        if (choice == null) {
-            System.out.println("No audio selected.");
-            System.out.println();
-            return analysis;
-        }
-
-        System.out.println("Selected audio: " + choice.file().toAbsolutePath());
         System.out.println();
 
         return new WordAnalysis(
@@ -398,23 +423,40 @@ public class ParsePlecoCommand implements Runnable {
             return analysis;
         }
 
-        System.out.printf("Selecting audio for '%s' (%s)%n", analysis.word().characters(), analysis.pinyin().pinyin());
-        SystemAudioPlayer player = new SystemAudioPlayer();
-        SelectionSession session = new SelectionSession(candidates, player);
         PronunciationCandidate choice;
-        try {
-            choice = audioUI.run(session, analysis.word(), analysis.pinyin());
-        } finally {
-            player.stop();
+
+        // Check for programmatic selection
+        AudioSelection selection = audioSelections.get(analysis.word().characters());
+        if (selection != null) {
+            choice = findMatchingCandidate(candidates, selection);
+            if (choice == null) {
+                throw new IllegalStateException(
+                    String.format("No matching audio candidate found for '%s' with provider '%s' and description '%s'",
+                        analysis.word().characters(), selection.provider(), selection.description())
+                );
+            }
+            System.out.printf("Programmatically selected audio for '%s' (%s): %s - %s%n",
+                analysis.word().characters(), analysis.pinyin().pinyin(), choice.label(), choice.description());
+        } else {
+            // Interactive selection
+            System.out.printf("Selecting audio for '%s' (%s)%n", analysis.word().characters(), analysis.pinyin().pinyin());
+            SystemAudioPlayer player = new SystemAudioPlayer();
+            SelectionSession session = new SelectionSession(candidates, player);
+            try {
+                choice = audioUI.run(session, analysis.word(), analysis.pinyin());
+            } finally {
+                player.stop();
+            }
+
+            if (choice == null) {
+                System.out.println("No audio selected.");
+                System.out.println();
+                return analysis;
+            }
+
+            System.out.println("Selected audio: " + choice.file().toAbsolutePath());
         }
 
-        if (choice == null) {
-            System.out.println("No audio selected.");
-            System.out.println();
-            return analysis;
-        }
-
-        System.out.println("Selected audio: " + choice.file().toAbsolutePath());
         System.out.println();
 
         return new WordAnalysis(
@@ -481,6 +523,11 @@ public class ParsePlecoCommand implements Runnable {
         WordAnalysisResult analysisResult,
         List<PronunciationCandidate> audioCandidates
     ) {}
+
+    /**
+     * Record to hold audio selection preference for a word
+     */
+    private record AudioSelection(String provider, String description) {}
     
     /**
      * Export the successful WordAnalysis results to an Anki-compatible TSV file.
@@ -505,5 +552,43 @@ public class ParsePlecoCommand implements Runnable {
             .filter(provider -> provider.getName().equals(providerName))
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("Unknown audio provider: " + providerName));
+    }
+
+    private java.util.Map<String, AudioSelection> parseAudioSelections(String param) {
+        if (param == null || param.trim().isEmpty()) {
+            return java.util.Map.of();
+        }
+
+        java.util.Map<String, AudioSelection> selections = new java.util.HashMap<>();
+        String[] entries = param.split(";");
+        for (String entry : entries) {
+            String[] parts = entry.split(":");
+            if (parts.length != 3) {
+                throw new IllegalArgumentException("Invalid audio selection format: " + entry + ". Expected format: word:provider:description");
+            }
+            String word = parts[0].trim();
+            String provider = parts[1].trim();
+            String description = parts[2].trim();
+            selections.put(word, new AudioSelection(provider, description));
+        }
+        return selections;
+    }
+
+    private PronunciationCandidate findMatchingCandidate(List<PronunciationCandidate> candidates, AudioSelection selection) {
+        for (PronunciationCandidate candidate : candidates) {
+            String candidateDesc = stripEmojis(candidate.description());
+            if (candidate.label().equals(selection.provider()) && candidateDesc.equals(selection.description())) {
+                return candidate;
+            }
+        }
+        return null;
+    }
+
+    private String stripEmojis(String text) {
+        if (text == null) {
+            return "";
+        }
+        // Remove emoji characters (Unicode ranges for emoji)
+        return text.replaceAll("[\\p{So}\\p{Cn}]", "").trim();
     }
 }
