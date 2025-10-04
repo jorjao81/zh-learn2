@@ -113,13 +113,14 @@ public class ProvidersCommand implements Runnable {
     }
     
     private void displayProviders(List<ProviderInfo> providers) {
-        int terminalWidth = TerminalFormatter.getTerminalWidth();
-        
+        TerminalFormatter formatter = parent.getTerminalFormatter();
+        int terminalWidth = formatter.getTerminalWidth();
+
         // Group providers by type
         Map<ProviderType, List<ProviderInfo>> providersByType = providers.stream()
             .collect(Collectors.groupingBy(ProviderInfo::type));
-        
-        System.out.println(TerminalFormatter.createBox("Available Providers", 
+
+        System.out.println(formatter.createBox("Available Providers",
             "Found " + providers.size() + " provider(s)", terminalWidth));
         System.out.println();
         
@@ -137,47 +138,48 @@ public class ProvidersCommand implements Runnable {
     }
     
     private void displayProviderType(ProviderType type, List<ProviderInfo> providers, int terminalWidth) {
+        TerminalFormatter formatter = parent.getTerminalFormatter();
         StringBuilder content = new StringBuilder();
-        
+
         for (int i = 0; i < providers.size(); i++) {
             ProviderInfo provider = providers.get(i);
-            
+
             if (i > 0) content.append("\n\n");
-            
+
             // Provider name and description
-            content.append(TerminalFormatter.formatChineseWord(provider.name(), ""))
+            content.append(formatter.formatChineseWord(provider.name(), ""))
                    .append("\n")
-                   .append(TerminalFormatter.formatProviderDescription(provider.description()))
+                   .append(formatter.formatProviderDescription(provider.description()))
                    .append("\n\n");
-            
+
             // Supported classes - always show for detailed view or when provider doesn't support everything
             EnumSet<ProviderClass> allClasses = EnumSet.allOf(ProviderClass.class);
             EnumSet<ProviderClass> supportedClasses = EnumSet.copyOf(provider.supportedClasses());
             boolean supportsAll = supportedClasses.size() == allClasses.size();
-            
+
             if (detailed || !supportsAll) {
-                content.append(TerminalFormatter.formatBoldLabel("Capabilities:"))
+                content.append(formatter.formatBoldLabel("Capabilities:"))
                        .append("\n");
-                
+
                 for (ProviderClass clazz : ProviderClass.values()) {
                     content.append("  "); // Indentation for capabilities
                     if (supportedClasses.contains(clazz)) {
-                        content.append(TerminalFormatter.formatSupportedCapability(formatProviderClass(clazz)));
+                        content.append(formatter.formatSupportedCapability(formatProviderClass(clazz)));
                     } else {
-                        content.append(TerminalFormatter.formatUnsupportedCapability(formatProviderClass(clazz)));
+                        content.append(formatter.formatUnsupportedCapability(formatProviderClass(clazz)));
                     }
                     content.append("\n");
                 }
-                
+
                 if (!supportsAll) {
-                    content.append("\n").append(TerminalFormatter.formatWarning("This provider doesn't support all capabilities"));
+                    content.append("\n").append(formatter.formatWarning("This provider doesn't support all capabilities"));
                 } else if (detailed) {
                     content.append("\n").append("✓ This provider supports all capabilities");
                 }
             }
         }
-        
-        System.out.println(TerminalFormatter.createBox(
+
+        System.out.println(formatter.createBox(
             type.name() + " Providers (" + providers.size() + ")",
             content.toString(),
             terminalWidth
@@ -196,13 +198,14 @@ public class ProvidersCommand implements Runnable {
     }
     
     private void displayLegend(int terminalWidth) {
-        String legend = TerminalFormatter.formatSupportedCapability("Supported") + "    " +
-                       TerminalFormatter.formatUnsupportedCapability("Not supported") + "    " +
-                       TerminalFormatter.formatWarning("Partial support") + "\n\n" +
+        TerminalFormatter formatter = parent.getTerminalFormatter();
+        String legend = formatter.formatSupportedCapability("Supported") + "    " +
+                       formatter.formatUnsupportedCapability("Not supported") + "    " +
+                       formatter.formatWarning("Partial support") + "\n\n" +
                        "Usage: zh-learn word <word> --provider <provider-name>\n" +
                        "       zh-learn word <word> --explanation-provider <provider> --example-provider <provider>";
-        
-        System.out.println(TerminalFormatter.createBox("Legend", legend, terminalWidth));
+
+        System.out.println(formatter.createBox("Legend", legend, terminalWidth));
     }
 
     private String getCurrentAIProvider() {

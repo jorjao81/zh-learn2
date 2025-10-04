@@ -33,6 +33,10 @@ public class MainCommand implements Runnable {
     private final com.zhlearn.cli.audio.PrePlayback prePlayback;
     private final com.zhlearn.infrastructure.audio.AudioPaths audioPaths;
     private final com.zhlearn.infrastructure.audio.AudioCache audioCache;
+    private final AIProviderFactory aiProviderFactory;
+    private final TerminalFormatter terminalFormatter;
+    private final com.zhlearn.application.format.ExamplesHtmlFormatter examplesHtmlFormatter;
+    private final AnalysisPrinter analysisPrinter;
 
     public MainCommand() {
         // Initialize audio utilities
@@ -40,6 +44,14 @@ public class MainCommand implements Runnable {
         com.zhlearn.infrastructure.audio.AudioNormalizer audioNormalizer = new com.zhlearn.infrastructure.audio.AudioNormalizer();
         this.audioCache = new com.zhlearn.infrastructure.audio.AudioCache(audioPaths, audioNormalizer);
         this.prePlayback = new com.zhlearn.cli.audio.PrePlayback(audioCache, audioPaths);
+
+        // Initialize AI provider factory
+        this.aiProviderFactory = new AIProviderFactory();
+
+        // Initialize formatters
+        this.terminalFormatter = new TerminalFormatter();
+        this.examplesHtmlFormatter = new com.zhlearn.application.format.ExamplesHtmlFormatter();
+        this.analysisPrinter = new AnalysisPrinter(examplesHtmlFormatter, terminalFormatter);
 
         // Initialize audio executor and providers
         this.audioExecutor = new AudioDownloadExecutor();
@@ -68,29 +80,41 @@ public class MainCommand implements Runnable {
         return prePlayback;
     }
 
+    public TerminalFormatter getTerminalFormatter() {
+        return terminalFormatter;
+    }
+
+    public com.zhlearn.application.format.ExamplesHtmlFormatter getExamplesHtmlFormatter() {
+        return examplesHtmlFormatter;
+    }
+
+    public AnalysisPrinter getAnalysisPrinter() {
+        return analysisPrinter;
+    }
+
     // AI Provider factory methods - create on demand and crash if fails
     public ExampleProvider createExampleProvider(String providerName) {
-        return AIProviderFactory.createExampleProvider(providerName);
+        return aiProviderFactory.createExampleProvider(providerName);
     }
 
     public ExampleProvider createExampleProvider(String providerName, String model) {
-        return AIProviderFactory.createExampleProvider(providerName, model);
+        return aiProviderFactory.createExampleProvider(providerName, model);
     }
 
     public ExplanationProvider createExplanationProvider(String providerName) {
-        return AIProviderFactory.createExplanationProvider(providerName);
+        return aiProviderFactory.createExplanationProvider(providerName);
     }
 
     public ExplanationProvider createExplanationProvider(String providerName, String model) {
-        return AIProviderFactory.createExplanationProvider(providerName, model);
+        return aiProviderFactory.createExplanationProvider(providerName, model);
     }
 
     public StructuralDecompositionProvider createDecompositionProvider(String providerName) {
-        return AIProviderFactory.createDecompositionProvider(providerName);
+        return aiProviderFactory.createDecompositionProvider(providerName);
     }
 
     public StructuralDecompositionProvider createDecompositionProvider(String providerName, String model) {
-        return AIProviderFactory.createDecompositionProvider(providerName, model);
+        return aiProviderFactory.createDecompositionProvider(providerName, model);
     }
 
     public PinyinProvider createPinyinProvider(String providerName) {
@@ -114,11 +138,11 @@ public class MainCommand implements Runnable {
     }
 
     public DefinitionFormatterProvider createDefinitionFormatterProvider(String providerName) {
-        return AIProviderFactory.createDefinitionFormatterProvider(providerName);
+        return aiProviderFactory.createDefinitionFormatterProvider(providerName);
     }
 
     public DefinitionFormatterProvider createDefinitionFormatterProvider(String providerName, String model) {
-        return AIProviderFactory.createDefinitionFormatterProvider(providerName, model);
+        return aiProviderFactory.createDefinitionFormatterProvider(providerName, model);
     }
 
     public void shutdown() {

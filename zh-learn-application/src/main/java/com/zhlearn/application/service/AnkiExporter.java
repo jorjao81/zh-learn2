@@ -19,6 +19,15 @@ import java.util.Optional;
  * Generates files suitable for import into Anki using the "Chinese 2" note type.
  */
 public class AnkiExporter {
+    private final ExamplesHtmlFormatter examplesHtmlFormatter;
+
+    public AnkiExporter() {
+        this.examplesHtmlFormatter = new ExamplesHtmlFormatter();
+    }
+
+    public AnkiExporter(ExamplesHtmlFormatter examplesHtmlFormatter) {
+        this.examplesHtmlFormatter = examplesHtmlFormatter;
+    }
 
     /**
      * Export a list of WordAnalysis objects to an Anki-compatible TSV file.
@@ -32,7 +41,7 @@ public class AnkiExporter {
 
             // Write data rows
             for (WordAnalysis analysis : analyses) {
-                String examplesHtml = ExamplesHtmlFormatter.format(analysis.examples());
+                String examplesHtml = examplesHtmlFormatter.format(analysis.examples());
                 String soundNotation = buildSoundNotation(analysis.pronunciation(), ankiMediaDir);
 
                 AnkiExportEntry entry = new AnkiExportEntry(

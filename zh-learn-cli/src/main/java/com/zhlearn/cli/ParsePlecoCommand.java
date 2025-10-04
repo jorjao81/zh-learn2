@@ -297,9 +297,9 @@ public class ParsePlecoCommand implements Runnable {
                                     System.out.println("=".repeat(80));
 
                                     if (rawOutput) {
-                                        AnalysisPrinter.printRaw(result.analysis);
+                                        parent.getAnalysisPrinter().printRaw(result.analysis);
                                     } else {
-                                        AnalysisPrinter.printFormatted(result.analysis);
+                                        parent.getAnalysisPrinter().printFormatted(result.analysis);
                                     }
 
                                     System.out.println();
@@ -343,9 +343,9 @@ public class ParsePlecoCommand implements Runnable {
         System.out.println("=".repeat(80));
         
         if (rawOutput) {
-            AnalysisPrinter.printRaw(analysis);
+            parent.getAnalysisPrinter().printRaw(analysis);
         } else {
-            AnalysisPrinter.printFormatted(analysis);
+            parent.getAnalysisPrinter().printFormatted(analysis);
         }
         
         System.out.println();

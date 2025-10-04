@@ -15,28 +15,31 @@ import com.zhlearn.infrastructure.dummy.DummyStructuralDecompositionProvider;
 
 public class AIProviderFactory {
 
-    // Config instances - created once per factory usage
-    private static final DeepSeekConfig deepSeekConfig = new DeepSeekConfig();
-    private static final GeminiConfig geminiConfig = new GeminiConfig();
-    private static final ZhipuConfig zhipuConfig = new ZhipuConfig();
-    private static final DashScopeConfig dashScopeConfig = new DashScopeConfig();
-    private static final OpenRouterConfig openRouterConfig = new OpenRouterConfig();
+    // Config instances - created once per factory instance
+    private final DeepSeekConfig deepSeekConfig = new DeepSeekConfig();
+    private final GeminiConfig geminiConfig = new GeminiConfig();
+    private final ZhipuConfig zhipuConfig = new ZhipuConfig();
+    private final DashScopeConfig dashScopeConfig = new DashScopeConfig();
+    private final OpenRouterConfig openRouterConfig = new OpenRouterConfig();
 
     // ProviderConfig helper instances
-    private static final SingleCharExampleProviderConfig singleCharExampleConfig = new SingleCharExampleProviderConfig();
-    private static final MultiCharExampleProviderConfig multiCharExampleConfig = new MultiCharExampleProviderConfig();
-    private static final SingleCharExplanationProviderConfig singleCharExplanationConfig = new SingleCharExplanationProviderConfig();
-    private static final MultiCharExplanationProviderConfig multiCharExplanationConfig = new MultiCharExplanationProviderConfig();
-    private static final SingleCharStructuralDecompositionProviderConfig singleCharStructuralConfig = new SingleCharStructuralDecompositionProviderConfig();
-    private static final MultiCharStructuralDecompositionProviderConfig multiCharStructuralConfig = new MultiCharStructuralDecompositionProviderConfig();
-    private static final SingleCharDefinitionFormatterProviderConfig singleCharDefinitionConfig = new SingleCharDefinitionFormatterProviderConfig();
-    private static final MultiCharDefinitionFormatterProviderConfig multiCharDefinitionConfig = new MultiCharDefinitionFormatterProviderConfig();
+    private final SingleCharExampleProviderConfig singleCharExampleConfig = new SingleCharExampleProviderConfig();
+    private final MultiCharExampleProviderConfig multiCharExampleConfig = new MultiCharExampleProviderConfig();
+    private final SingleCharExplanationProviderConfig singleCharExplanationConfig = new SingleCharExplanationProviderConfig();
+    private final MultiCharExplanationProviderConfig multiCharExplanationConfig = new MultiCharExplanationProviderConfig();
+    private final SingleCharStructuralDecompositionProviderConfig singleCharStructuralConfig = new SingleCharStructuralDecompositionProviderConfig();
+    private final MultiCharStructuralDecompositionProviderConfig multiCharStructuralConfig = new MultiCharStructuralDecompositionProviderConfig();
+    private final SingleCharDefinitionFormatterProviderConfig singleCharDefinitionConfig = new SingleCharDefinitionFormatterProviderConfig();
+    private final MultiCharDefinitionFormatterProviderConfig multiCharDefinitionConfig = new MultiCharDefinitionFormatterProviderConfig();
 
-    public static ExampleProvider createExampleProvider(String providerName) {
+    public AIProviderFactory() {
+    }
+
+    public ExampleProvider createExampleProvider(String providerName) {
         return createExampleProvider(providerName, null);
     }
 
-    public static ExampleProvider createExampleProvider(String providerName, String model) {
+    public ExampleProvider createExampleProvider(String providerName, String model) {
         if (providerName == null) providerName = "deepseek-chat";
         if (providerName.equals("openrouter") && (model == null || model.trim().isEmpty())) {
             model = "gpt-3.5-turbo";
@@ -200,11 +203,11 @@ public class AIProviderFactory {
         };
     }
 
-    public static ExplanationProvider createExplanationProvider(String providerName) {
+    public ExplanationProvider createExplanationProvider(String providerName) {
         return createExplanationProvider(providerName, null);
     }
 
-    public static ExplanationProvider createExplanationProvider(String providerName, String model) {
+    public ExplanationProvider createExplanationProvider(String providerName, String model) {
         if (providerName == null) providerName = "deepseek-chat";
         if (providerName.equals("openrouter") && (model == null || model.trim().isEmpty())) {
             model = "gpt-3.5-turbo";
@@ -370,11 +373,11 @@ public class AIProviderFactory {
         };
     }
 
-    public static StructuralDecompositionProvider createDecompositionProvider(String providerName) {
+    public StructuralDecompositionProvider createDecompositionProvider(String providerName) {
         return createDecompositionProvider(providerName, null);
     }
 
-    public static StructuralDecompositionProvider createDecompositionProvider(String providerName, String model) {
+    public StructuralDecompositionProvider createDecompositionProvider(String providerName, String model) {
         if (providerName == null) providerName = "deepseek-chat";
         if (providerName.equals("openrouter") && (model == null || model.trim().isEmpty())) {
             model = "gpt-3.5-turbo";
@@ -540,7 +543,7 @@ public class AIProviderFactory {
         };
     }
 
-    private static <T> ProviderConfig<T> createProviderConfig(
+    private <T> ProviderConfig<T> createProviderConfig(
             String apiKey,
             String baseUrl,
             String modelName,
@@ -563,14 +566,14 @@ public class AIProviderFactory {
         );
     }
 
-    private static void requireAPIKey(String keyName, String providerName) {
+    private void requireAPIKey(String keyName, String providerName) {
         String key = readEnv(keyName);
         if (key == null || key.trim().isEmpty()) {
             throw new RuntimeException("Provider '" + providerName + "' requires " + keyName + " environment variable to be set");
         }
     }
 
-    private static String readEnv(String key) {
+    private String readEnv(String key) {
         String value = System.getProperty(key);
         if (value == null || value.isBlank()) {
             value = System.getenv(key);
@@ -578,11 +581,11 @@ public class AIProviderFactory {
         return value;
     }
 
-    public static DefinitionFormatterProvider createDefinitionFormatterProvider(String providerName) {
+    public DefinitionFormatterProvider createDefinitionFormatterProvider(String providerName) {
         return createDefinitionFormatterProvider(providerName, null);
     }
 
-    public static DefinitionFormatterProvider createDefinitionFormatterProvider(String providerName, String model) {
+    public DefinitionFormatterProvider createDefinitionFormatterProvider(String providerName, String model) {
         if (providerName == null) providerName = "deepseek-chat";
         if (providerName.equals("openrouter") && (model == null || model.trim().isEmpty())) {
             model = "gpt-3.5-turbo";
