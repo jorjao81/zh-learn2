@@ -21,6 +21,9 @@ jobs:
     - name: Build and test (with Moditect)
       run: mvn -B -Pmoditect -Dmaven.repo.local=$GITHUB_WORKSPACE/.m2 clean install
 
+    - name: Run E2E tests
+      run: mvn -B -Dmaven.repo.local=$GITHUB_WORKSPACE/.m2 -pl zh-learn-e2e test
+
     - name: Run with modular JVM
       run: ./zh-learn.sh word 学习 --decomposition-provider dummy --example-provider dummy --explanation-provider dummy
 
