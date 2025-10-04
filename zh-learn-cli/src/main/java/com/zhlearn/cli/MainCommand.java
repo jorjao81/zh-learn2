@@ -30,8 +30,17 @@ public class MainCommand implements Runnable {
     // Audio providers - keep as list like before
     private final List<AudioProvider> audioProviders;
     private final AudioDownloadExecutor audioExecutor;
+    private final com.zhlearn.cli.audio.PrePlayback prePlayback;
+    private final com.zhlearn.infrastructure.audio.AudioPaths audioPaths;
+    private final com.zhlearn.infrastructure.audio.AudioCache audioCache;
 
     public MainCommand() {
+        // Initialize audio utilities
+        this.audioPaths = new com.zhlearn.infrastructure.audio.AudioPaths();
+        com.zhlearn.infrastructure.audio.AudioNormalizer audioNormalizer = new com.zhlearn.infrastructure.audio.AudioNormalizer();
+        this.audioCache = new com.zhlearn.infrastructure.audio.AudioCache(audioPaths, audioNormalizer);
+        this.prePlayback = new com.zhlearn.cli.audio.PrePlayback(audioCache, audioPaths);
+
         // Initialize audio executor and providers
         this.audioExecutor = new AudioDownloadExecutor();
         this.audioProviders = List.of(
@@ -53,6 +62,10 @@ public class MainCommand implements Runnable {
 
     public AudioDownloadExecutor getAudioExecutor() {
         return audioExecutor;
+    }
+
+    public com.zhlearn.cli.audio.PrePlayback getPrePlayback() {
+        return prePlayback;
     }
 
     // AI Provider factory methods - create on demand and crash if fails

@@ -9,7 +9,8 @@ import java.util.Optional;
 
 public class CachedChatModel implements ChatModel {
     private static final Logger log = LoggerFactory.getLogger(CachedChatModel.class);
-    
+    private static final CacheKeyGenerator cacheKeyGenerator = new CacheKeyGenerator();
+
     private final ChatModel delegate;
     private final FileSystemCache cache;
     private final String baseUrl;
@@ -32,7 +33,7 @@ public class CachedChatModel implements ChatModel {
 
     @Override
     public String chat(String prompt) {
-        String cacheKey = CacheKeyGenerator.generateKey(prompt, baseUrl, modelName, temperature, maxTokens);
+        String cacheKey = cacheKeyGenerator.generateKey(prompt, baseUrl, modelName, temperature, maxTokens);
 
         Optional<String> cachedResponse = cache.get(cacheKey);
         if (cachedResponse.isPresent()) {

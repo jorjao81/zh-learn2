@@ -11,7 +11,14 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
 
 public class AudioCache {
-    private static final Logger log = LoggerFactory.getLogger(AudioCache.class);
+    private final Logger log = LoggerFactory.getLogger(AudioCache.class);
+    private final AudioPaths audioPaths;
+    private final AudioNormalizer audioNormalizer;
+
+    public AudioCache(AudioPaths audioPaths, AudioNormalizer audioNormalizer) {
+        this.audioPaths = audioPaths;
+        this.audioNormalizer = audioNormalizer;
+    }
 
     /**
      * Ensure a normalized MP3 exists in the cache for this source audio. Returns the target path.
@@ -23,21 +30,21 @@ public class AudioCache {
      * @param pinyin    pinyin with tone marks
      * @param sourceId  optional stable id (e.g., remote URL) to name files deterministically
      */
-    public static Path ensureCachedNormalized(Path src, String provider, String hanzi, String pinyin, String sourceId) throws IOException, InterruptedException {
+    public Path ensureCachedNormalized(Path src, String provider, String hanzi, String pinyin, String sourceId) throws IOException, InterruptedException {
         String name = buildName(provider, hanzi, pinyin, src, sourceId);
-        Path target = AudioPaths.audioDir().resolve(provider).resolve(name);
+        Path target = audioPaths.audioDir().resolve(provider).resolve(name);
         Files.createDirectories(target.getParent());
 
         if (Files.exists(target)) return target.toAbsolutePath();
         if (src == null || !Files.exists(src)) {
             throw new IOException("Source audio missing for cache: " + src + " (target: " + target + ")");
         }
-        AudioNormalizer.normalizeToMp3(src, target);
+        audioNormalizer.normalizeToMp3(src, target);
         return target.toAbsolutePath();
     }
 
-    private static String buildName(String provider, String hanzi, String pinyin, Path src, String sourceId) throws IOException {
-        String base = AudioPaths.sanitize(provider) + "_" + AudioPaths.sanitize(hanzi) + "_" + AudioPaths.sanitize(pinyin);
+    private String buildName(String provider, String hanzi, String pinyin, Path src, String sourceId) throws IOException {
+        String base = audioPaths.sanitize(provider) + "_" + audioPaths.sanitize(hanzi) + "_" + audioPaths.sanitize(pinyin);
         String hash = "";
         if (sourceId != null && !sourceId.isBlank()) {
             hash = shortHash(sourceId.getBytes(java.nio.charset.StandardCharsets.UTF_8));
@@ -48,7 +55,7 @@ public class AudioCache {
         return base + ".mp3";
     }
 
-    private static String shortHash(byte[] bytes) {
+    private String shortHash(byte[] bytes) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
             byte[] d = md.digest(bytes);

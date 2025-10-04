@@ -65,6 +65,6 @@ public class DefinitionResponseMapper implements Function<String, Definition> {
         }
 
         // No markdown code blocks found, return as is
-        return input;
+        return trimmed;
     }
 }

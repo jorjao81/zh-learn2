@@ -634,17 +634,17 @@ public class TerminalFormatter {
     private static int findBreakPoint(String text, int maxWidth) {
         // Simple approach: break at maxWidth, but could be enhanced
         // to break at word boundaries or avoid breaking ANSI sequences
-        int breakPoint = maxWidth;
-        
+        int breakPoint = Math.min(maxWidth, text.length());
+
         // Don't break in the middle of ANSI escape sequences
-        for (int i = 1; i <= maxWidth && i < text.length(); i++) {
-            if (text.charAt(maxWidth - i) == '\u001B') {
+        for (int i = 1; i <= breakPoint; i++) {
+            if (text.charAt(breakPoint - i) == '\u001B') {
                 // Found start of ANSI sequence, break before it
-                return maxWidth - i;
+                return breakPoint - i;
             }
         }
-        
-        return Math.min(breakPoint, text.length());
+
+        return breakPoint;
     }
     
     private static int getDisplayLength(String text) {

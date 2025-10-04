@@ -358,7 +358,7 @@ public class ParsePlecoCommand implements Runnable {
             return analysis;
         }
 
-        List<PronunciationCandidate> candidates = PrePlayback.preprocessCandidates(analysis.word(), analysis.pinyin(), rawCandidates);
+        List<PronunciationCandidate> candidates = parent.getPrePlayback().preprocessCandidates(analysis.word(), analysis.pinyin(), rawCandidates);
         if (candidates.isEmpty()) {
             System.out.printf("No playable pronunciation candidates available for '%s'.%n%n", analysis.word().characters());
             return analysis;
@@ -417,7 +417,7 @@ public class ParsePlecoCommand implements Runnable {
             return analysis;
         }
 
-        List<PronunciationCandidate> candidates = PrePlayback.preprocessCandidates(analysis.word(), analysis.pinyin(), rawCandidates);
+        List<PronunciationCandidate> candidates = parent.getPrePlayback().preprocessCandidates(analysis.word(), analysis.pinyin(), rawCandidates);
         if (candidates.isEmpty()) {
             System.out.printf("No playable pronunciation candidates available for '%s'.%n%n", analysis.word().characters());
             return analysis;

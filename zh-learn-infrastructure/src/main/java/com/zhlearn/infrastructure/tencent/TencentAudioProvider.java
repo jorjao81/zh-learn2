@@ -6,6 +6,7 @@ import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.AudioProvider;
 import com.zhlearn.infrastructure.audio.AudioCache;
 import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;
+import com.zhlearn.infrastructure.audio.AudioNormalizer;
 import com.zhlearn.infrastructure.audio.AudioPaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,22 +49,36 @@ public class TencentAudioProvider implements AudioProvider {
 
     private final TencentTtsClient clientOverride;
     private final ExecutorService executorService;
+    private final AudioCache audioCache;
+    private final AudioPaths audioPaths;
 
     public TencentAudioProvider() {
-        this(null, null);
+        this(null, null, createDefaultAudioCache(), createDefaultAudioPaths());
     }
 
     public TencentAudioProvider(TencentTtsClient clientOverride) {
-        this(clientOverride, null);
+        this(clientOverride, null, createDefaultAudioCache(), createDefaultAudioPaths());
     }
 
     public TencentAudioProvider(AudioDownloadExecutor audioExecutor) {
-        this(null, audioExecutor.getExecutor());
+        this(null, audioExecutor.getExecutor(), createDefaultAudioCache(), createDefaultAudioPaths());
     }
 
-    public TencentAudioProvider(TencentTtsClient clientOverride, ExecutorService executorService) {
+    public TencentAudioProvider(TencentTtsClient clientOverride, ExecutorService executorService, AudioCache audioCache, AudioPaths audioPaths) {
         this.clientOverride = clientOverride;
         this.executorService = executorService;
+        this.audioCache = audioCache;
+        this.audioPaths = audioPaths;
+    }
+
+    private static AudioCache createDefaultAudioCache() {
+        AudioPaths paths = new AudioPaths();
+        AudioNormalizer normalizer = new AudioNormalizer();
+        return new AudioCache(paths, normalizer);
+    }
+
+    private static AudioPaths createDefaultAudioPaths() {
+        return new AudioPaths();
     }
 
     @Override
@@ -112,7 +127,7 @@ public class TencentAudioProvider implements AudioProvider {
                 TencentTtsResult result = activeClient.synthesize(voiceType, word.characters());
                 Path audioFile = decodeAudioData(result.audioData());
                 try {
-                    Path normalized = AudioCache.ensureCachedNormalized(audioFile, NAME,
+                    Path normalized = audioCache.ensureCachedNormalized(audioFile, NAME,
                         word.characters(), voiceName, cacheKey(word, pinyin, voiceName));
                     results.add(normalized);
                 } finally {
@@ -204,7 +219,7 @@ public class TencentAudioProvider implements AudioProvider {
 
         try {
             log.debug("[Tencent] Normalizing audio for '{}' voice '{}'", word.characters(), voiceName);
-            Path normalized = AudioCache.ensureCachedNormalized(audioFile, NAME,
+            Path normalized = audioCache.ensureCachedNormalized(audioFile, NAME,
                 word.characters(), voiceName, cacheKey(word, pinyin, voiceName));
 
             long duration = System.currentTimeMillis() - startTime;
@@ -261,14 +276,14 @@ public class TencentAudioProvider implements AudioProvider {
         return voice + "|" + word.characters() + "|" + pinyin.pinyin();
     }
 
-    private static Path cachedPath(Hanzi word, Pinyin pinyin, String voice) {
+    private Path cachedPath(Hanzi word, Pinyin pinyin, String voice) {
         String sourceId = cacheKey(word, pinyin, voice);
-        String base = AudioPaths.sanitize(NAME) + "_" +
-            AudioPaths.sanitize(word.characters()) + "_" +
-            AudioPaths.sanitize(voice);
+        String base = audioPaths.sanitize(NAME) + "_" +
+            audioPaths.sanitize(word.characters()) + "_" +
+            audioPaths.sanitize(voice);
         String hash = shortHash(sourceId.getBytes(StandardCharsets.UTF_8));
         String fileName = base + "_" + hash + ".mp3";
-        return AudioPaths.audioDir().resolve(NAME).resolve(fileName);
+        return audioPaths.audioDir().resolve(NAME).resolve(fileName);
     }
 
     private static String shortHash(byte[] bytes) {

@@ -19,11 +19,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class PrePlaybackTest {
     private Path tmpHome;
+    private PrePlayback prePlayback;
+    private com.zhlearn.infrastructure.audio.AudioPaths audioPaths;
 
     @BeforeEach
     void setup() throws Exception {
         tmpHome = Files.createTempDirectory("zhlearn-cli-test-home");
         System.setProperty("zhlearn.home", tmpHome.toString());
+
+        audioPaths = new com.zhlearn.infrastructure.audio.AudioPaths();
+        com.zhlearn.infrastructure.audio.AudioNormalizer audioNormalizer = new com.zhlearn.infrastructure.audio.AudioNormalizer();
+        com.zhlearn.infrastructure.audio.AudioCache audioCache = new com.zhlearn.infrastructure.audio.AudioCache(audioPaths, audioNormalizer);
+        prePlayback = new PrePlayback(audioCache, audioPaths);
     }
 
     @AfterEach
@@ -38,11 +45,11 @@ class PrePlaybackTest {
         Files.write(src, new byte[]{0,1,2,3});
         PronunciationCandidate in = new PronunciationCandidate("test-provider", src);
 
-        List<PronunciationCandidate> out = PrePlayback.preprocessCandidates(new Hanzi("学习"), new Pinyin("xuéxí"), List.of(in));
+        List<PronunciationCandidate> out = prePlayback.preprocessCandidates(new Hanzi("学习"), new Pinyin("xuéxí"), List.of(in));
         assertThat(out).hasSize(1);
         PronunciationCandidate c = out.get(0);
         assertThat(c.file()).exists();
-        assertThat(c.file().toString()).contains(AudioPaths.audioDir().toString());
+        assertThat(c.file().toString()).contains(audioPaths.audioDir().toString());
         assertThat(c.file().getFileName().toString()).endsWith(".mp3");
     }
 
@@ -54,19 +61,19 @@ class PrePlaybackTest {
 
         PronunciationCandidate in = new PronunciationCandidate("anki", ankiFile);
 
-        List<PronunciationCandidate> out = PrePlayback.preprocessCandidates(new Hanzi("学习"), new Pinyin("xuéxí"), List.of(in));
+        List<PronunciationCandidate> out = prePlayback.preprocessCandidates(new Hanzi("学习"), new Pinyin("xuéxí"), List.of(in));
         assertThat(out).hasSize(1);
         PronunciationCandidate result = out.get(0);
         assertThat(result.file()).isEqualTo(ankiFile.toAbsolutePath());
 
-        try (Stream<Path> files = Files.walk(AudioPaths.audioDir())) {
+        try (Stream<Path> files = Files.walk(audioPaths.audioDir())) {
             assertThat(files.filter(Files::isRegularFile).toList()).isEmpty();
         }
     }
 
     @Test
     void reusesAlreadyCachedFilesWithoutRenaming() throws Exception {
-        Path providerDir = AudioPaths.audioDir().resolve("forvo");
+        Path providerDir = audioPaths.audioDir().resolve("forvo");
         Files.createDirectories(providerDir);
         Path cached = providerDir.resolve("forvo_学习_UserOne_ABCD123456.mp3");
         Files.write(cached, new byte[]{9,9,9});
@@ -76,7 +83,7 @@ class PrePlaybackTest {
             cached
         );
 
-        List<PronunciationCandidate> out = PrePlayback.preprocessCandidates(new Hanzi("学习"), new Pinyin("xuéxí"), List.of(in));
+        List<PronunciationCandidate> out = prePlayback.preprocessCandidates(new Hanzi("学习"), new Pinyin("xuéxí"), List.of(in));
         assertThat(out).hasSize(1);
         PronunciationCandidate candidate = out.get(0);
         assertThat(candidate.file()).isEqualTo(cached.toAbsolutePath());
