@@ -18,15 +18,15 @@
         <maven.compiler.target>24</maven.compiler.target>
         <maven.compiler.release>24</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        
+
         <!-- Dependency versions -->
-        <helidon.version>4.0.12</helidon.version>
+        <helidon.version>4.2.7</helidon.version>
         <langchain4j.version>1.3.0</langchain4j.version>
         <junit.version>5.10.1</junit.version>
         <cucumber.version>7.18.0</cucumber.version>
         <mockito.version>5.7.0</mockito.version>
         <assertj.version>3.24.2</assertj.version>
-        
+
         <!-- Plugin versions -->
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.2.2</maven-surefire-plugin.version>
@@ -74,6 +74,23 @@
                 <version>${helidon.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!-- Helidon Service Registry for dependency injection -->
+            <dependency>
+                <groupId>io.helidon.service</groupId>
+                <artifactId>helidon-service-registry</artifactId>
+                <version>${helidon.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.helidon.service</groupId>
+                <artifactId>helidon-service-codegen</artifactId>
+                <version>${helidon.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.helidon.service</groupId>
+                <artifactId>helidon-service-metadata</artifactId>
+                <version>${helidon.version}</version>
             </dependency>
 
             <!-- LangChain4J BOM -->
@@ -214,6 +231,13 @@
                         </compilerArgs>
                         <fork>true</fork>
                         <showWarnings>false</showWarnings>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>io.helidon.service</groupId>
+                                <artifactId>helidon-service-codegen</artifactId>
+                                <version>${helidon.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
                     </configuration>
                 </plugin>
                 <plugin>
