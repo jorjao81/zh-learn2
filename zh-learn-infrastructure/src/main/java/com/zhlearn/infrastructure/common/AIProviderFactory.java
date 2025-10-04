@@ -22,6 +22,16 @@ public class AIProviderFactory {
     private static final DashScopeConfig dashScopeConfig = new DashScopeConfig();
     private static final OpenRouterConfig openRouterConfig = new OpenRouterConfig();
 
+    // ProviderConfig helper instances
+    private static final SingleCharExampleProviderConfig singleCharExampleConfig = new SingleCharExampleProviderConfig();
+    private static final MultiCharExampleProviderConfig multiCharExampleConfig = new MultiCharExampleProviderConfig();
+    private static final SingleCharExplanationProviderConfig singleCharExplanationConfig = new SingleCharExplanationProviderConfig();
+    private static final MultiCharExplanationProviderConfig multiCharExplanationConfig = new MultiCharExplanationProviderConfig();
+    private static final SingleCharStructuralDecompositionProviderConfig singleCharStructuralConfig = new SingleCharStructuralDecompositionProviderConfig();
+    private static final MultiCharStructuralDecompositionProviderConfig multiCharStructuralConfig = new MultiCharStructuralDecompositionProviderConfig();
+    private static final SingleCharDefinitionFormatterProviderConfig singleCharDefinitionConfig = new SingleCharDefinitionFormatterProviderConfig();
+    private static final MultiCharDefinitionFormatterProviderConfig multiCharDefinitionConfig = new MultiCharDefinitionFormatterProviderConfig();
+
     public static ExampleProvider createExampleProvider(String providerName) {
         return createExampleProvider(providerName, null);
     }
@@ -40,9 +50,9 @@ public class AIProviderFactory {
                     deepSeekConfig.getApiKey(),
                     deepSeekConfig.getBaseUrl(),
                     "deepseek-chat",
-                    SingleCharExampleProviderConfig.templatePath(),
-                    SingleCharExampleProviderConfig.examplesDirectory(),
-                    SingleCharExampleProviderConfig.responseMapper(),
+                    singleCharExampleConfig.templatePath(),
+                    singleCharExampleConfig.examplesDirectory(),
+                    singleCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from DeepSeek (deepseek-chat)"
                 );
@@ -50,9 +60,9 @@ public class AIProviderFactory {
                     deepSeekConfig.getApiKey(),
                     deepSeekConfig.getBaseUrl(),
                     "deepseek-chat",
-                    MultiCharExampleProviderConfig.templatePath(),
-                    MultiCharExampleProviderConfig.examplesDirectory(),
-                    MultiCharExampleProviderConfig.responseMapper(),
+                    multiCharExampleConfig.templatePath(),
+                    multiCharExampleConfig.examplesDirectory(),
+                    multiCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from DeepSeek (deepseek-chat)"
                 );
@@ -64,9 +74,9 @@ public class AIProviderFactory {
                     zhipuConfig.getApiKey(),
                     zhipuConfig.getBaseUrl(),
                     "glm-4-flash",
-                    SingleCharExampleProviderConfig.templatePath(),
-                    SingleCharExampleProviderConfig.examplesDirectory(),
-                    SingleCharExampleProviderConfig.responseMapper(),
+                    singleCharExampleConfig.templatePath(),
+                    singleCharExampleConfig.examplesDirectory(),
+                    singleCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from Zhipu (glm-4-flash)"
                 );
@@ -74,9 +84,9 @@ public class AIProviderFactory {
                     zhipuConfig.getApiKey(),
                     zhipuConfig.getBaseUrl(),
                     "glm-4-flash",
-                    MultiCharExampleProviderConfig.templatePath(),
-                    MultiCharExampleProviderConfig.examplesDirectory(),
-                    MultiCharExampleProviderConfig.responseMapper(),
+                    multiCharExampleConfig.templatePath(),
+                    multiCharExampleConfig.examplesDirectory(),
+                    multiCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from Zhipu (glm-4-flash)"
                 );
@@ -91,9 +101,9 @@ public class AIProviderFactory {
                     zhipuConfig.getApiKey(),
                     zhipuConfig.getBaseUrl(),
                     "glm-4.5",
-                    SingleCharExampleProviderConfig.templatePath(),
-                    SingleCharExampleProviderConfig.examplesDirectory(),
-                    SingleCharExampleProviderConfig.responseMapper(),
+                    singleCharExampleConfig.templatePath(),
+                    singleCharExampleConfig.examplesDirectory(),
+                    singleCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from Zhipu (glm-4.5)"
                 );
@@ -101,9 +111,9 @@ public class AIProviderFactory {
                     zhipuConfig.getApiKey(),
                     zhipuConfig.getBaseUrl(),
                     "glm-4.5",
-                    MultiCharExampleProviderConfig.templatePath(),
-                    MultiCharExampleProviderConfig.examplesDirectory(),
-                    MultiCharExampleProviderConfig.responseMapper(),
+                    multiCharExampleConfig.templatePath(),
+                    multiCharExampleConfig.examplesDirectory(),
+                    multiCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from Zhipu (glm-4.5)"
                 );
@@ -118,9 +128,9 @@ public class AIProviderFactory {
                     dashScopeConfig.getApiKey(),
                     dashScopeConfig.getBaseUrl(),
                     providerName,
-                    SingleCharExampleProviderConfig.templatePath(),
-                    SingleCharExampleProviderConfig.examplesDirectory(),
-                    SingleCharExampleProviderConfig.responseMapper(),
+                    singleCharExampleConfig.templatePath(),
+                    singleCharExampleConfig.examplesDirectory(),
+                    singleCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from DashScope (" + providerName + ")"
                 );
@@ -128,9 +138,9 @@ public class AIProviderFactory {
                     dashScopeConfig.getApiKey(),
                     dashScopeConfig.getBaseUrl(),
                     providerName,
-                    MultiCharExampleProviderConfig.templatePath(),
-                    MultiCharExampleProviderConfig.examplesDirectory(),
-                    MultiCharExampleProviderConfig.responseMapper(),
+                    multiCharExampleConfig.templatePath(),
+                    multiCharExampleConfig.examplesDirectory(),
+                    multiCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from DashScope (" + providerName + ")"
                 );
@@ -142,9 +152,9 @@ public class AIProviderFactory {
                     openRouterConfig.getApiKey(),
                     openRouterConfig.getBaseUrl(),
                     model,
-                    SingleCharExampleProviderConfig.templatePath(),
-                    SingleCharExampleProviderConfig.examplesDirectory(),
-                    SingleCharExampleProviderConfig.responseMapper(),
+                    singleCharExampleConfig.templatePath(),
+                    singleCharExampleConfig.examplesDirectory(),
+                    singleCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from OpenRouter (" + model + ")"
                 );
@@ -152,9 +162,9 @@ public class AIProviderFactory {
                     openRouterConfig.getApiKey(),
                     openRouterConfig.getBaseUrl(),
                     model,
-                    MultiCharExampleProviderConfig.templatePath(),
-                    MultiCharExampleProviderConfig.examplesDirectory(),
-                    MultiCharExampleProviderConfig.responseMapper(),
+                    multiCharExampleConfig.templatePath(),
+                    multiCharExampleConfig.examplesDirectory(),
+                    multiCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from OpenRouter (" + model + ")"
                 );
@@ -166,9 +176,9 @@ public class AIProviderFactory {
                     geminiConfig.getApiKey(),
                     null, // LangChain4j handles base URL internally
                     geminiConfig.getModelName(providerName),
-                    SingleCharExampleProviderConfig.templatePath(),
-                    SingleCharExampleProviderConfig.examplesDirectory(),
-                    SingleCharExampleProviderConfig.responseMapper(),
+                    singleCharExampleConfig.templatePath(),
+                    singleCharExampleConfig.examplesDirectory(),
+                    singleCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from Gemini (" + providerName + ")"
                 );
@@ -176,9 +186,9 @@ public class AIProviderFactory {
                     geminiConfig.getApiKey(),
                     null,
                     geminiConfig.getModelName(providerName),
-                    MultiCharExampleProviderConfig.templatePath(),
-                    MultiCharExampleProviderConfig.examplesDirectory(),
-                    MultiCharExampleProviderConfig.responseMapper(),
+                    multiCharExampleConfig.templatePath(),
+                    multiCharExampleConfig.examplesDirectory(),
+                    multiCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from Gemini (" + providerName + ")"
                 );
@@ -208,9 +218,9 @@ public class AIProviderFactory {
                     deepSeekConfig.getApiKey(),
                     deepSeekConfig.getBaseUrl(),
                     "deepseek-chat",
-                    SingleCharExplanationProviderConfig.templatePath(),
-                    SingleCharExplanationProviderConfig.examplesDirectory(),
-                    SingleCharExplanationProviderConfig.responseMapper(),
+                    singleCharExplanationConfig.templatePath(),
+                    singleCharExplanationConfig.examplesDirectory(),
+                    singleCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from DeepSeek (deepseek-chat)"
                 );
@@ -218,9 +228,9 @@ public class AIProviderFactory {
                     deepSeekConfig.getApiKey(),
                     deepSeekConfig.getBaseUrl(),
                     "deepseek-chat",
-                    MultiCharExplanationProviderConfig.templatePath(),
-                    MultiCharExplanationProviderConfig.examplesDirectory(),
-                    MultiCharExplanationProviderConfig.responseMapper(),
+                    multiCharExplanationConfig.templatePath(),
+                    multiCharExplanationConfig.examplesDirectory(),
+                    multiCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from DeepSeek (deepseek-chat)"
                 );
@@ -233,9 +243,9 @@ public class AIProviderFactory {
                     zhipuConfig.getApiKey(),
                     zhipuConfig.getBaseUrl(),
                     "glm-4-flash",
-                    SingleCharExplanationProviderConfig.templatePath(),
-                    SingleCharExplanationProviderConfig.examplesDirectory(),
-                    SingleCharExplanationProviderConfig.responseMapper(),
+                    singleCharExplanationConfig.templatePath(),
+                    singleCharExplanationConfig.examplesDirectory(),
+                    singleCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from Zhipu (glm-4-flash)"
                 );
@@ -243,9 +253,9 @@ public class AIProviderFactory {
                     zhipuConfig.getApiKey(),
                     zhipuConfig.getBaseUrl(),
                     "glm-4-flash",
-                    MultiCharExplanationProviderConfig.templatePath(),
-                    MultiCharExplanationProviderConfig.examplesDirectory(),
-                    MultiCharExplanationProviderConfig.responseMapper(),
+                    multiCharExplanationConfig.templatePath(),
+                    multiCharExplanationConfig.examplesDirectory(),
+                    multiCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from Zhipu (glm-4-flash)"
                 );
@@ -260,9 +270,9 @@ public class AIProviderFactory {
                     zhipuConfig.getApiKey(),
                     zhipuConfig.getBaseUrl(),
                     "glm-4.5",
-                    SingleCharExplanationProviderConfig.templatePath(),
-                    SingleCharExplanationProviderConfig.examplesDirectory(),
-                    SingleCharExplanationProviderConfig.responseMapper(),
+                    singleCharExplanationConfig.templatePath(),
+                    singleCharExplanationConfig.examplesDirectory(),
+                    singleCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from Zhipu (glm-4.5)"
                 );
@@ -270,9 +280,9 @@ public class AIProviderFactory {
                     zhipuConfig.getApiKey(),
                     zhipuConfig.getBaseUrl(),
                     "glm-4.5",
-                    MultiCharExplanationProviderConfig.templatePath(),
-                    MultiCharExplanationProviderConfig.examplesDirectory(),
-                    MultiCharExplanationProviderConfig.responseMapper(),
+                    multiCharExplanationConfig.templatePath(),
+                    multiCharExplanationConfig.examplesDirectory(),
+                    multiCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from Zhipu (glm-4.5)"
                 );
@@ -287,9 +297,9 @@ public class AIProviderFactory {
                     dashScopeConfig.getApiKey(),
                     dashScopeConfig.getBaseUrl(),
                     providerName,
-                    SingleCharExplanationProviderConfig.templatePath(),
-                    SingleCharExplanationProviderConfig.examplesDirectory(),
-                    SingleCharExplanationProviderConfig.responseMapper(),
+                    singleCharExplanationConfig.templatePath(),
+                    singleCharExplanationConfig.examplesDirectory(),
+                    singleCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from DashScope (" + providerName + ")"
                 );
@@ -297,9 +307,9 @@ public class AIProviderFactory {
                     dashScopeConfig.getApiKey(),
                     dashScopeConfig.getBaseUrl(),
                     providerName,
-                    MultiCharExplanationProviderConfig.templatePath(),
-                    MultiCharExplanationProviderConfig.examplesDirectory(),
-                    MultiCharExplanationProviderConfig.responseMapper(),
+                    multiCharExplanationConfig.templatePath(),
+                    multiCharExplanationConfig.examplesDirectory(),
+                    multiCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from DashScope (" + providerName + ")"
                 );
@@ -312,9 +322,9 @@ public class AIProviderFactory {
                     openRouterConfig.getApiKey(),
                     openRouterConfig.getBaseUrl(),
                     model,
-                    SingleCharExplanationProviderConfig.templatePath(),
-                    SingleCharExplanationProviderConfig.examplesDirectory(),
-                    SingleCharExplanationProviderConfig.responseMapper(),
+                    singleCharExplanationConfig.templatePath(),
+                    singleCharExplanationConfig.examplesDirectory(),
+                    singleCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from OpenRouter (" + model + ")"
                 );
@@ -322,9 +332,9 @@ public class AIProviderFactory {
                     openRouterConfig.getApiKey(),
                     openRouterConfig.getBaseUrl(),
                     model,
-                    MultiCharExplanationProviderConfig.templatePath(),
-                    MultiCharExplanationProviderConfig.examplesDirectory(),
-                    MultiCharExplanationProviderConfig.responseMapper(),
+                    multiCharExplanationConfig.templatePath(),
+                    multiCharExplanationConfig.examplesDirectory(),
+                    multiCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from OpenRouter (" + model + ")"
                 );
@@ -336,9 +346,9 @@ public class AIProviderFactory {
                     geminiConfig.getApiKey(),
                     null, // LangChain4j handles base URL internally
                     geminiConfig.getModelName(providerName),
-                    SingleCharExplanationProviderConfig.templatePath(),
-                    SingleCharExplanationProviderConfig.examplesDirectory(),
-                    SingleCharExplanationProviderConfig.responseMapper(),
+                    singleCharExplanationConfig.templatePath(),
+                    singleCharExplanationConfig.examplesDirectory(),
+                    singleCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from Gemini (" + providerName + ")"
                 );
@@ -346,9 +356,9 @@ public class AIProviderFactory {
                     geminiConfig.getApiKey(),
                     null,
                     geminiConfig.getModelName(providerName),
-                    MultiCharExplanationProviderConfig.templatePath(),
-                    MultiCharExplanationProviderConfig.examplesDirectory(),
-                    MultiCharExplanationProviderConfig.responseMapper(),
+                    multiCharExplanationConfig.templatePath(),
+                    multiCharExplanationConfig.examplesDirectory(),
+                    multiCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from Gemini (" + providerName + ")"
                 );
@@ -378,9 +388,9 @@ public class AIProviderFactory {
                     deepSeekConfig.getApiKey(),
                     deepSeekConfig.getBaseUrl(),
                     "deepseek-chat",
-                    SingleCharStructuralDecompositionProviderConfig.templatePath(),
-                    SingleCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    SingleCharStructuralDecompositionProviderConfig.responseMapper(),
+                    singleCharStructuralConfig.templatePath(),
+                    singleCharStructuralConfig.examplesDirectory(),
+                    singleCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from DeepSeek (deepseek-chat)"
                 );
@@ -388,9 +398,9 @@ public class AIProviderFactory {
                     deepSeekConfig.getApiKey(),
                     deepSeekConfig.getBaseUrl(),
                     "deepseek-chat",
-                    MultiCharStructuralDecompositionProviderConfig.templatePath(),
-                    MultiCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    MultiCharStructuralDecompositionProviderConfig.responseMapper(),
+                    multiCharStructuralConfig.templatePath(),
+                    multiCharStructuralConfig.examplesDirectory(),
+                    multiCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from DeepSeek (deepseek-chat)"
                 );
@@ -403,9 +413,9 @@ public class AIProviderFactory {
                     zhipuConfig.getApiKey(),
                     zhipuConfig.getBaseUrl(),
                     "glm-4-flash",
-                    SingleCharStructuralDecompositionProviderConfig.templatePath(),
-                    SingleCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    SingleCharStructuralDecompositionProviderConfig.responseMapper(),
+                    singleCharStructuralConfig.templatePath(),
+                    singleCharStructuralConfig.examplesDirectory(),
+                    singleCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from Zhipu (glm-4-flash)"
                 );
@@ -413,9 +423,9 @@ public class AIProviderFactory {
                     zhipuConfig.getApiKey(),
                     zhipuConfig.getBaseUrl(),
                     "glm-4-flash",
-                    MultiCharStructuralDecompositionProviderConfig.templatePath(),
-                    MultiCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    MultiCharStructuralDecompositionProviderConfig.responseMapper(),
+                    multiCharStructuralConfig.templatePath(),
+                    multiCharStructuralConfig.examplesDirectory(),
+                    multiCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from Zhipu (glm-4-flash)"
                 );
@@ -430,9 +440,9 @@ public class AIProviderFactory {
                     zhipuConfig.getApiKey(),
                     zhipuConfig.getBaseUrl(),
                     "glm-4.5",
-                    SingleCharStructuralDecompositionProviderConfig.templatePath(),
-                    SingleCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    SingleCharStructuralDecompositionProviderConfig.responseMapper(),
+                    singleCharStructuralConfig.templatePath(),
+                    singleCharStructuralConfig.examplesDirectory(),
+                    singleCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from Zhipu (glm-4.5)"
                 );
@@ -440,9 +450,9 @@ public class AIProviderFactory {
                     zhipuConfig.getApiKey(),
                     zhipuConfig.getBaseUrl(),
                     "glm-4.5",
-                    MultiCharStructuralDecompositionProviderConfig.templatePath(),
-                    MultiCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    MultiCharStructuralDecompositionProviderConfig.responseMapper(),
+                    multiCharStructuralConfig.templatePath(),
+                    multiCharStructuralConfig.examplesDirectory(),
+                    multiCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from Zhipu (glm-4.5)"
                 );
@@ -457,9 +467,9 @@ public class AIProviderFactory {
                     dashScopeConfig.getApiKey(),
                     dashScopeConfig.getBaseUrl(),
                     providerName,
-                    SingleCharStructuralDecompositionProviderConfig.templatePath(),
-                    SingleCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    SingleCharStructuralDecompositionProviderConfig.responseMapper(),
+                    singleCharStructuralConfig.templatePath(),
+                    singleCharStructuralConfig.examplesDirectory(),
+                    singleCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from DashScope (" + providerName + ")"
                 );
@@ -467,9 +477,9 @@ public class AIProviderFactory {
                     dashScopeConfig.getApiKey(),
                     dashScopeConfig.getBaseUrl(),
                     providerName,
-                    MultiCharStructuralDecompositionProviderConfig.templatePath(),
-                    MultiCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    MultiCharStructuralDecompositionProviderConfig.responseMapper(),
+                    multiCharStructuralConfig.templatePath(),
+                    multiCharStructuralConfig.examplesDirectory(),
+                    multiCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from DashScope (" + providerName + ")"
                 );
@@ -482,9 +492,9 @@ public class AIProviderFactory {
                     openRouterConfig.getApiKey(),
                     openRouterConfig.getBaseUrl(),
                     model,
-                    SingleCharStructuralDecompositionProviderConfig.templatePath(),
-                    SingleCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    SingleCharStructuralDecompositionProviderConfig.responseMapper(),
+                    singleCharStructuralConfig.templatePath(),
+                    singleCharStructuralConfig.examplesDirectory(),
+                    singleCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from OpenRouter (" + model + ")"
                 );
@@ -492,9 +502,9 @@ public class AIProviderFactory {
                     openRouterConfig.getApiKey(),
                     openRouterConfig.getBaseUrl(),
                     model,
-                    MultiCharStructuralDecompositionProviderConfig.templatePath(),
-                    MultiCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    MultiCharStructuralDecompositionProviderConfig.responseMapper(),
+                    multiCharStructuralConfig.templatePath(),
+                    multiCharStructuralConfig.examplesDirectory(),
+                    multiCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from OpenRouter (" + model + ")"
                 );
@@ -506,9 +516,9 @@ public class AIProviderFactory {
                     geminiConfig.getApiKey(),
                     null, // LangChain4j handles base URL internally
                     geminiConfig.getModelName(providerName),
-                    SingleCharStructuralDecompositionProviderConfig.templatePath(),
-                    SingleCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    SingleCharStructuralDecompositionProviderConfig.responseMapper(),
+                    singleCharStructuralConfig.templatePath(),
+                    singleCharStructuralConfig.examplesDirectory(),
+                    singleCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from Gemini (" + providerName + ")"
                 );
@@ -516,9 +526,9 @@ public class AIProviderFactory {
                     geminiConfig.getApiKey(),
                     null,
                     geminiConfig.getModelName(providerName),
-                    MultiCharStructuralDecompositionProviderConfig.templatePath(),
-                    MultiCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    MultiCharStructuralDecompositionProviderConfig.responseMapper(),
+                    multiCharStructuralConfig.templatePath(),
+                    multiCharStructuralConfig.examplesDirectory(),
+                    multiCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from Gemini (" + providerName + ")"
                 );
@@ -586,9 +596,9 @@ public class AIProviderFactory {
                     deepSeekConfig.getApiKey(),
                     deepSeekConfig.getBaseUrl(),
                     "deepseek-chat",
-                    SingleCharDefinitionFormatterProviderConfig.templatePath(),
-                    SingleCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    SingleCharDefinitionFormatterProviderConfig.responseMapper(),
+                    singleCharDefinitionConfig.templatePath(),
+                    singleCharDefinitionConfig.examplesDirectory(),
+                    singleCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from DeepSeek (deepseek-chat)"
                 );
@@ -596,9 +606,9 @@ public class AIProviderFactory {
                     deepSeekConfig.getApiKey(),
                     deepSeekConfig.getBaseUrl(),
                     "deepseek-chat",
-                    MultiCharDefinitionFormatterProviderConfig.templatePath(),
-                    MultiCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    MultiCharDefinitionFormatterProviderConfig.responseMapper(),
+                    multiCharDefinitionConfig.templatePath(),
+                    multiCharDefinitionConfig.examplesDirectory(),
+                    multiCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from DeepSeek (deepseek-chat)"
                 );
@@ -610,9 +620,9 @@ public class AIProviderFactory {
                     zhipuConfig.getApiKey(),
                     zhipuConfig.getBaseUrl(),
                     "glm-4-flash",
-                    SingleCharDefinitionFormatterProviderConfig.templatePath(),
-                    SingleCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    SingleCharDefinitionFormatterProviderConfig.responseMapper(),
+                    singleCharDefinitionConfig.templatePath(),
+                    singleCharDefinitionConfig.examplesDirectory(),
+                    singleCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from Zhipu (glm-4-flash)"
                 );
@@ -620,9 +630,9 @@ public class AIProviderFactory {
                     zhipuConfig.getApiKey(),
                     zhipuConfig.getBaseUrl(),
                     "glm-4-flash",
-                    MultiCharDefinitionFormatterProviderConfig.templatePath(),
-                    MultiCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    MultiCharDefinitionFormatterProviderConfig.responseMapper(),
+                    multiCharDefinitionConfig.templatePath(),
+                    multiCharDefinitionConfig.examplesDirectory(),
+                    multiCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from Zhipu (glm-4-flash)"
                 );
@@ -637,9 +647,9 @@ public class AIProviderFactory {
                     zhipuConfig.getApiKey(),
                     zhipuConfig.getBaseUrl(),
                     "glm-4.5",
-                    SingleCharDefinitionFormatterProviderConfig.templatePath(),
-                    SingleCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    SingleCharDefinitionFormatterProviderConfig.responseMapper(),
+                    singleCharDefinitionConfig.templatePath(),
+                    singleCharDefinitionConfig.examplesDirectory(),
+                    singleCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from Zhipu (glm-4.5)"
                 );
@@ -647,9 +657,9 @@ public class AIProviderFactory {
                     zhipuConfig.getApiKey(),
                     zhipuConfig.getBaseUrl(),
                     "glm-4.5",
-                    MultiCharDefinitionFormatterProviderConfig.templatePath(),
-                    MultiCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    MultiCharDefinitionFormatterProviderConfig.responseMapper(),
+                    multiCharDefinitionConfig.templatePath(),
+                    multiCharDefinitionConfig.examplesDirectory(),
+                    multiCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from Zhipu (glm-4.5)"
                 );
@@ -664,9 +674,9 @@ public class AIProviderFactory {
                     dashScopeConfig.getApiKey(),
                     dashScopeConfig.getBaseUrl(),
                     providerName,
-                    SingleCharDefinitionFormatterProviderConfig.templatePath(),
-                    SingleCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    SingleCharDefinitionFormatterProviderConfig.responseMapper(),
+                    singleCharDefinitionConfig.templatePath(),
+                    singleCharDefinitionConfig.examplesDirectory(),
+                    singleCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from DashScope (" + providerName + ")"
                 );
@@ -674,9 +684,9 @@ public class AIProviderFactory {
                     dashScopeConfig.getApiKey(),
                     dashScopeConfig.getBaseUrl(),
                     providerName,
-                    MultiCharDefinitionFormatterProviderConfig.templatePath(),
-                    MultiCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    MultiCharDefinitionFormatterProviderConfig.responseMapper(),
+                    multiCharDefinitionConfig.templatePath(),
+                    multiCharDefinitionConfig.examplesDirectory(),
+                    multiCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from DashScope (" + providerName + ")"
                 );
@@ -688,9 +698,9 @@ public class AIProviderFactory {
                     openRouterConfig.getApiKey(),
                     openRouterConfig.getBaseUrl(),
                     model,
-                    SingleCharDefinitionFormatterProviderConfig.templatePath(),
-                    SingleCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    SingleCharDefinitionFormatterProviderConfig.responseMapper(),
+                    singleCharDefinitionConfig.templatePath(),
+                    singleCharDefinitionConfig.examplesDirectory(),
+                    singleCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from OpenRouter (" + model + ")"
                 );
@@ -698,9 +708,9 @@ public class AIProviderFactory {
                     openRouterConfig.getApiKey(),
                     openRouterConfig.getBaseUrl(),
                     model,
-                    MultiCharDefinitionFormatterProviderConfig.templatePath(),
-                    MultiCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    MultiCharDefinitionFormatterProviderConfig.responseMapper(),
+                    multiCharDefinitionConfig.templatePath(),
+                    multiCharDefinitionConfig.examplesDirectory(),
+                    multiCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from OpenRouter (" + model + ")"
                 );
@@ -712,9 +722,9 @@ public class AIProviderFactory {
                     geminiConfig.getApiKey(),
                     null, // LangChain4j handles base URL internally
                     geminiConfig.getModelName(providerName),
-                    SingleCharDefinitionFormatterProviderConfig.templatePath(),
-                    SingleCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    SingleCharDefinitionFormatterProviderConfig.responseMapper(),
+                    singleCharDefinitionConfig.templatePath(),
+                    singleCharDefinitionConfig.examplesDirectory(),
+                    singleCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from Gemini (" + providerName + ")"
                 );
@@ -722,9 +732,9 @@ public class AIProviderFactory {
                     geminiConfig.getApiKey(),
                     null,
                     geminiConfig.getModelName(providerName),
-                    MultiCharDefinitionFormatterProviderConfig.templatePath(),
-                    MultiCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    MultiCharDefinitionFormatterProviderConfig.responseMapper(),
+                    multiCharDefinitionConfig.templatePath(),
+                    multiCharDefinitionConfig.examplesDirectory(),
+                    multiCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from Gemini (" + providerName + ")"
                 );

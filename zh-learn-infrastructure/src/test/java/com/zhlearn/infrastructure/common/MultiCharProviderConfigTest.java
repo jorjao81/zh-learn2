@@ -6,33 +6,37 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class MultiCharProviderConfigTest {
 
+    private final MultiCharExampleProviderConfig exampleConfig = new MultiCharExampleProviderConfig();
+    private final MultiCharExplanationProviderConfig explanationConfig = new MultiCharExplanationProviderConfig();
+    private final MultiCharStructuralDecompositionProviderConfig structuralConfig = new MultiCharStructuralDecompositionProviderConfig();
+
     @Test
     void exampleConfigShouldExposeMultiCharPaths() {
-        assertThat(MultiCharExampleProviderConfig.templatePath())
+        assertThat(exampleConfig.templatePath())
             .isEqualTo("/multi-char/examples/prompt-template.md");
-        assertThat(MultiCharExampleProviderConfig.examplesDirectory())
+        assertThat(exampleConfig.examplesDirectory())
             .isEqualTo("/multi-char/examples/examples/");
-        assertThat(MultiCharExampleProviderConfig.responseMapper())
+        assertThat(exampleConfig.responseMapper())
             .isNotNull();
     }
 
     @Test
     void explanationConfigShouldExposeMultiCharPaths() {
-        assertThat(MultiCharExplanationProviderConfig.templatePath())
+        assertThat(explanationConfig.templatePath())
             .isEqualTo("/multi-char/explanation/prompt-template.md");
-        assertThat(MultiCharExplanationProviderConfig.examplesDirectory())
+        assertThat(explanationConfig.examplesDirectory())
             .isEqualTo("/multi-char/explanation/examples/");
-        assertThat(MultiCharExplanationProviderConfig.responseMapper())
+        assertThat(explanationConfig.responseMapper())
             .isNotNull();
     }
 
     @Test
     void structuralConfigShouldExposeMultiCharPaths() {
-        assertThat(MultiCharStructuralDecompositionProviderConfig.templatePath())
+        assertThat(structuralConfig.templatePath())
             .isEqualTo("/multi-char/structural-decomposition/prompt-template.md");
-        assertThat(MultiCharStructuralDecompositionProviderConfig.examplesDirectory())
+        assertThat(structuralConfig.examplesDirectory())
             .isEqualTo("/multi-char/structural-decomposition/examples/");
-        assertThat(MultiCharStructuralDecompositionProviderConfig.responseMapper())
+        assertThat(structuralConfig.responseMapper())
             .isNotNull();
     }
 }

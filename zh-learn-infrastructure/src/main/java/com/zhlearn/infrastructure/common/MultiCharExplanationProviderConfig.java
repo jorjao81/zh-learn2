@@ -4,7 +4,7 @@ import com.zhlearn.domain.model.Explanation;
 
 import java.util.function.Function;
 
-public final class MultiCharExplanationProviderConfig {
+public class MultiCharExplanationProviderConfig {
 
     private static final String TEMPLATE_PATH = "/multi-char/explanation/prompt-template.md";
     private static final String EXAMPLES_DIRECTORY = "/multi-char/explanation/examples/";
@@ -12,26 +12,26 @@ public final class MultiCharExplanationProviderConfig {
     private static final Double DEFAULT_TEMPERATURE = 0.3;
     private static final Integer DEFAULT_MAX_TOKENS = 8000;
 
-    private MultiCharExplanationProviderConfig() {
+    public MultiCharExplanationProviderConfig() {
     }
 
-    public static String templatePath() {
+    public String templatePath() {
         return TEMPLATE_PATH;
     }
 
-    public static String examplesDirectory() {
+    public String examplesDirectory() {
         return EXAMPLES_DIRECTORY;
     }
 
-    public static Function<String, Explanation> responseMapper() {
+    public Function<String, Explanation> responseMapper() {
         return RESPONSE_MAPPER;
     }
 
-    public static Double defaultTemperature() {
+    public Double defaultTemperature() {
         return DEFAULT_TEMPERATURE;
     }
 
-    public static Integer defaultMaxTokens() {
+    public Integer defaultMaxTokens() {
         return DEFAULT_MAX_TOKENS;
     }
 }

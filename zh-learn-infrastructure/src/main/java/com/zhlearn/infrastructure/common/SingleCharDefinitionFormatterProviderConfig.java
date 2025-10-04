@@ -4,7 +4,7 @@ import com.zhlearn.domain.model.Definition;
 
 import java.util.function.Function;
 
-public final class SingleCharDefinitionFormatterProviderConfig {
+public class SingleCharDefinitionFormatterProviderConfig {
 
     private static final String TEMPLATE_PATH = "/single-char/definition/prompt-template.md";
     private static final String EXAMPLES_DIRECTORY = "/single-char/definition/examples/";
@@ -12,26 +12,26 @@ public final class SingleCharDefinitionFormatterProviderConfig {
     private static final Double DEFAULT_TEMPERATURE = 0.3;
     private static final Integer DEFAULT_MAX_TOKENS = 4000;
 
-    private SingleCharDefinitionFormatterProviderConfig() {
+    public SingleCharDefinitionFormatterProviderConfig() {
     }
 
-    public static String templatePath() {
+    public String templatePath() {
         return TEMPLATE_PATH;
     }
 
-    public static String examplesDirectory() {
+    public String examplesDirectory() {
         return EXAMPLES_DIRECTORY;
     }
 
-    public static Function<String, Definition> responseMapper() {
+    public Function<String, Definition> responseMapper() {
         return RESPONSE_MAPPER;
     }
 
-    public static Double defaultTemperature() {
+    public Double defaultTemperature() {
         return DEFAULT_TEMPERATURE;
     }
 
-    public static Integer defaultMaxTokens() {
+    public Integer defaultMaxTokens() {
         return DEFAULT_MAX_TOKENS;
     }
 }
