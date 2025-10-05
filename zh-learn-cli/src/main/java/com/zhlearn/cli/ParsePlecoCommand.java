@@ -534,7 +534,7 @@ public class ParsePlecoCommand implements Runnable {
      */
     private void exportToAnkiFile(List<WordAnalysis> analyses, String filename) {
         try {
-            AnkiExporter exporter = new AnkiExporter(parent.getExamplesHtmlFormatter(), parent.getAnkiMediaLocator());
+            AnkiExporter exporter = parent.getAnkiExporter();
             exporter.exportToFile(analyses, filename);
             
             System.out.println("=".repeat(80));

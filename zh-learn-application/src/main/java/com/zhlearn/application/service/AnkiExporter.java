@@ -22,11 +22,6 @@ public class AnkiExporter {
     private final ExamplesHtmlFormatter examplesHtmlFormatter;
     private final AnkiMediaLocator ankiMediaLocator;
 
-    public AnkiExporter() {
-        this.examplesHtmlFormatter = new ExamplesHtmlFormatter();
-        this.ankiMediaLocator = new AnkiMediaLocator();
-    }
-
     public AnkiExporter(ExamplesHtmlFormatter examplesHtmlFormatter, AnkiMediaLocator ankiMediaLocator) {
         this.examplesHtmlFormatter = examplesHtmlFormatter;
         this.ankiMediaLocator = ankiMediaLocator;

@@ -9,7 +9,7 @@ module com.zhlearn.cli {
     requires info.picocli;
     requires org.jline.reader;
     requires org.jline.terminal;
-    
+
     uses com.zhlearn.domain.provider.PinyinProvider;
     uses com.zhlearn.domain.provider.DefinitionProvider;
     uses com.zhlearn.domain.provider.StructuralDecompositionProvider;
@@ -17,7 +17,7 @@ module com.zhlearn.cli {
     uses com.zhlearn.domain.provider.ExplanationProvider;
     uses com.zhlearn.domain.provider.AudioProvider;
     uses com.zhlearn.domain.dictionary.Dictionary;
-    
+
     exports com.zhlearn.cli;
     opens com.zhlearn.cli to info.picocli;
 }

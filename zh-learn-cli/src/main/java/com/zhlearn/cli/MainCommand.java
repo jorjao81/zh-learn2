@@ -40,30 +40,59 @@ public class MainCommand implements Runnable {
     private final AnalysisPrinter analysisPrinter;
     private final AnkiMediaLocator ankiMediaLocator;
 
+    /**
+     * Default constructor for tests.
+     * Uses ApplicationContext to create a fully initialized instance.
+     */
     public MainCommand() {
-        // Initialize audio utilities
-        this.audioPaths = new com.zhlearn.infrastructure.audio.AudioPaths();
-        com.zhlearn.infrastructure.audio.AudioNormalizer audioNormalizer = new com.zhlearn.infrastructure.audio.AudioNormalizer();
-        this.audioCache = new com.zhlearn.infrastructure.audio.AudioCache(audioPaths, audioNormalizer);
-        this.prePlayback = new com.zhlearn.cli.audio.PrePlayback(audioCache, audioPaths);
+        this(ApplicationContext.create());
+    }
 
-        // Initialize AI provider factory
-        this.aiProviderFactory = new AIProviderFactory();
-
-        // Initialize formatters
-        this.terminalFormatter = new TerminalFormatter();
-        this.examplesHtmlFormatter = new com.zhlearn.application.format.ExamplesHtmlFormatter();
-        this.analysisPrinter = new AnalysisPrinter(examplesHtmlFormatter, terminalFormatter);
-        this.ankiMediaLocator = new AnkiMediaLocator();
-
-        // Initialize audio executor and providers
-        this.audioExecutor = new AudioDownloadExecutor();
-        this.audioProviders = List.of(
-            new AnkiPronunciationProvider(),
-            new ForvoAudioProvider(audioExecutor),
-            new QwenAudioProvider(audioExecutor),
-            new TencentAudioProvider(audioExecutor)
+    /**
+     * Constructor for production use with ApplicationContext.
+     * Accepts all dependencies from centralized dependency injection.
+     */
+    public MainCommand(ApplicationContext context) {
+        this(
+            context.getTerminalFormatter(),
+            context.getExamplesHtmlFormatter(),
+            context.getAnalysisPrinter(),
+            context.getAnkiMediaLocator(),
+            context.getAudioPaths(),
+            context.getAudioCache(),
+            context.getPrePlayback(),
+            context.getAiProviderFactory(),
+            context.getAudioExecutor(),
+            context.getAudioProviders()
         );
+    }
+
+    /**
+     * Constructor for explicit dependency injection.
+     * Accepts all required dependencies directly.
+     */
+    public MainCommand(
+            TerminalFormatter terminalFormatter,
+            com.zhlearn.application.format.ExamplesHtmlFormatter examplesHtmlFormatter,
+            AnalysisPrinter analysisPrinter,
+            AnkiMediaLocator ankiMediaLocator,
+            com.zhlearn.infrastructure.audio.AudioPaths audioPaths,
+            com.zhlearn.infrastructure.audio.AudioCache audioCache,
+            com.zhlearn.cli.audio.PrePlayback prePlayback,
+            AIProviderFactory aiProviderFactory,
+            AudioDownloadExecutor audioExecutor,
+            List<AudioProvider> audioProviders) {
+
+        this.terminalFormatter = terminalFormatter;
+        this.examplesHtmlFormatter = examplesHtmlFormatter;
+        this.analysisPrinter = analysisPrinter;
+        this.ankiMediaLocator = ankiMediaLocator;
+        this.audioPaths = audioPaths;
+        this.audioCache = audioCache;
+        this.prePlayback = prePlayback;
+        this.aiProviderFactory = aiProviderFactory;
+        this.audioExecutor = audioExecutor;
+        this.audioProviders = audioProviders;
     }
 
     // Audio provider methods - keep existing working approach
@@ -97,6 +126,10 @@ public class MainCommand implements Runnable {
 
     public AnkiMediaLocator getAnkiMediaLocator() {
         return ankiMediaLocator;
+    }
+
+    public com.zhlearn.application.service.AnkiExporter getAnkiExporter() {
+        return ApplicationContext.create().getAnkiExporter();
     }
 
     // AI Provider factory methods - create on demand and crash if fails

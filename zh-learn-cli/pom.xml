@@ -39,7 +39,6 @@
             <groupId>io.helidon.logging</groupId>
             <artifactId>helidon-logging-jul</artifactId>
         </dependency>
-
         <!-- Terminal formatting -->
         <dependency>
             <groupId>org.fusesource.jansi</groupId>

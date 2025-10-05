@@ -231,13 +231,6 @@
                         </compilerArgs>
                         <fork>true</fork>
                         <showWarnings>false</showWarnings>
-                        <annotationProcessorPaths>
-                            <path>
-                                <groupId>io.helidon.service</groupId>
-                                <artifactId>helidon-service-codegen</artifactId>
-                                <version>${helidon.version}</version>
-                            </path>
-                        </annotationProcessorPaths>
                     </configuration>
                 </plugin>
                 <plugin>
