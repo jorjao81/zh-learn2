@@ -5,6 +5,8 @@ import com.zhlearn.cli.audio.PrePlayback;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.infrastructure.audio.AudioPaths;
+import com.zhlearn.infrastructure.audio.AudioNormalizer;
+import com.zhlearn.infrastructure.audio.AudioCache;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,16 +22,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PrePlaybackTest {
     private Path tmpHome;
     private PrePlayback prePlayback;
-    private com.zhlearn.infrastructure.audio.AudioPaths audioPaths;
+    private AudioPaths audioPaths;
 
     @BeforeEach
     void setup() throws Exception {
         tmpHome = Files.createTempDirectory("zhlearn-cli-test-home");
         System.setProperty("zhlearn.home", tmpHome.toString());
 
-        audioPaths = new com.zhlearn.infrastructure.audio.AudioPaths();
-        com.zhlearn.infrastructure.audio.AudioNormalizer audioNormalizer = new com.zhlearn.infrastructure.audio.AudioNormalizer();
-        com.zhlearn.infrastructure.audio.AudioCache audioCache = new com.zhlearn.infrastructure.audio.AudioCache(audioPaths, audioNormalizer);
+        audioPaths = new AudioPaths();
+        AudioNormalizer audioNormalizer = new AudioNormalizer();
+        AudioCache audioCache = new AudioCache(audioPaths, audioNormalizer);
         prePlayback = new PrePlayback(audioCache, audioPaths);
     }
 

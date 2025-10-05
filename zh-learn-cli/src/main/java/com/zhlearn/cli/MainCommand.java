@@ -9,7 +9,12 @@ import com.zhlearn.domain.provider.DefinitionProvider;
 import com.zhlearn.domain.provider.AudioProvider;
 import com.zhlearn.infrastructure.common.AIProviderFactory;
 import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;
+import com.zhlearn.infrastructure.audio.AudioPaths;
+import com.zhlearn.infrastructure.audio.AudioCache;
 import com.zhlearn.application.audio.AnkiMediaLocator;
+import com.zhlearn.application.format.ExamplesHtmlFormatter;
+import com.zhlearn.application.service.AnkiExporter;
+import com.zhlearn.cli.audio.PrePlayback;
 
 import java.util.List;
 import com.zhlearn.infrastructure.pinyin4j.Pinyin4jProvider;
@@ -31,14 +36,15 @@ public class MainCommand implements Runnable {
     // Audio providers - keep as list like before
     private final List<AudioProvider> audioProviders;
     private final AudioDownloadExecutor audioExecutor;
-    private final com.zhlearn.cli.audio.PrePlayback prePlayback;
-    private final com.zhlearn.infrastructure.audio.AudioPaths audioPaths;
-    private final com.zhlearn.infrastructure.audio.AudioCache audioCache;
+    private final PrePlayback prePlayback;
+    private final AudioPaths audioPaths;
+    private final AudioCache audioCache;
     private final AIProviderFactory aiProviderFactory;
     private final TerminalFormatter terminalFormatter;
-    private final com.zhlearn.application.format.ExamplesHtmlFormatter examplesHtmlFormatter;
+    private final ExamplesHtmlFormatter examplesHtmlFormatter;
     private final AnalysisPrinter analysisPrinter;
     private final AnkiMediaLocator ankiMediaLocator;
+    private final AnkiExporter ankiExporter;
 
     /**
      * Default constructor for tests.
@@ -58,6 +64,7 @@ public class MainCommand implements Runnable {
             context.getExamplesHtmlFormatter(),
             context.getAnalysisPrinter(),
             context.getAnkiMediaLocator(),
+            context.getAnkiExporter(),
             context.getAudioPaths(),
             context.getAudioCache(),
             context.getPrePlayback(),
@@ -73,12 +80,13 @@ public class MainCommand implements Runnable {
      */
     public MainCommand(
             TerminalFormatter terminalFormatter,
-            com.zhlearn.application.format.ExamplesHtmlFormatter examplesHtmlFormatter,
+            ExamplesHtmlFormatter examplesHtmlFormatter,
             AnalysisPrinter analysisPrinter,
             AnkiMediaLocator ankiMediaLocator,
-            com.zhlearn.infrastructure.audio.AudioPaths audioPaths,
-            com.zhlearn.infrastructure.audio.AudioCache audioCache,
-            com.zhlearn.cli.audio.PrePlayback prePlayback,
+            AnkiExporter ankiExporter,
+            AudioPaths audioPaths,
+            AudioCache audioCache,
+            PrePlayback prePlayback,
             AIProviderFactory aiProviderFactory,
             AudioDownloadExecutor audioExecutor,
             List<AudioProvider> audioProviders) {
@@ -87,6 +95,7 @@ public class MainCommand implements Runnable {
         this.examplesHtmlFormatter = examplesHtmlFormatter;
         this.analysisPrinter = analysisPrinter;
         this.ankiMediaLocator = ankiMediaLocator;
+        this.ankiExporter = ankiExporter;
         this.audioPaths = audioPaths;
         this.audioCache = audioCache;
         this.prePlayback = prePlayback;
@@ -108,7 +117,7 @@ public class MainCommand implements Runnable {
         return audioExecutor;
     }
 
-    public com.zhlearn.cli.audio.PrePlayback getPrePlayback() {
+    public PrePlayback getPrePlayback() {
         return prePlayback;
     }
 
@@ -116,7 +125,7 @@ public class MainCommand implements Runnable {
         return terminalFormatter;
     }
 
-    public com.zhlearn.application.format.ExamplesHtmlFormatter getExamplesHtmlFormatter() {
+    public ExamplesHtmlFormatter getExamplesHtmlFormatter() {
         return examplesHtmlFormatter;
     }
 
@@ -128,8 +137,8 @@ public class MainCommand implements Runnable {
         return ankiMediaLocator;
     }
 
-    public com.zhlearn.application.service.AnkiExporter getAnkiExporter() {
-        return ApplicationContext.create().getAnkiExporter();
+    public AnkiExporter getAnkiExporter() {
+        return ankiExporter;
     }
 
     // AI Provider factory methods - create on demand and crash if fails

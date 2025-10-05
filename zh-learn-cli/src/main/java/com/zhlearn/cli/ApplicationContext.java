@@ -13,6 +13,7 @@ import com.zhlearn.infrastructure.tencent.TencentAudioProvider;
 import com.zhlearn.infrastructure.common.AIProviderFactory;
 import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;
 import com.zhlearn.domain.provider.AudioProvider;
+import com.zhlearn.cli.audio.PrePlayback;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class ApplicationContext {
     private final AudioPaths audioPaths;
     private final AudioNormalizer audioNormalizer;
     private final AudioCache audioCache;
-    private final com.zhlearn.cli.audio.PrePlayback prePlayback;
+    private final PrePlayback prePlayback;
     private final AIProviderFactory aiProviderFactory;
     private final AudioDownloadExecutor audioExecutor;
     private final List<AudioProvider> audioProviders;
@@ -50,7 +51,7 @@ public class ApplicationContext {
         this.audioPaths = new AudioPaths();
         this.audioNormalizer = new AudioNormalizer();
         this.audioCache = new AudioCache(audioPaths, audioNormalizer);
-        this.prePlayback = new com.zhlearn.cli.audio.PrePlayback(audioCache, audioPaths);
+        this.prePlayback = new PrePlayback(audioCache, audioPaths);
 
         // Initialize AI provider factory
         this.aiProviderFactory = new AIProviderFactory();
@@ -89,7 +90,7 @@ public class ApplicationContext {
     public AudioPaths getAudioPaths() { return audioPaths; }
     public AudioNormalizer getAudioNormalizer() { return audioNormalizer; }
     public AudioCache getAudioCache() { return audioCache; }
-    public com.zhlearn.cli.audio.PrePlayback getPrePlayback() { return prePlayback; }
+    public PrePlayback getPrePlayback() { return prePlayback; }
     public AIProviderFactory getAiProviderFactory() { return aiProviderFactory; }
     public AudioDownloadExecutor getAudioExecutor() { return audioExecutor; }
     public List<AudioProvider> getAudioProviders() { return audioProviders; }
@@ -103,6 +104,7 @@ public class ApplicationContext {
             examplesHtmlFormatter,
             analysisPrinter,
             ankiMediaLocator,
+            ankiExporter,
             audioPaths,
             audioCache,
             prePlayback,
