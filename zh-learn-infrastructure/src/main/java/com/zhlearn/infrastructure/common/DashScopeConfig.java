@@ -1,32 +1,42 @@
 package com.zhlearn.infrastructure.common;
 
 /**
- * Configuration factory for Alibaba Cloud DashScope (Qwen3) via OpenAI-compatible endpoint.
- * Uses DASHSCOPE_API_KEY and optional DASHSCOPE_BASE_URL (defaults to China Mainland endpoint).
+ * Configuration for Alibaba Cloud DashScope (Qwen3) via OpenAI-compatible endpoint.
+ * Singleton service that reads configuration from environment variables.
+ * Uses DASHSCOPE_API_KEY and optional DASHSCOPE_BASE_URL (defaults to Singapore international endpoint).
  */
 public class DashScopeConfig {
 
-    public static final String DEFAULT_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1";
-    public static final String API_KEY_ENVIRONMENT_VARIABLE = "DASHSCOPE_API_KEY";
-    public static final String BASE_URL_ENVIRONMENT_VARIABLE = "DASHSCOPE_BASE_URL";
+    private static final String DEFAULT_BASE_URL = "https://dashscope-intl.aliyuncs.com/compatible-mode/v1";
+    private static final String API_KEY_ENVIRONMENT_VARIABLE = "DASHSCOPE_API_KEY";
+    private static final String BASE_URL_ENVIRONMENT_VARIABLE = "DASHSCOPE_BASE_URL";
 
-    private static String readKey(String key) {
-        String v = System.getProperty(key);
-        if (v == null || v.isBlank()) v = System.getenv(key);
-        return v;
+    private final String apiKey;
+    private final String baseUrl;
+
+    public DashScopeConfig() {
+        this.apiKey = readKey(API_KEY_ENVIRONMENT_VARIABLE);
+        this.baseUrl = readKey(BASE_URL_ENVIRONMENT_VARIABLE, DEFAULT_BASE_URL);
     }
 
-    private static String readKey(String key, String defaultValue) {
-        String v = System.getProperty(key);
-        if (v == null || v.isBlank()) v = System.getenv(key);
-        return (v == null || v.isBlank()) ? defaultValue : v;
+    private String readKey(String key) {
+        String value = System.getProperty(key);
+        if (value == null || value.isBlank()) {
+            value = System.getenv(key);
+        }
+        return value;
     }
 
-    public static String getApiKey() {
-        return readKey(API_KEY_ENVIRONMENT_VARIABLE);
+    private String readKey(String key, String defaultValue) {
+        String value = readKey(key);
+        return (value == null || value.isBlank()) ? defaultValue : value;
     }
 
-    public static String getBaseUrl() {
-        return readKey(BASE_URL_ENVIRONMENT_VARIABLE, DEFAULT_BASE_URL);
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
     }
 }

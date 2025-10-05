@@ -12,7 +12,12 @@ import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 
 public class SystemAudioPlayer implements AudioPlayer {
+    private final AnkiMediaLocator ankiMediaLocator;
     private Process current;
+
+    public SystemAudioPlayer(AnkiMediaLocator ankiMediaLocator) {
+        this.ankiMediaLocator = ankiMediaLocator;
+    }
 
     @Override
     public void play(Path file) {
@@ -71,7 +76,7 @@ public class SystemAudioPlayer implements AudioPlayer {
     private Path tryFromAnkiMedia(Path file) {
         String name = (file == null) ? null : file.getFileName().toString();
         if (name == null || name.isBlank()) return null;
-        Optional<Path> mediaDir = AnkiMediaLocator.locate();
+        Optional<Path> mediaDir = ankiMediaLocator.locate();
         if (mediaDir.isEmpty()) {
             return null;
         }

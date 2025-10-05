@@ -35,7 +35,7 @@ public class AudioSelectCommand implements Runnable {
         Hanzi word = new Hanzi(chineseWord);
         Pinyin pin = new Pinyin(pinyin);
         List<PronunciationCandidate> raw = orchestrator.candidatesFor(word, pin);
-        List<PronunciationCandidate> candidates = PrePlayback.preprocessCandidates(word, pin, raw);
+        List<PronunciationCandidate> candidates = parent.getPrePlayback().preprocessCandidates(word, pin, raw);
         if (candidates.isEmpty()) {
             System.out.println("No pronunciation candidates found.");
             // Helpful hint when Anki export is missing (default path)
@@ -48,7 +48,7 @@ public class AudioSelectCommand implements Runnable {
             return;
         }
 
-        SelectionSession session = new SelectionSession(candidates, new SystemAudioPlayer());
+        SelectionSession session = new SelectionSession(candidates, new SystemAudioPlayer(parent.getAnkiMediaLocator()));
 
         PronunciationCandidate selected = new InteractiveAudioUI().run(session, word, pin);
         if (selected != null) {

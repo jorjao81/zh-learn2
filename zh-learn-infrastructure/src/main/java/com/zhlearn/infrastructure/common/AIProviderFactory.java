@@ -15,11 +15,31 @@ import com.zhlearn.infrastructure.dummy.DummyStructuralDecompositionProvider;
 
 public class AIProviderFactory {
 
-    public static ExampleProvider createExampleProvider(String providerName) {
+    // Config instances - created once per factory instance
+    private final DeepSeekConfig deepSeekConfig = new DeepSeekConfig();
+    private final GeminiConfig geminiConfig = new GeminiConfig();
+    private final ZhipuConfig zhipuConfig = new ZhipuConfig();
+    private final DashScopeConfig dashScopeConfig = new DashScopeConfig();
+    private final OpenRouterConfig openRouterConfig = new OpenRouterConfig();
+
+    // ProviderConfig helper instances
+    private final SingleCharExampleProviderConfig singleCharExampleConfig = new SingleCharExampleProviderConfig();
+    private final MultiCharExampleProviderConfig multiCharExampleConfig = new MultiCharExampleProviderConfig();
+    private final SingleCharExplanationProviderConfig singleCharExplanationConfig = new SingleCharExplanationProviderConfig();
+    private final MultiCharExplanationProviderConfig multiCharExplanationConfig = new MultiCharExplanationProviderConfig();
+    private final SingleCharStructuralDecompositionProviderConfig singleCharStructuralConfig = new SingleCharStructuralDecompositionProviderConfig();
+    private final MultiCharStructuralDecompositionProviderConfig multiCharStructuralConfig = new MultiCharStructuralDecompositionProviderConfig();
+    private final SingleCharDefinitionFormatterProviderConfig singleCharDefinitionConfig = new SingleCharDefinitionFormatterProviderConfig();
+    private final MultiCharDefinitionFormatterProviderConfig multiCharDefinitionConfig = new MultiCharDefinitionFormatterProviderConfig();
+
+    public AIProviderFactory() {
+    }
+
+    public ExampleProvider createExampleProvider(String providerName) {
         return createExampleProvider(providerName, null);
     }
 
-    public static ExampleProvider createExampleProvider(String providerName, String model) {
+    public ExampleProvider createExampleProvider(String providerName, String model) {
         if (providerName == null) providerName = "deepseek-chat";
         if (providerName.equals("openrouter") && (model == null || model.trim().isEmpty())) {
             model = "gpt-3.5-turbo";
@@ -30,22 +50,22 @@ public class AIProviderFactory {
             case "deepseek-chat" -> {
                 requireAPIKey("DEEPSEEK_API_KEY", providerName);
                 ProviderConfig<Example> singleConfig = createProviderConfig(
-                    DeepSeekConfig.getApiKey(),
-                    DeepSeekConfig.getBaseUrl(),
+                    deepSeekConfig.getApiKey(),
+                    deepSeekConfig.getBaseUrl(),
                     "deepseek-chat",
-                    SingleCharExampleProviderConfig.templatePath(),
-                    SingleCharExampleProviderConfig.examplesDirectory(),
-                    SingleCharExampleProviderConfig.responseMapper(),
+                    singleCharExampleConfig.templatePath(),
+                    singleCharExampleConfig.examplesDirectory(),
+                    singleCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from DeepSeek (deepseek-chat)"
                 );
                 ProviderConfig<Example> multiConfig = createProviderConfig(
-                    DeepSeekConfig.getApiKey(),
-                    DeepSeekConfig.getBaseUrl(),
+                    deepSeekConfig.getApiKey(),
+                    deepSeekConfig.getBaseUrl(),
                     "deepseek-chat",
-                    MultiCharExampleProviderConfig.templatePath(),
-                    MultiCharExampleProviderConfig.examplesDirectory(),
-                    MultiCharExampleProviderConfig.responseMapper(),
+                    multiCharExampleConfig.templatePath(),
+                    multiCharExampleConfig.examplesDirectory(),
+                    multiCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from DeepSeek (deepseek-chat)"
                 );
@@ -54,22 +74,22 @@ public class AIProviderFactory {
             case "glm-4-flash" -> {
                 requireAPIKey("ZHIPU_API_KEY", providerName);
                 ProviderConfig<Example> singleConfig = createProviderConfig(
-                    ZhipuConfig.getApiKey(),
-                    ZhipuConfig.getBaseUrl(),
+                    zhipuConfig.getApiKey(),
+                    zhipuConfig.getBaseUrl(),
                     "glm-4-flash",
-                    SingleCharExampleProviderConfig.templatePath(),
-                    SingleCharExampleProviderConfig.examplesDirectory(),
-                    SingleCharExampleProviderConfig.responseMapper(),
+                    singleCharExampleConfig.templatePath(),
+                    singleCharExampleConfig.examplesDirectory(),
+                    singleCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from Zhipu (glm-4-flash)"
                 );
                 ProviderConfig<Example> multiConfig = createProviderConfig(
-                    ZhipuConfig.getApiKey(),
-                    ZhipuConfig.getBaseUrl(),
+                    zhipuConfig.getApiKey(),
+                    zhipuConfig.getBaseUrl(),
                     "glm-4-flash",
-                    MultiCharExampleProviderConfig.templatePath(),
-                    MultiCharExampleProviderConfig.examplesDirectory(),
-                    MultiCharExampleProviderConfig.responseMapper(),
+                    multiCharExampleConfig.templatePath(),
+                    multiCharExampleConfig.examplesDirectory(),
+                    multiCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from Zhipu (glm-4-flash)"
                 );
@@ -81,22 +101,22 @@ public class AIProviderFactory {
             case "glm-4.5" -> {
                 requireAPIKey("ZHIPU_API_KEY", providerName);
                 ProviderConfig<Example> singleConfig = createProviderConfig(
-                    ZhipuConfig.getApiKey(),
-                    ZhipuConfig.getBaseUrl(),
+                    zhipuConfig.getApiKey(),
+                    zhipuConfig.getBaseUrl(),
                     "glm-4.5",
-                    SingleCharExampleProviderConfig.templatePath(),
-                    SingleCharExampleProviderConfig.examplesDirectory(),
-                    SingleCharExampleProviderConfig.responseMapper(),
+                    singleCharExampleConfig.templatePath(),
+                    singleCharExampleConfig.examplesDirectory(),
+                    singleCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from Zhipu (glm-4.5)"
                 );
                 ProviderConfig<Example> multiConfig = createProviderConfig(
-                    ZhipuConfig.getApiKey(),
-                    ZhipuConfig.getBaseUrl(),
+                    zhipuConfig.getApiKey(),
+                    zhipuConfig.getBaseUrl(),
                     "glm-4.5",
-                    MultiCharExampleProviderConfig.templatePath(),
-                    MultiCharExampleProviderConfig.examplesDirectory(),
-                    MultiCharExampleProviderConfig.responseMapper(),
+                    multiCharExampleConfig.templatePath(),
+                    multiCharExampleConfig.examplesDirectory(),
+                    multiCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from Zhipu (glm-4.5)"
                 );
@@ -108,22 +128,22 @@ public class AIProviderFactory {
             case "qwen-max", "qwen-plus", "qwen-turbo" -> {
                 requireAPIKey("DASHSCOPE_API_KEY", providerName);
                 ProviderConfig<Example> singleConfig = createProviderConfig(
-                    DashScopeConfig.getApiKey(),
-                    DashScopeConfig.getBaseUrl(),
+                    dashScopeConfig.getApiKey(),
+                    dashScopeConfig.getBaseUrl(),
                     providerName,
-                    SingleCharExampleProviderConfig.templatePath(),
-                    SingleCharExampleProviderConfig.examplesDirectory(),
-                    SingleCharExampleProviderConfig.responseMapper(),
+                    singleCharExampleConfig.templatePath(),
+                    singleCharExampleConfig.examplesDirectory(),
+                    singleCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from DashScope (" + providerName + ")"
                 );
                 ProviderConfig<Example> multiConfig = createProviderConfig(
-                    DashScopeConfig.getApiKey(),
-                    DashScopeConfig.getBaseUrl(),
+                    dashScopeConfig.getApiKey(),
+                    dashScopeConfig.getBaseUrl(),
                     providerName,
-                    MultiCharExampleProviderConfig.templatePath(),
-                    MultiCharExampleProviderConfig.examplesDirectory(),
-                    MultiCharExampleProviderConfig.responseMapper(),
+                    multiCharExampleConfig.templatePath(),
+                    multiCharExampleConfig.examplesDirectory(),
+                    multiCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from DashScope (" + providerName + ")"
                 );
@@ -132,22 +152,22 @@ public class AIProviderFactory {
             case "openrouter" -> {
                 requireAPIKey("OPENROUTER_API_KEY", providerName);
                 ProviderConfig<Example> singleConfig = createProviderConfig(
-                    OpenRouterConfig.getApiKey(),
-                    OpenRouterConfig.getBaseUrl(),
+                    openRouterConfig.getApiKey(),
+                    openRouterConfig.getBaseUrl(),
                     model,
-                    SingleCharExampleProviderConfig.templatePath(),
-                    SingleCharExampleProviderConfig.examplesDirectory(),
-                    SingleCharExampleProviderConfig.responseMapper(),
+                    singleCharExampleConfig.templatePath(),
+                    singleCharExampleConfig.examplesDirectory(),
+                    singleCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from OpenRouter (" + model + ")"
                 );
                 ProviderConfig<Example> multiConfig = createProviderConfig(
-                    OpenRouterConfig.getApiKey(),
-                    OpenRouterConfig.getBaseUrl(),
+                    openRouterConfig.getApiKey(),
+                    openRouterConfig.getBaseUrl(),
                     model,
-                    MultiCharExampleProviderConfig.templatePath(),
-                    MultiCharExampleProviderConfig.examplesDirectory(),
-                    MultiCharExampleProviderConfig.responseMapper(),
+                    multiCharExampleConfig.templatePath(),
+                    multiCharExampleConfig.examplesDirectory(),
+                    multiCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from OpenRouter (" + model + ")"
                 );
@@ -156,22 +176,22 @@ public class AIProviderFactory {
             case "gemini-2.5-flash", "gemini-2.5-pro" -> {
                 requireAPIKey("GEMINI_API_KEY", providerName);
                 ProviderConfig<Example> singleConfig = createProviderConfig(
-                    GeminiConfig.getApiKey(),
+                    geminiConfig.getApiKey(),
                     null, // LangChain4j handles base URL internally
-                    GeminiConfig.getModelName(providerName),
-                    SingleCharExampleProviderConfig.templatePath(),
-                    SingleCharExampleProviderConfig.examplesDirectory(),
-                    SingleCharExampleProviderConfig.responseMapper(),
+                    geminiConfig.getModelName(providerName),
+                    singleCharExampleConfig.templatePath(),
+                    singleCharExampleConfig.examplesDirectory(),
+                    singleCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from Gemini (" + providerName + ")"
                 );
                 ProviderConfig<Example> multiConfig = createProviderConfig(
-                    GeminiConfig.getApiKey(),
+                    geminiConfig.getApiKey(),
                     null,
-                    GeminiConfig.getModelName(providerName),
-                    MultiCharExampleProviderConfig.templatePath(),
-                    MultiCharExampleProviderConfig.examplesDirectory(),
-                    MultiCharExampleProviderConfig.responseMapper(),
+                    geminiConfig.getModelName(providerName),
+                    multiCharExampleConfig.templatePath(),
+                    multiCharExampleConfig.examplesDirectory(),
+                    multiCharExampleConfig.responseMapper(),
                     providerName,
                     "Failed to get examples from Gemini (" + providerName + ")"
                 );
@@ -183,11 +203,11 @@ public class AIProviderFactory {
         };
     }
 
-    public static ExplanationProvider createExplanationProvider(String providerName) {
+    public ExplanationProvider createExplanationProvider(String providerName) {
         return createExplanationProvider(providerName, null);
     }
 
-    public static ExplanationProvider createExplanationProvider(String providerName, String model) {
+    public ExplanationProvider createExplanationProvider(String providerName, String model) {
         if (providerName == null) providerName = "deepseek-chat";
         if (providerName.equals("openrouter") && (model == null || model.trim().isEmpty())) {
             model = "gpt-3.5-turbo";
@@ -198,22 +218,22 @@ public class AIProviderFactory {
             case "deepseek-chat" -> {
                 requireAPIKey("DEEPSEEK_API_KEY", providerName);
                 ProviderConfig<Explanation> singleConfig = createProviderConfig(
-                    DeepSeekConfig.getApiKey(),
-                    DeepSeekConfig.getBaseUrl(),
+                    deepSeekConfig.getApiKey(),
+                    deepSeekConfig.getBaseUrl(),
                     "deepseek-chat",
-                    SingleCharExplanationProviderConfig.templatePath(),
-                    SingleCharExplanationProviderConfig.examplesDirectory(),
-                    SingleCharExplanationProviderConfig.responseMapper(),
+                    singleCharExplanationConfig.templatePath(),
+                    singleCharExplanationConfig.examplesDirectory(),
+                    singleCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from DeepSeek (deepseek-chat)"
                 );
                 ProviderConfig<Explanation> multiConfig = createProviderConfig(
-                    DeepSeekConfig.getApiKey(),
-                    DeepSeekConfig.getBaseUrl(),
+                    deepSeekConfig.getApiKey(),
+                    deepSeekConfig.getBaseUrl(),
                     "deepseek-chat",
-                    MultiCharExplanationProviderConfig.templatePath(),
-                    MultiCharExplanationProviderConfig.examplesDirectory(),
-                    MultiCharExplanationProviderConfig.responseMapper(),
+                    multiCharExplanationConfig.templatePath(),
+                    multiCharExplanationConfig.examplesDirectory(),
+                    multiCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from DeepSeek (deepseek-chat)"
                 );
@@ -223,22 +243,22 @@ public class AIProviderFactory {
             case "glm-4-flash" -> {
                 requireAPIKey("ZHIPU_API_KEY", providerName);
                 ProviderConfig<Explanation> singleConfig = createProviderConfig(
-                    ZhipuConfig.getApiKey(),
-                    ZhipuConfig.getBaseUrl(),
+                    zhipuConfig.getApiKey(),
+                    zhipuConfig.getBaseUrl(),
                     "glm-4-flash",
-                    SingleCharExplanationProviderConfig.templatePath(),
-                    SingleCharExplanationProviderConfig.examplesDirectory(),
-                    SingleCharExplanationProviderConfig.responseMapper(),
+                    singleCharExplanationConfig.templatePath(),
+                    singleCharExplanationConfig.examplesDirectory(),
+                    singleCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from Zhipu (glm-4-flash)"
                 );
                 ProviderConfig<Explanation> multiConfig = createProviderConfig(
-                    ZhipuConfig.getApiKey(),
-                    ZhipuConfig.getBaseUrl(),
+                    zhipuConfig.getApiKey(),
+                    zhipuConfig.getBaseUrl(),
                     "glm-4-flash",
-                    MultiCharExplanationProviderConfig.templatePath(),
-                    MultiCharExplanationProviderConfig.examplesDirectory(),
-                    MultiCharExplanationProviderConfig.responseMapper(),
+                    multiCharExplanationConfig.templatePath(),
+                    multiCharExplanationConfig.examplesDirectory(),
+                    multiCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from Zhipu (glm-4-flash)"
                 );
@@ -250,22 +270,22 @@ public class AIProviderFactory {
             case "glm-4.5" -> {
                 requireAPIKey("ZHIPU_API_KEY", providerName);
                 ProviderConfig<Explanation> singleConfig = createProviderConfig(
-                    ZhipuConfig.getApiKey(),
-                    ZhipuConfig.getBaseUrl(),
+                    zhipuConfig.getApiKey(),
+                    zhipuConfig.getBaseUrl(),
                     "glm-4.5",
-                    SingleCharExplanationProviderConfig.templatePath(),
-                    SingleCharExplanationProviderConfig.examplesDirectory(),
-                    SingleCharExplanationProviderConfig.responseMapper(),
+                    singleCharExplanationConfig.templatePath(),
+                    singleCharExplanationConfig.examplesDirectory(),
+                    singleCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from Zhipu (glm-4.5)"
                 );
                 ProviderConfig<Explanation> multiConfig = createProviderConfig(
-                    ZhipuConfig.getApiKey(),
-                    ZhipuConfig.getBaseUrl(),
+                    zhipuConfig.getApiKey(),
+                    zhipuConfig.getBaseUrl(),
                     "glm-4.5",
-                    MultiCharExplanationProviderConfig.templatePath(),
-                    MultiCharExplanationProviderConfig.examplesDirectory(),
-                    MultiCharExplanationProviderConfig.responseMapper(),
+                    multiCharExplanationConfig.templatePath(),
+                    multiCharExplanationConfig.examplesDirectory(),
+                    multiCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from Zhipu (glm-4.5)"
                 );
@@ -277,22 +297,22 @@ public class AIProviderFactory {
             case "qwen-max", "qwen-plus", "qwen-turbo" -> {
                 requireAPIKey("DASHSCOPE_API_KEY", providerName);
                 ProviderConfig<Explanation> singleConfig = createProviderConfig(
-                    DashScopeConfig.getApiKey(),
-                    DashScopeConfig.getBaseUrl(),
+                    dashScopeConfig.getApiKey(),
+                    dashScopeConfig.getBaseUrl(),
                     providerName,
-                    SingleCharExplanationProviderConfig.templatePath(),
-                    SingleCharExplanationProviderConfig.examplesDirectory(),
-                    SingleCharExplanationProviderConfig.responseMapper(),
+                    singleCharExplanationConfig.templatePath(),
+                    singleCharExplanationConfig.examplesDirectory(),
+                    singleCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from DashScope (" + providerName + ")"
                 );
                 ProviderConfig<Explanation> multiConfig = createProviderConfig(
-                    DashScopeConfig.getApiKey(),
-                    DashScopeConfig.getBaseUrl(),
+                    dashScopeConfig.getApiKey(),
+                    dashScopeConfig.getBaseUrl(),
                     providerName,
-                    MultiCharExplanationProviderConfig.templatePath(),
-                    MultiCharExplanationProviderConfig.examplesDirectory(),
-                    MultiCharExplanationProviderConfig.responseMapper(),
+                    multiCharExplanationConfig.templatePath(),
+                    multiCharExplanationConfig.examplesDirectory(),
+                    multiCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from DashScope (" + providerName + ")"
                 );
@@ -302,22 +322,22 @@ public class AIProviderFactory {
             case "openrouter" -> {
                 requireAPIKey("OPENROUTER_API_KEY", providerName);
                 ProviderConfig<Explanation> singleConfig = createProviderConfig(
-                    OpenRouterConfig.getApiKey(),
-                    OpenRouterConfig.getBaseUrl(),
+                    openRouterConfig.getApiKey(),
+                    openRouterConfig.getBaseUrl(),
                     model,
-                    SingleCharExplanationProviderConfig.templatePath(),
-                    SingleCharExplanationProviderConfig.examplesDirectory(),
-                    SingleCharExplanationProviderConfig.responseMapper(),
+                    singleCharExplanationConfig.templatePath(),
+                    singleCharExplanationConfig.examplesDirectory(),
+                    singleCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from OpenRouter (" + model + ")"
                 );
                 ProviderConfig<Explanation> multiConfig = createProviderConfig(
-                    OpenRouterConfig.getApiKey(),
-                    OpenRouterConfig.getBaseUrl(),
+                    openRouterConfig.getApiKey(),
+                    openRouterConfig.getBaseUrl(),
                     model,
-                    MultiCharExplanationProviderConfig.templatePath(),
-                    MultiCharExplanationProviderConfig.examplesDirectory(),
-                    MultiCharExplanationProviderConfig.responseMapper(),
+                    multiCharExplanationConfig.templatePath(),
+                    multiCharExplanationConfig.examplesDirectory(),
+                    multiCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from OpenRouter (" + model + ")"
                 );
@@ -326,22 +346,22 @@ public class AIProviderFactory {
             case "gemini-2.5-flash", "gemini-2.5-pro" -> {
                 requireAPIKey("GEMINI_API_KEY", providerName);
                 ProviderConfig<Explanation> singleConfig = createProviderConfig(
-                    GeminiConfig.getApiKey(),
+                    geminiConfig.getApiKey(),
                     null, // LangChain4j handles base URL internally
-                    GeminiConfig.getModelName(providerName),
-                    SingleCharExplanationProviderConfig.templatePath(),
-                    SingleCharExplanationProviderConfig.examplesDirectory(),
-                    SingleCharExplanationProviderConfig.responseMapper(),
+                    geminiConfig.getModelName(providerName),
+                    singleCharExplanationConfig.templatePath(),
+                    singleCharExplanationConfig.examplesDirectory(),
+                    singleCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from Gemini (" + providerName + ")"
                 );
                 ProviderConfig<Explanation> multiConfig = createProviderConfig(
-                    GeminiConfig.getApiKey(),
+                    geminiConfig.getApiKey(),
                     null,
-                    GeminiConfig.getModelName(providerName),
-                    MultiCharExplanationProviderConfig.templatePath(),
-                    MultiCharExplanationProviderConfig.examplesDirectory(),
-                    MultiCharExplanationProviderConfig.responseMapper(),
+                    geminiConfig.getModelName(providerName),
+                    multiCharExplanationConfig.templatePath(),
+                    multiCharExplanationConfig.examplesDirectory(),
+                    multiCharExplanationConfig.responseMapper(),
                     providerName,
                     "Failed to get explanation from Gemini (" + providerName + ")"
                 );
@@ -353,11 +373,11 @@ public class AIProviderFactory {
         };
     }
 
-    public static StructuralDecompositionProvider createDecompositionProvider(String providerName) {
+    public StructuralDecompositionProvider createDecompositionProvider(String providerName) {
         return createDecompositionProvider(providerName, null);
     }
 
-    public static StructuralDecompositionProvider createDecompositionProvider(String providerName, String model) {
+    public StructuralDecompositionProvider createDecompositionProvider(String providerName, String model) {
         if (providerName == null) providerName = "deepseek-chat";
         if (providerName.equals("openrouter") && (model == null || model.trim().isEmpty())) {
             model = "gpt-3.5-turbo";
@@ -368,22 +388,22 @@ public class AIProviderFactory {
             case "deepseek-chat" -> {
                 requireAPIKey("DEEPSEEK_API_KEY", providerName);
                 ProviderConfig<StructuralDecomposition> singleConfig = createProviderConfig(
-                    DeepSeekConfig.getApiKey(),
-                    DeepSeekConfig.getBaseUrl(),
+                    deepSeekConfig.getApiKey(),
+                    deepSeekConfig.getBaseUrl(),
                     "deepseek-chat",
-                    SingleCharStructuralDecompositionProviderConfig.templatePath(),
-                    SingleCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    SingleCharStructuralDecompositionProviderConfig.responseMapper(),
+                    singleCharStructuralConfig.templatePath(),
+                    singleCharStructuralConfig.examplesDirectory(),
+                    singleCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from DeepSeek (deepseek-chat)"
                 );
                 ProviderConfig<StructuralDecomposition> multiConfig = createProviderConfig(
-                    DeepSeekConfig.getApiKey(),
-                    DeepSeekConfig.getBaseUrl(),
+                    deepSeekConfig.getApiKey(),
+                    deepSeekConfig.getBaseUrl(),
                     "deepseek-chat",
-                    MultiCharStructuralDecompositionProviderConfig.templatePath(),
-                    MultiCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    MultiCharStructuralDecompositionProviderConfig.responseMapper(),
+                    multiCharStructuralConfig.templatePath(),
+                    multiCharStructuralConfig.examplesDirectory(),
+                    multiCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from DeepSeek (deepseek-chat)"
                 );
@@ -393,22 +413,22 @@ public class AIProviderFactory {
             case "glm-4-flash" -> {
                 requireAPIKey("ZHIPU_API_KEY", providerName);
                 ProviderConfig<StructuralDecomposition> singleConfig = createProviderConfig(
-                    ZhipuConfig.getApiKey(),
-                    ZhipuConfig.getBaseUrl(),
+                    zhipuConfig.getApiKey(),
+                    zhipuConfig.getBaseUrl(),
                     "glm-4-flash",
-                    SingleCharStructuralDecompositionProviderConfig.templatePath(),
-                    SingleCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    SingleCharStructuralDecompositionProviderConfig.responseMapper(),
+                    singleCharStructuralConfig.templatePath(),
+                    singleCharStructuralConfig.examplesDirectory(),
+                    singleCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from Zhipu (glm-4-flash)"
                 );
                 ProviderConfig<StructuralDecomposition> multiConfig = createProviderConfig(
-                    ZhipuConfig.getApiKey(),
-                    ZhipuConfig.getBaseUrl(),
+                    zhipuConfig.getApiKey(),
+                    zhipuConfig.getBaseUrl(),
                     "glm-4-flash",
-                    MultiCharStructuralDecompositionProviderConfig.templatePath(),
-                    MultiCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    MultiCharStructuralDecompositionProviderConfig.responseMapper(),
+                    multiCharStructuralConfig.templatePath(),
+                    multiCharStructuralConfig.examplesDirectory(),
+                    multiCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from Zhipu (glm-4-flash)"
                 );
@@ -420,22 +440,22 @@ public class AIProviderFactory {
             case "glm-4.5" -> {
                 requireAPIKey("ZHIPU_API_KEY", providerName);
                 ProviderConfig<StructuralDecomposition> singleConfig = createProviderConfig(
-                    ZhipuConfig.getApiKey(),
-                    ZhipuConfig.getBaseUrl(),
+                    zhipuConfig.getApiKey(),
+                    zhipuConfig.getBaseUrl(),
                     "glm-4.5",
-                    SingleCharStructuralDecompositionProviderConfig.templatePath(),
-                    SingleCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    SingleCharStructuralDecompositionProviderConfig.responseMapper(),
+                    singleCharStructuralConfig.templatePath(),
+                    singleCharStructuralConfig.examplesDirectory(),
+                    singleCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from Zhipu (glm-4.5)"
                 );
                 ProviderConfig<StructuralDecomposition> multiConfig = createProviderConfig(
-                    ZhipuConfig.getApiKey(),
-                    ZhipuConfig.getBaseUrl(),
+                    zhipuConfig.getApiKey(),
+                    zhipuConfig.getBaseUrl(),
                     "glm-4.5",
-                    MultiCharStructuralDecompositionProviderConfig.templatePath(),
-                    MultiCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    MultiCharStructuralDecompositionProviderConfig.responseMapper(),
+                    multiCharStructuralConfig.templatePath(),
+                    multiCharStructuralConfig.examplesDirectory(),
+                    multiCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from Zhipu (glm-4.5)"
                 );
@@ -447,22 +467,22 @@ public class AIProviderFactory {
             case "qwen-max", "qwen-plus", "qwen-turbo" -> {
                 requireAPIKey("DASHSCOPE_API_KEY", providerName);
                 ProviderConfig<StructuralDecomposition> singleConfig = createProviderConfig(
-                    DashScopeConfig.getApiKey(),
-                    DashScopeConfig.getBaseUrl(),
+                    dashScopeConfig.getApiKey(),
+                    dashScopeConfig.getBaseUrl(),
                     providerName,
-                    SingleCharStructuralDecompositionProviderConfig.templatePath(),
-                    SingleCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    SingleCharStructuralDecompositionProviderConfig.responseMapper(),
+                    singleCharStructuralConfig.templatePath(),
+                    singleCharStructuralConfig.examplesDirectory(),
+                    singleCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from DashScope (" + providerName + ")"
                 );
                 ProviderConfig<StructuralDecomposition> multiConfig = createProviderConfig(
-                    DashScopeConfig.getApiKey(),
-                    DashScopeConfig.getBaseUrl(),
+                    dashScopeConfig.getApiKey(),
+                    dashScopeConfig.getBaseUrl(),
                     providerName,
-                    MultiCharStructuralDecompositionProviderConfig.templatePath(),
-                    MultiCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    MultiCharStructuralDecompositionProviderConfig.responseMapper(),
+                    multiCharStructuralConfig.templatePath(),
+                    multiCharStructuralConfig.examplesDirectory(),
+                    multiCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from DashScope (" + providerName + ")"
                 );
@@ -472,22 +492,22 @@ public class AIProviderFactory {
             case "openrouter" -> {
                 requireAPIKey("OPENROUTER_API_KEY", providerName);
                 ProviderConfig<StructuralDecomposition> singleConfig = createProviderConfig(
-                    OpenRouterConfig.getApiKey(),
-                    OpenRouterConfig.getBaseUrl(),
+                    openRouterConfig.getApiKey(),
+                    openRouterConfig.getBaseUrl(),
                     model,
-                    SingleCharStructuralDecompositionProviderConfig.templatePath(),
-                    SingleCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    SingleCharStructuralDecompositionProviderConfig.responseMapper(),
+                    singleCharStructuralConfig.templatePath(),
+                    singleCharStructuralConfig.examplesDirectory(),
+                    singleCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from OpenRouter (" + model + ")"
                 );
                 ProviderConfig<StructuralDecomposition> multiConfig = createProviderConfig(
-                    OpenRouterConfig.getApiKey(),
-                    OpenRouterConfig.getBaseUrl(),
+                    openRouterConfig.getApiKey(),
+                    openRouterConfig.getBaseUrl(),
                     model,
-                    MultiCharStructuralDecompositionProviderConfig.templatePath(),
-                    MultiCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    MultiCharStructuralDecompositionProviderConfig.responseMapper(),
+                    multiCharStructuralConfig.templatePath(),
+                    multiCharStructuralConfig.examplesDirectory(),
+                    multiCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from OpenRouter (" + model + ")"
                 );
@@ -496,22 +516,22 @@ public class AIProviderFactory {
             case "gemini-2.5-flash", "gemini-2.5-pro" -> {
                 requireAPIKey("GEMINI_API_KEY", providerName);
                 ProviderConfig<StructuralDecomposition> singleConfig = createProviderConfig(
-                    GeminiConfig.getApiKey(),
+                    geminiConfig.getApiKey(),
                     null, // LangChain4j handles base URL internally
-                    GeminiConfig.getModelName(providerName),
-                    SingleCharStructuralDecompositionProviderConfig.templatePath(),
-                    SingleCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    SingleCharStructuralDecompositionProviderConfig.responseMapper(),
+                    geminiConfig.getModelName(providerName),
+                    singleCharStructuralConfig.templatePath(),
+                    singleCharStructuralConfig.examplesDirectory(),
+                    singleCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from Gemini (" + providerName + ")"
                 );
                 ProviderConfig<StructuralDecomposition> multiConfig = createProviderConfig(
-                    GeminiConfig.getApiKey(),
+                    geminiConfig.getApiKey(),
                     null,
-                    GeminiConfig.getModelName(providerName),
-                    MultiCharStructuralDecompositionProviderConfig.templatePath(),
-                    MultiCharStructuralDecompositionProviderConfig.examplesDirectory(),
-                    MultiCharStructuralDecompositionProviderConfig.responseMapper(),
+                    geminiConfig.getModelName(providerName),
+                    multiCharStructuralConfig.templatePath(),
+                    multiCharStructuralConfig.examplesDirectory(),
+                    multiCharStructuralConfig.responseMapper(),
                     providerName,
                     "Failed to get structural decomposition from Gemini (" + providerName + ")"
                 );
@@ -523,7 +543,7 @@ public class AIProviderFactory {
         };
     }
 
-    private static <T> ProviderConfig<T> createProviderConfig(
+    private <T> ProviderConfig<T> createProviderConfig(
             String apiKey,
             String baseUrl,
             String modelName,
@@ -546,14 +566,14 @@ public class AIProviderFactory {
         );
     }
 
-    private static void requireAPIKey(String keyName, String providerName) {
+    private void requireAPIKey(String keyName, String providerName) {
         String key = readEnv(keyName);
         if (key == null || key.trim().isEmpty()) {
             throw new RuntimeException("Provider '" + providerName + "' requires " + keyName + " environment variable to be set");
         }
     }
 
-    private static String readEnv(String key) {
+    private String readEnv(String key) {
         String value = System.getProperty(key);
         if (value == null || value.isBlank()) {
             value = System.getenv(key);
@@ -561,11 +581,11 @@ public class AIProviderFactory {
         return value;
     }
 
-    public static DefinitionFormatterProvider createDefinitionFormatterProvider(String providerName) {
+    public DefinitionFormatterProvider createDefinitionFormatterProvider(String providerName) {
         return createDefinitionFormatterProvider(providerName, null);
     }
 
-    public static DefinitionFormatterProvider createDefinitionFormatterProvider(String providerName, String model) {
+    public DefinitionFormatterProvider createDefinitionFormatterProvider(String providerName, String model) {
         if (providerName == null) providerName = "deepseek-chat";
         if (providerName.equals("openrouter") && (model == null || model.trim().isEmpty())) {
             model = "gpt-3.5-turbo";
@@ -576,22 +596,22 @@ public class AIProviderFactory {
             case "deepseek-chat" -> {
                 requireAPIKey("DEEPSEEK_API_KEY", providerName);
                 ProviderConfig<Definition> singleConfig = createProviderConfig(
-                    DeepSeekConfig.getApiKey(),
-                    DeepSeekConfig.getBaseUrl(),
+                    deepSeekConfig.getApiKey(),
+                    deepSeekConfig.getBaseUrl(),
                     "deepseek-chat",
-                    SingleCharDefinitionFormatterProviderConfig.templatePath(),
-                    SingleCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    SingleCharDefinitionFormatterProviderConfig.responseMapper(),
+                    singleCharDefinitionConfig.templatePath(),
+                    singleCharDefinitionConfig.examplesDirectory(),
+                    singleCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from DeepSeek (deepseek-chat)"
                 );
                 ProviderConfig<Definition> multiConfig = createProviderConfig(
-                    DeepSeekConfig.getApiKey(),
-                    DeepSeekConfig.getBaseUrl(),
+                    deepSeekConfig.getApiKey(),
+                    deepSeekConfig.getBaseUrl(),
                     "deepseek-chat",
-                    MultiCharDefinitionFormatterProviderConfig.templatePath(),
-                    MultiCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    MultiCharDefinitionFormatterProviderConfig.responseMapper(),
+                    multiCharDefinitionConfig.templatePath(),
+                    multiCharDefinitionConfig.examplesDirectory(),
+                    multiCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from DeepSeek (deepseek-chat)"
                 );
@@ -600,22 +620,22 @@ public class AIProviderFactory {
             case "glm-4-flash" -> {
                 requireAPIKey("ZHIPU_API_KEY", providerName);
                 ProviderConfig<Definition> singleConfig = createProviderConfig(
-                    ZhipuConfig.getApiKey(),
-                    ZhipuConfig.getBaseUrl(),
+                    zhipuConfig.getApiKey(),
+                    zhipuConfig.getBaseUrl(),
                     "glm-4-flash",
-                    SingleCharDefinitionFormatterProviderConfig.templatePath(),
-                    SingleCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    SingleCharDefinitionFormatterProviderConfig.responseMapper(),
+                    singleCharDefinitionConfig.templatePath(),
+                    singleCharDefinitionConfig.examplesDirectory(),
+                    singleCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from Zhipu (glm-4-flash)"
                 );
                 ProviderConfig<Definition> multiConfig = createProviderConfig(
-                    ZhipuConfig.getApiKey(),
-                    ZhipuConfig.getBaseUrl(),
+                    zhipuConfig.getApiKey(),
+                    zhipuConfig.getBaseUrl(),
                     "glm-4-flash",
-                    MultiCharDefinitionFormatterProviderConfig.templatePath(),
-                    MultiCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    MultiCharDefinitionFormatterProviderConfig.responseMapper(),
+                    multiCharDefinitionConfig.templatePath(),
+                    multiCharDefinitionConfig.examplesDirectory(),
+                    multiCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from Zhipu (glm-4-flash)"
                 );
@@ -627,22 +647,22 @@ public class AIProviderFactory {
             case "glm-4.5" -> {
                 requireAPIKey("ZHIPU_API_KEY", providerName);
                 ProviderConfig<Definition> singleConfig = createProviderConfig(
-                    ZhipuConfig.getApiKey(),
-                    ZhipuConfig.getBaseUrl(),
+                    zhipuConfig.getApiKey(),
+                    zhipuConfig.getBaseUrl(),
                     "glm-4.5",
-                    SingleCharDefinitionFormatterProviderConfig.templatePath(),
-                    SingleCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    SingleCharDefinitionFormatterProviderConfig.responseMapper(),
+                    singleCharDefinitionConfig.templatePath(),
+                    singleCharDefinitionConfig.examplesDirectory(),
+                    singleCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from Zhipu (glm-4.5)"
                 );
                 ProviderConfig<Definition> multiConfig = createProviderConfig(
-                    ZhipuConfig.getApiKey(),
-                    ZhipuConfig.getBaseUrl(),
+                    zhipuConfig.getApiKey(),
+                    zhipuConfig.getBaseUrl(),
                     "glm-4.5",
-                    MultiCharDefinitionFormatterProviderConfig.templatePath(),
-                    MultiCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    MultiCharDefinitionFormatterProviderConfig.responseMapper(),
+                    multiCharDefinitionConfig.templatePath(),
+                    multiCharDefinitionConfig.examplesDirectory(),
+                    multiCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from Zhipu (glm-4.5)"
                 );
@@ -654,22 +674,22 @@ public class AIProviderFactory {
             case "qwen-max", "qwen-plus", "qwen-turbo" -> {
                 requireAPIKey("DASHSCOPE_API_KEY", providerName);
                 ProviderConfig<Definition> singleConfig = createProviderConfig(
-                    DashScopeConfig.getApiKey(),
-                    DashScopeConfig.getBaseUrl(),
+                    dashScopeConfig.getApiKey(),
+                    dashScopeConfig.getBaseUrl(),
                     providerName,
-                    SingleCharDefinitionFormatterProviderConfig.templatePath(),
-                    SingleCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    SingleCharDefinitionFormatterProviderConfig.responseMapper(),
+                    singleCharDefinitionConfig.templatePath(),
+                    singleCharDefinitionConfig.examplesDirectory(),
+                    singleCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from DashScope (" + providerName + ")"
                 );
                 ProviderConfig<Definition> multiConfig = createProviderConfig(
-                    DashScopeConfig.getApiKey(),
-                    DashScopeConfig.getBaseUrl(),
+                    dashScopeConfig.getApiKey(),
+                    dashScopeConfig.getBaseUrl(),
                     providerName,
-                    MultiCharDefinitionFormatterProviderConfig.templatePath(),
-                    MultiCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    MultiCharDefinitionFormatterProviderConfig.responseMapper(),
+                    multiCharDefinitionConfig.templatePath(),
+                    multiCharDefinitionConfig.examplesDirectory(),
+                    multiCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from DashScope (" + providerName + ")"
                 );
@@ -678,22 +698,22 @@ public class AIProviderFactory {
             case "openrouter" -> {
                 requireAPIKey("OPENROUTER_API_KEY", providerName);
                 ProviderConfig<Definition> singleConfig = createProviderConfig(
-                    OpenRouterConfig.getApiKey(),
-                    OpenRouterConfig.getBaseUrl(),
+                    openRouterConfig.getApiKey(),
+                    openRouterConfig.getBaseUrl(),
                     model,
-                    SingleCharDefinitionFormatterProviderConfig.templatePath(),
-                    SingleCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    SingleCharDefinitionFormatterProviderConfig.responseMapper(),
+                    singleCharDefinitionConfig.templatePath(),
+                    singleCharDefinitionConfig.examplesDirectory(),
+                    singleCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from OpenRouter (" + model + ")"
                 );
                 ProviderConfig<Definition> multiConfig = createProviderConfig(
-                    OpenRouterConfig.getApiKey(),
-                    OpenRouterConfig.getBaseUrl(),
+                    openRouterConfig.getApiKey(),
+                    openRouterConfig.getBaseUrl(),
                     model,
-                    MultiCharDefinitionFormatterProviderConfig.templatePath(),
-                    MultiCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    MultiCharDefinitionFormatterProviderConfig.responseMapper(),
+                    multiCharDefinitionConfig.templatePath(),
+                    multiCharDefinitionConfig.examplesDirectory(),
+                    multiCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from OpenRouter (" + model + ")"
                 );
@@ -702,22 +722,22 @@ public class AIProviderFactory {
             case "gemini-2.5-flash", "gemini-2.5-pro" -> {
                 requireAPIKey("GEMINI_API_KEY", providerName);
                 ProviderConfig<Definition> singleConfig = createProviderConfig(
-                    GeminiConfig.getApiKey(),
+                    geminiConfig.getApiKey(),
                     null, // LangChain4j handles base URL internally
-                    GeminiConfig.getModelName(providerName),
-                    SingleCharDefinitionFormatterProviderConfig.templatePath(),
-                    SingleCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    SingleCharDefinitionFormatterProviderConfig.responseMapper(),
+                    geminiConfig.getModelName(providerName),
+                    singleCharDefinitionConfig.templatePath(),
+                    singleCharDefinitionConfig.examplesDirectory(),
+                    singleCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from Gemini (" + providerName + ")"
                 );
                 ProviderConfig<Definition> multiConfig = createProviderConfig(
-                    GeminiConfig.getApiKey(),
+                    geminiConfig.getApiKey(),
                     null,
-                    GeminiConfig.getModelName(providerName),
-                    MultiCharDefinitionFormatterProviderConfig.templatePath(),
-                    MultiCharDefinitionFormatterProviderConfig.examplesDirectory(),
-                    MultiCharDefinitionFormatterProviderConfig.responseMapper(),
+                    geminiConfig.getModelName(providerName),
+                    multiCharDefinitionConfig.templatePath(),
+                    multiCharDefinitionConfig.examplesDirectory(),
+                    multiCharDefinitionConfig.responseMapper(),
                     providerName,
                     "Failed to format definition from Gemini (" + providerName + ")"
                 );

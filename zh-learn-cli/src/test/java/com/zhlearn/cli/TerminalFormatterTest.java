@@ -7,6 +7,7 @@ import org.junit.jupiter.api.AfterAll;
 import static org.assertj.core.api.Assertions.*;
 
 class TerminalFormatterTest {
+    private final TerminalFormatter formatter = new TerminalFormatter();
 
     @BeforeAll
     static void setup() {
@@ -25,9 +26,9 @@ class TerminalFormatterTest {
         String coloredContent = "\u001B[36mThis is a very long cyan colored text that should wrap across multiple lines and preserve the cyan color throughout all wrapped lines in the box\u001B[0m";
         String title = "Colored Text Test";
         int width = 40;
-        
+
         // When: Box is created
-        String boxResult = TerminalFormatter.createBox(title, coloredContent, width);
+        String boxResult = formatter.createBox(title, coloredContent, width);
         
         // Then: All content lines should preserve cyan color
         String[] boxLines = boxResult.split("\n");
@@ -64,9 +65,9 @@ class TerminalFormatterTest {
         String boldContent = "\u001B[1mThis is a very long bold text that should wrap across multiple lines and preserve the bold formatting throughout all lines in the box\u001B[22m";
         String title = "Bold Text Test";
         int width = 35;
-        
+
         // When: Box is created
-        String boxResult = TerminalFormatter.createBox(title, boldContent, width);
+        String boxResult = formatter.createBox(title, boldContent, width);
         
         // Then: All content lines should preserve bold formatting
         String[] boxLines = boxResult.split("\n");
@@ -97,9 +98,9 @@ class TerminalFormatterTest {
         String styledContent = "\u001B[1m\u001B[36mThis is bold cyan text that is very long and should wrap while preserving both bold and cyan formatting in all lines\u001B[0m";
         String title = "Multi-Style Test";
         int width = 30;
-        
+
         // When: Box is created
-        String boxResult = TerminalFormatter.createBox(title, styledContent, width);
+        String boxResult = formatter.createBox(title, styledContent, width);
         
         // Then: All content lines should preserve both formatting types
         String[] boxLines = boxResult.split("\n");
@@ -131,9 +132,9 @@ class TerminalFormatterTest {
         String coloredContent = "\u001B[33mThis is yellow text that is intentionally very long to force wrapping inside the box and test if the yellow color continues on the next line\u001B[0m";
         String title = "Test Box";
         int width = 40;
-        
+
         // When: Box is created with wrapping content
-        String boxResult = TerminalFormatter.createBox(title, coloredContent, width);
+        String boxResult = formatter.createBox(title, coloredContent, width);
         
         // Then: The wrapped content should preserve yellow color on all lines
         String[] boxLines = boxResult.split("\n");

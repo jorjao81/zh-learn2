@@ -9,6 +9,12 @@ import com.zhlearn.domain.provider.DefinitionProvider;
 import com.zhlearn.domain.provider.AudioProvider;
 import com.zhlearn.infrastructure.common.AIProviderFactory;
 import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;
+import com.zhlearn.infrastructure.audio.AudioPaths;
+import com.zhlearn.infrastructure.audio.AudioCache;
+import com.zhlearn.application.audio.AnkiMediaLocator;
+import com.zhlearn.application.format.ExamplesHtmlFormatter;
+import com.zhlearn.application.service.AnkiExporter;
+import com.zhlearn.cli.audio.PrePlayback;
 
 import java.util.List;
 import com.zhlearn.infrastructure.pinyin4j.Pinyin4jProvider;
@@ -30,16 +36,72 @@ public class MainCommand implements Runnable {
     // Audio providers - keep as list like before
     private final List<AudioProvider> audioProviders;
     private final AudioDownloadExecutor audioExecutor;
+    private final PrePlayback prePlayback;
+    private final AudioPaths audioPaths;
+    private final AudioCache audioCache;
+    private final AIProviderFactory aiProviderFactory;
+    private final TerminalFormatter terminalFormatter;
+    private final ExamplesHtmlFormatter examplesHtmlFormatter;
+    private final AnalysisPrinter analysisPrinter;
+    private final AnkiMediaLocator ankiMediaLocator;
+    private final AnkiExporter ankiExporter;
 
+    /**
+     * Default constructor for tests.
+     * Uses ApplicationContext to create a fully initialized instance.
+     */
     public MainCommand() {
-        // Initialize audio executor and providers
-        this.audioExecutor = new AudioDownloadExecutor();
-        this.audioProviders = List.of(
-            new AnkiPronunciationProvider(),
-            new ForvoAudioProvider(audioExecutor),
-            new QwenAudioProvider(audioExecutor),
-            new TencentAudioProvider(audioExecutor)
+        this(ApplicationContext.create());
+    }
+
+    /**
+     * Constructor for production use with ApplicationContext.
+     * Accepts all dependencies from centralized dependency injection.
+     */
+    public MainCommand(ApplicationContext context) {
+        this(
+            context.getTerminalFormatter(),
+            context.getExamplesHtmlFormatter(),
+            context.getAnalysisPrinter(),
+            context.getAnkiMediaLocator(),
+            context.getAnkiExporter(),
+            context.getAudioPaths(),
+            context.getAudioCache(),
+            context.getPrePlayback(),
+            context.getAiProviderFactory(),
+            context.getAudioExecutor(),
+            context.getAudioProviders()
         );
+    }
+
+    /**
+     * Constructor for explicit dependency injection.
+     * Accepts all required dependencies directly.
+     */
+    public MainCommand(
+            TerminalFormatter terminalFormatter,
+            ExamplesHtmlFormatter examplesHtmlFormatter,
+            AnalysisPrinter analysisPrinter,
+            AnkiMediaLocator ankiMediaLocator,
+            AnkiExporter ankiExporter,
+            AudioPaths audioPaths,
+            AudioCache audioCache,
+            PrePlayback prePlayback,
+            AIProviderFactory aiProviderFactory,
+            AudioDownloadExecutor audioExecutor,
+            List<AudioProvider> audioProviders) {
+
+        this.terminalFormatter = terminalFormatter;
+        this.examplesHtmlFormatter = examplesHtmlFormatter;
+        this.analysisPrinter = analysisPrinter;
+        this.ankiMediaLocator = ankiMediaLocator;
+        this.ankiExporter = ankiExporter;
+        this.audioPaths = audioPaths;
+        this.audioCache = audioCache;
+        this.prePlayback = prePlayback;
+        this.aiProviderFactory = aiProviderFactory;
+        this.audioExecutor = audioExecutor;
+        this.audioProviders = audioProviders;
     }
 
     // Audio provider methods - keep existing working approach
@@ -55,29 +117,53 @@ public class MainCommand implements Runnable {
         return audioExecutor;
     }
 
+    public PrePlayback getPrePlayback() {
+        return prePlayback;
+    }
+
+    public TerminalFormatter getTerminalFormatter() {
+        return terminalFormatter;
+    }
+
+    public ExamplesHtmlFormatter getExamplesHtmlFormatter() {
+        return examplesHtmlFormatter;
+    }
+
+    public AnalysisPrinter getAnalysisPrinter() {
+        return analysisPrinter;
+    }
+
+    public AnkiMediaLocator getAnkiMediaLocator() {
+        return ankiMediaLocator;
+    }
+
+    public AnkiExporter getAnkiExporter() {
+        return ankiExporter;
+    }
+
     // AI Provider factory methods - create on demand and crash if fails
     public ExampleProvider createExampleProvider(String providerName) {
-        return AIProviderFactory.createExampleProvider(providerName);
+        return aiProviderFactory.createExampleProvider(providerName);
     }
 
     public ExampleProvider createExampleProvider(String providerName, String model) {
-        return AIProviderFactory.createExampleProvider(providerName, model);
+        return aiProviderFactory.createExampleProvider(providerName, model);
     }
 
     public ExplanationProvider createExplanationProvider(String providerName) {
-        return AIProviderFactory.createExplanationProvider(providerName);
+        return aiProviderFactory.createExplanationProvider(providerName);
     }
 
     public ExplanationProvider createExplanationProvider(String providerName, String model) {
-        return AIProviderFactory.createExplanationProvider(providerName, model);
+        return aiProviderFactory.createExplanationProvider(providerName, model);
     }
 
     public StructuralDecompositionProvider createDecompositionProvider(String providerName) {
-        return AIProviderFactory.createDecompositionProvider(providerName);
+        return aiProviderFactory.createDecompositionProvider(providerName);
     }
 
     public StructuralDecompositionProvider createDecompositionProvider(String providerName, String model) {
-        return AIProviderFactory.createDecompositionProvider(providerName, model);
+        return aiProviderFactory.createDecompositionProvider(providerName, model);
     }
 
     public PinyinProvider createPinyinProvider(String providerName) {
@@ -101,11 +187,11 @@ public class MainCommand implements Runnable {
     }
 
     public DefinitionFormatterProvider createDefinitionFormatterProvider(String providerName) {
-        return AIProviderFactory.createDefinitionFormatterProvider(providerName);
+        return aiProviderFactory.createDefinitionFormatterProvider(providerName);
     }
 
     public DefinitionFormatterProvider createDefinitionFormatterProvider(String providerName, String model) {
-        return AIProviderFactory.createDefinitionFormatterProvider(providerName, model);
+        return aiProviderFactory.createDefinitionFormatterProvider(providerName, model);
     }
 
     public void shutdown() {

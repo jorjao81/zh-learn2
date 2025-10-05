@@ -9,9 +9,12 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 public class AudioNormalizer {
-    private static final Logger log = LoggerFactory.getLogger(AudioNormalizer.class);
+    private final Logger log = LoggerFactory.getLogger(AudioNormalizer.class);
 
-    public static void normalizeToMp3(Path input, Path output) throws IOException, InterruptedException {
+    public AudioNormalizer() {
+    }
+
+    public void normalizeToMp3(Path input, Path output) throws IOException, InterruptedException {
         if (input == null || !Files.exists(input)) throw new IOException("input not found: " + input);
         Files.createDirectories(output.getParent());
 
@@ -49,7 +52,7 @@ public class AudioNormalizer {
         Files.copy(input, output, StandardCopyOption.REPLACE_EXISTING);
     }
 
-    private static boolean isOnPath(String tool) {
+    private boolean isOnPath(String tool) {
         try {
             Process p = new ProcessBuilder(tool, "-version").start();
             p.destroy();

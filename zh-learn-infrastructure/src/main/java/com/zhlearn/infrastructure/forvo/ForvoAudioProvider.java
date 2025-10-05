@@ -8,6 +8,7 @@ import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.AudioProvider;
 import com.zhlearn.infrastructure.audio.AudioCache;
 import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;
+import com.zhlearn.infrastructure.audio.AudioNormalizer;
 import com.zhlearn.infrastructure.audio.AudioPaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,22 +46,36 @@ public class ForvoAudioProvider implements AudioProvider {
 
     private final HttpClient http;
     private final ObjectMapper mapper;
+    private final AudioCache audioCache;
+    private final AudioPaths audioPaths;
 
     public ForvoAudioProvider() {
-        this(HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build(), new ObjectMapper());
+        this(HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build(), new ObjectMapper(), null, createDefaultAudioCache(), createDefaultAudioPaths());
     }
 
     public ForvoAudioProvider(HttpClient http, ObjectMapper mapper) {
-        this(http, mapper, null);
+        this(http, mapper, null, createDefaultAudioCache(), createDefaultAudioPaths());
     }
 
     public ForvoAudioProvider(AudioDownloadExecutor audioExecutor) {
-        this(HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build(), new ObjectMapper(), null);
+        this(HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build(), new ObjectMapper(), null, createDefaultAudioCache(), createDefaultAudioPaths());
     }
 
-    public ForvoAudioProvider(HttpClient http, ObjectMapper mapper, ExecutorService executorService) {
+    public ForvoAudioProvider(HttpClient http, ObjectMapper mapper, ExecutorService executorService, AudioCache audioCache, AudioPaths audioPaths) {
         this.http = http;
         this.mapper = mapper;
+        this.audioCache = audioCache;
+        this.audioPaths = audioPaths;
+    }
+
+    private static AudioCache createDefaultAudioCache() {
+        AudioPaths paths = new AudioPaths();
+        AudioNormalizer normalizer = new AudioNormalizer();
+        return new AudioCache(paths, normalizer);
+    }
+
+    private static AudioPaths createDefaultAudioPaths() {
+        return new AudioPaths();
     }
 
     @Override
@@ -127,7 +142,7 @@ public class ForvoAudioProvider implements AudioProvider {
                 return Optional.empty();
             }
 
-            Path cached = AudioPaths.audioDir()
+            Path cached = audioPaths.audioDir()
                 .resolve(getName())
                 .resolve(fileName(word.characters(), username, mp3));
             if (Files.exists(cached)) {
@@ -146,7 +161,7 @@ public class ForvoAudioProvider implements AudioProvider {
             }
 
             log.debug("[Forvo] Normalizing audio for '{}'", word.characters());
-            Path normalized = AudioCache.ensureCachedNormalized(out, getName(), word.characters(), username, mp3);
+            Path normalized = audioCache.ensureCachedNormalized(out, getName(), word.characters(), username, mp3);
 
             long totalDuration = System.currentTimeMillis() - startTime;
             log.info("[Forvo] Successfully processed audio for '{}' ({}ms)", word.characters(), totalDuration);
@@ -195,7 +210,7 @@ public class ForvoAudioProvider implements AudioProvider {
                 if (mp3 == null || mp3.isBlank()) continue; // skip non-mp3 entries
                 try {
                     // First check cache by deterministic file name from source URL
-                    Path cached = AudioPaths.audioDir()
+                    Path cached = audioPaths.audioDir()
                         .resolve(getName())
                         .resolve(fileName(word.characters(), username, mp3));
                     if (Files.exists(cached)) {
@@ -204,7 +219,7 @@ public class ForvoAudioProvider implements AudioProvider {
                     }
                     Path tmp = downloadMp3(mp3, word.characters());
                     if (tmp != null) {
-                        Path norm = AudioCache.ensureCachedNormalized(tmp, getName(), word.characters(), username, mp3);
+                        Path norm = audioCache.ensureCachedNormalized(tmp, getName(), word.characters(), username, mp3);
                         results.add(norm.toAbsolutePath());
                     }
                 } catch (IOException | InterruptedException e) {
@@ -260,7 +275,7 @@ public class ForvoAudioProvider implements AudioProvider {
                 if (mp3 == null || mp3.isBlank()) continue; // skip non-mp3 entries
                 try {
                     // First check cache by deterministic file name from source URL
-                    Path cached = AudioPaths.audioDir()
+                    Path cached = audioPaths.audioDir()
                         .resolve(getName())
                         .resolve(fileName(word.characters(), username, mp3));
                     if (Files.exists(cached)) {
@@ -270,7 +285,7 @@ public class ForvoAudioProvider implements AudioProvider {
                     }
                     Path tmp = downloadMp3(mp3, word.characters());
                     if (tmp != null) {
-                        Path norm = AudioCache.ensureCachedNormalized(tmp, getName(), word.characters(), username, mp3);
+                        Path norm = audioCache.ensureCachedNormalized(tmp, getName(), word.characters(), username, mp3);
                         String description = formatForvoDescription(username);
                         results.add(new PronunciationDescription(norm.toAbsolutePath(), description));
                     }
@@ -317,10 +332,10 @@ public class ForvoAudioProvider implements AudioProvider {
         return value;
     }
 
-    private static String fileName(String word, String username, String sourceId) {
+    private String fileName(String word, String username, String sourceId) {
         String user = (username == null || username.isBlank()) ? "unknown" : username;
-        String safeWord = AudioPaths.sanitize(word);
-        String safeUser = AudioPaths.sanitize(user);
+        String safeWord = audioPaths.sanitize(word);
+        String safeUser = audioPaths.sanitize(user);
         return NAME + "_" + safeWord + "_" + safeUser + "_" + shortHash(sourceId) + ".mp3";
     }
 

@@ -79,9 +79,9 @@ public class WordCommand implements Runnable {
         WordAnalysis analysis = wordAnalysisService.getCompleteAnalysis(word, config);
 
         if (rawOutput) {
-            AnalysisPrinter.printRaw(analysis);
+            parent.getAnalysisPrinter().printRaw(analysis);
         } else {
-            AnalysisPrinter.printFormatted(analysis);
+            parent.getAnalysisPrinter().printFormatted(analysis);
         }
     }
     

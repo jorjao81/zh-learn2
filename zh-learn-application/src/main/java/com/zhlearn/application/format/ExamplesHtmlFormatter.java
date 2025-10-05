@@ -10,10 +10,12 @@ import java.util.Map;
 /**
  * Formats Example usages into HTML suitable for both CLI (converted to ANSI) and Anki export.
  */
-public final class ExamplesHtmlFormatter {
-    private ExamplesHtmlFormatter() {}
+public class ExamplesHtmlFormatter {
 
-    public static String format(Example example) {
+    public ExamplesHtmlFormatter() {
+    }
+
+    public String format(Example example) {
         if (example == null || example.usages() == null || example.usages().isEmpty()) {
             // Still render phonetic series if present
             return formatPhoneticSeriesOnly(example);
@@ -65,7 +67,7 @@ public final class ExamplesHtmlFormatter {
         return html.toString().trim();
     }
 
-    private static String formatPhoneticSeriesOnly(Example example) {
+    private String formatPhoneticSeriesOnly(Example example) {
         if (example == null || example.phoneticSeries() == null || example.phoneticSeries().isEmpty()) {
             return "";
         }
@@ -85,7 +87,7 @@ public final class ExamplesHtmlFormatter {
         return html.toString();
     }
 
-    private static String prefixBreakdown(String text) {
+    private String prefixBreakdown(String text) {
         String t = text.trim();
         if (t.toLowerCase().startsWith("breakdown:")) {
             // Remove "breakdown:" prefix if present
@@ -94,7 +96,7 @@ public final class ExamplesHtmlFormatter {
         return t;
     }
 
-    private static String nz(String s) { return s == null ? "" : s; }
+    private String nz(String s) { return s == null ? "" : s; }
 
 }
 

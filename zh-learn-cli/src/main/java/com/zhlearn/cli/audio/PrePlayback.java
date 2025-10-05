@@ -11,12 +11,18 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class PrePlayback {
-    private PrePlayback() {}
+public class PrePlayback {
+    private final AudioCache audioCache;
+    private final AudioPaths audioPaths;
 
-    public static List<PronunciationCandidate> preprocessCandidates(Hanzi word, Pinyin pinyin, List<PronunciationCandidate> list) {
+    public PrePlayback(AudioCache audioCache, AudioPaths audioPaths) {
+        this.audioCache = audioCache;
+        this.audioPaths = audioPaths;
+    }
+
+    public List<PronunciationCandidate> preprocessCandidates(Hanzi word, Pinyin pinyin, List<PronunciationCandidate> list) {
         List<PronunciationCandidate> out = new ArrayList<>();
-        Path audioBase = AudioPaths.audioDir();
+        Path audioBase = audioPaths.audioDir();
         for (PronunciationCandidate c : list) {
             Path absolute = c.file().toAbsolutePath();
             if (shouldBypassCache(c.label())) {
@@ -28,7 +34,7 @@ public final class PrePlayback {
                 continue;
             }
             try {
-                Path normalized = AudioCache.ensureCachedNormalized(
+                Path normalized = audioCache.ensureCachedNormalized(
                     absolute,
                     c.label(),
                     word.characters(),
@@ -46,11 +52,11 @@ public final class PrePlayback {
         return out;
     }
 
-    private static boolean shouldBypassCache(String providerLabel) {
+    private boolean shouldBypassCache(String providerLabel) {
         return "anki".equals(providerLabel);
     }
 
-    private static boolean isAlreadyCached(Path file, Path audioBase) {
+    private boolean isAlreadyCached(Path file, Path audioBase) {
         Path normalizedFile = file.toAbsolutePath().normalize();
         Path normalizedBase = audioBase.toAbsolutePath().normalize();
         return normalizedFile.startsWith(normalizedBase);

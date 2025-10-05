@@ -8,44 +8,50 @@ import com.zhlearn.domain.model.WordAnalysis;
  * Shared printing utility for WordAnalysis in CLI.
  * Used by both the single-word and batch commands to ensure identical output.
  */
-public final class AnalysisPrinter {
-    private AnalysisPrinter() {}
+public class AnalysisPrinter {
+    private final ExamplesHtmlFormatter examplesHtmlFormatter;
+    private final TerminalFormatter terminalFormatter;
 
-    public static void printFormatted(WordAnalysis analysis) {
-        int width = TerminalFormatter.getTerminalWidth();
+    public AnalysisPrinter(ExamplesHtmlFormatter examplesHtmlFormatter, TerminalFormatter terminalFormatter) {
+        this.examplesHtmlFormatter = examplesHtmlFormatter;
+        this.terminalFormatter = terminalFormatter;
+    }
 
-        String wordContent = TerminalFormatter.formatChineseWord(
+    public void printFormatted(WordAnalysis analysis) {
+        int width = terminalFormatter.getTerminalWidth();
+
+        String wordContent = terminalFormatter.formatChineseWord(
                 analysis.word().characters(), analysis.pinyin().pinyin());
-        System.out.println(TerminalFormatter.createBox("Chinese Word", wordContent, width));
+        System.out.println(terminalFormatter.createBox("Chinese Word", wordContent, width));
         System.out.println();
 
-        String pinyinContent = TerminalFormatter.formatChineseWord("拼音", analysis.pinyin().pinyin());
-        System.out.println(TerminalFormatter.createBox("Pinyin", pinyinContent, width));
+        String pinyinContent = terminalFormatter.formatChineseWord("拼音", analysis.pinyin().pinyin());
+        System.out.println(terminalFormatter.createBox("Pinyin", pinyinContent, width));
         System.out.println();
 
-        String defContent = TerminalFormatter.formatDefinition(
+        String defContent = terminalFormatter.formatDefinition(
                 analysis.definition().meaning());
-        System.out.println(TerminalFormatter.createBox("Definition", defContent, width));
+        System.out.println(terminalFormatter.createBox("Definition", defContent, width));
         System.out.println();
 
-        String decompositionContent = TerminalFormatter.formatStructuralDecomposition(
+        String decompositionContent = terminalFormatter.formatStructuralDecomposition(
                 analysis.structuralDecomposition().decomposition());
-        System.out.println(TerminalFormatter.createBox("Structural Decomposition", decompositionContent, width));
+        System.out.println(terminalFormatter.createBox("Structural Decomposition", decompositionContent, width));
         System.out.println();
 
-        String examplesHtml = ExamplesHtmlFormatter.format(analysis.examples());
-        String formattedExamples = TerminalFormatter.convertHtmlToAnsi(examplesHtml);
-        System.out.println(TerminalFormatter.createBox("Examples", formattedExamples, width));
+        String examplesHtml = examplesHtmlFormatter.format(analysis.examples());
+        String formattedExamples = terminalFormatter.convertHtmlToAnsi(examplesHtml);
+        System.out.println(terminalFormatter.createBox("Examples", formattedExamples, width));
         System.out.println();
 
-        String explanationContent = TerminalFormatter.convertHtmlToAnsi(
+        String explanationContent = terminalFormatter.convertHtmlToAnsi(
                 analysis.explanation().explanation());
-        System.out.println(TerminalFormatter.createBox("Explanation", explanationContent, width));
+        System.out.println(terminalFormatter.createBox("Explanation", explanationContent, width));
 
         Runtime.getRuntime().addShutdownHook(new Thread(TerminalFormatter::shutdown));
     }
 
-    public static void printRaw(WordAnalysis analysis) {
+    public void printRaw(WordAnalysis analysis) {
         System.out.println("Chinese Word: " + analysis.word().characters());
         System.out.println();
 

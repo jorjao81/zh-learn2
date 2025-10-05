@@ -10,9 +10,12 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
 
 public class CacheKeyGenerator {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-    
-    public static String generateKey(String prompt, String baseUrl, String modelName, Double temperature, Integer maxTokens) {
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public CacheKeyGenerator() {
+    }
+
+    public String generateKey(String prompt, String baseUrl, String modelName, Double temperature, Integer maxTokens) {
         try {
             ObjectNode keyData = objectMapper.createObjectNode();
             keyData.put("prompt", prompt);
@@ -35,7 +38,7 @@ public class CacheKeyGenerator {
         }
     }
     
-    private static String hashToSha256(String input) {
+    private String hashToSha256(String input) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(input.getBytes(StandardCharsets.UTF_8));

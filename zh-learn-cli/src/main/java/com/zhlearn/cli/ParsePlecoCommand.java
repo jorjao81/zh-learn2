@@ -297,9 +297,9 @@ public class ParsePlecoCommand implements Runnable {
                                     System.out.println("=".repeat(80));
 
                                     if (rawOutput) {
-                                        AnalysisPrinter.printRaw(result.analysis);
+                                        parent.getAnalysisPrinter().printRaw(result.analysis);
                                     } else {
-                                        AnalysisPrinter.printFormatted(result.analysis);
+                                        parent.getAnalysisPrinter().printFormatted(result.analysis);
                                     }
 
                                     System.out.println();
@@ -343,9 +343,9 @@ public class ParsePlecoCommand implements Runnable {
         System.out.println("=".repeat(80));
         
         if (rawOutput) {
-            AnalysisPrinter.printRaw(analysis);
+            parent.getAnalysisPrinter().printRaw(analysis);
         } else {
-            AnalysisPrinter.printFormatted(analysis);
+            parent.getAnalysisPrinter().printFormatted(analysis);
         }
         
         System.out.println();
@@ -358,7 +358,7 @@ public class ParsePlecoCommand implements Runnable {
             return analysis;
         }
 
-        List<PronunciationCandidate> candidates = PrePlayback.preprocessCandidates(analysis.word(), analysis.pinyin(), rawCandidates);
+        List<PronunciationCandidate> candidates = parent.getPrePlayback().preprocessCandidates(analysis.word(), analysis.pinyin(), rawCandidates);
         if (candidates.isEmpty()) {
             System.out.printf("No playable pronunciation candidates available for '%s'.%n%n", analysis.word().characters());
             return analysis;
@@ -381,7 +381,7 @@ public class ParsePlecoCommand implements Runnable {
         } else {
             // Interactive selection
             System.out.printf("Selecting audio for '%s' (%s)%n", analysis.word().characters(), analysis.pinyin().pinyin());
-            SystemAudioPlayer player = new SystemAudioPlayer();
+            SystemAudioPlayer player = new SystemAudioPlayer(parent.getAnkiMediaLocator());
             SelectionSession session = new SelectionSession(candidates, player);
             try {
                 choice = audioUI.run(session, analysis.word(), analysis.pinyin());
@@ -417,7 +417,7 @@ public class ParsePlecoCommand implements Runnable {
             return analysis;
         }
 
-        List<PronunciationCandidate> candidates = PrePlayback.preprocessCandidates(analysis.word(), analysis.pinyin(), rawCandidates);
+        List<PronunciationCandidate> candidates = parent.getPrePlayback().preprocessCandidates(analysis.word(), analysis.pinyin(), rawCandidates);
         if (candidates.isEmpty()) {
             System.out.printf("No playable pronunciation candidates available for '%s'.%n%n", analysis.word().characters());
             return analysis;
@@ -440,7 +440,7 @@ public class ParsePlecoCommand implements Runnable {
         } else {
             // Interactive selection
             System.out.printf("Selecting audio for '%s' (%s)%n", analysis.word().characters(), analysis.pinyin().pinyin());
-            SystemAudioPlayer player = new SystemAudioPlayer();
+            SystemAudioPlayer player = new SystemAudioPlayer(parent.getAnkiMediaLocator());
             SelectionSession session = new SelectionSession(candidates, player);
             try {
                 choice = audioUI.run(session, analysis.word(), analysis.pinyin());
@@ -534,7 +534,7 @@ public class ParsePlecoCommand implements Runnable {
      */
     private void exportToAnkiFile(List<WordAnalysis> analyses, String filename) {
         try {
-            AnkiExporter exporter = new AnkiExporter();
+            AnkiExporter exporter = parent.getAnkiExporter();
             exporter.exportToFile(analyses, filename);
             
             System.out.println("=".repeat(80));

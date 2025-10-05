@@ -17,7 +17,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TerminalFormatter {
-    
+
+    public TerminalFormatter() {
+    }
+
     // Box drawing characters
     private static final String TOP_LEFT = "┌";
     private static final String TOP_RIGHT = "┐";
@@ -112,7 +115,7 @@ public class TerminalFormatter {
     }
     
     // Extract the active ANSI state at the end of a text string
-    private static AnsiState extractAnsiState(String text) {
+    private AnsiState extractAnsiState(String text) {
         AnsiState state = new AnsiState();
         if (text == null || text.isEmpty()) {
             return state;
@@ -131,7 +134,7 @@ public class TerminalFormatter {
     }
     
     // Update ANSI state based on an escape sequence
-    private static void updateAnsiState(AnsiState state, String sequence) {
+    private void updateAnsiState(AnsiState state, String sequence) {
         // Remove the \u001B[ prefix and the m suffix to get the codes
         String codes = sequence.substring(2, sequence.length() - 1);
         
@@ -188,7 +191,7 @@ public class TerminalFormatter {
         AnsiConsole.systemUninstall();
     }
     
-    public static String createBox(String title, String content, int width) {
+    public String createBox(String title, String content, int width) {
         int titleDisplayWidth = getDisplayLength(title);
         if (width < titleDisplayWidth + 6) {
             width = titleDisplayWidth + 10;
@@ -236,7 +239,7 @@ public class TerminalFormatter {
         return box.toString();
     }
     
-    public static String formatChineseWord(String characters, String pinyin) {
+    public String formatChineseWord(String characters, String pinyin) {
         return Ansi.ansi()
                 .bold().fg(Colors.CHINESE).a(characters).reset()
                 .a(" (")
@@ -245,17 +248,17 @@ public class TerminalFormatter {
                 .toString();
     }
     
-    public static String formatProvider(String providerName) {
+    public String formatProvider(String providerName) {
         return Ansi.ansi()
                 .fg(Colors.PROVIDER).a("Provider: ").a(providerName).reset()
                 .toString();
     }
     
-    public static String formatDefinition(String meaning) {
+    public String formatDefinition(String meaning) {
         return Ansi.ansi().fg(Colors.ENGLISH).a(meaning).reset().toString();
     }
     
-    public static String formatExample(String chinese, String pinyin, String english, String context) {
+    public String formatExample(String chinese, String pinyin, String english, String context) {
         StringBuilder result = new StringBuilder();
         result.append(Ansi.ansi().fg(Colors.CHINESE).a("Chinese: ").a(chinese).reset()).append("\n");
         result.append(Ansi.ansi().fg(Colors.PINYIN).a("Pinyin:  ").a(pinyin).reset()).append("\n");
@@ -267,7 +270,7 @@ public class TerminalFormatter {
         return result.toString();
     }
     
-    public static String formatGroupedExamples(List<Example.Usage> usages) {
+    public String formatGroupedExamples(List<Example.Usage> usages) {
         if (usages == null || usages.isEmpty()) {
             return "";
         }
@@ -317,7 +320,7 @@ public class TerminalFormatter {
         return result.toString();
     }
 
-    public static String formatExamples(Example example) {
+    public String formatExamples(Example example) {
         StringBuilder sb = new StringBuilder();
         String grouped = formatGroupedExamples(example.usages());
         if (!grouped.isEmpty()) {
@@ -344,7 +347,7 @@ public class TerminalFormatter {
         return sb.toString();
     }
     
-    public static String formatStructuralDecomposition(String html) {
+    public String formatStructuralDecomposition(String html) {
         if (html == null || html.isEmpty()) {
             return html;
         }
@@ -382,7 +385,7 @@ public class TerminalFormatter {
         return formatComponentBoxes(components);
     }
     
-    private static String formatComponentBoxes(List<DecompositionComponent> components) {
+    private String formatComponentBoxes(List<DecompositionComponent> components) {
         StringBuilder result = new StringBuilder();
         
         for (int i = 0; i < components.size(); i++) {
@@ -395,7 +398,7 @@ public class TerminalFormatter {
         return result.toString();
     }
     
-    private static String formatSimpleComponent(DecompositionComponent component) {
+    private String formatSimpleComponent(DecompositionComponent component) {
         String badgeText = component.type.equals("semantic") ? "SEMANTIC" : "PHONETIC";
         String badgeColor = component.type.equals("semantic") ? "\u001B[44m\u001B[97m" : "\u001B[42m\u001B[97m"; // Blue or Green bg, white text
         String badge = badgeColor + " " + badgeText + " " + AnsiCodes.RESET;
@@ -423,7 +426,7 @@ public class TerminalFormatter {
         }
     }
     
-    public static String convertHtmlToAnsi(String html) {
+    public String convertHtmlToAnsi(String html) {
         if (html == null || html.isEmpty()) {
             return html;
         }
@@ -443,7 +446,7 @@ public class TerminalFormatter {
         return output.trim(); // Remove leading/trailing whitespace
     }
     
-    private static void convertElementToAnsi(Element element, StringBuilder result) {
+    private void convertElementToAnsi(Element element, StringBuilder result) {
         for (Node node : element.childNodes()) {
             if (node instanceof TextNode textNode) {
                 // Add text content
@@ -530,12 +533,12 @@ public class TerminalFormatter {
         }
     }
     
-    public static int getTerminalWidth() {
+    public int getTerminalWidth() {
         // Default width, could be enhanced to detect actual terminal width
         return 80;
     }
     
-    private static List<String> wrapText(String text, int maxWidth) {
+    private List<String> wrapText(String text, int maxWidth) {
         List<String> result = new ArrayList<>();
         if (text == null || text.isEmpty()) {
             result.add("");
@@ -621,7 +624,7 @@ public class TerminalFormatter {
     }
     
     // Helper method to update ANSI state from text content
-    private static void updateStateFromText(AnsiState state, String text) {
+    private void updateStateFromText(AnsiState state, String text) {
         Pattern ansiPattern = Pattern.compile("\u001B\\[[0-9;]*[mK]");
         Matcher matcher = ansiPattern.matcher(text);
         
@@ -631,23 +634,23 @@ public class TerminalFormatter {
         }
     }
     
-    private static int findBreakPoint(String text, int maxWidth) {
+    private int findBreakPoint(String text, int maxWidth) {
         // Simple approach: break at maxWidth, but could be enhanced
         // to break at word boundaries or avoid breaking ANSI sequences
-        int breakPoint = maxWidth;
-        
+        int breakPoint = Math.min(maxWidth, text.length());
+
         // Don't break in the middle of ANSI escape sequences
-        for (int i = 1; i <= maxWidth && i < text.length(); i++) {
-            if (text.charAt(maxWidth - i) == '\u001B') {
+        for (int i = 1; i <= breakPoint; i++) {
+            if (text.charAt(breakPoint - i) == '\u001B') {
                 // Found start of ANSI sequence, break before it
-                return maxWidth - i;
+                return breakPoint - i;
             }
         }
-        
-        return Math.min(breakPoint, text.length());
+
+        return breakPoint;
     }
     
-    private static int getDisplayLength(String text) {
+    private int getDisplayLength(String text) {
         if (text == null) return 0;
         
         // Remove ANSI escape sequences to get actual display length
@@ -671,7 +674,7 @@ public class TerminalFormatter {
         return width;
     }
     
-    private static boolean isWideCharacter(int codePoint) {
+    private boolean isWideCharacter(int codePoint) {
         // CJK Unified Ideographs
         if (codePoint >= 0x4E00 && codePoint <= 0x9FFF) return true;
         // CJK Compatibility Ideographs
@@ -698,24 +701,24 @@ public class TerminalFormatter {
     }
     
     // New formatting methods for providers command
-    
-    public static String formatBoldLabel(String label) {
+
+    public String formatBoldLabel(String label) {
         return Ansi.ansi().bold().a(label).boldOff().toString();
     }
     
-    public static String formatSupportedCapability(String capability) {
+    public String formatSupportedCapability(String capability) {
         return Ansi.ansi().fg(Ansi.Color.GREEN).a("✓ ").reset().a(capability).toString();
     }
     
-    public static String formatUnsupportedCapability(String capability) {
+    public String formatUnsupportedCapability(String capability) {
         return Ansi.ansi().fg(Ansi.Color.RED).a("✗ ").reset().a(capability).toString();
     }
     
-    public static String formatWarning(String message) {
+    public String formatWarning(String message) {
         return Ansi.ansi().fg(Ansi.Color.YELLOW).a("⚠ ").reset().a(message).toString();
     }
     
-    public static String formatProviderDescription(String description) {
+    public String formatProviderDescription(String description) {
         return formatBoldLabel("Description: ") + description;
     }
 }

@@ -6,6 +6,7 @@ import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.AudioProvider;
 import com.zhlearn.infrastructure.audio.AudioCache;
 import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;
+import com.zhlearn.infrastructure.audio.AudioNormalizer;
 import com.zhlearn.infrastructure.audio.AudioPaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,23 +44,37 @@ public class QwenAudioProvider implements AudioProvider {
     private final QwenTtsClient clientOverride;
     private final HttpClient httpClient;
     private final ExecutorService executorService;
+    private final AudioCache audioCache;
+    private final AudioPaths audioPaths;
 
     public QwenAudioProvider() {
-        this(null, HttpClient.newBuilder().connectTimeout(TIMEOUT).build());
+        this(null, HttpClient.newBuilder().connectTimeout(TIMEOUT).build(), null, createDefaultAudioCache(), createDefaultAudioPaths());
     }
 
     public QwenAudioProvider(QwenTtsClient clientOverride, HttpClient httpClient) {
-        this(clientOverride, httpClient, null);
+        this(clientOverride, httpClient, null, createDefaultAudioCache(), createDefaultAudioPaths());
     }
 
     public QwenAudioProvider(AudioDownloadExecutor audioExecutor) {
-        this(null, HttpClient.newBuilder().connectTimeout(TIMEOUT).build(), audioExecutor.getExecutor());
+        this(null, HttpClient.newBuilder().connectTimeout(TIMEOUT).build(), audioExecutor.getExecutor(), createDefaultAudioCache(), createDefaultAudioPaths());
     }
 
-    public QwenAudioProvider(QwenTtsClient clientOverride, HttpClient httpClient, ExecutorService executorService) {
+    public QwenAudioProvider(QwenTtsClient clientOverride, HttpClient httpClient, ExecutorService executorService, AudioCache audioCache, AudioPaths audioPaths) {
         this.clientOverride = clientOverride;
         this.httpClient = Objects.requireNonNull(httpClient, "httpClient");
         this.executorService = executorService;
+        this.audioCache = audioCache;
+        this.audioPaths = audioPaths;
+    }
+
+    private static AudioCache createDefaultAudioCache() {
+        AudioPaths paths = new AudioPaths();
+        AudioNormalizer normalizer = new AudioNormalizer();
+        return new AudioCache(paths, normalizer);
+    }
+
+    private static AudioPaths createDefaultAudioPaths() {
+        return new AudioPaths();
     }
 
     @Override
@@ -103,7 +118,7 @@ public class QwenAudioProvider implements AudioProvider {
                 QwenTtsResult result = activeClient.synthesize(voice, word.characters());
                 Path downloaded = download(result.audioUrl());
                 try {
-                    Path normalized = AudioCache.ensureCachedNormalized(downloaded, NAME,
+                    Path normalized = audioCache.ensureCachedNormalized(downloaded, NAME,
                         word.characters(), voice, cacheKey(word, pinyin, voice));
                     results.add(normalized);
                 } finally {
@@ -206,7 +221,7 @@ public class QwenAudioProvider implements AudioProvider {
 
         try {
             log.debug("[Qwen] Normalizing audio for '{}' voice '{}'", word.characters(), voice);
-            Path normalized = AudioCache.ensureCachedNormalized(downloaded, NAME,
+            Path normalized = audioCache.ensureCachedNormalized(downloaded, NAME,
                 word.characters(), voice, cacheKey(word, pinyin, voice));
 
             long duration = System.currentTimeMillis() - startTime;
@@ -255,14 +270,14 @@ public class QwenAudioProvider implements AudioProvider {
         return voice + "|" + word.characters() + "|" + pinyin.pinyin();
     }
 
-    private static Path cachedPath(Hanzi word, Pinyin pinyin, String voice) {
+    private Path cachedPath(Hanzi word, Pinyin pinyin, String voice) {
         String sourceId = cacheKey(word, pinyin, voice);
-        String base = AudioPaths.sanitize(NAME) + "_" +
-            AudioPaths.sanitize(word.characters()) + "_" +
-            AudioPaths.sanitize(voice);
+        String base = audioPaths.sanitize(NAME) + "_" +
+            audioPaths.sanitize(word.characters()) + "_" +
+            audioPaths.sanitize(voice);
         String hash = shortHash(sourceId.getBytes(StandardCharsets.UTF_8));
         String fileName = base + "_" + hash + ".mp3";
-        return AudioPaths.audioDir().resolve(NAME).resolve(fileName);
+        return audioPaths.audioDir().resolve(NAME).resolve(fileName);
     }
 
     private static String shortHash(byte[] bytes) {
