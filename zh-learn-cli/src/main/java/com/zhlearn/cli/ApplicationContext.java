@@ -60,9 +60,20 @@ public class ApplicationContext {
         this.audioExecutor = new AudioDownloadExecutor();
         this.audioProviders = List.of(
             new AnkiPronunciationProvider(),
-            new ForvoAudioProvider(audioExecutor),
-            new QwenAudioProvider(audioExecutor),
-            new TencentAudioProvider(audioExecutor)
+            new ForvoAudioProvider(
+                java.net.http.HttpClient.newBuilder()
+                    .connectTimeout(java.time.Duration.ofSeconds(10))
+                    .build(),
+                new com.fasterxml.jackson.databind.ObjectMapper(),
+                audioExecutor.getExecutor(),
+                audioCache,
+                audioPaths),
+            new QwenAudioProvider(audioCache, audioPaths, audioExecutor.getExecutor(),
+                java.net.http.HttpClient.newBuilder()
+                    .connectTimeout(java.time.Duration.ofSeconds(15))
+                    .build(),
+                null),
+            new TencentAudioProvider(audioCache, audioPaths, audioExecutor.getExecutor(), null)
         );
     }
 
