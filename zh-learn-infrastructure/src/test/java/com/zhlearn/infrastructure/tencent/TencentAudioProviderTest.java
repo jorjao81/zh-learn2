@@ -3,6 +3,9 @@ package com.zhlearn.infrastructure.tencent;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
+import com.zhlearn.infrastructure.audio.AudioCache;
+import com.zhlearn.infrastructure.audio.AudioNormalizer;
+import com.zhlearn.infrastructure.audio.AudioPaths;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -26,12 +29,19 @@ class TencentAudioProviderTest {
         System.clearProperty("zhlearn.home");
     }
 
+    private TencentAudioProvider createProvider(TencentTtsClient client) {
+        AudioPaths audioPaths = new AudioPaths();
+        AudioNormalizer normalizer = new AudioNormalizer();
+        AudioCache audioCache = new AudioCache(audioPaths, normalizer);
+        return new TencentAudioProvider(audioCache, audioPaths, null, client);
+    }
+
     @Test
     void returnsTwoVoicesAndCachesResults() {
         System.setProperty("zhlearn.home", tmpHome.toString());
 
         FakeTencentClient client = new FakeTencentClient();
-        TencentAudioProvider provider = new TencentAudioProvider(client);
+        TencentAudioProvider provider = createProvider(client);
 
         Hanzi word = new Hanzi("学习");
         Pinyin pinyin = new Pinyin("xuéxí");
@@ -63,7 +73,7 @@ class TencentAudioProviderTest {
         System.setProperty("zhlearn.home", tmpHome.toString());
 
         FailingTencentClient client = new FailingTencentClient();
-        TencentAudioProvider provider = new TencentAudioProvider(client);
+        TencentAudioProvider provider = createProvider(client);
 
         Hanzi word = new Hanzi("语音");
         Pinyin pinyin = new Pinyin("yǔyīn");
@@ -77,7 +87,7 @@ class TencentAudioProviderTest {
 
     @Test
     void reportsMetadataAccurately() {
-        TencentAudioProvider provider = new TencentAudioProvider(new FakeTencentClient());
+        TencentAudioProvider provider = createProvider(new FakeTencentClient());
         assertThat(provider.getName()).isEqualTo("tencent-tts");
         assertThat(provider.getType()).isEqualTo(ProviderType.AI);
         assertThat(provider.getDescription()).contains("zhiwei").contains("zhiling");
@@ -86,7 +96,7 @@ class TencentAudioProviderTest {
     @Test
     void failsFastWhenClientFails() {
         EmptyTencentClient client = new EmptyTencentClient();
-        TencentAudioProvider provider = new TencentAudioProvider(client);
+        TencentAudioProvider provider = createProvider(client);
 
         Hanzi word = new Hanzi("测试");
         Pinyin pinyin = new Pinyin("cèshì");
@@ -108,7 +118,7 @@ class TencentAudioProviderTest {
         System.setProperty("zhlearn.home", tmpHome.toString());
 
         FakeTencentClient client = new FakeTencentClient();
-        TencentAudioProvider provider = new TencentAudioProvider(client);
+        TencentAudioProvider provider = createProvider(client);
 
         // Verify voice IDs are correctly mapped
         assertThat(client.receivedVoiceTypes).isEmpty();
