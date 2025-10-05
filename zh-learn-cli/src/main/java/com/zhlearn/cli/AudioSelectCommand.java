@@ -48,7 +48,7 @@ public class AudioSelectCommand implements Runnable {
             return;
         }
 
-        SelectionSession session = new SelectionSession(candidates, new SystemAudioPlayer());
+        SelectionSession session = new SelectionSession(candidates, new SystemAudioPlayer(parent.getAnkiMediaLocator()));
 
         PronunciationCandidate selected = new InteractiveAudioUI().run(session, word, pin);
         if (selected != null) {

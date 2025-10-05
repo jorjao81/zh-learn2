@@ -1,5 +1,7 @@
 package com.zhlearn.application.service;
 
+import com.zhlearn.application.audio.AnkiMediaLocator;
+import com.zhlearn.application.format.ExamplesHtmlFormatter;
 import com.zhlearn.domain.model.Definition;
 import com.zhlearn.domain.model.Example;
 import com.zhlearn.domain.model.Explanation;
@@ -52,7 +54,7 @@ class AnkiExporterTest {
         Path output = tempDir.resolve("output.tsv");
 
         System.setProperty(MEDIA_PROPERTY, mediaDir.toString());
-        new AnkiExporter().exportToFile(List.of(analysis), output);
+        new AnkiExporter(new ExamplesHtmlFormatter(), new AnkiMediaLocator()).exportToFile(List.of(analysis), output);
 
         Path copied = mediaDir.resolve(sourceAudio.getFileName());
         assertThat(Files.exists(copied)).isTrue();
@@ -74,7 +76,7 @@ class AnkiExporterTest {
         Path output = tempDir.resolve("output.tsv");
 
         System.setProperty(MEDIA_PROPERTY, mediaDir.toString());
-        new AnkiExporter().exportToFile(List.of(analysis), output);
+        new AnkiExporter(new ExamplesHtmlFormatter(), new AnkiMediaLocator()).exportToFile(List.of(analysis), output);
 
         FileTime after = Files.getLastModifiedTime(existingAudio);
         assertThat(after).isEqualTo(before);

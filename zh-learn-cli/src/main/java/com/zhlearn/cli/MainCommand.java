@@ -9,6 +9,7 @@ import com.zhlearn.domain.provider.DefinitionProvider;
 import com.zhlearn.domain.provider.AudioProvider;
 import com.zhlearn.infrastructure.common.AIProviderFactory;
 import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;
+import com.zhlearn.application.audio.AnkiMediaLocator;
 
 import java.util.List;
 import com.zhlearn.infrastructure.pinyin4j.Pinyin4jProvider;
@@ -37,6 +38,7 @@ public class MainCommand implements Runnable {
     private final TerminalFormatter terminalFormatter;
     private final com.zhlearn.application.format.ExamplesHtmlFormatter examplesHtmlFormatter;
     private final AnalysisPrinter analysisPrinter;
+    private final AnkiMediaLocator ankiMediaLocator;
 
     public MainCommand() {
         // Initialize audio utilities
@@ -52,6 +54,7 @@ public class MainCommand implements Runnable {
         this.terminalFormatter = new TerminalFormatter();
         this.examplesHtmlFormatter = new com.zhlearn.application.format.ExamplesHtmlFormatter();
         this.analysisPrinter = new AnalysisPrinter(examplesHtmlFormatter, terminalFormatter);
+        this.ankiMediaLocator = new AnkiMediaLocator();
 
         // Initialize audio executor and providers
         this.audioExecutor = new AudioDownloadExecutor();
@@ -90,6 +93,10 @@ public class MainCommand implements Runnable {
 
     public AnalysisPrinter getAnalysisPrinter() {
         return analysisPrinter;
+    }
+
+    public AnkiMediaLocator getAnkiMediaLocator() {
+        return ankiMediaLocator;
     }
 
     // AI Provider factory methods - create on demand and crash if fails

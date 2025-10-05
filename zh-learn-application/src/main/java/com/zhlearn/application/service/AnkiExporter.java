@@ -20,13 +20,16 @@ import java.util.Optional;
  */
 public class AnkiExporter {
     private final ExamplesHtmlFormatter examplesHtmlFormatter;
+    private final AnkiMediaLocator ankiMediaLocator;
 
     public AnkiExporter() {
         this.examplesHtmlFormatter = new ExamplesHtmlFormatter();
+        this.ankiMediaLocator = new AnkiMediaLocator();
     }
 
-    public AnkiExporter(ExamplesHtmlFormatter examplesHtmlFormatter) {
+    public AnkiExporter(ExamplesHtmlFormatter examplesHtmlFormatter, AnkiMediaLocator ankiMediaLocator) {
         this.examplesHtmlFormatter = examplesHtmlFormatter;
+        this.ankiMediaLocator = ankiMediaLocator;
     }
 
     /**
@@ -37,7 +40,7 @@ public class AnkiExporter {
         try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(outputFile, StandardCharsets.UTF_8))) {
             // Write Anki TSV headers
             writeAnkiHeaders(writer);
-            Optional<Path> ankiMediaDir = AnkiMediaLocator.locate();
+            Optional<Path> ankiMediaDir = ankiMediaLocator.locate();
 
             // Write data rows
             for (WordAnalysis analysis : analyses) {

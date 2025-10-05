@@ -381,7 +381,7 @@ public class ParsePlecoCommand implements Runnable {
         } else {
             // Interactive selection
             System.out.printf("Selecting audio for '%s' (%s)%n", analysis.word().characters(), analysis.pinyin().pinyin());
-            SystemAudioPlayer player = new SystemAudioPlayer();
+            SystemAudioPlayer player = new SystemAudioPlayer(parent.getAnkiMediaLocator());
             SelectionSession session = new SelectionSession(candidates, player);
             try {
                 choice = audioUI.run(session, analysis.word(), analysis.pinyin());
@@ -440,7 +440,7 @@ public class ParsePlecoCommand implements Runnable {
         } else {
             // Interactive selection
             System.out.printf("Selecting audio for '%s' (%s)%n", analysis.word().characters(), analysis.pinyin().pinyin());
-            SystemAudioPlayer player = new SystemAudioPlayer();
+            SystemAudioPlayer player = new SystemAudioPlayer(parent.getAnkiMediaLocator());
             SelectionSession session = new SelectionSession(candidates, player);
             try {
                 choice = audioUI.run(session, analysis.word(), analysis.pinyin());
@@ -534,7 +534,7 @@ public class ParsePlecoCommand implements Runnable {
      */
     private void exportToAnkiFile(List<WordAnalysis> analyses, String filename) {
         try {
-            AnkiExporter exporter = new AnkiExporter();
+            AnkiExporter exporter = new AnkiExporter(parent.getExamplesHtmlFormatter(), parent.getAnkiMediaLocator());
             exporter.exportToFile(analyses, filename);
             
             System.out.println("=".repeat(80));

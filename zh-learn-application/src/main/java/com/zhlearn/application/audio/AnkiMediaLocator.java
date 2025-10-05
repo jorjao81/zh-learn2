@@ -8,8 +8,8 @@ import java.util.Optional;
  * Resolves the Anki media directory based on system properties, environment variables,
  * or reasonable platform defaults.
  */
-public final class AnkiMediaLocator {
-    private AnkiMediaLocator() {
+public class AnkiMediaLocator {
+    public AnkiMediaLocator() {
     }
 
     /**
@@ -18,7 +18,7 @@ public final class AnkiMediaLocator {
      * @return Optional containing the absolute path to the Anki media directory.
      * @throws IllegalStateException if a configured media directory path exists but is not a directory.
      */
-    public static Optional<Path> locate() {
+    public Optional<Path> locate() {
         String configured = firstNonBlank(
             System.getProperty("zhlearn.anki.media.dir"),
             System.getProperty("zhlearn.anki.mediaDir"),
