@@ -27,13 +27,14 @@ public class QwenAudioProvider extends AbstractTtsAudioProvider {
     private static final String API_KEY_ENV = "DASHSCOPE_API_KEY";
     private static final String USER_AGENT = "zh-learn-cli/1.0 (QwenAudioProvider)";
 
-    private final QwenTtsClient client;
+    private QwenTtsClient client;
     private final HttpClient httpClient;
+    private final QwenTtsClient injectedClient;
 
     public QwenAudioProvider(AudioCache audioCache, AudioPaths audioPaths, ExecutorService executorService, HttpClient httpClient, QwenTtsClient client) {
         super(audioCache, audioPaths, executorService);
         this.httpClient = Objects.requireNonNull(httpClient, "httpClient");
-        this.client = client != null ? client : new QwenTtsClient(httpClient, resolveApiKey(), MODEL);
+        this.injectedClient = client;
     }
 
     @Override
@@ -58,8 +59,19 @@ public class QwenAudioProvider extends AbstractTtsAudioProvider {
 
     @Override
     protected Path synthesizeVoice(String voice, String text) throws IOException, InterruptedException {
-        QwenTtsResult result = client.synthesize(voice, text);
+        QwenTtsResult result = getClient().synthesize(voice, text);
         return download(result.audioUrl());
+    }
+
+    private QwenTtsClient getClient() {
+        if (client == null) {
+            if (injectedClient != null) {
+                client = injectedClient;
+            } else {
+                client = new QwenTtsClient(httpClient, resolveApiKey(), MODEL);
+            }
+        }
+        return client;
     }
 
     @Override

@@ -30,12 +30,13 @@ public class TencentAudioProvider extends AbstractTtsAudioProvider {
         VOICES.put(101002, "zhiling");
     }
 
-    private final TencentTtsClient client;
+    private TencentTtsClient client;
+    private final TencentTtsClient injectedClient;
     private final Map<String, Integer> voiceNameToType;
 
     public TencentAudioProvider(AudioCache audioCache, AudioPaths audioPaths, ExecutorService executorService, TencentTtsClient client) {
         super(audioCache, audioPaths, executorService);
-        this.client = client != null ? client : new TencentTtsClient(resolveSecretId(), resolveSecretKey(), resolveRegion());
+        this.injectedClient = client;
         this.voiceNameToType = buildVoiceNameToTypeMap();
     }
 
@@ -73,8 +74,19 @@ public class TencentAudioProvider extends AbstractTtsAudioProvider {
         if (voiceType == null) {
             throw new IllegalArgumentException("Unknown voice: " + voice);
         }
-        TencentTtsResult result = client.synthesize(voiceType, text);
+        TencentTtsResult result = getClient().synthesize(voiceType, text);
         return decodeAudioData(result.audioData());
+    }
+
+    private TencentTtsClient getClient() {
+        if (client == null) {
+            if (injectedClient != null) {
+                client = injectedClient;
+            } else {
+                client = new TencentTtsClient(resolveSecretId(), resolveSecretKey(), resolveRegion());
+            }
+        }
+        return client;
     }
 
     @Override
