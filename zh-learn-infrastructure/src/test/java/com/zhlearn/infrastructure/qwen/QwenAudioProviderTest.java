@@ -4,6 +4,9 @@ import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.provider.AudioProvider;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
+import com.zhlearn.infrastructure.audio.AudioCache;
+import com.zhlearn.infrastructure.audio.AudioNormalizer;
+import com.zhlearn.infrastructure.audio.AudioPaths;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -32,6 +35,13 @@ class QwenAudioProviderTest {
         System.clearProperty("zhlearn.home");
     }
 
+    private QwenAudioProvider createProvider(QwenTtsClient client, HttpClient http) {
+        AudioPaths audioPaths = new AudioPaths();
+        AudioNormalizer normalizer = new AudioNormalizer();
+        AudioCache audioCache = new AudioCache(audioPaths, normalizer);
+        return new QwenAudioProvider(audioCache, audioPaths, null, http, client);
+    }
+
     @Test
     void returnsSevenVoicesAndCachesResults() throws Exception {
         System.setProperty("zhlearn.home", tmpHome.toString());
@@ -56,7 +66,7 @@ class QwenAudioProviderTest {
             .thenReturn((HttpResponse) katerinaResp)
             .thenReturn((HttpResponse) eliasResp);
 
-        QwenAudioProvider provider = new QwenAudioProvider(client, http);
+        QwenAudioProvider provider = createProvider(client, http);
 
         Hanzi word = new Hanzi("学习");
         Pinyin pinyin = new Pinyin("xuéxí");
@@ -100,7 +110,7 @@ class QwenAudioProviderTest {
         when(failure.statusCode()).thenReturn(500);
         when(http.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn((HttpResponse) failure);
 
-        QwenAudioProvider provider = new QwenAudioProvider(client, http);
+        QwenAudioProvider provider = createProvider(client, http);
 
         Hanzi word = new Hanzi("语音");
         Pinyin pinyin = new Pinyin("yǔyīn");
@@ -114,7 +124,7 @@ class QwenAudioProviderTest {
 
     @Test
     void reportsMetadataAccurately() {
-        QwenAudioProvider provider = new QwenAudioProvider(new FakeQwenClient(), HttpClient.newHttpClient());
+        QwenAudioProvider provider = createProvider(new FakeQwenClient(), HttpClient.newHttpClient());
         assertThat(provider.getName()).isEqualTo("qwen-tts");
         assertThat(provider.getType()).isEqualTo(ProviderType.AI);
         assertThat(provider.getDescription()).contains("Cherry").contains("Ethan").contains("Nofish").contains("Jennifer").contains("Ryan").contains("Katerina").contains("Elias");

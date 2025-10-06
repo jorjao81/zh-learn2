@@ -57,13 +57,16 @@ class QwenTtsClient {
         this.retry = retry;
     }
 
-    public QwenTtsResult synthesize(String voice, String text) throws IOException, InterruptedException, ContentModerationException {
+    public QwenTtsResult synthesize(String voice, String text) throws IOException, InterruptedException {
         try {
             return retry.invoke(() -> {
                 try {
                     return synthesizeOnce(voice, text);
-                } catch (IOException | InterruptedException | ContentModerationException e) {
+                } catch (IOException | InterruptedException e) {
                     throw new RuntimeException(e);
+                } catch (ContentModerationException e) {
+                    // ContentModerationException is a RuntimeException, so it doesn't need wrapping
+                    throw e;
                 }
             });
         } catch (RateLimitException rateLimit) {
@@ -78,14 +81,12 @@ class QwenTtsClient {
                 Thread.currentThread().interrupt();
                 throw interrupted;
             }
-            if (cause instanceof ContentModerationException moderation) {
-                throw moderation;
-            }
+            // ContentModerationException is a RuntimeException, let it propagate as-is
             throw runtime;
         }
     }
 
-    private QwenTtsResult synthesizeOnce(String voice, String text) throws IOException, InterruptedException, ContentModerationException {
+    private QwenTtsResult synthesizeOnce(String voice, String text) throws IOException, InterruptedException {
         Map<String, Object> payload = new HashMap<>();
         payload.put("model", model);
         Map<String, Object> input = new HashMap<>();
