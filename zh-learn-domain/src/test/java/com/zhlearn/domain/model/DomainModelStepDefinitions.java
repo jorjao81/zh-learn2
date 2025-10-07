@@ -1,14 +1,14 @@
 package com.zhlearn.domain.model;
 
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 
 public class DomainModelStepDefinitions {
-    
+
     private Hanzi hanzi;
     private Pinyin pinyin;
     private Definition definition;
@@ -16,7 +16,7 @@ public class DomainModelStepDefinitions {
     private StructuralDecomposition structuralDecomposition;
     private Example example;
     private Example.Usage usage;
-    
+
     private Exception thrownException;
 
     // ChineseWord step definitions
@@ -111,7 +111,6 @@ public class DomainModelStepDefinitions {
         }
     }
 
-
     @Then("the Definition should be created successfully")
     public void the_definition_should_be_created_successfully() {
         assertNotNull(definition);
@@ -121,7 +120,6 @@ public class DomainModelStepDefinitions {
     public void the_definition_meaning_should_be(String expectedMeaning) {
         assertEquals(expectedMeaning, definition.meaning());
     }
-
 
     // Explanation step definitions
     @When("I create an Explanation with text {string}")
@@ -176,8 +174,11 @@ public class DomainModelStepDefinitions {
     // Example step definitions
     @When("I create an Example with valid usages")
     public void i_create_an_example_with_valid_usages() {
-        Example.Usage usage1 = new Example.Usage("你好", "nǐ hǎo", "hello", "greeting", "Test breakdown for hello");
-        Example.Usage usage2 = new Example.Usage("再见", "zài jiàn", "goodbye", "parting", "Test breakdown for goodbye");
+        Example.Usage usage1 =
+                new Example.Usage("你好", "nǐ hǎo", "hello", "greeting", "Test breakdown for hello");
+        Example.Usage usage2 =
+                new Example.Usage(
+                        "再见", "zài jiàn", "goodbye", "parting", "Test breakdown for goodbye");
         example = new Example(List.of(usage1, usage2), List.of());
     }
 
@@ -204,7 +205,8 @@ public class DomainModelStepDefinitions {
     }
 
     // Usage step definitions
-    @When("I create a Usage with sentence {string}, pinyin {string}, translation {string}, and context {string}")
+    @When(
+            "I create a Usage with sentence {string}, pinyin {string}, translation {string}, and context {string}")
     public void i_create_a_usage_with_sentence_pinyin_translation_and_context(
             String sentence, String pinyin, String translation, String context) {
         usage = new Example.Usage(sentence, pinyin, translation, context, "Test breakdown");

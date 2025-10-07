@@ -5,14 +5,15 @@ import com.zhlearn.domain.model.Example;
 import com.zhlearn.domain.model.WordAnalysis;
 
 /**
- * Shared printing utility for WordAnalysis in CLI.
- * Used by both the single-word and batch commands to ensure identical output.
+ * Shared printing utility for WordAnalysis in CLI. Used by both the single-word and batch commands
+ * to ensure identical output.
  */
 public class AnalysisPrinter {
     private final ExamplesHtmlFormatter examplesHtmlFormatter;
     private final TerminalFormatter terminalFormatter;
 
-    public AnalysisPrinter(ExamplesHtmlFormatter examplesHtmlFormatter, TerminalFormatter terminalFormatter) {
+    public AnalysisPrinter(
+            ExamplesHtmlFormatter examplesHtmlFormatter, TerminalFormatter terminalFormatter) {
         this.examplesHtmlFormatter = examplesHtmlFormatter;
         this.terminalFormatter = terminalFormatter;
     }
@@ -20,23 +21,27 @@ public class AnalysisPrinter {
     public void printFormatted(WordAnalysis analysis) {
         int width = terminalFormatter.getTerminalWidth();
 
-        String wordContent = terminalFormatter.formatChineseWord(
-                analysis.word().characters(), analysis.pinyin().pinyin());
+        String wordContent =
+                terminalFormatter.formatChineseWord(
+                        analysis.word().characters(), analysis.pinyin().pinyin());
         System.out.println(terminalFormatter.createBox("Chinese Word", wordContent, width));
         System.out.println();
 
-        String pinyinContent = terminalFormatter.formatChineseWord("拼音", analysis.pinyin().pinyin());
+        String pinyinContent =
+                terminalFormatter.formatChineseWord("拼音", analysis.pinyin().pinyin());
         System.out.println(terminalFormatter.createBox("Pinyin", pinyinContent, width));
         System.out.println();
 
-        String defContent = terminalFormatter.formatDefinition(
-                analysis.definition().meaning());
+        String defContent = terminalFormatter.formatDefinition(analysis.definition().meaning());
         System.out.println(terminalFormatter.createBox("Definition", defContent, width));
         System.out.println();
 
-        String decompositionContent = terminalFormatter.formatStructuralDecomposition(
-                analysis.structuralDecomposition().decomposition());
-        System.out.println(terminalFormatter.createBox("Structural Decomposition", decompositionContent, width));
+        String decompositionContent =
+                terminalFormatter.formatStructuralDecomposition(
+                        analysis.structuralDecomposition().decomposition());
+        System.out.println(
+                terminalFormatter.createBox(
+                        "Structural Decomposition", decompositionContent, width));
         System.out.println();
 
         String examplesHtml = examplesHtmlFormatter.format(analysis.examples());
@@ -44,8 +49,8 @@ public class AnalysisPrinter {
         System.out.println(terminalFormatter.createBox("Examples", formattedExamples, width));
         System.out.println();
 
-        String explanationContent = terminalFormatter.convertHtmlToAnsi(
-                analysis.explanation().explanation());
+        String explanationContent =
+                terminalFormatter.convertHtmlToAnsi(analysis.explanation().explanation());
         System.out.println(terminalFormatter.createBox("Explanation", explanationContent, width));
 
         Runtime.getRuntime().addShutdownHook(new Thread(TerminalFormatter::shutdown));
@@ -61,7 +66,8 @@ public class AnalysisPrinter {
         System.out.println("Definition: " + analysis.definition().meaning());
         System.out.println();
 
-        System.out.println("Structural Decomposition: " + analysis.structuralDecomposition().decomposition());
+        System.out.println(
+                "Structural Decomposition: " + analysis.structuralDecomposition().decomposition());
         System.out.println();
 
         System.out.println("Examples:");
@@ -74,11 +80,15 @@ public class AnalysisPrinter {
             }
         }
         // No standalone sentences section
-        if (analysis.examples().phoneticSeries() != null && !analysis.examples().phoneticSeries().isEmpty()) {
+        if (analysis.examples().phoneticSeries() != null
+                && !analysis.examples().phoneticSeries().isEmpty()) {
             System.out.println("  Phonetic series:");
             for (Example.SeriesItem item : analysis.examples().phoneticSeries()) {
                 String pinyin = item.pinyin() == null ? "" : (" " + item.pinyin());
-                String meaning = item.meaning() == null || item.meaning().isBlank() ? "" : (" " + item.meaning());
+                String meaning =
+                        item.meaning() == null || item.meaning().isBlank()
+                                ? ""
+                                : (" " + item.meaning());
                 System.out.println("    • " + item.hanzi() + pinyin + meaning);
             }
         }

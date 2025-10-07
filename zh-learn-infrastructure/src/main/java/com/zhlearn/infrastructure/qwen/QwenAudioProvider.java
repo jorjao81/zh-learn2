@@ -22,7 +22,8 @@ import java.util.concurrent.ExecutorService;
 public class QwenAudioProvider extends AbstractTtsAudioProvider {
     private static final String NAME = "qwen-tts";
     private static final String MODEL = "qwen3-tts-flash";
-    private static final List<String> VOICES = List.of("Cherry", "Ethan", "Nofish", "Jennifer", "Ryan", "Katerina", "Elias");
+    private static final List<String> VOICES =
+            List.of("Cherry", "Ethan", "Nofish", "Jennifer", "Ryan", "Katerina", "Elias");
     private static final Duration TIMEOUT = Duration.ofSeconds(15);
     private static final String API_KEY_ENV = "DASHSCOPE_API_KEY";
     private static final String USER_AGENT = "zh-learn-cli/1.0 (QwenAudioProvider)";
@@ -44,7 +45,9 @@ public class QwenAudioProvider extends AbstractTtsAudioProvider {
 
     @Override
     public String getDescription() {
-        return "Qwen3-TTS-Flash with 7 standard Mandarin voices (" + String.join(", ", VOICES) + ")";
+        return "Qwen3-TTS-Flash with 7 standard Mandarin voices ("
+                + String.join(", ", VOICES)
+                + ")";
     }
 
     @Override
@@ -74,7 +77,7 @@ public class QwenAudioProvider extends AbstractTtsAudioProvider {
         return client;
     }
 
-    @Override
+@Override
     protected String formatDescription(String voice) {
         return voice + " 🤖";
     }
@@ -90,12 +93,14 @@ public class QwenAudioProvider extends AbstractTtsAudioProvider {
     }
 
     private Path download(URI audioUrl) throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder(audioUrl)
-            .timeout(TIMEOUT)
-            .header("User-Agent", USER_AGENT)
-            .GET()
-            .build();
-        HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
+        HttpRequest request =
+                HttpRequest.newBuilder(audioUrl)
+                        .timeout(TIMEOUT)
+                        .header("User-Agent", USER_AGENT)
+                        .GET()
+                        .build();
+        HttpResponse<byte[]> response =
+                httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
         if (response.statusCode() < 200 || response.statusCode() >= 300) {
             throw new IOException("Failed to download audio: HTTP " + response.statusCode());
         }

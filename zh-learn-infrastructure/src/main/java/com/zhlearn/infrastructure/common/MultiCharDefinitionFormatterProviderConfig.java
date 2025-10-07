@@ -1,19 +1,19 @@
 package com.zhlearn.infrastructure.common;
 
-import com.zhlearn.domain.model.Definition;
-
 import java.util.function.Function;
+
+import com.zhlearn.domain.model.Definition;
 
 public class MultiCharDefinitionFormatterProviderConfig {
 
     private static final String TEMPLATE_PATH = "/multi-char/definition/prompt-template.md";
     private static final String EXAMPLES_DIRECTORY = "/multi-char/definition/examples/";
-    private static final Function<String, Definition> RESPONSE_MAPPER = new DefinitionResponseMapper();
+    private static final Function<String, Definition> RESPONSE_MAPPER =
+            new DefinitionResponseMapper();
     private static final Double DEFAULT_TEMPERATURE = 0.3;
     private static final Integer DEFAULT_MAX_TOKENS = 4000;
 
-    public MultiCharDefinitionFormatterProviderConfig() {
-    }
+    public MultiCharDefinitionFormatterProviderConfig() {}
 
     public String templatePath() {
         return TEMPLATE_PATH;

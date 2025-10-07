@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+    "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+    "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<!-- Enforce minimal style rules not covered by Spotless/PMD. -->
+<module name="Checker">
+    <property name="charset" value="UTF-8"/>
+    <property name="severity" value="error"/>
+    <property name="fileExtensions" value="java"/>
+
+    <!-- Allow module descriptors to declare fully qualified service types -->
+    <module name="SuppressionSingleFilter">
+        <property name="files" value="module-info\.java"/>
+        <property name="checks" value="RegexpSingleline"/>
+    </module>
+
+    <!-- Require imports instead of fully qualified class names in code -->
+    <module name="RegexpSingleline">
+        <property name="format" value="^(?!import\s).*\b[a-z]+(?:\.[a-z0-9_]+)+\.[A-Z][A-Za-z0-9_]*"/>
+        <property name="message" value="Use an import and the simple class name; avoid fully qualified references."/>
+    </module>
+</module>

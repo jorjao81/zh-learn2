@@ -1,14 +1,14 @@
 package com.zhlearn.infrastructure.anki;
 
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 
 public class AnkiCollectionParsingStepDefinitions {
 

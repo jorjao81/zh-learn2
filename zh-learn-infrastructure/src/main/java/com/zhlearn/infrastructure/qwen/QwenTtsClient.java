@@ -1,11 +1,5 @@
 package com.zhlearn.infrastructure.qwen;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.helidon.faulttolerance.Retry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -17,11 +11,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.helidon.faulttolerance.Retry;
+
 class QwenTtsClient {
     private static final Logger log = LoggerFactory.getLogger(QwenTtsClient.class);
 
-    private static final URI ENDPOINT = URI.create(
-        "https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation");
+    private static final URI ENDPOINT =
+            URI.create(
+                    "https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation");
     private static final Duration TIMEOUT = Duration.ofSeconds(15);
 
     private static final int MAX_ATTEMPTS = 5;
@@ -43,7 +46,8 @@ class QwenTtsClient {
         this(httpClient, apiKey, model, mapper, defaultRetry());
     }
 
-    QwenTtsClient(HttpClient httpClient, String apiKey, String model, ObjectMapper mapper, Retry retry) {
+    QwenTtsClient(
+            HttpClient httpClient, String apiKey, String model, ObjectMapper mapper, Retry retry) {
         if (apiKey == null || apiKey.isBlank()) {
             throw new IllegalArgumentException("API key missing for DashScope request");
         }
@@ -57,7 +61,7 @@ class QwenTtsClient {
         this.retry = retry;
     }
 
-    public QwenTtsResult synthesize(String voice, String text) throws IOException, InterruptedException {
+public QwenTtsResult synthesize(String voice, String text) throws IOException, InterruptedException {
         try {
             return retry.invoke(() -> {
                 try {
@@ -70,7 +74,10 @@ class QwenTtsClient {
                 }
             });
         } catch (RateLimitException rateLimit) {
-            log.warn("[QwenTTS] Rate limit exhausted after {} attempts for voice '{}'", MAX_ATTEMPTS, voice);
+            log.warn(
+                    "[QwenTTS] Rate limit exhausted after {} attempts for voice '{}'",
+                    MAX_ATTEMPTS,
+                    voice);
             throw new IOException("DashScope rate limit exhausted after retries", rateLimit);
         } catch (RuntimeException runtime) {
             Throwable cause = runtime.getCause();
@@ -86,7 +93,7 @@ class QwenTtsClient {
         }
     }
 
-    private QwenTtsResult synthesizeOnce(String voice, String text) throws IOException, InterruptedException {
+private QwenTtsResult synthesizeOnce(String voice, String text) throws IOException, InterruptedException {
         Map<String, Object> payload = new HashMap<>();
         payload.put("model", model);
         Map<String, Object> input = new HashMap<>();
@@ -96,34 +103,53 @@ class QwenTtsClient {
 
         String body = mapper.writeValueAsString(payload);
 
-        HttpRequest request = HttpRequest.newBuilder(ENDPOINT)
-            .timeout(TIMEOUT)
-            .header("Authorization", "Bearer " + apiKey)
-            .header("Content-Type", "application/json")
-            .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
-            .build();
+        HttpRequest request =
+                HttpRequest.newBuilder(ENDPOINT)
+                        .timeout(TIMEOUT)
+                        .header("Authorization", "Bearer " + apiKey)
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
+                        .build();
 
-        log.debug("[QwenTTS] Making TTS request for voice '{}', text length: {}", voice, text.length());
-        HttpResponse<String> response = httpClient.send(
-            request,
-            HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        log.debug(
+                "[QwenTTS] Making TTS request for voice '{}', text length: {}",
+                voice,
+                text.length());
+        HttpResponse<String> response =
+                httpClient.send(
+                        request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
 
         if (response.statusCode() < 200 || response.statusCode() >= 300) {
-            String errorMessage = "DashScope TTS failed: HTTP " + response.statusCode() + " - " + response.body();
+            String errorMessage =
+                    "DashScope TTS failed: HTTP " + response.statusCode() + " - " + response.body();
             if (response.statusCode() == 429) {
-                log.warn("[QwenTTS] Rate limit hit (HTTP 429) for voice '{}': {}", voice, response.body());
+                log.warn(
+                        "[QwenTTS] Rate limit hit (HTTP 429) for voice '{}': {}",
+                        voice,
+                        response.body());
                 throw new RateLimitException(errorMessage);
-            } else if (response.statusCode() == 400 && response.body().contains("DataInspectionFailed")) {
-                log.warn("[QwenTTS] Content moderation failed for voice '{}': {}", voice, response.body());
-                throw new ContentModerationException("Content rejected by moderation policy: " + response.body());
+            } else if (response.statusCode() == 400
+                    && response.body().contains("DataInspectionFailed")) {
+                log.warn(
+                        "[QwenTTS] Content moderation failed for voice '{}': {}",
+                        voice,
+                        response.body());
+                throw new ContentModerationException(
+                        "Content rejected by moderation policy: " + response.body());
             } else {
-                log.error("[QwenTTS] TTS request failed with HTTP {} for voice '{}': {}",
-                    response.statusCode(), voice, response.body());
+                log.error(
+                        "[QwenTTS] TTS request failed with HTTP {} for voice '{}': {}",
+                        response.statusCode(),
+                        voice,
+                        response.body());
                 throw new IOException(errorMessage);
             }
         }
 
-        log.debug("[QwenTTS] TTS request successful for voice '{}', status: {}", voice, response.statusCode());
+        log.debug(
+                "[QwenTTS] TTS request successful for voice '{}', status: {}",
+                voice,
+                response.statusCode());
 
         JsonNode root = mapper.readTree(response.body());
         JsonNode urlNode = root.at("/output/audio/url");
@@ -135,12 +161,13 @@ class QwenTtsClient {
     }
 
     private static Retry defaultRetry() {
-        return Retry.create(builder -> builder
-            .calls(MAX_ATTEMPTS)
-            .delay(INITIAL_BACKOFF)
-            .delayFactor(BACKOFF_FACTOR)
-            .overallTimeout(OVERALL_TIMEOUT)
-            .applyOn(Set.of(RateLimitException.class)));
+        return Retry.create(
+                builder ->
+                        builder.calls(MAX_ATTEMPTS)
+                                .delay(INITIAL_BACKOFF)
+                                .delayFactor(BACKOFF_FACTOR)
+                                .overallTimeout(OVERALL_TIMEOUT)
+                                .applyOn(Set.of(RateLimitException.class)));
     }
 
     static final class RateLimitException extends RuntimeException {

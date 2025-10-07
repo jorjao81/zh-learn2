@@ -6,6 +6,7 @@ module com.zhlearn.application {
     exports com.zhlearn.application.service;
     exports com.zhlearn.application.format;
     exports com.zhlearn.application.audio;
+
     uses com.zhlearn.domain.provider.PinyinProvider;
     uses com.zhlearn.domain.provider.DefinitionProvider;
     uses com.zhlearn.domain.provider.StructuralDecompositionProvider;

@@ -1,9 +1,5 @@
 package com.zhlearn.application.service;
 
-import com.zhlearn.domain.model.*;
-import com.zhlearn.domain.provider.*;
-import com.zhlearn.domain.service.WordAnalysisService;
-
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -11,9 +7,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.zhlearn.domain.model.*;
+import com.zhlearn.domain.provider.*;
+import com.zhlearn.domain.service.WordAnalysisService;
+
 /**
- * Parallel implementation of WordAnalysisService that executes AI provider calls concurrently
- * for better performance. Non-AI providers (like pleco-export, pinyin4j) are called synchronously.
+ * Parallel implementation of WordAnalysisService that executes AI provider calls concurrently for
+ * better performance. Non-AI providers (like pleco-export, pinyin4j) are called synchronously.
  */
 public class ParallelWordAnalysisService implements WordAnalysisService {
 
@@ -73,47 +73,61 @@ public class ParallelWordAnalysisService implements WordAnalysisService {
 
     @Override
     public WordAnalysis getCompleteAnalysis(Hanzi word, ProviderConfiguration config) {
-        // Call pinyin and definition providers synchronously first as they're needed by other providers
+        // Call pinyin and definition providers synchronously first as they're needed by other
+        // providers
         Definition definition = getDefinition(word, config.getDefinitionProvider());
         Pinyin pinyin = getPinyin(word, config.getPinyinProvider());
 
         // Run remaining providers in parallel - let fast providers complete quickly
-        CompletableFuture<StructuralDecomposition> decompositionFuture = CompletableFuture.supplyAsync(() ->
-            getStructuralDecomposition(word, config.getDecompositionProvider()), executorService);
+        CompletableFuture<StructuralDecomposition> decompositionFuture =
+                CompletableFuture.supplyAsync(
+                        () -> getStructuralDecomposition(word, config.getDecompositionProvider()),
+                        executorService);
 
-        CompletableFuture<Example> examplesFuture = CompletableFuture.supplyAsync(() ->
-            getExamples(word, config.getExampleProvider(), definition.meaning()), executorService);
+        CompletableFuture<Example> examplesFuture =
+                CompletableFuture.supplyAsync(
+                        () -> getExamples(word, config.getExampleProvider(), definition.meaning()),
+                        executorService);
 
-        CompletableFuture<Explanation> explanationFuture = CompletableFuture.supplyAsync(() ->
-            getExplanation(word, config.getExplanationProvider()), executorService);
+        CompletableFuture<Explanation> explanationFuture =
+                CompletableFuture.supplyAsync(
+                        () -> getExplanation(word, config.getExplanationProvider()),
+                        executorService);
 
-        CompletableFuture<Optional<Path>> pronunciationFuture = CompletableFuture.supplyAsync(() ->
-            getPronunciation(word, pinyin, config.getAudioProvider()), executorService);
+        CompletableFuture<Optional<Path>> pronunciationFuture =
+                CompletableFuture.supplyAsync(
+                        () -> getPronunciation(word, pinyin, config.getAudioProvider()),
+                        executorService);
 
         // Wait for all providers to complete
         try {
-            CompletableFuture.allOf(decompositionFuture, examplesFuture, explanationFuture, pronunciationFuture).join();
+            CompletableFuture.allOf(
+                            decompositionFuture,
+                            examplesFuture,
+                            explanationFuture,
+                            pronunciationFuture)
+                    .join();
 
             return new WordAnalysis(
-                word,
-                pinyin,
-                definition,
-                decompositionFuture.get(),
-                examplesFuture.get(),
-                explanationFuture.get(),
-                pronunciationFuture.get()
-            );
+                    word,
+                    pinyin,
+                    definition,
+                    decompositionFuture.get(),
+                    examplesFuture.get(),
+                    explanationFuture.get(),
+                    pronunciationFuture.get());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException("Parallel word analysis interrupted", e);
         } catch (ExecutionException e) {
-            throw new RuntimeException("Error in parallel word analysis: " + e.getCause().getMessage(), e.getCause());
+            throw new RuntimeException(
+                    "Error in parallel word analysis: " + e.getCause().getMessage(), e.getCause());
         }
     }
 
     /**
-     * Shutdown the executor service when done.
-     * Should be called when the service is no longer needed.
+     * Shutdown the executor service when done. Should be called when the service is no longer
+     * needed.
      */
     public void shutdown() {
         executorService.shutdown();

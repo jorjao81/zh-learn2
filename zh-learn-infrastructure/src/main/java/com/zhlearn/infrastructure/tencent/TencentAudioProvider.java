@@ -1,5 +1,25 @@
 package com.zhlearn.infrastructure.tencent;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HexFormat;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
@@ -25,6 +45,7 @@ public class TencentAudioProvider extends AbstractTtsAudioProvider {
 
     // Voice mapping as specified by user
     private static final Map<Integer, String> VOICES = new LinkedHashMap<>();
+
     static {
         VOICES.put(101052, "zhiwei");
         VOICES.put(101002, "zhiling");
@@ -40,7 +61,7 @@ public class TencentAudioProvider extends AbstractTtsAudioProvider {
         this.voiceNameToType = buildVoiceNameToTypeMap();
     }
 
-    private Map<String, Integer> buildVoiceNameToTypeMap() {
+private Map<String, Integer> buildVoiceNameToTypeMap() {
         Map<String, Integer> map = new LinkedHashMap<>();
         for (Map.Entry<Integer, String> entry : VOICES.entrySet()) {
             map.put(entry.getValue(), entry.getKey());

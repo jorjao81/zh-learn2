@@ -19,12 +19,29 @@ public class SelectionSession {
         player.play(current().file());
     }
 
-    public int currentIndex() { return index; }
-    public PronunciationCandidate current() { return candidates.get(index); }
-    public PronunciationCandidate selected() { return selected; }
-    public int size() { return candidates.size(); }
-    public java.util.List<PronunciationCandidate> items() { return candidates; }
-    public PronunciationCandidate candidateAt(int i) { return candidates.get(i); }
+    public int currentIndex() {
+        return index;
+    }
+
+    public PronunciationCandidate current() {
+        return candidates.get(index);
+    }
+
+    public PronunciationCandidate selected() {
+        return selected;
+    }
+
+    public int size() {
+        return candidates.size();
+    }
+
+    public List<PronunciationCandidate> items() {
+        return candidates;
+    }
+
+    public PronunciationCandidate candidateAt(int i) {
+        return candidates.get(i);
+    }
 
     public void pressDown() {
         if (index < candidates.size() - 1) {

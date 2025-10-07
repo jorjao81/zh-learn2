@@ -1,20 +1,20 @@
 package com.zhlearn.application.audio;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.AudioProvider;
 import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
-
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class AudioOrchestratorParallelTest {
 
@@ -28,10 +28,8 @@ class AudioOrchestratorParallelTest {
         AudioProvider slowProvider2 = new SlowAudioProvider("slow2", callCount, 1000);
 
         AudioDownloadExecutor executor = new AudioDownloadExecutor();
-        AudioOrchestrator orchestrator = new AudioOrchestrator(
-            List.of(slowProvider1, slowProvider2),
-            executor
-        );
+        AudioOrchestrator orchestrator =
+                new AudioOrchestrator(List.of(slowProvider1, slowProvider2), executor);
 
         Hanzi word = new Hanzi("测试");
         Pinyin pinyin = new Pinyin("cèshì");
@@ -91,24 +89,24 @@ class AudioOrchestratorParallelTest {
         }
 
         @Override
-        public List<PronunciationDescription> getPronunciationsWithDescriptions(Hanzi word, Pinyin pinyin) {
+        public List<PronunciationDescription> getPronunciationsWithDescriptions(
+                Hanzi word, Pinyin pinyin) {
             callCount.incrementAndGet();
             try {
                 Thread.sleep(delayMs);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
-            return List.of(new PronunciationDescription(
-                Path.of("/tmp/test_" + name + ".mp3"),
-                name + " pronunciation"
-            ));
+            return List.of(
+                    new PronunciationDescription(
+                            Path.of("/tmp/test_" + name + ".mp3"), name + " pronunciation"));
         }
 
         @Override
         public List<Path> getPronunciations(Hanzi word, Pinyin pinyin) {
             return getPronunciationsWithDescriptions(word, pinyin).stream()
-                .map(PronunciationDescription::path)
-                .toList();
+                    .map(PronunciationDescription::path)
+                    .toList();
         }
     }
 }

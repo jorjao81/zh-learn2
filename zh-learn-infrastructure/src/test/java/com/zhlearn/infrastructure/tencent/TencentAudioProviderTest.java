@@ -1,28 +1,29 @@
 package com.zhlearn.infrastructure.tencent;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.infrastructure.audio.AudioCache;
 import com.zhlearn.infrastructure.audio.AudioNormalizer;
 import com.zhlearn.infrastructure.audio.AudioPaths;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Base64;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 class TencentAudioProviderTest {
 
-    @TempDir
-    Path tmpHome;
+    @TempDir Path tmpHome;
 
     @AfterEach
     void tearDown() {
@@ -52,7 +53,9 @@ class TencentAudioProviderTest {
         assertThat(pronunciations.get(0)).isAbsolute();
         assertThat(pronunciations.get(1)).isAbsolute();
 
-        assertThat(pronunciations.get(0).getFileName().toString()).contains("zhiwei").doesNotContain("xuéxí");
+        assertThat(pronunciations.get(0).getFileName().toString())
+                .contains("zhiwei")
+                .doesNotContain("xuéxí");
         assertThat(pronunciations.get(1).getFileName().toString()).contains("zhiling");
 
         assertThat(Files.exists(pronunciations.get(0))).isTrue();
@@ -80,8 +83,8 @@ class TencentAudioProviderTest {
 
         Throwable thrown = catchThrowable(() -> provider.getPronunciations(word, pinyin));
         assertThat(thrown)
-            .isInstanceOf(RuntimeException.class)
-            .hasCauseInstanceOf(RuntimeException.class);
+                .isInstanceOf(RuntimeException.class)
+                .hasCauseInstanceOf(RuntimeException.class);
         assertThat(thrown.getCause()).hasMessageContaining("Test failure for voice");
     }
 
@@ -104,13 +107,13 @@ class TencentAudioProviderTest {
         // Should fail fast according to constitution
         Throwable thrown1 = catchThrowable(() -> provider.getPronunciation(word, pinyin));
         assertThat(thrown1)
-            .isInstanceOf(RuntimeException.class)
-            .hasCauseInstanceOf(RuntimeException.class);
+                .isInstanceOf(RuntimeException.class)
+                .hasCauseInstanceOf(RuntimeException.class);
 
         Throwable thrown2 = catchThrowable(() -> provider.getPronunciations(word, pinyin));
         assertThat(thrown2)
-            .isInstanceOf(RuntimeException.class)
-            .hasCauseInstanceOf(RuntimeException.class);
+                .isInstanceOf(RuntimeException.class)
+                .hasCauseInstanceOf(RuntimeException.class);
     }
 
     @Test
@@ -134,7 +137,7 @@ class TencentAudioProviderTest {
 
     private static class FakeTencentClient extends TencentTtsClient {
         int callCount = 0;
-        final List<Integer> receivedVoiceTypes = new java.util.ArrayList<>();
+        final List<Integer> receivedVoiceTypes = new ArrayList<>();
 
         FakeTencentClient() {
             super("test-secret-id", "test-secret-key", "ap-singapore");
@@ -145,7 +148,8 @@ class TencentAudioProviderTest {
             callCount++;
             receivedVoiceTypes.add(voiceType);
             // Create some fake MP3 data (minimal valid MP3 header)
-            byte[] mp3Data = new byte[]{(byte) 0xFF, (byte) 0xFB, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00};
+            byte[] mp3Data =
+                    new byte[] {(byte) 0xFF, (byte) 0xFB, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00};
             String base64Audio = Base64.getEncoder().encodeToString(mp3Data);
             return new TencentTtsResult(base64Audio, "session-" + voiceType);
         }

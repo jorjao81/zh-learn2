@@ -32,6 +32,12 @@
         <maven-surefire-plugin.version>3.2.2</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.2.2</maven-failsafe-plugin.version>
         <native-maven-plugin.version>0.9.28</native-maven-plugin.version>
+        <spotless-maven-plugin.version>2.43.0</spotless-maven-plugin.version>
+        <maven-checkstyle-plugin.version>3.5.0</maven-checkstyle-plugin.version>
+        <checkstyle.version>10.23.1</checkstyle.version>
+        <maven-pmd-plugin.version>3.27.0</maven-pmd-plugin.version>
+        <pmd.version>7.17.0</pmd.version>
+        <git-build-hook-maven-plugin.version>3.4.1</git-build-hook-maven-plugin.version>
     </properties>
 
     <modules>
@@ -275,8 +281,147 @@
                         </buildArgs>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>com.diffplug.spotless</groupId>
+                    <artifactId>spotless-maven-plugin</artifactId>
+                    <version>${spotless-maven-plugin.version}</version>
+                    <configuration>
+                        <java>
+                            <googleJavaFormat>
+                                <version>1.25.2</version>
+                                <style>AOSP</style>
+                            </googleJavaFormat>
+                            <importOrder>
+                                <order>java,javax,jakarta,org,com</order>
+                            </importOrder>
+                            <removeUnusedImports/>
+                        </java>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${maven-checkstyle-plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>${checkstyle.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <configLocation>config/checkstyle.xml</configLocation>
+                        <consoleOutput>true</consoleOutput>
+                        <failsOnError>false</failsOnError>
+                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-pmd-plugin</artifactId>
+                    <version>${maven-pmd-plugin.version}</version>
+                    <configuration>
+                        <rulesets>
+                            <ruleset>config/pmd-ruleset.xml</ruleset>
+                        </rulesets>
+                        <printFailingErrors>true</printFailingErrors>
+                        <failOnViolation>false</failOnViolation>
+                        <includeTests>true</includeTests>
+                        <linkXRef>false</linkXRef>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-java</artifactId>
+                            <version>${pmd.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-core</artifactId>
+                            <version>${pmd.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>com.rudikershaw.gitbuildhook</groupId>
+                    <artifactId>git-build-hook-maven-plugin</artifactId>
+                    <version>${git-build-hook-maven-plugin.version}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <!-- Spotless: Code formatting -->
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>spotless-check</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Checkstyle: Style enforcement -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>checkstyle-check</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- PMD: Code quality analysis -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>pmd-check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Git Build Hook: Install pre-commit hook -->
+            <plugin>
+                <groupId>com.rudikershaw.gitbuildhook</groupId>
+                <artifactId>git-build-hook-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>install-git-hooks</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>install</goal>
+                        </goals>
+                        <configuration>
+                            <gitConfig>
+                                <core.hooksPath>hooks</core.hooksPath>
+                            </gitConfig>
+                            <hooks>
+                                <pre-commit>#!/bin/sh
+echo "Running linters before commit..."
+mvn -fae spotless:check checkstyle:check pmd:check
+if [ $? -ne 0 ]; then
+    echo "Linter checks failed. Run 'mvn spotless:apply' to fix formatting issues."
+    exit 1
+fi
+                                </pre-commit>
+                            </hooks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
     <profiles>

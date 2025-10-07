@@ -1,25 +1,25 @@
 package com.zhlearn.cli;
 
+import java.util.List;
+
 import com.zhlearn.application.audio.AnkiMediaLocator;
 import com.zhlearn.application.format.ExamplesHtmlFormatter;
 import com.zhlearn.application.service.AnkiExporter;
+import com.zhlearn.cli.audio.PrePlayback;
+import com.zhlearn.domain.provider.AudioProvider;
+import com.zhlearn.infrastructure.anki.AnkiPronunciationProvider;
 import com.zhlearn.infrastructure.audio.AudioCache;
+import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;
 import com.zhlearn.infrastructure.audio.AudioNormalizer;
 import com.zhlearn.infrastructure.audio.AudioPaths;
-import com.zhlearn.infrastructure.anki.AnkiPronunciationProvider;
+import com.zhlearn.infrastructure.common.AIProviderFactory;
 import com.zhlearn.infrastructure.forvo.ForvoAudioProvider;
 import com.zhlearn.infrastructure.qwen.QwenAudioProvider;
 import com.zhlearn.infrastructure.tencent.TencentAudioProvider;
-import com.zhlearn.infrastructure.common.AIProviderFactory;
-import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;
-import com.zhlearn.domain.provider.AudioProvider;
-import com.zhlearn.cli.audio.PrePlayback;
-
-import java.util.List;
 
 /**
- * Application context for centralized dependency injection and bean management.
- * Provides explicit, compile-time dependency injection without runtime reflection.
+ * Application context for centralized dependency injection and bean management. Provides explicit,
+ * compile-time dependency injection without runtime reflection.
  */
 public class ApplicationContext {
 
@@ -58,70 +58,90 @@ public class ApplicationContext {
 
         // Initialize audio executor and providers
         this.audioExecutor = new AudioDownloadExecutor();
-        this.audioProviders = List.of(
-            new AnkiPronunciationProvider(),
-            new ForvoAudioProvider(
-                java.net.http.HttpClient.newBuilder()
-                    .connectTimeout(java.time.Duration.ofSeconds(10))
-                    .build(),
-                new com.fasterxml.jackson.databind.ObjectMapper(),
-                audioExecutor.getExecutor(),
-                audioCache,
-                audioPaths),
-            new QwenAudioProvider(audioCache, audioPaths, audioExecutor.getExecutor(),
-                java.net.http.HttpClient.newBuilder()
-                    .connectTimeout(java.time.Duration.ofSeconds(15))
-                    .build(),
-                null),
-            new TencentAudioProvider(audioCache, audioPaths, audioExecutor.getExecutor(), null)
-        );
+        this.audioProviders =
+                List.of(
+                        new AnkiPronunciationProvider(),
+                        new ForvoAudioProvider(audioExecutor),
+                        new QwenAudioProvider(audioExecutor),
+                        new TencentAudioProvider(audioExecutor));
     }
 
-    /**
-     * Create a new ApplicationContext with default configuration.
-     */
+    /** Create a new ApplicationContext with default configuration. */
     public static ApplicationContext create() {
         return create(Configuration.defaultConfig());
     }
 
-    /**
-     * Create a new ApplicationContext with custom configuration.
-     */
+    /** Create a new ApplicationContext with custom configuration. */
     public static ApplicationContext create(Configuration config) {
         return new ApplicationContext(config);
     }
 
     // Getters for all managed beans
-    public Configuration getConfig() { return config; }
-    public TerminalFormatter getTerminalFormatter() { return terminalFormatter; }
-    public ExamplesHtmlFormatter getExamplesHtmlFormatter() { return examplesHtmlFormatter; }
-    public AnalysisPrinter getAnalysisPrinter() { return analysisPrinter; }
-    public AnkiMediaLocator getAnkiMediaLocator() { return ankiMediaLocator; }
-    public AnkiExporter getAnkiExporter() { return ankiExporter; }
-    public AudioPaths getAudioPaths() { return audioPaths; }
-    public AudioNormalizer getAudioNormalizer() { return audioNormalizer; }
-    public AudioCache getAudioCache() { return audioCache; }
-    public PrePlayback getPrePlayback() { return prePlayback; }
-    public AIProviderFactory getAiProviderFactory() { return aiProviderFactory; }
-    public AudioDownloadExecutor getAudioExecutor() { return audioExecutor; }
-    public List<AudioProvider> getAudioProviders() { return audioProviders; }
+    public Configuration getConfig() {
+        return config;
+    }
 
-    /**
-     * Create a MainCommand with all dependencies injected.
-     */
+    public TerminalFormatter getTerminalFormatter() {
+        return terminalFormatter;
+    }
+
+    public ExamplesHtmlFormatter getExamplesHtmlFormatter() {
+        return examplesHtmlFormatter;
+    }
+
+    public AnalysisPrinter getAnalysisPrinter() {
+        return analysisPrinter;
+    }
+
+    public AnkiMediaLocator getAnkiMediaLocator() {
+        return ankiMediaLocator;
+    }
+
+    public AnkiExporter getAnkiExporter() {
+        return ankiExporter;
+    }
+
+    public AudioPaths getAudioPaths() {
+        return audioPaths;
+    }
+
+    public AudioNormalizer getAudioNormalizer() {
+        return audioNormalizer;
+    }
+
+    public AudioCache getAudioCache() {
+        return audioCache;
+    }
+
+    public PrePlayback getPrePlayback() {
+        return prePlayback;
+    }
+
+    public AIProviderFactory getAiProviderFactory() {
+        return aiProviderFactory;
+    }
+
+    public AudioDownloadExecutor getAudioExecutor() {
+        return audioExecutor;
+    }
+
+    public List<AudioProvider> getAudioProviders() {
+        return audioProviders;
+    }
+
+    /** Create a MainCommand with all dependencies injected. */
     public MainCommand createMainCommand() {
         return new MainCommand(
-            terminalFormatter,
-            examplesHtmlFormatter,
-            analysisPrinter,
-            ankiMediaLocator,
-            ankiExporter,
-            audioPaths,
-            audioCache,
-            prePlayback,
-            aiProviderFactory,
-            audioExecutor,
-            audioProviders
-        );
+                terminalFormatter,
+                examplesHtmlFormatter,
+                analysisPrinter,
+                ankiMediaLocator,
+                ankiExporter,
+                audioPaths,
+                audioCache,
+                prePlayback,
+                aiProviderFactory,
+                audioExecutor,
+                audioProviders);
     }
 }

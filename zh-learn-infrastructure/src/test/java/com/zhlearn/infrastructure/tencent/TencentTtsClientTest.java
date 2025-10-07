@@ -1,9 +1,11 @@
 package com.zhlearn.infrastructure.tencent;
 
-import com.tencentcloudapi.common.exception.TencentCloudSDKException;
-import com.tencentcloudapi.tts.v20190823.TtsClient;
-import com.tencentcloudapi.tts.v20190823.models.TextToVoiceRequest;
-import com.tencentcloudapi.tts.v20190823.models.TextToVoiceResponse;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,17 +13,15 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import com.tencentcloudapi.common.exception.TencentCloudSDKException;
+import com.tencentcloudapi.tts.v20190823.TtsClient;
+import com.tencentcloudapi.tts.v20190823.models.TextToVoiceRequest;
+import com.tencentcloudapi.tts.v20190823.models.TextToVoiceResponse;
 
 @ExtendWith(MockitoExtension.class)
 class TencentTtsClientTest {
 
-    @Mock
-    private TtsClient sdkClient;
+    @Mock private TtsClient sdkClient;
 
     private TencentTtsClient tencentTtsClient;
 
@@ -46,7 +46,8 @@ class TencentTtsClientTest {
         assertThat(result.audioData()).isEqualTo("fake-audio-data");
         assertThat(result.sessionId()).isEqualTo("test-session-123");
 
-        ArgumentCaptor<TextToVoiceRequest> captor = ArgumentCaptor.forClass(TextToVoiceRequest.class);
+        ArgumentCaptor<TextToVoiceRequest> captor =
+                ArgumentCaptor.forClass(TextToVoiceRequest.class);
         verify(sdkClient).TextToVoice(captor.capture());
         TextToVoiceRequest capturedRequest = captor.getValue();
         assertThat(capturedRequest.getText()).isEqualTo("学习");
@@ -57,13 +58,13 @@ class TencentTtsClientTest {
     void handlesApiError() throws TencentCloudSDKException {
         // Arrange
         when(sdkClient.TextToVoice(any(TextToVoiceRequest.class)))
-            .thenThrow(new TencentCloudSDKException("InvalidParameter"));
+                .thenThrow(new TencentCloudSDKException("InvalidParameter"));
 
         // Act & Assert
         Throwable thrown = catchThrowable(() -> tencentTtsClient.synthesize(999999, "学习"));
         assertThat(thrown)
-            .isInstanceOf(RuntimeException.class)
-            .hasMessageContaining("Tencent TTS API error")
-            .hasCauseInstanceOf(TencentCloudSDKException.class);
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Tencent TTS API error")
+                .hasCauseInstanceOf(TencentCloudSDKException.class);
     }
 }

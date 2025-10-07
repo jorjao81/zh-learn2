@@ -1,8 +1,5 @@
 package com.zhlearn.cli.audio;
 
-import com.zhlearn.application.audio.AudioPlayer;
-import com.zhlearn.application.audio.AnkiMediaLocator;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -10,6 +7,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Optional;
+
+import com.zhlearn.application.audio.AnkiMediaLocator;
+import com.zhlearn.application.audio.AudioPlayer;
 
 public class SystemAudioPlayer implements AudioPlayer {
     private final AnkiMediaLocator ankiMediaLocator;
@@ -32,7 +32,9 @@ public class SystemAudioPlayer implements AudioPlayer {
             // Try to resolve from CLI module resources (fixtures/audio/<name>)
             Path resolved = tryExtractFromResources(file);
             if (resolved == null) {
-                throw new IllegalStateException("Audio file not found: " + (file == null ? "(null)" : file.toAbsolutePath()));
+                throw new IllegalStateException(
+                        "Audio file not found: "
+                                + (file == null ? "(null)" : file.toAbsolutePath()));
             }
             file = resolved;
         }
@@ -41,7 +43,14 @@ public class SystemAudioPlayer implements AudioPlayer {
         if (os.contains("mac")) {
             pb = new ProcessBuilder("afplay", file.toAbsolutePath().toString());
         } else {
-            pb = new ProcessBuilder("ffplay", "-nodisp", "-autoexit", "-loglevel", "error", file.toAbsolutePath().toString());
+            pb =
+                    new ProcessBuilder(
+                            "ffplay",
+                            "-nodisp",
+                            "-autoexit",
+                            "-loglevel",
+                            "error",
+                            file.toAbsolutePath().toString());
         }
         try {
             current = pb.start();
@@ -69,7 +78,8 @@ public class SystemAudioPlayer implements AudioPlayer {
             out.toFile().deleteOnExit();
             return out;
         } catch (IOException e) {
-            throw new UncheckedIOException("Failed to extract bundled audio resource '" + name + "'", e);
+            throw new UncheckedIOException(
+                    "Failed to extract bundled audio resource '" + name + "'", e);
         }
     }
 
@@ -82,7 +92,8 @@ public class SystemAudioPlayer implements AudioPlayer {
         }
         Path candidate = mediaDir.get().resolve(name);
         if (!Files.exists(candidate)) {
-            throw new IllegalStateException("Configured Anki media file not found: " + candidate.toAbsolutePath());
+            throw new IllegalStateException(
+                    "Configured Anki media file not found: " + candidate.toAbsolutePath());
         }
         return candidate.toAbsolutePath();
     }

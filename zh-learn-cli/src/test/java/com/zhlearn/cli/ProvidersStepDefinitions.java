@@ -1,16 +1,16 @@
 package com.zhlearn.cli;
 
-import io.cucumber.datatable.DataTable;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-import picocli.CommandLine;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+import picocli.CommandLine;
 
 public class ProvidersStepDefinitions {
 
@@ -19,9 +19,8 @@ public class ProvidersStepDefinitions {
 
     @When("I execute the CLI command {string}")
     public void iExecuteTheCliCommand(String commandLine) {
-        String[] args = commandLine.trim().isEmpty()
-            ? new String[0]
-            : commandLine.trim().split("\\s+");
+        String[] args =
+                commandLine.trim().isEmpty() ? new String[0] : commandLine.trim().split("\\s+");
 
         ByteArrayOutputStream stdout = new ByteArrayOutputStream();
         PrintStream capture = new PrintStream(stdout, true, StandardCharsets.UTF_8);
@@ -50,9 +49,7 @@ public class ProvidersStepDefinitions {
         if (lastExitCode != 0 && lastOutput != null) {
             System.out.println("CLI command output:\n" + lastOutput);
         }
-        assertThat(lastExitCode)
-            .as("CLI command should exit successfully")
-            .isZero();
+        assertThat(lastExitCode).as("CLI command should exit successfully").isZero();
 
         String strippedOutput = stripAnsi(lastOutput);
 
@@ -68,8 +65,8 @@ public class ProvidersStepDefinitions {
                 continue;
             }
             assertThat(strippedOutput)
-                .as("Output should contain \"%s\" but was:%n%s", substring, strippedOutput)
-                .contains(substring);
+                    .as("Output should contain \"%s\" but was:%n%s", substring, strippedOutput)
+                    .contains(substring);
         }
     }
 

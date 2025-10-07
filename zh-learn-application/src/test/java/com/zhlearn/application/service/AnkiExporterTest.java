@@ -1,5 +1,19 @@
 package com.zhlearn.application.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
 import com.zhlearn.application.audio.AnkiMediaLocator;
 import com.zhlearn.application.format.ExamplesHtmlFormatter;
 import com.zhlearn.domain.model.Definition;
@@ -9,19 +23,6 @@ import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.StructuralDecomposition;
 import com.zhlearn.domain.model.WordAnalysis;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.attribute.FileTime;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class AnkiExporterTest {
 
@@ -44,7 +45,8 @@ class AnkiExporterTest {
     }
 
     @Test
-    void exportCopiesPronunciationIntoConfiguredAnkiMedia(@TempDir Path tempDir) throws IOException {
+    void exportCopiesPronunciationIntoConfiguredAnkiMedia(@TempDir Path tempDir)
+            throws IOException {
         Path mediaDir = tempDir.resolve("collection.media");
         Files.createDirectories(mediaDir);
         Path sourceAudio = tempDir.resolve("source.mp3");
@@ -54,7 +56,8 @@ class AnkiExporterTest {
         Path output = tempDir.resolve("output.tsv");
 
         System.setProperty(MEDIA_PROPERTY, mediaDir.toString());
-        new AnkiExporter(new ExamplesHtmlFormatter(), new AnkiMediaLocator()).exportToFile(List.of(analysis), output);
+        new AnkiExporter(new ExamplesHtmlFormatter(), new AnkiMediaLocator())
+                .exportToFile(List.of(analysis), output);
 
         Path copied = mediaDir.resolve(sourceAudio.getFileName());
         assertThat(Files.exists(copied)).isTrue();
@@ -76,13 +79,15 @@ class AnkiExporterTest {
         Path output = tempDir.resolve("output.tsv");
 
         System.setProperty(MEDIA_PROPERTY, mediaDir.toString());
-        new AnkiExporter(new ExamplesHtmlFormatter(), new AnkiMediaLocator()).exportToFile(List.of(analysis), output);
+        new AnkiExporter(new ExamplesHtmlFormatter(), new AnkiMediaLocator())
+                .exportToFile(List.of(analysis), output);
 
         FileTime after = Files.getLastModifiedTime(existingAudio);
         assertThat(after).isEqualTo(before);
 
         List<String> lines = Files.readAllLines(output);
-        assertThat(lines).anyMatch(line -> line.contains("[sound:" + existingAudio.getFileName() + "]"));
+        assertThat(lines)
+                .anyMatch(line -> line.contains("[sound:" + existingAudio.getFileName() + "]"));
     }
 
     private WordAnalysis sampleAnalysis(Path audioFile) {
@@ -90,19 +95,20 @@ class AnkiExporterTest {
         Pinyin pinyin = new Pinyin("xuéxí");
         Definition definition = new Definition("to study");
         StructuralDecomposition decomposition = new StructuralDecomposition("⺍ + 子");
-        Example example = new Example(
-            List.of(new Example.Usage("我学习中文", "wǒ xuéxí zhōngwén", "I study Chinese", "", "")),
-            List.of()
-        );
+        Example example =
+                new Example(
+                        List.of(
+                                new Example.Usage(
+                                        "我学习中文", "wǒ xuéxí zhōngwén", "I study Chinese", "", "")),
+                        List.of());
         Explanation explanation = new Explanation("Explanation");
         return new WordAnalysis(
-            hanzi,
-            pinyin,
-            definition,
-            decomposition,
-            example,
-            explanation,
-            Optional.of(audioFile)
-        );
+                hanzi,
+                pinyin,
+                definition,
+                decomposition,
+                example,
+                explanation,
+                Optional.of(audioFile));
     }
 }
