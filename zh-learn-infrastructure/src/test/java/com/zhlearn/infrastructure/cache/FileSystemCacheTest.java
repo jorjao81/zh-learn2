@@ -1,26 +1,25 @@
 package com.zhlearn.infrastructure.cache;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 class FileSystemCacheTest {
 
-    @TempDir
-    Path tempDir;
+    @TempDir Path tempDir;
 
     @Test
     void shouldReturnEmptyWhenKeyNotFound() {
         FileSystemCache cache = new FileSystemCache(tempDir, 3600);
-        
+
         Optional<String> result = cache.get("nonexistent-key");
-        
+
         assertThat(result).isEmpty();
     }
 
@@ -29,10 +28,10 @@ class FileSystemCacheTest {
         FileSystemCache cache = new FileSystemCache(tempDir, 3600);
         String key = "test-key";
         String value = "test-response";
-        
+
         cache.put(key, value);
         Optional<String> result = cache.get(key);
-        
+
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(value);
     }
@@ -40,10 +39,10 @@ class FileSystemCacheTest {
     @Test
     void shouldHandleMultipleKeys() {
         FileSystemCache cache = new FileSystemCache(tempDir, 3600);
-        
+
         cache.put("key1", "value1");
         cache.put("key2", "value2");
-        
+
         assertThat(cache.get("key1")).hasValue("value1");
         assertThat(cache.get("key2")).hasValue("value2");
     }
@@ -53,12 +52,12 @@ class FileSystemCacheTest {
         FileSystemCache cache = new FileSystemCache(tempDir, 1); // 1 second TTL
         String key = "test-key";
         String value = "test-response";
-        
+
         cache.put(key, value);
         assertThat(cache.get(key)).hasValue(value);
-        
+
         Thread.sleep(1100); // Wait for expiration
-        
+
         Optional<String> result = cache.get(key);
         assertThat(result).isEmpty();
     }
@@ -97,7 +96,8 @@ class FileSystemCacheTest {
     }
 
     @Test
-    void defaultConstructorCreatesCacheUnderZhLearnDirectory(@TempDir Path tempHome) throws Exception {
+    void defaultConstructorCreatesCacheUnderZhLearnDirectory(@TempDir Path tempHome)
+            throws Exception {
         String originalUserHome = System.getProperty("user.home");
         try {
             System.setProperty("user.home", tempHome.toString());

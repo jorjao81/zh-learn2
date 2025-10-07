@@ -1,13 +1,13 @@
 package com.zhlearn.infrastructure.common;
 
+import java.util.Optional;
+import java.util.function.Function;
+
 import com.zhlearn.domain.model.Explanation;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.model.WordType;
 import com.zhlearn.domain.provider.ExplanationProvider;
-
-import java.util.Optional;
-import java.util.function.Function;
 
 public class ConfigurableExplanationProvider implements ExplanationProvider {
 
@@ -18,59 +18,98 @@ public class ConfigurableExplanationProvider implements ExplanationProvider {
     private final String name;
     private final String description;
 
-    public ConfigurableExplanationProvider(ProviderConfig<Explanation> config, String name, String description) {
-        this(new GenericChatModelProvider<>(config)::process, new GenericChatModelProvider<>(config)::process,
-            Optional.of(config), Optional.of(config), name, description);
+    public ConfigurableExplanationProvider(
+            ProviderConfig<Explanation> config, String name, String description) {
+        this(
+                new GenericChatModelProvider<>(config)::process,
+                new GenericChatModelProvider<>(config)::process,
+                Optional.of(config),
+                Optional.of(config),
+                name,
+                description);
     }
 
-    public ConfigurableExplanationProvider(GenericChatModelProvider<Explanation> provider, String name, String description) {
-        this(provider::process, provider::process, Optional.empty(), Optional.empty(), name, description);
+    public ConfigurableExplanationProvider(
+            GenericChatModelProvider<Explanation> provider, String name, String description) {
+        this(
+                provider::process,
+                provider::process,
+                Optional.empty(),
+                Optional.empty(),
+                name,
+                description);
     }
 
-    public ConfigurableExplanationProvider(ProviderConfig<Explanation> singleCharConfig,
-                                           ProviderConfig<Explanation> multiCharConfig,
-                                           String name,
-                                           String description) {
-        this(new GenericChatModelProvider<>(singleCharConfig)::process,
-            new GenericChatModelProvider<>(multiCharConfig)::process,
-            Optional.of(singleCharConfig), Optional.of(multiCharConfig), name, description);
+    public ConfigurableExplanationProvider(
+            ProviderConfig<Explanation> singleCharConfig,
+            ProviderConfig<Explanation> multiCharConfig,
+            String name,
+            String description) {
+        this(
+                new GenericChatModelProvider<>(singleCharConfig)::process,
+                new GenericChatModelProvider<>(multiCharConfig)::process,
+                Optional.of(singleCharConfig),
+                Optional.of(multiCharConfig),
+                name,
+                description);
     }
 
-    public ConfigurableExplanationProvider(GenericChatModelProvider<Explanation> singleCharProvider,
-                                           GenericChatModelProvider<Explanation> multiCharProvider,
-                                           String name,
-                                           String description) {
-        this(singleCharProvider::process, multiCharProvider::process,
-            Optional.empty(), Optional.empty(), name, description);
+    public ConfigurableExplanationProvider(
+            GenericChatModelProvider<Explanation> singleCharProvider,
+            GenericChatModelProvider<Explanation> multiCharProvider,
+            String name,
+            String description) {
+        this(
+                singleCharProvider::process,
+                multiCharProvider::process,
+                Optional.empty(),
+                Optional.empty(),
+                name,
+                description);
     }
 
-    public ConfigurableExplanationProvider(Function<Hanzi, Explanation> processor, String name, String description) {
+    public ConfigurableExplanationProvider(
+            Function<Hanzi, Explanation> processor, String name, String description) {
         this(processor, processor, Optional.empty(), Optional.empty(), name, description);
     }
 
-    public ConfigurableExplanationProvider(Function<Hanzi, Explanation> singleCharProcessor,
-                                           Function<Hanzi, Explanation> multiCharProcessor,
-                                           String name,
-                                           String description) {
-        this(singleCharProcessor, multiCharProcessor, Optional.empty(), Optional.empty(), name, description);
+    public ConfigurableExplanationProvider(
+            Function<Hanzi, Explanation> singleCharProcessor,
+            Function<Hanzi, Explanation> multiCharProcessor,
+            String name,
+            String description) {
+        this(
+                singleCharProcessor,
+                multiCharProcessor,
+                Optional.empty(),
+                Optional.empty(),
+                name,
+                description);
     }
 
-    public ConfigurableExplanationProvider(Function<Hanzi, Explanation> singleCharProcessor,
-                                           ProviderConfig<Explanation> singleCharConfig,
-                                           Function<Hanzi, Explanation> multiCharProcessor,
-                                           ProviderConfig<Explanation> multiCharConfig,
-                                           String name,
-                                           String description) {
-        this(singleCharProcessor, multiCharProcessor,
-            Optional.of(singleCharConfig), Optional.of(multiCharConfig), name, description);
+    public ConfigurableExplanationProvider(
+            Function<Hanzi, Explanation> singleCharProcessor,
+            ProviderConfig<Explanation> singleCharConfig,
+            Function<Hanzi, Explanation> multiCharProcessor,
+            ProviderConfig<Explanation> multiCharConfig,
+            String name,
+            String description) {
+        this(
+                singleCharProcessor,
+                multiCharProcessor,
+                Optional.of(singleCharConfig),
+                Optional.of(multiCharConfig),
+                name,
+                description);
     }
 
-    ConfigurableExplanationProvider(Function<Hanzi, Explanation> singleCharProcessor,
-                                    Function<Hanzi, Explanation> multiCharProcessor,
-                                    Optional<ProviderConfig<Explanation>> singleCharConfig,
-                                    Optional<ProviderConfig<Explanation>> multiCharConfig,
-                                    String name,
-                                    String description) {
+    ConfigurableExplanationProvider(
+            Function<Hanzi, Explanation> singleCharProcessor,
+            Function<Hanzi, Explanation> multiCharProcessor,
+            Optional<ProviderConfig<Explanation>> singleCharConfig,
+            Optional<ProviderConfig<Explanation>> multiCharConfig,
+            String name,
+            String description) {
         this.singleCharProcessor = singleCharProcessor;
         this.multiCharProcessor = multiCharProcessor;
         this.singleCharConfig = singleCharConfig;

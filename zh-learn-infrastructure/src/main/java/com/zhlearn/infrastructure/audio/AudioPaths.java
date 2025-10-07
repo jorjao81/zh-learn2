@@ -7,19 +7,20 @@ import java.nio.file.Path;
 
 public class AudioPaths {
 
-    public AudioPaths() {
-    }
+    public AudioPaths() {}
 
     public Path homeDir() {
         String override = System.getProperty("zhlearn.home");
         if (override == null || override.isBlank()) override = System.getenv("ZHLEARN_HOME");
-        Path base = (override == null || override.isBlank())
-                ? Path.of(System.getProperty("user.home"), ".zh-learn")
-                : Path.of(override);
+        Path base =
+                (override == null || override.isBlank())
+                        ? Path.of(System.getProperty("user.home"), ".zh-learn")
+                        : Path.of(override);
         try {
             Files.createDirectories(base);
         } catch (IOException e) {
-            throw new UncheckedIOException("Failed to create zh-learn home directory at " + base, e);
+            throw new UncheckedIOException(
+                    "Failed to create zh-learn home directory at " + base, e);
         }
         return base.toAbsolutePath();
     }
@@ -29,7 +30,8 @@ public class AudioPaths {
         try {
             Files.createDirectories(dir);
         } catch (IOException e) {
-            throw new UncheckedIOException("Failed to create zh-learn audio directory at " + dir, e);
+            throw new UncheckedIOException(
+                    "Failed to create zh-learn audio directory at " + dir, e);
         }
         return dir.toAbsolutePath();
     }

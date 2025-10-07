@@ -1,19 +1,21 @@
 package com.zhlearn.infrastructure.common;
 
-import com.zhlearn.domain.model.StructuralDecomposition;
-
 import java.util.function.Function;
+
+import com.zhlearn.domain.model.StructuralDecomposition;
 
 public class MultiCharStructuralDecompositionProviderConfig {
 
-    private static final String TEMPLATE_PATH = "/multi-char/structural-decomposition/prompt-template.md";
-    private static final String EXAMPLES_DIRECTORY = "/multi-char/structural-decomposition/examples/";
-    private static final Function<String, StructuralDecomposition> RESPONSE_MAPPER = StructuralDecomposition::new;
+    private static final String TEMPLATE_PATH =
+            "/multi-char/structural-decomposition/prompt-template.md";
+    private static final String EXAMPLES_DIRECTORY =
+            "/multi-char/structural-decomposition/examples/";
+    private static final Function<String, StructuralDecomposition> RESPONSE_MAPPER =
+            StructuralDecomposition::new;
     private static final Double DEFAULT_TEMPERATURE = 0.3;
     private static final Integer DEFAULT_MAX_TOKENS = 8000;
 
-    public MultiCharStructuralDecompositionProviderConfig() {
-    }
+    public MultiCharStructuralDecompositionProviderConfig() {}
 
     public String templatePath() {
         return TEMPLATE_PATH;

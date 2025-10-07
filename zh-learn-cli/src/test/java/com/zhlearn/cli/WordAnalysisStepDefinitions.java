@@ -1,5 +1,10 @@
 package com.zhlearn.cli;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Optional;
+
 import com.zhlearn.domain.model.Example;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.WordAnalysis;
@@ -10,14 +15,10 @@ import com.zhlearn.domain.provider.ExplanationProvider;
 import com.zhlearn.domain.provider.PinyinProvider;
 import com.zhlearn.domain.provider.StructuralDecompositionProvider;
 import com.zhlearn.infrastructure.dummy.*;
+
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class WordAnalysisStepDefinitions {
 
@@ -71,8 +72,8 @@ public class WordAnalysisStepDefinitions {
         assertNotNull(examples, "Examples should not be null");
         assertThat(examples.usages()).isNotEmpty();
         String characters = analysis.word().characters();
-        boolean containsWord = examples.usages().stream()
-            .anyMatch(usage -> usage.sentence().contains(characters));
+        boolean containsWord =
+                examples.usages().stream().anyMatch(usage -> usage.sentence().contains(characters));
         assertThat(containsWord).isTrue();
     }
 
@@ -91,18 +92,19 @@ public class WordAnalysisStepDefinitions {
             DefinitionProvider definitionProvider = new DummyDefinitionProvider();
             ExampleProvider exampleProvider = new DummyExampleProvider();
             ExplanationProvider explanationProvider = new DummyExplanationProvider();
-            StructuralDecompositionProvider decompositionProvider = new DummyStructuralDecompositionProvider();
+            StructuralDecompositionProvider decompositionProvider =
+                    new DummyStructuralDecompositionProvider();
             AudioProvider audioProvider = new DummyAudioProvider();
 
-            this.analysis = new WordAnalysis(
-                hanzi,
-                pinyinProvider.getPinyin(hanzi),
-                definitionProvider.getDefinition(hanzi),
-                decompositionProvider.getStructuralDecomposition(hanzi),
-                exampleProvider.getExamples(hanzi, Optional.empty()),
-                explanationProvider.getExplanation(hanzi),
-                audioProvider.getPronunciation(hanzi, pinyinProvider.getPinyin(hanzi))
-            );
+            this.analysis =
+                    new WordAnalysis(
+                            hanzi,
+                            pinyinProvider.getPinyin(hanzi),
+                            definitionProvider.getDefinition(hanzi),
+                            decompositionProvider.getStructuralDecomposition(hanzi),
+                            exampleProvider.getExamples(hanzi, Optional.empty()),
+                            explanationProvider.getExplanation(hanzi),
+                            audioProvider.getPronunciation(hanzi, pinyinProvider.getPinyin(hanzi)));
 
             this.lastException = null;
         } catch (Exception e) {

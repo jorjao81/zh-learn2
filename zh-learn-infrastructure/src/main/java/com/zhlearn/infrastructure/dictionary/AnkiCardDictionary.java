@@ -1,10 +1,5 @@
 package com.zhlearn.infrastructure.dictionary;
 
-import com.zhlearn.domain.dictionary.Dictionary;
-import com.zhlearn.domain.model.*;
-import com.zhlearn.infrastructure.anki.AnkiCard;
-import com.zhlearn.infrastructure.anki.AnkiCardParser;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
@@ -12,6 +7,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import com.zhlearn.domain.dictionary.Dictionary;
+import com.zhlearn.domain.model.*;
+import com.zhlearn.infrastructure.anki.AnkiCard;
+import com.zhlearn.infrastructure.anki.AnkiCardParser;
 
 public class AnkiCardDictionary implements Dictionary {
     private static final String DICTIONARY_NAME = "anki-card";
@@ -22,13 +22,19 @@ public class AnkiCardDictionary implements Dictionary {
     }
 
     public AnkiCardDictionary(List<AnkiCard> ankiCards) {
-        this.wordMap = ankiCards.stream()
-            .filter(card -> card.simplified() != null && !card.simplified().trim().isEmpty())
-            .collect(Collectors.toMap(
-                card -> card.simplified().trim(),
-                Function.identity(),
-                (existing, replacement) -> existing // Keep first occurrence if duplicates
-            ));
+        this.wordMap =
+                ankiCards.stream()
+                        .filter(
+                                card ->
+                                        card.simplified() != null
+                                                && !card.simplified().trim().isEmpty())
+                        .collect(
+                                Collectors.toMap(
+                                        card -> card.simplified().trim(),
+                                        Function.identity(),
+                                        (existing, replacement) ->
+                                                existing // Keep first occurrence if duplicates
+                                        ));
     }
 
     @Override
@@ -64,14 +70,14 @@ public class AnkiCardDictionary implements Dictionary {
         Explanation explanation = createExplanation(card);
 
         return new WordAnalysis(
-            hanzi,
-            pinyin,
-            definition,
-            decomposition,
-            examples,
-            explanation,
-            Optional.empty() // no pronunciation available from dictionary
-        );
+                hanzi,
+                pinyin,
+                definition,
+                decomposition,
+                examples,
+                explanation,
+                Optional.empty() // no pronunciation available from dictionary
+                );
     }
 
     private Pinyin createPinyin(AnkiCard card) {
@@ -87,7 +93,7 @@ public class AnkiCardDictionary implements Dictionary {
         if (definitionText == null || definitionText.trim().isEmpty()) {
             return new Definition("unknown");
         }
-        
+
         return new Definition(definitionText.trim().isEmpty() ? "unknown" : definitionText.trim());
     }
 
@@ -104,16 +110,17 @@ public class AnkiCardDictionary implements Dictionary {
         if (examplesText == null || examplesText.trim().isEmpty()) {
             return new Example(List.of(), List.of());
         }
-        
+
         // Simple parsing - create one usage from the examples field
-        Example.Usage usage = new Example.Usage(
-            examplesText.trim(),
-            "", // No pinyin in AnkiCard examples
-            "Example usage", // Generic translation
-            "anki-card", // Context
-            "" // No breakdown available in AnkiCard
-        );
-        
+        Example.Usage usage =
+                new Example.Usage(
+                        examplesText.trim(),
+                        "", // No pinyin in AnkiCard examples
+                        "Example usage", // Generic translation
+                        "anki-card", // Context
+                        "" // No breakdown available in AnkiCard
+                        );
+
         return new Example(List.of(usage), List.of());
     }
 

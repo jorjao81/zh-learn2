@@ -1,12 +1,5 @@
 package com.zhlearn.infrastructure.anki;
 
-import com.zhlearn.domain.model.Hanzi;
-import com.zhlearn.domain.model.Pinyin;
-import com.zhlearn.domain.model.ProviderInfo.ProviderType;
-import com.zhlearn.domain.provider.AudioProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -18,16 +11,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.zhlearn.domain.model.Hanzi;
+import com.zhlearn.domain.model.Pinyin;
+import com.zhlearn.domain.model.ProviderInfo.ProviderType;
+import com.zhlearn.domain.provider.AudioProvider;
+
 /**
- * Audio provider that reuses pronunciations already present in the user's
- * Anki collection export (Chinese.txt). It finds entries by exact pinyin match
- * and returns the pronunciation file if non-empty.
+ * Audio provider that reuses pronunciations already present in the user's Anki collection export
+ * (Chinese.txt). It finds entries by exact pinyin match and returns the pronunciation file if
+ * non-empty.
  */
 public class AnkiPronunciationProvider implements AudioProvider {
 
     private static final Logger log = LoggerFactory.getLogger(AnkiPronunciationProvider.class);
     private static final String NAME = "anki";
-    private static final String DESCRIPTION = "Reuses existing pronunciations from local Anki collection (Chinese.txt) by exact pinyin match.";
+    private static final String DESCRIPTION =
+            "Reuses existing pronunciations from local Anki collection (Chinese.txt) by exact pinyin match.";
 
     private final Map<String, Path> pinyinToPronunciation;
 
@@ -40,14 +42,19 @@ public class AnkiPronunciationProvider implements AudioProvider {
                 log.warn("Anki export not found. Expected at: {}", exportPath.toAbsolutePath());
                 Path parent = exportPath.getParent();
                 if (parent != null) {
-                    log.warn("Hint: Export your Anki collection as a TSV named 'Chinese.txt' to {}", parent.toAbsolutePath());
+                    log.warn(
+                            "Hint: Export your Anki collection as a TSV named 'Chinese.txt' to {}",
+                            parent.toAbsolutePath());
                 }
                 return; // graceful: provider remains available but has no entries
             }
             List<AnkiNote> notes = parser.parseFile(exportPath);
             index(notes);
         } catch (IOException e) {
-            log.warn("Failed to parse Anki export at {}: {}", exportPath.toAbsolutePath(), e.getMessage());
+            log.warn(
+                    "Failed to parse Anki export at {}: {}",
+                    exportPath.toAbsolutePath(),
+                    e.getMessage());
         }
     }
 
@@ -62,7 +69,8 @@ public class AnkiPronunciationProvider implements AudioProvider {
             List<AnkiNote> notes = parser.parseFile(collectionPath);
             index(notes);
         } catch (IOException e) {
-            throw new IllegalStateException("Failed to parse Anki collection: " + e.getMessage(), e);
+            throw new IllegalStateException(
+                    "Failed to parse Anki collection: " + e.getMessage(), e);
         }
     }
 
@@ -86,26 +94,34 @@ public class AnkiPronunciationProvider implements AudioProvider {
             String p = normalizePinyin(safe(n.pinyin()));
             String pron = safe(n.pronunciation());
             if (!p.isEmpty() && !pron.isEmpty()) {
-                resolvePronunciationPath(pron).ifPresent(path ->
-                    pinyinToPronunciation.putIfAbsent(p, path)
-                );
+                resolvePronunciationPath(pron)
+                        .ifPresent(path -> pinyinToPronunciation.putIfAbsent(p, path));
             }
         }
     }
 
     @Override
-    public String getName() { return NAME; }
+    public String getName() {
+        return NAME;
+    }
 
     @Override
-    public String getDescription() { return DESCRIPTION; }
+    public String getDescription() {
+        return DESCRIPTION;
+    }
 
     @Override
-    public ProviderType getType() { return ProviderType.DICTIONARY; }
+    public ProviderType getType() {
+        return ProviderType.DICTIONARY;
+    }
 
     @Override
     public Optional<Path> getPronunciation(Hanzi word, Pinyin pinyin) {
         long startTime = System.currentTimeMillis();
-        log.info("[Anki] Looking up pronunciation for '{}' ({})", word.characters(), pinyin == null ? "null" : pinyin.pinyin());
+        log.info(
+                "[Anki] Looking up pronunciation for '{}' ({})",
+                word.characters(),
+                pinyin == null ? "null" : pinyin.pinyin());
 
         if (pinyin == null || pinyin.pinyin() == null) {
             long duration = System.currentTimeMillis() - startTime;
@@ -125,17 +141,26 @@ public class AnkiPronunciationProvider implements AudioProvider {
 
         long duration = System.currentTimeMillis() - startTime;
         if (result != null) {
-            log.info("[Anki] Found pronunciation for '{}' ({}) at {} ({}ms)",
-                word.characters(), pinyin.pinyin(), result, duration);
+            log.info(
+                    "[Anki] Found pronunciation for '{}' ({}) at {} ({}ms)",
+                    word.characters(),
+                    pinyin.pinyin(),
+                    result,
+                    duration);
         } else {
-            log.debug("[Anki] No pronunciation found for '{}' ({}) ({}ms)",
-                word.characters(), pinyin.pinyin(), duration);
+            log.debug(
+                    "[Anki] No pronunciation found for '{}' ({}) ({}ms)",
+                    word.characters(),
+                    pinyin.pinyin(),
+                    duration);
         }
 
         return Optional.ofNullable(result);
     }
 
-    private static String safe(String s) { return s == null ? "" : s.trim(); }
+    private static String safe(String s) {
+        return s == null ? "" : s.trim();
+    }
 
     private static String normalizePinyin(String s) {
         if (s == null) return "";
@@ -183,7 +208,8 @@ public class AnkiPronunciationProvider implements AudioProvider {
         if (v != null && !v.isBlank()) {
             Path dir = Path.of(v).toAbsolutePath();
             if (!Files.isDirectory(dir)) {
-                throw new IllegalStateException("Configured Anki media directory '" + dir + "' is not a directory");
+                throw new IllegalStateException(
+                        "Configured Anki media directory '" + dir + "' is not a directory");
             }
             return dir;
         }
@@ -191,7 +217,14 @@ public class AnkiPronunciationProvider implements AudioProvider {
         String os = System.getProperty("os.name", "").toLowerCase();
         if (os.contains("mac")) {
             String home = System.getProperty("user.home");
-            Path macDefault = Path.of(home, "Library", "Application Support", "Anki2", "User 1", "collection.media");
+            Path macDefault =
+                    Path.of(
+                            home,
+                            "Library",
+                            "Application Support",
+                            "Anki2",
+                            "User 1",
+                            "collection.media");
             if (Files.isDirectory(macDefault)) return macDefault.toAbsolutePath();
         }
 

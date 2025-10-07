@@ -6,7 +6,10 @@ import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 
 public interface PinyinProvider {
     String getName();
+
     String getDescription();
+
     ProviderType getType();
+
     Pinyin getPinyin(Hanzi word);
 }

@@ -1,12 +1,12 @@
 package com.zhlearn.infrastructure.dictionary;
 
+import java.util.Optional;
+
 import com.zhlearn.domain.dictionary.Dictionary;
 import com.zhlearn.domain.model.Example;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.ExampleProvider;
-
-import java.util.Optional;
 
 public class DictionaryExampleProvider implements ExampleProvider {
     private final Dictionary dictionary;
@@ -19,19 +19,24 @@ public class DictionaryExampleProvider implements ExampleProvider {
     public String getName() {
         return "dictionary-example-" + dictionary.getName();
     }
-    
+
     @Override
     public String getDescription() {
-        return "Dictionary-based example provider using " + dictionary.getName() + " dictionary data";
+        return "Dictionary-based example provider using "
+                + dictionary.getName()
+                + " dictionary data";
     }
-    
+
     @Override
-    public ProviderType getType() { return ProviderType.DICTIONARY; }
+    public ProviderType getType() {
+        return ProviderType.DICTIONARY;
+    }
 
     @Override
     public Example getExamples(Hanzi word, Optional<String> definition) {
-        return dictionary.lookup(word.characters())
-            .map(analysis -> analysis.examples())
-            .orElse(null);
+        return dictionary
+                .lookup(word.characters())
+                .map(analysis -> analysis.examples())
+                .orElse(null);
     }
 }

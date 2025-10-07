@@ -1,11 +1,12 @@
 package com.zhlearn.infrastructure.common;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
+
 import com.zhlearn.domain.provider.ExampleProvider;
 import com.zhlearn.domain.provider.ExplanationProvider;
 import com.zhlearn.domain.provider.StructuralDecompositionProvider;
-import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class AIProviderFactoryTest {
     private final AIProviderFactory factory = new AIProviderFactory();
@@ -18,20 +19,26 @@ class AIProviderFactoryTest {
 
             ExampleProvider exampleProvider = factory.createExampleProvider("deepseek-chat");
             assertThat(exampleProvider).isInstanceOf(ConfigurableExampleProvider.class);
-            ConfigurableExampleProvider configurableExampleProvider = (ConfigurableExampleProvider) exampleProvider;
+            ConfigurableExampleProvider configurableExampleProvider =
+                    (ConfigurableExampleProvider) exampleProvider;
             assertThat(configurableExampleProvider.singleCharConfig()).isPresent();
             assertThat(configurableExampleProvider.multiCharConfig()).isPresent();
 
-            ExplanationProvider explanationProvider = factory.createExplanationProvider("deepseek-chat");
+            ExplanationProvider explanationProvider =
+                    factory.createExplanationProvider("deepseek-chat");
             assertThat(explanationProvider).isInstanceOf(ConfigurableExplanationProvider.class);
-            ConfigurableExplanationProvider configurableExplanationProvider = (ConfigurableExplanationProvider) explanationProvider;
+            ConfigurableExplanationProvider configurableExplanationProvider =
+                    (ConfigurableExplanationProvider) explanationProvider;
             assertThat(configurableExplanationProvider.singleCharConfig()).isPresent();
             assertThat(configurableExplanationProvider.multiCharConfig()).isPresent();
 
-            StructuralDecompositionProvider decompositionProvider = factory.createDecompositionProvider("deepseek-chat");
-            assertThat(decompositionProvider).isInstanceOf(ConfigurableStructuralDecompositionProvider.class);
-            ConfigurableStructuralDecompositionProvider configurableStructuralDecompositionProvider =
-                (ConfigurableStructuralDecompositionProvider) decompositionProvider;
+            StructuralDecompositionProvider decompositionProvider =
+                    factory.createDecompositionProvider("deepseek-chat");
+            assertThat(decompositionProvider)
+                    .isInstanceOf(ConfigurableStructuralDecompositionProvider.class);
+            ConfigurableStructuralDecompositionProvider
+                    configurableStructuralDecompositionProvider =
+                            (ConfigurableStructuralDecompositionProvider) decompositionProvider;
             assertThat(configurableStructuralDecompositionProvider.singleCharConfig()).isPresent();
             assertThat(configurableStructuralDecompositionProvider.multiCharConfig()).isPresent();
         } finally {

@@ -1,5 +1,12 @@
 package com.zhlearn.infrastructure.anki;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import com.zhlearn.domain.dictionary.Dictionary;
 import com.zhlearn.domain.model.Definition;
 import com.zhlearn.domain.model.Hanzi;
@@ -10,20 +17,11 @@ import com.zhlearn.domain.provider.PinyinProvider;
 import com.zhlearn.infrastructure.dictionary.AnkiNoteDictionary;
 import com.zhlearn.infrastructure.dictionary.DictionaryDefinitionProvider;
 import com.zhlearn.infrastructure.dictionary.DictionaryPinyinProvider;
+
 import io.cucumber.datatable.DataTable;
-import io.cucumber.java.PendingException;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-
-import java.io.StringReader;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class DictionaryStepDefs {
 
@@ -38,21 +36,24 @@ public class DictionaryStepDefs {
     public void i_have_the_following_anki_card_data(DataTable dataTable) throws Exception {
         List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
 
-        ankiNotes = rows.stream()
-                .map(row -> AnkiNote.ofCollection(
-                        "Chinese",
-                        row.get("pinyin"),
-                        row.get("simplified"),
-                        row.getOrDefault("pronunciation", ""),
-                        row.get("definition"),
-                        row.getOrDefault("examples", ""),
-                        row.getOrDefault("etymology", ""),
-                        row.getOrDefault("components", ""),
-                        row.getOrDefault("similar", ""),
-                        row.getOrDefault("passive", ""),
-                        row.getOrDefault("alternatePronunciations", ""),
-                        row.getOrDefault("noHearing", "")))
-                .toList();
+        ankiNotes =
+                rows.stream()
+                        .map(
+                                row ->
+                                        AnkiNote.ofCollection(
+                                                "Chinese",
+                                                row.get("pinyin"),
+                                                row.get("simplified"),
+                                                row.getOrDefault("pronunciation", ""),
+                                                row.get("definition"),
+                                                row.getOrDefault("examples", ""),
+                                                row.getOrDefault("etymology", ""),
+                                                row.getOrDefault("components", ""),
+                                                row.getOrDefault("similar", ""),
+                                                row.getOrDefault("passive", ""),
+                                                row.getOrDefault("alternatePronunciations", ""),
+                                                row.getOrDefault("noHearing", "")))
+                        .toList();
         dictionary = new AnkiNoteDictionary(ankiNotes);
     }
 
@@ -112,7 +113,6 @@ public class DictionaryStepDefs {
         pinyin = Optional.ofNullable(pinyinProvider.getPinyin(new Hanzi(word)));
     }
 
-
     @When("I request definition for {string} from DictionaryDefinitionProvider")
     public void iRequestDefinitionForFromDictionaryDefinitionProvider(String word) {
         DefinitionProvider definitionProvider = new DictionaryDefinitionProvider(dictionary);
@@ -124,7 +124,6 @@ public class DictionaryStepDefs {
         assertThat(pinyin).isPresent();
         assertThat(pinyin.get().pinyin()).isEqualTo(arg0);
     }
-
 
     @Then("the provider should return empty pinyin")
     public void the_provider_should_return_empty_pinyin() {
@@ -145,25 +144,28 @@ public class DictionaryStepDefs {
     @Then("the lookup should return a WordAnalysis with properties:")
     public void the_lookup_should_return_a_word_analysis_with_properties(DataTable dataTable) {
         assertTrue(wordAnalysis.isPresent());
-        
+
         WordAnalysis analysis = wordAnalysis.get();
         List<List<String>> rows = dataTable.asLists(String.class);
-        
+
         for (List<String> row : rows) {
             String property = row.get(0);
             String expectedValue = row.get(1);
-            
+
             switch (property) {
                 case "simplified" -> assertEquals(expectedValue, analysis.word().characters());
                 case "pinyin" -> assertEquals(expectedValue, analysis.pinyin().pinyin());
                 case "definition" -> assertEquals(expectedValue, analysis.definition().meaning());
-                case "structural_decomposition" -> assertEquals(expectedValue, analysis.structuralDecomposition().decomposition());
-                case "explanation" -> assertEquals(expectedValue, analysis.explanation().explanation());
+                case "structural_decomposition" ->
+                        assertEquals(
+                                expectedValue, analysis.structuralDecomposition().decomposition());
+                case "explanation" ->
+                        assertEquals(expectedValue, analysis.explanation().explanation());
                 // TODO: fix examples
-                case "examples" -> assertEquals(expectedValue, analysis.examples().usages().get(0).sentence());
+                case "examples" ->
+                        assertEquals(expectedValue, analysis.examples().usages().get(0).sentence());
                 default -> fail("Unknown property: " + property);
             }
         }
     }
-
 }

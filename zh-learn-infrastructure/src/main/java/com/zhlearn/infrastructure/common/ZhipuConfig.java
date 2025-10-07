@@ -1,8 +1,8 @@
 package com.zhlearn.infrastructure.common;
 
 /**
- * Configuration for Zhipu (GLM) models that rely on the custom ZhipuChatModelProvider.
- * Singleton service that reads configuration from environment variables.
+ * Configuration for Zhipu (GLM) models that rely on the custom ZhipuChatModelProvider. Singleton
+ * service that reads configuration from environment variables.
  */
 public class ZhipuConfig {
 

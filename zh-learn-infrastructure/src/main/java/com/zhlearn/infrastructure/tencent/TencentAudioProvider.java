@@ -1,5 +1,25 @@
 package com.zhlearn.infrastructure.tencent;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HexFormat;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
@@ -8,28 +28,6 @@ import com.zhlearn.infrastructure.audio.AudioCache;
 import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;
 import com.zhlearn.infrastructure.audio.AudioNormalizer;
 import com.zhlearn.infrastructure.audio.AudioPaths;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.net.http.HttpClient;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HexFormat;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.stream.Collectors;
 
 public class TencentAudioProvider implements AudioProvider {
     private static final Logger log = LoggerFactory.getLogger(TencentAudioProvider.class);
@@ -42,6 +40,7 @@ public class TencentAudioProvider implements AudioProvider {
 
     // Voice mapping as specified by user
     private static final Map<Integer, String> VOICES = new LinkedHashMap<>();
+
     static {
         VOICES.put(101052, "zhiwei");
         VOICES.put(101002, "zhiling");
@@ -61,10 +60,18 @@ public class TencentAudioProvider implements AudioProvider {
     }
 
     public TencentAudioProvider(AudioDownloadExecutor audioExecutor) {
-        this(null, audioExecutor.getExecutor(), createDefaultAudioCache(), createDefaultAudioPaths());
+        this(
+                null,
+                audioExecutor.getExecutor(),
+                createDefaultAudioCache(),
+                createDefaultAudioPaths());
     }
 
-    public TencentAudioProvider(TencentTtsClient clientOverride, ExecutorService executorService, AudioCache audioCache, AudioPaths audioPaths) {
+    public TencentAudioProvider(
+            TencentTtsClient clientOverride,
+            ExecutorService executorService,
+            AudioCache audioCache,
+            AudioPaths audioPaths) {
         this.clientOverride = clientOverride;
         this.executorService = executorService;
         this.audioCache = audioCache;
@@ -109,7 +116,8 @@ public class TencentAudioProvider implements AudioProvider {
     public List<Path> getPronunciations(Hanzi word, Pinyin pinyin) {
         TencentTtsClient activeClient = clientOverride;
         if (activeClient == null) {
-            activeClient = new TencentTtsClient(resolveSecretId(), resolveSecretKey(), resolveRegion());
+            activeClient =
+                    new TencentTtsClient(resolveSecretId(), resolveSecretKey(), resolveRegion());
         }
 
         List<Path> results = new ArrayList<>();
@@ -127,86 +135,145 @@ public class TencentAudioProvider implements AudioProvider {
                 TencentTtsResult result = activeClient.synthesize(voiceType, word.characters());
                 Path audioFile = decodeAudioData(result.audioData());
                 try {
-                    Path normalized = audioCache.ensureCachedNormalized(audioFile, NAME,
-                        word.characters(), voiceName, cacheKey(word, pinyin, voiceName));
+                    Path normalized =
+                            audioCache.ensureCachedNormalized(
+                                    audioFile,
+                                    NAME,
+                                    word.characters(),
+                                    voiceName,
+                                    cacheKey(word, pinyin, voiceName));
                     results.add(normalized);
                 } finally {
                     Files.deleteIfExists(audioFile);
                 }
             } catch (IOException e) {
-                throw new RuntimeException("Failed to process audio data for voice " + voiceName, e);
+                throw new RuntimeException(
+                        "Failed to process audio data for voice " + voiceName, e);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                throw new RuntimeException("Audio normalization was interrupted for voice " + voiceName, e);
+                throw new RuntimeException(
+                        "Audio normalization was interrupted for voice " + voiceName, e);
             } catch (RuntimeException e) {
-                throw new RuntimeException("Failed to synthesize Tencent TTS for voice " + voiceName, e);
+                throw new RuntimeException(
+                        "Failed to synthesize Tencent TTS for voice " + voiceName, e);
             }
         }
         return results;
     }
 
     @Override
-    public List<PronunciationDescription> getPronunciationsWithDescriptions(Hanzi word, Pinyin pinyin) {
+    public List<PronunciationDescription> getPronunciationsWithDescriptions(
+            Hanzi word, Pinyin pinyin) {
         long startTime = System.currentTimeMillis();
-        log.info("[Tencent] Starting TTS synthesis for '{}' with {} voices", word.characters(), VOICES.size());
+        log.info(
+                "[Tencent] Starting TTS synthesis for '{}' with {} voices",
+                word.characters(),
+                VOICES.size());
 
-        final TencentTtsClient activeClient = clientOverride != null ? clientOverride : new TencentTtsClient(resolveSecretId(), resolveSecretKey(), resolveRegion());
+        final TencentTtsClient activeClient =
+                clientOverride != null
+                        ? clientOverride
+                        : new TencentTtsClient(
+                                resolveSecretId(), resolveSecretKey(), resolveRegion());
 
         try {
             List<PronunciationDescription> results;
             if (executorService != null) {
                 log.debug("[Tencent] Using parallel voice synthesis for '{}'", word.characters());
-                List<CompletableFuture<PronunciationDescription>> voiceFutures = VOICES.entrySet().stream()
-                    .map(entry -> CompletableFuture.supplyAsync(() -> {
-                        try {
-                            return downloadVoiceDescription(activeClient, entry.getKey(), entry.getValue(), word, pinyin);
-                        } catch (IOException | InterruptedException e) {
-                            throw new RuntimeException("Failed to download voice for " + word.characters(), e);
-                        }
-                    })) // Use ForkJoinPool.commonPool() to avoid deadlock
-                    .toList();
+                List<CompletableFuture<PronunciationDescription>> voiceFutures =
+                        VOICES.entrySet().stream()
+                                .map(
+                                        entry ->
+                                                CompletableFuture.supplyAsync(
+                                                        () -> {
+                                                            try {
+                                                                return downloadVoiceDescription(
+                                                                        activeClient,
+                                                                        entry.getKey(),
+                                                                        entry.getValue(),
+                                                                        word,
+                                                                        pinyin);
+                                                            } catch (IOException
+                                                                    | InterruptedException e) {
+                                                                throw new RuntimeException(
+                                                                        "Failed to download voice for "
+                                                                                + word.characters(),
+                                                                        e);
+                                                            }
+                                                        })) // Use ForkJoinPool.commonPool() to
+                                // avoid deadlock
+                                .toList();
 
-                results = voiceFutures.stream()
-                    .map(CompletableFuture::join)
-                    .collect(Collectors.toList());
+                results =
+                        voiceFutures.stream()
+                                .map(CompletableFuture::join)
+                                .collect(Collectors.toList());
             } else {
                 log.debug("[Tencent] Using sequential voice synthesis for '{}'", word.characters());
                 results = getPronunciationsWithDescriptionsSequential(activeClient, word, pinyin);
             }
 
             long duration = System.currentTimeMillis() - startTime;
-            log.info("[Tencent] Completed TTS synthesis for '{}' in {}ms - {} pronunciations",
-                word.characters(), duration, results.size());
+            log.info(
+                    "[Tencent] Completed TTS synthesis for '{}' in {}ms - {} pronunciations",
+                    word.characters(),
+                    duration,
+                    results.size());
             return results;
 
         } catch (IOException | InterruptedException e) {
             long duration = System.currentTimeMillis() - startTime;
-            log.error("[Tencent] Failed TTS synthesis for '{}' after {}ms: {}", word.characters(), duration, e.getMessage(), e);
-            throw new RuntimeException("Failed to get audio pronunciations for " + word.characters(), e);
+            log.error(
+                    "[Tencent] Failed TTS synthesis for '{}' after {}ms: {}",
+                    word.characters(),
+                    duration,
+                    e.getMessage(),
+                    e);
+            throw new RuntimeException(
+                    "Failed to get audio pronunciations for " + word.characters(), e);
         } catch (Exception e) {
             long duration = System.currentTimeMillis() - startTime;
-            log.error("[Tencent] Unexpected error for '{}' after {}ms: {}", word.characters(), duration, e.getMessage(), e);
+            log.error(
+                    "[Tencent] Unexpected error for '{}' after {}ms: {}",
+                    word.characters(),
+                    duration,
+                    e.getMessage(),
+                    e);
             throw e;
         }
     }
 
-    private List<PronunciationDescription> getPronunciationsWithDescriptionsSequential(TencentTtsClient activeClient, Hanzi word, Pinyin pinyin) throws IOException, InterruptedException {
+    private List<PronunciationDescription> getPronunciationsWithDescriptionsSequential(
+            TencentTtsClient activeClient, Hanzi word, Pinyin pinyin)
+            throws IOException, InterruptedException {
         List<PronunciationDescription> results = new ArrayList<>();
         for (Map.Entry<Integer, String> voiceEntry : VOICES.entrySet()) {
-            PronunciationDescription desc = downloadVoiceDescription(activeClient, voiceEntry.getKey(), voiceEntry.getValue(), word, pinyin);
+            PronunciationDescription desc =
+                    downloadVoiceDescription(
+                            activeClient, voiceEntry.getKey(), voiceEntry.getValue(), word, pinyin);
             results.add(desc);
         }
         return results;
     }
 
-    private PronunciationDescription downloadVoiceDescription(TencentTtsClient activeClient, int voiceType, String voiceName, Hanzi word, Pinyin pinyin) throws IOException, InterruptedException {
+    private PronunciationDescription downloadVoiceDescription(
+            TencentTtsClient activeClient,
+            int voiceType,
+            String voiceName,
+            Hanzi word,
+            Pinyin pinyin)
+            throws IOException, InterruptedException {
         long startTime = System.currentTimeMillis();
         log.debug("[Tencent] Processing voice '{}' for '{}'", voiceName, word.characters());
 
         Path cached = cachedPath(word, pinyin, voiceName);
         if (Files.exists(cached)) {
             long duration = System.currentTimeMillis() - startTime;
-            log.debug("[Tencent] Using cached audio for '{}' voice '{}' ({}ms)", word.characters(), voiceName, duration);
+            log.debug(
+                    "[Tencent] Using cached audio for '{}' voice '{}' ({}ms)",
+                    word.characters(),
+                    voiceName,
+                    duration);
             String description = formatTencentDescription(voiceName);
             return new PronunciationDescription(cached.toAbsolutePath(), description);
         }
@@ -214,16 +281,29 @@ public class TencentAudioProvider implements AudioProvider {
         log.debug("[Tencent] Synthesizing voice '{}' for '{}'", voiceName, word.characters());
         TencentTtsResult result = activeClient.synthesize(voiceType, word.characters());
 
-        log.debug("[Tencent] Decoding audio data for '{}' voice '{}'", word.characters(), voiceName);
+        log.debug(
+                "[Tencent] Decoding audio data for '{}' voice '{}'", word.characters(), voiceName);
         Path audioFile = decodeAudioData(result.audioData());
 
         try {
-            log.debug("[Tencent] Normalizing audio for '{}' voice '{}'", word.characters(), voiceName);
-            Path normalized = audioCache.ensureCachedNormalized(audioFile, NAME,
-                word.characters(), voiceName, cacheKey(word, pinyin, voiceName));
+            log.debug(
+                    "[Tencent] Normalizing audio for '{}' voice '{}'",
+                    word.characters(),
+                    voiceName);
+            Path normalized =
+                    audioCache.ensureCachedNormalized(
+                            audioFile,
+                            NAME,
+                            word.characters(),
+                            voiceName,
+                            cacheKey(word, pinyin, voiceName));
 
             long duration = System.currentTimeMillis() - startTime;
-            log.debug("[Tencent] Completed voice '{}' for '{}' in {}ms", voiceName, word.characters(), duration);
+            log.debug(
+                    "[Tencent] Completed voice '{}' for '{}' in {}ms",
+                    voiceName,
+                    word.characters(),
+                    duration);
 
             String description = formatTencentDescription(voiceName);
             return new PronunciationDescription(normalized, description);
@@ -231,7 +311,11 @@ public class TencentAudioProvider implements AudioProvider {
             try {
                 Files.deleteIfExists(audioFile);
             } catch (IOException e) {
-                log.warn("[Tencent] Failed to delete temp file for '{}' voice '{}': {}", word.characters(), voiceName, e.getMessage());
+                log.warn(
+                        "[Tencent] Failed to delete temp file for '{}' voice '{}': {}",
+                        word.characters(),
+                        voiceName,
+                        e.getMessage());
                 throw new RuntimeException("Failed to delete temporary file", e);
             }
         }
@@ -251,7 +335,8 @@ public class TencentAudioProvider implements AudioProvider {
     private String resolveSecretId() {
         String secretId = System.getenv(SECRET_ID_ENV);
         if (secretId == null || secretId.isBlank()) {
-            throw new IllegalStateException("TENCENT_SECRET_ID is required for Tencent TTS provider");
+            throw new IllegalStateException(
+                    "TENCENT_SECRET_ID is required for Tencent TTS provider");
         }
         return secretId;
     }
@@ -278,9 +363,12 @@ public class TencentAudioProvider implements AudioProvider {
 
     private Path cachedPath(Hanzi word, Pinyin pinyin, String voice) {
         String sourceId = cacheKey(word, pinyin, voice);
-        String base = audioPaths.sanitize(NAME) + "_" +
-            audioPaths.sanitize(word.characters()) + "_" +
-            audioPaths.sanitize(voice);
+        String base =
+                audioPaths.sanitize(NAME)
+                        + "_"
+                        + audioPaths.sanitize(word.characters())
+                        + "_"
+                        + audioPaths.sanitize(voice);
         String hash = shortHash(sourceId.getBytes(StandardCharsets.UTF_8));
         String fileName = base + "_" + hash + ".mp3";
         return audioPaths.audioDir().resolve(NAME).resolve(fileName);

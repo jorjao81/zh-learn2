@@ -1,8 +1,8 @@
 package com.zhlearn.infrastructure.common;
 
-import com.zhlearn.domain.model.Explanation;
-
 import java.util.function.Function;
+
+import com.zhlearn.domain.model.Explanation;
 
 public class SingleCharExplanationProviderConfig {
 
@@ -12,8 +12,7 @@ public class SingleCharExplanationProviderConfig {
     private static final Double DEFAULT_TEMPERATURE = 0.3;
     private static final Integer DEFAULT_MAX_TOKENS = 8000;
 
-    public SingleCharExplanationProviderConfig() {
-    }
+    public SingleCharExplanationProviderConfig() {}
 
     public String templatePath() {
         return TEMPLATE_PATH;

@@ -1,9 +1,5 @@
 package com.zhlearn.infrastructure.common;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.langchain4j.model.chat.ChatModel;
-
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -12,9 +8,14 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import dev.langchain4j.model.chat.ChatModel;
+
 /**
- * Minimal OpenAI-compatible ChatModel for z.ai/GLM endpoints.
- * Tries multiple known base URL patterns to avoid 404 path mismatches.
+ * Minimal OpenAI-compatible ChatModel for z.ai/GLM endpoints. Tries multiple known base URL
+ * patterns to avoid 404 path mismatches.
  */
 public class ZaiOpenAiChatModel implements ChatModel {
 
@@ -27,10 +28,13 @@ public class ZaiOpenAiChatModel implements ChatModel {
     private final Double temperature;
     private final Integer maxTokens;
 
-    public ZaiOpenAiChatModel(String apiKey, String baseUrl, String modelName, Double temperature, Integer maxTokens) {
-        this.http = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(15))
-                .build();
+    public ZaiOpenAiChatModel(
+            String apiKey,
+            String baseUrl,
+            String modelName,
+            Double temperature,
+            Integer maxTokens) {
+        this.http = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).build();
         this.apiKey = apiKey;
         this.baseUrl = baseUrl;
         this.modelName = modelName;
@@ -43,18 +47,24 @@ public class ZaiOpenAiChatModel implements ChatModel {
         RuntimeException lastError = null;
         for (String base : candidateBases(baseUrl)) {
             try {
-                String endpoint = base.endsWith("/") ? base + "chat/completions" : base + "/chat/completions";
+                String endpoint =
+                        base.endsWith("/") ? base + "chat/completions" : base + "/chat/completions";
                 String body = buildRequestBody(prompt);
-                HttpRequest req = HttpRequest.newBuilder()
-                        .uri(URI.create(endpoint))
-                        .timeout(Duration.ofSeconds(120))
-                        .header("Content-Type", "application/json")
-                        .header("Authorization", "Bearer " + apiKey)
-                        // Some gateways use custom header; include both to maximize compatibility
-                        .header("X-API-Key", apiKey)
-                        .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
-                        .build();
-                HttpResponse<String> resp = http.send(req, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+                HttpRequest req =
+                        HttpRequest.newBuilder()
+                                .uri(URI.create(endpoint))
+                                .timeout(Duration.ofSeconds(120))
+                                .header("Content-Type", "application/json")
+                                .header("Authorization", "Bearer " + apiKey)
+                                // Some gateways use custom header; include both to maximize
+                                // compatibility
+                                .header("X-API-Key", apiKey)
+                                .POST(
+                                        HttpRequest.BodyPublishers.ofString(
+                                                body, StandardCharsets.UTF_8))
+                                .build();
+                HttpResponse<String> resp =
+                        http.send(req, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
                 if (resp.statusCode() >= 200 && resp.statusCode() < 300) {
                     return extractContent(resp.body());
                 } else if (resp.statusCode() == 404) {
@@ -77,8 +87,7 @@ public class ZaiOpenAiChatModel implements ChatModel {
                 nonNullOrDefault(preferred, "https://api.z.ai/openai/v1"),
                 "https://api.z.ai/openai/v1",
                 "https://api.z.ai/v1",
-                "https://open.bigmodel.cn/api/paas/v4"
-        );
+                "https://open.bigmodel.cn/api/paas/v4");
     }
 
     private String nonNullOrDefault(String value, String def) {
@@ -93,7 +102,11 @@ public class ZaiOpenAiChatModel implements ChatModel {
         if (maxTokens != null) sb.append(',').append("\"max_tokens\":").append(maxTokens);
         // Basic OpenAI-compatible messages payload
         sb.append(',').append("\"messages\":[");
-        sb.append("{\"role\":\"user\",\"content\":").append('"').append(escape(prompt)).append('"').append('}');
+        sb.append("{\"role\":\"user\",\"content\":")
+                .append('"')
+                .append(escape(prompt))
+                .append('"')
+                .append('}');
         sb.append(']');
         sb.append('}');
         return sb.toString();
@@ -120,4 +133,3 @@ public class ZaiOpenAiChatModel implements ChatModel {
         return s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n");
     }
 }
-

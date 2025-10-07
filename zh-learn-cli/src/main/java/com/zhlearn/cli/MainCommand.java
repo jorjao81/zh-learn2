@@ -1,35 +1,41 @@
 package com.zhlearn.cli;
 
-import com.zhlearn.domain.provider.DefinitionFormatterProvider;
-import com.zhlearn.domain.provider.ExampleProvider;
-import com.zhlearn.domain.provider.ExplanationProvider;
-import com.zhlearn.domain.provider.StructuralDecompositionProvider;
-import com.zhlearn.domain.provider.PinyinProvider;
-import com.zhlearn.domain.provider.DefinitionProvider;
-import com.zhlearn.domain.provider.AudioProvider;
-import com.zhlearn.infrastructure.common.AIProviderFactory;
-import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;
-import com.zhlearn.infrastructure.audio.AudioPaths;
-import com.zhlearn.infrastructure.audio.AudioCache;
+import java.util.List;
+
 import com.zhlearn.application.audio.AnkiMediaLocator;
 import com.zhlearn.application.format.ExamplesHtmlFormatter;
 import com.zhlearn.application.service.AnkiExporter;
 import com.zhlearn.cli.audio.PrePlayback;
-
-import java.util.List;
-import com.zhlearn.infrastructure.pinyin4j.Pinyin4jProvider;
+import com.zhlearn.domain.provider.AudioProvider;
+import com.zhlearn.domain.provider.DefinitionFormatterProvider;
+import com.zhlearn.domain.provider.DefinitionProvider;
+import com.zhlearn.domain.provider.ExampleProvider;
+import com.zhlearn.domain.provider.ExplanationProvider;
+import com.zhlearn.domain.provider.PinyinProvider;
+import com.zhlearn.domain.provider.StructuralDecompositionProvider;
+import com.zhlearn.infrastructure.audio.AudioCache;
+import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;
+import com.zhlearn.infrastructure.audio.AudioPaths;
+import com.zhlearn.infrastructure.common.AIProviderFactory;
 import com.zhlearn.infrastructure.dummy.DummyDefinitionProvider;
-import com.zhlearn.infrastructure.anki.AnkiPronunciationProvider;
-import com.zhlearn.infrastructure.qwen.QwenAudioProvider;
-import com.zhlearn.infrastructure.forvo.ForvoAudioProvider;
-import com.zhlearn.infrastructure.tencent.TencentAudioProvider;
+import com.zhlearn.infrastructure.pinyin4j.Pinyin4jProvider;
+
 import picocli.CommandLine.Command;
 import picocli.CommandLine.ScopeType;
 
-@Command(name = "zh-learn",
+@Command(
+        name = "zh-learn",
         mixinStandardHelpOptions = true,
         version = "1.0.0-SNAPSHOT",
-        subcommands = { WordCommand.class, ProvidersCommand.class, ParseAnkiCommand.class, ParsePlecoCommand.class, AudioCommand.class, AudioSelectCommand.class, picocli.CommandLine.HelpCommand.class },
+        subcommands = {
+            WordCommand.class,
+            ProvidersCommand.class,
+            ParseAnkiCommand.class,
+            ParsePlecoCommand.class,
+            AudioCommand.class,
+            AudioSelectCommand.class,
+            picocli.CommandLine.HelpCommand.class
+        },
         scope = ScopeType.INHERIT)
 public class MainCommand implements Runnable {
 
@@ -47,36 +53,34 @@ public class MainCommand implements Runnable {
     private final AnkiExporter ankiExporter;
 
     /**
-     * Default constructor for tests.
-     * Uses ApplicationContext to create a fully initialized instance.
+     * Default constructor for tests. Uses ApplicationContext to create a fully initialized
+     * instance.
      */
     public MainCommand() {
         this(ApplicationContext.create());
     }
 
     /**
-     * Constructor for production use with ApplicationContext.
-     * Accepts all dependencies from centralized dependency injection.
+     * Constructor for production use with ApplicationContext. Accepts all dependencies from
+     * centralized dependency injection.
      */
     public MainCommand(ApplicationContext context) {
         this(
-            context.getTerminalFormatter(),
-            context.getExamplesHtmlFormatter(),
-            context.getAnalysisPrinter(),
-            context.getAnkiMediaLocator(),
-            context.getAnkiExporter(),
-            context.getAudioPaths(),
-            context.getAudioCache(),
-            context.getPrePlayback(),
-            context.getAiProviderFactory(),
-            context.getAudioExecutor(),
-            context.getAudioProviders()
-        );
+                context.getTerminalFormatter(),
+                context.getExamplesHtmlFormatter(),
+                context.getAnalysisPrinter(),
+                context.getAnkiMediaLocator(),
+                context.getAnkiExporter(),
+                context.getAudioPaths(),
+                context.getAudioCache(),
+                context.getPrePlayback(),
+                context.getAiProviderFactory(),
+                context.getAudioExecutor(),
+                context.getAudioProviders());
     }
 
     /**
-     * Constructor for explicit dependency injection.
-     * Accepts all required dependencies directly.
+     * Constructor for explicit dependency injection. Accepts all required dependencies directly.
      */
     public MainCommand(
             TerminalFormatter terminalFormatter,
@@ -162,7 +166,8 @@ public class MainCommand implements Runnable {
         return aiProviderFactory.createDecompositionProvider(providerName);
     }
 
-    public StructuralDecompositionProvider createDecompositionProvider(String providerName, String model) {
+    public StructuralDecompositionProvider createDecompositionProvider(
+            String providerName, String model) {
         return aiProviderFactory.createDecompositionProvider(providerName, model);
     }
 
@@ -171,8 +176,9 @@ public class MainCommand implements Runnable {
 
         return switch (providerName) {
             case "pinyin4j" -> new Pinyin4jProvider();
-            default -> throw new RuntimeException("Unknown pinyin provider: " + providerName +
-                ". Available: pinyin4j");
+            default ->
+                    throw new RuntimeException(
+                            "Unknown pinyin provider: " + providerName + ". Available: pinyin4j");
         };
     }
 
@@ -181,8 +187,9 @@ public class MainCommand implements Runnable {
 
         return switch (providerName) {
             case "dummy" -> new DummyDefinitionProvider();
-            default -> throw new RuntimeException("Unknown definition provider: " + providerName +
-                ". Available: dummy");
+            default ->
+                    throw new RuntimeException(
+                            "Unknown definition provider: " + providerName + ". Available: dummy");
         };
     }
 
@@ -190,7 +197,8 @@ public class MainCommand implements Runnable {
         return aiProviderFactory.createDefinitionFormatterProvider(providerName);
     }
 
-    public DefinitionFormatterProvider createDefinitionFormatterProvider(String providerName, String model) {
+    public DefinitionFormatterProvider createDefinitionFormatterProvider(
+            String providerName, String model) {
         return aiProviderFactory.createDefinitionFormatterProvider(providerName, model);
     }
 

@@ -1,17 +1,20 @@
 package com.zhlearn.infrastructure.common;
 
-import com.zhlearn.domain.model.Example;
-import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import org.junit.jupiter.api.Test;
+
+import com.zhlearn.domain.model.Example;
+
 class ExampleResponseMapperTest {
-    
+
     private final ExampleResponseMapper mapper = new ExampleResponseMapper();
-    
+
     @Test
     void shouldParseValidYamlResponse() {
-        String yamlResponse = """
+        String yamlResponse =
+                """
             words:
               - meaning: "to like"
                 pinyin: "xǐhuān"
@@ -32,45 +35,48 @@ class ExampleResponseMapperTest {
                     translation: "to prefer"
                     breakdown: "More (更) liking (喜欢) one thing over another."
             """;
-        
+
         Example result = mapper.apply(yamlResponse);
-        
+
         assertThat(result.usages()).hasSize(3);
-        
+
         Example.Usage firstUsage = result.usages().get(0);
         assertThat(firstUsage.sentence()).isEqualTo("喜欢");
         assertThat(firstUsage.pinyin()).isEqualTo("xǐhuān");
         assertThat(firstUsage.translation()).isEqualTo("to like; to love");
         assertThat(firstUsage.context()).isEqualTo("to like (xǐhuān)");
-        assertThat(firstUsage.breakdown()).isEqualTo("To like (喜) and be happy (欢) about something.");
-        
+        assertThat(firstUsage.breakdown())
+                .isEqualTo("To like (喜) and be happy (欢) about something.");
+
         Example.Usage lastUsage = result.usages().get(2);
         assertThat(lastUsage.context()).isEqualTo("to prefer (gèng xǐhuān)");
         assertThat(lastUsage.breakdown()).isEqualTo("More (更) liking (喜欢) one thing over another.");
     }
-    
+
     @Test
     void shouldThrowOnEmptyResponse() {
-        String yamlResponse = """
+        String yamlResponse =
+                """
             words: []
             """;
 
         assertThatThrownBy(() -> mapper.apply(yamlResponse))
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining("No examples found in words/response list");
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("No examples found in words/response list");
     }
-    
+
     @Test
     void shouldThrowOnInvalidYaml() {
         String invalidYaml = "invalid yaml content [[[";
         assertThatThrownBy(() -> mapper.apply(invalidYaml))
-            .isInstanceOf(RuntimeException.class)
-            .hasMessageContaining("Failed to parse YAML response");
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Failed to parse YAML response");
     }
-    
+
     @Test
     void shouldThrowWhenResponseKeyMissing() {
-        String yamlResponse = """
+        String yamlResponse =
+                """
             examples:
               - hanzi: "test"
                 pinyin: "test"
@@ -78,13 +84,14 @@ class ExampleResponseMapperTest {
             """;
 
         assertThatThrownBy(() -> mapper.apply(yamlResponse))
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining("No examples found in words/response list");
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("No examples found in words/response list");
     }
-    
+
     @Test
     void shouldHandleYamlWrappedInMarkdownCodeBlocks() {
-        String yamlWithMarkdown = """
+        String yamlWithMarkdown =
+                """
             ```yaml
             words:
               - meaning: "to like"
@@ -96,9 +103,9 @@ class ExampleResponseMapperTest {
                     breakdown: "To like (喜) and be happy (欢) about something."
             ```
             """;
-        
+
         Example result = mapper.apply(yamlWithMarkdown);
-        
+
         assertThat(result.usages()).hasSize(1);
         Example.Usage usage = result.usages().get(0);
         assertThat(usage.sentence()).isEqualTo("喜欢");
@@ -107,10 +114,11 @@ class ExampleResponseMapperTest {
         assertThat(usage.context()).isEqualTo("to like (xǐhuān)");
         assertThat(usage.breakdown()).isEqualTo("To like (喜) and be happy (欢) about something.");
     }
-    
+
     @Test
     void shouldHandleGenericMarkdownCodeBlocks() {
-        String yamlWithGenericMarkdown = """
+        String yamlWithGenericMarkdown =
+                """
             ```
             words:
               - meaning: "to prefer"
@@ -122,9 +130,9 @@ class ExampleResponseMapperTest {
                     breakdown: "More (更) liking (喜欢) one thing over another."
             ```
             """;
-        
+
         Example result = mapper.apply(yamlWithGenericMarkdown);
-        
+
         assertThat(result.usages()).hasSize(1);
         Example.Usage usage = result.usages().get(0);
         assertThat(usage.sentence()).isEqualTo("更喜欢");
@@ -136,7 +144,8 @@ class ExampleResponseMapperTest {
 
     @Test
     void shouldParseOptionalPhoneticSeries() {
-        String yaml = """
+        String yaml =
+                """
             words:
               - meaning: "to learn"
                 pinyin: "xué"

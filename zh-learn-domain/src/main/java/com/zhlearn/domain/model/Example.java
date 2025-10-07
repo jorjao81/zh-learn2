@@ -8,11 +8,13 @@ public record Example(List<Usage> usages, List<SeriesItem> phoneticSeries) {
             throw new IllegalArgumentException("Example usages cannot be null");
         }
         if (phoneticSeries == null) {
-            throw new IllegalArgumentException("Phonetic series cannot be null (use empty list if none)");
+            throw new IllegalArgumentException(
+                    "Phonetic series cannot be null (use empty list if none)");
         }
     }
 
-    public record Usage(String sentence, String pinyin, String translation, String context, String breakdown) {
+    public record Usage(
+            String sentence, String pinyin, String translation, String context, String breakdown) {
         public Usage {
             if (sentence == null || sentence.trim().isEmpty()) {
                 throw new IllegalArgumentException("Usage sentence cannot be null or empty");

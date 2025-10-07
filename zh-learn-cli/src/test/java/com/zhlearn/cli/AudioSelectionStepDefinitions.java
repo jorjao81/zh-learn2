@@ -1,16 +1,17 @@
 package com.zhlearn.cli;
 
-import com.zhlearn.application.audio.AudioPlayer;
-import com.zhlearn.application.audio.PronunciationCandidate;
-import com.zhlearn.application.audio.SelectionSession;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Path;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import com.zhlearn.application.audio.AudioPlayer;
+import com.zhlearn.application.audio.PronunciationCandidate;
+import com.zhlearn.application.audio.SelectionSession;
+
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 
 public class AudioSelectionStepDefinitions {
 

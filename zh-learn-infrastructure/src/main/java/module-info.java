@@ -3,12 +3,12 @@ module com.zhlearn.infrastructure {
     requires java.logging;
     requires java.net.http;
     requires java.sql;
-    
+
     // LangChain4j automatic modules (using jar names)
     requires transitive langchain4j.core;
     requires langchain4j.open.ai;
     requires langchain4j.google.ai.gemini;
-    
+
     // SLF4J logging modules
     requires org.slf4j;
 
@@ -19,10 +19,10 @@ module com.zhlearn.infrastructure {
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.dataformat.yaml;
-    
+
     // Apache Commons CSV for Anki parsing
     requires org.apache.commons.csv;
-    
+
     // Pinyin4j for Chinese to Pinyin conversion
     requires pinyin4j;
 

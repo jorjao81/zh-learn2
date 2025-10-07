@@ -1,19 +1,20 @@
 package com.zhlearn.infrastructure.common;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.zhlearn.domain.model.Example;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.zhlearn.domain.model.Example;
+
 /**
- * Response mapper for multicharacter words that excludes breakdown information.
- * Breakdown is only meaningful for single characters.
+ * Response mapper for multicharacter words that excludes breakdown information. Breakdown is only
+ * meaningful for single characters.
  */
 public class MultiCharExampleResponseMapper implements Function<String, Example> {
 
@@ -29,7 +30,8 @@ public class MultiCharExampleResponseMapper implements Function<String, Example>
             // Parse YAML response
             Map<String, Object> response = yamlMapper.readValue(cleanedYaml, Map.class);
             // Prefer 'words' (new) but accept 'response' (legacy) for backward compatibility
-            List<Map<String, Object>> responseList = (List<Map<String, Object>>) response.get("words");
+            List<Map<String, Object>> responseList =
+                    (List<Map<String, Object>>) response.get("words");
             if (responseList == null) {
                 responseList = (List<Map<String, Object>>) response.get("response");
             }
@@ -45,7 +47,8 @@ public class MultiCharExampleResponseMapper implements Function<String, Example>
             for (Map<String, Object> meaningGroup : responseList) {
                 String meaning = (String) meaningGroup.get("meaning");
                 String groupPinyin = (String) meaningGroup.get("pinyin");
-                List<Map<String, Object>> examples = (List<Map<String, Object>>) meaningGroup.get("examples");
+                List<Map<String, Object>> examples =
+                        (List<Map<String, Object>>) meaningGroup.get("examples");
 
                 // Create context by combining meaning and pinyin: "to estimate, assess (gū)"
                 String context = meaning;
@@ -60,7 +63,8 @@ public class MultiCharExampleResponseMapper implements Function<String, Example>
                         String translation = (String) example.get("translation");
                         // Explicitly exclude breakdown for multicharacter words
 
-                        Example.Usage usage = new Example.Usage(hanzi, pinyin, translation, context, null);
+                        Example.Usage usage =
+                                new Example.Usage(hanzi, pinyin, translation, context, null);
                         allUsages.add(usage);
                     }
                 }
@@ -71,7 +75,8 @@ public class MultiCharExampleResponseMapper implements Function<String, Example>
         } catch (IllegalStateException e) {
             throw e;
         } catch (Exception e) {
-            String errorMessage = e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
+            String errorMessage =
+                    e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
             log.warn("Failed to parse examples YAML: {}", e.getMessage());
             log.debug("Original response: {}", yamlResponse);
             log.debug("YAML parse exception", e);

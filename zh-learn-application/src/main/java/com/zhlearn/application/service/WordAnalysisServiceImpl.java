@@ -1,11 +1,11 @@
 package com.zhlearn.application.service;
 
+import java.nio.file.Path;
+import java.util.Optional;
+
 import com.zhlearn.domain.model.*;
 import com.zhlearn.domain.provider.*;
 import com.zhlearn.domain.service.WordAnalysisService;
-
-import java.nio.file.Path;
-import java.util.Optional;
 
 public class WordAnalysisServiceImpl implements WordAnalysisService {
 
@@ -17,13 +17,14 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
     private final DefinitionFormatterProvider definitionFormatterProvider;
     private final AudioProvider audioProvider;
 
-    public WordAnalysisServiceImpl(ExampleProvider exampleProvider,
-                                  ExplanationProvider explanationProvider,
-                                  StructuralDecompositionProvider decompositionProvider,
-                                  PinyinProvider pinyinProvider,
-                                  DefinitionProvider definitionProvider,
-                                  DefinitionFormatterProvider definitionFormatterProvider,
-                                  AudioProvider audioProvider) {
+    public WordAnalysisServiceImpl(
+            ExampleProvider exampleProvider,
+            ExplanationProvider explanationProvider,
+            StructuralDecompositionProvider decompositionProvider,
+            PinyinProvider pinyinProvider,
+            DefinitionProvider definitionProvider,
+            DefinitionFormatterProvider definitionFormatterProvider,
+            AudioProvider audioProvider) {
         this.exampleProvider = exampleProvider;
         this.explanationProvider = explanationProvider;
         this.decompositionProvider = decompositionProvider;
@@ -44,9 +45,8 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
 
         // Format definition if formatter is available
         if (definitionFormatterProvider != null) {
-            Optional<String> rawText = rawDefinition != null
-                ? Optional.of(rawDefinition.meaning())
-                : Optional.empty();
+            Optional<String> rawText =
+                    rawDefinition != null ? Optional.of(rawDefinition.meaning()) : Optional.empty();
             Definition formatted = definitionFormatterProvider.formatDefinition(word, rawText);
             if (formatted != null) {
                 return formatted;
@@ -83,20 +83,19 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
         }
         return audioProvider.getPronunciation(word, pinyin);
     }
-    
+
     @Override
     public WordAnalysis getCompleteAnalysis(Hanzi word, String providerName) {
         Definition definition = getDefinition(word, providerName);
         Pinyin pinyin = getPinyin(word, providerName);
         return new WordAnalysis(
-            word,
-            pinyin,
-            definition,
-            getStructuralDecomposition(word, providerName),
-            getExamples(word, providerName, definition.meaning()),
-            getExplanation(word, providerName),
-            getPronunciation(word, pinyin, providerName)
-        );
+                word,
+                pinyin,
+                definition,
+                getStructuralDecomposition(word, providerName),
+                getExamples(word, providerName, definition.meaning()),
+                getExplanation(word, providerName),
+                getPronunciation(word, pinyin, providerName));
     }
 
     @Override
@@ -104,14 +103,12 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
         Definition definition = getDefinition(word, config.getDefinitionProvider());
         Pinyin pinyin = getPinyin(word, config.getPinyinProvider());
         return new WordAnalysis(
-            word,
-            pinyin,
-            definition,
-            getStructuralDecomposition(word, config.getDecompositionProvider()),
-            getExamples(word, config.getExampleProvider(), definition.meaning()),
-            getExplanation(word, config.getExplanationProvider()),
-            getPronunciation(word, pinyin, config.getAudioProvider())
-        );
+                word,
+                pinyin,
+                definition,
+                getStructuralDecomposition(word, config.getDecompositionProvider()),
+                getExamples(word, config.getExampleProvider(), definition.meaning()),
+                getExplanation(word, config.getExplanationProvider()),
+                getPronunciation(word, pinyin, config.getAudioProvider()));
     }
-
 }

@@ -1,14 +1,14 @@
 package com.zhlearn.infrastructure.audio;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AudioCache {
     private final Logger log = LoggerFactory.getLogger(AudioCache.class);
@@ -24,27 +24,37 @@ public class AudioCache {
      * Ensure a normalized MP3 exists in the cache for this source audio. Returns the target path.
      * If a content-identical file already exists, normalization is skipped.
      *
-     * @param src       source audio file (mp3 or other; if null and sourceId used, method will no-op)
-     * @param provider  provider label (e.g., "forvo")
-     * @param hanzi     the Chinese characters
-     * @param pinyin    pinyin with tone marks
-     * @param sourceId  optional stable id (e.g., remote URL) to name files deterministically
+     * @param src source audio file (mp3 or other; if null and sourceId used, method will no-op)
+     * @param provider provider label (e.g., "forvo")
+     * @param hanzi the Chinese characters
+     * @param pinyin pinyin with tone marks
+     * @param sourceId optional stable id (e.g., remote URL) to name files deterministically
      */
-    public Path ensureCachedNormalized(Path src, String provider, String hanzi, String pinyin, String sourceId) throws IOException, InterruptedException {
+    public Path ensureCachedNormalized(
+            Path src, String provider, String hanzi, String pinyin, String sourceId)
+            throws IOException, InterruptedException {
         String name = buildName(provider, hanzi, pinyin, src, sourceId);
         Path target = audioPaths.audioDir().resolve(provider).resolve(name);
         Files.createDirectories(target.getParent());
 
         if (Files.exists(target)) return target.toAbsolutePath();
         if (src == null || !Files.exists(src)) {
-            throw new IOException("Source audio missing for cache: " + src + " (target: " + target + ")");
+            throw new IOException(
+                    "Source audio missing for cache: " + src + " (target: " + target + ")");
         }
         audioNormalizer.normalizeToMp3(src, target);
         return target.toAbsolutePath();
     }
 
-    private String buildName(String provider, String hanzi, String pinyin, Path src, String sourceId) throws IOException {
-        String base = audioPaths.sanitize(provider) + "_" + audioPaths.sanitize(hanzi) + "_" + audioPaths.sanitize(pinyin);
+    private String buildName(
+            String provider, String hanzi, String pinyin, Path src, String sourceId)
+            throws IOException {
+        String base =
+                audioPaths.sanitize(provider)
+                        + "_"
+                        + audioPaths.sanitize(hanzi)
+                        + "_"
+                        + audioPaths.sanitize(pinyin);
         String hash = "";
         if (sourceId != null && !sourceId.isBlank()) {
             hash = shortHash(sourceId.getBytes(java.nio.charset.StandardCharsets.UTF_8));

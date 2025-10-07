@@ -1,13 +1,14 @@
 package com.zhlearn.infrastructure.dictionary;
 
-import com.zhlearn.domain.model.WordAnalysis;
-import com.zhlearn.infrastructure.pleco.PlecoEntry;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+import com.zhlearn.domain.model.WordAnalysis;
+import com.zhlearn.infrastructure.pleco.PlecoEntry;
 
 class PlecoExportDictionaryTest {
 
@@ -31,4 +32,3 @@ class PlecoExportDictionaryTest {
         assertTrue(dict.lookup("不存在").isEmpty());
     }
 }
-

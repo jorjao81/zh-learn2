@@ -1,10 +1,11 @@
 package com.zhlearn.infrastructure.pinyin4j;
 
-import com.zhlearn.domain.model.Hanzi;
-import com.zhlearn.domain.model.Pinyin;
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import com.zhlearn.domain.model.Hanzi;
+import com.zhlearn.domain.model.Pinyin;
 
 class Pinyin4jProviderTest {
 

@@ -1,10 +1,10 @@
 package com.zhlearn.infrastructure.audio;
 
-import org.junit.jupiter.api.Test;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.concurrent.ExecutorService;
+
+import org.junit.jupiter.api.Test;
 
 class AudioDownloadExecutorTest {
 

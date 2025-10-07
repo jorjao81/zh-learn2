@@ -1,10 +1,11 @@
 package com.zhlearn.infrastructure.common;
 
-import com.zhlearn.domain.model.Definition;
+import java.util.function.Function;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.function.Function;
+import com.zhlearn.domain.model.Definition;
 
 public class DefinitionResponseMapper implements Function<String, Definition> {
 
@@ -27,7 +28,8 @@ public class DefinitionResponseMapper implements Function<String, Definition> {
         } catch (IllegalStateException e) {
             throw e;
         } catch (Exception e) {
-            String errorMessage = e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
+            String errorMessage =
+                    e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
             log.warn("Failed to parse definition response: {}", errorMessage);
             log.debug("Original response: {}", response);
             throw new RuntimeException("Failed to parse definition response: " + errorMessage, e);
