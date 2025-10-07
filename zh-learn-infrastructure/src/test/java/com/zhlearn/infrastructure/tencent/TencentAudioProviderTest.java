@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
@@ -125,7 +126,7 @@ class TencentAudioProviderTest {
 
     private static class FakeTencentClient extends TencentTtsClient {
         int callCount = 0;
-        final List<Integer> receivedVoiceTypes = new java.util.ArrayList<>();
+        final List<Integer> receivedVoiceTypes = new ArrayList<>();
 
         FakeTencentClient() {
             super("test-secret-id", "test-secret-key", "ap-singapore");

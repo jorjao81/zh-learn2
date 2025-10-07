@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
+import com.zhlearn.pinyin.PinyinToneConverter;
 
 class AnkiPronunciationProviderTest {
 
@@ -104,8 +105,7 @@ class AnkiPronunciationProviderTest {
         String[] testCases = {"dao3", "daohang2", "daomei2"};
 
         for (String originalPinyin : testCases) {
-            String convertedPinyin =
-                    com.zhlearn.pinyin.PinyinToneConverter.convertToToneMarks(originalPinyin);
+            String convertedPinyin = PinyinToneConverter.convertToToneMarks(originalPinyin);
             System.out.println("Testing: '" + originalPinyin + "' -> '" + convertedPinyin + "'");
 
             // Try to find audio for the converted pinyin
@@ -119,7 +119,7 @@ class AnkiPronunciationProviderTest {
         }
 
         // This specific test should pass if normalization is working
-        String convertedDao = com.zhlearn.pinyin.PinyinToneConverter.convertToToneMarks("dao3yu3");
+        String convertedDao = PinyinToneConverter.convertToToneMarks("dao3yu3");
         Optional<Path> result =
                 provider.getPronunciation(new Hanzi("岛屿"), new Pinyin(convertedDao));
 

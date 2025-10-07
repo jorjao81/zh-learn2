@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -150,7 +152,7 @@ public class ParsePlecoCommand implements Runnable {
                     "Pre-configured audio selections (format: word:provider:description;word:provider:description)")
     private String audioSelectionsParam;
 
-    private java.util.Map<String, AudioSelection> audioSelections;
+    private Map<String, AudioSelection> audioSelections;
 
     @picocli.CommandLine.ParentCommand private MainCommand parent;
 
@@ -800,12 +802,12 @@ public class ParsePlecoCommand implements Runnable {
                                         "Unknown audio provider: " + providerName));
     }
 
-    private java.util.Map<String, AudioSelection> parseAudioSelections(String param) {
+    private Map<String, AudioSelection> parseAudioSelections(String param) {
         if (param == null || param.trim().isEmpty()) {
-            return java.util.Map.of();
+            return Map.of();
         }
 
-        java.util.Map<String, AudioSelection> selections = new java.util.HashMap<>();
+        Map<String, AudioSelection> selections = new HashMap<>();
         String[] entries = param.split(";");
         for (String entry : entries) {
             String[] parts = entry.split(":");

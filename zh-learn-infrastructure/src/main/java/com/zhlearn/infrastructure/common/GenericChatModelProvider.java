@@ -3,6 +3,7 @@ package com.zhlearn.infrastructure.common;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,7 @@ public class GenericChatModelProvider<T> {
                                 GoogleAiGeminiChatModel.builder()
                                         .apiKey(config.getApiKey())
                                         .modelName(config.getModelName())
-                                        .timeout(java.time.Duration.ofSeconds(120))
+                                        .timeout(Duration.ofSeconds(120))
                                         .maxRetries(2);
 
                         if (config.getTemperature() != null) {
@@ -60,7 +61,7 @@ public class GenericChatModelProvider<T> {
                                     .modelName(config.getModelName())
                                     .temperature(config.getTemperature())
                                     .maxTokens(config.getMaxTokens())
-                                    .timeout(java.time.Duration.ofSeconds(120))
+                                    .timeout(Duration.ofSeconds(120))
                                     .maxRetries(2)
                                     .build();
                 };

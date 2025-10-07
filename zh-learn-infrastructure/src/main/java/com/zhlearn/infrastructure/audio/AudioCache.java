@@ -1,6 +1,7 @@
 package com.zhlearn.infrastructure.audio;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -57,7 +58,7 @@ public class AudioCache {
                         + audioPaths.sanitize(pinyin);
         String hash = "";
         if (sourceId != null && !sourceId.isBlank()) {
-            hash = shortHash(sourceId.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            hash = shortHash(sourceId.getBytes(StandardCharsets.UTF_8));
         } else if (src != null && Files.exists(src)) {
             hash = shortHash(Files.readAllBytes(src));
         }

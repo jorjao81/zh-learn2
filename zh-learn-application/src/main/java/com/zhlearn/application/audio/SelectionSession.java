@@ -35,7 +35,7 @@ public class SelectionSession {
         return candidates.size();
     }
 
-    public java.util.List<PronunciationCandidate> items() {
+    public List<PronunciationCandidate> items() {
         return candidates;
     }
 

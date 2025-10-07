@@ -1,5 +1,7 @@
 package com.zhlearn.infrastructure.common;
 
+import java.util.function.Function;
+
 import com.zhlearn.domain.model.Definition;
 import com.zhlearn.domain.model.Example;
 import com.zhlearn.domain.model.Explanation;
@@ -640,7 +642,7 @@ public class AIProviderFactory {
             String modelName,
             String templateResourcePath,
             String examplesResourcePath,
-            java.util.function.Function<String, T> responseMapper,
+            Function<String, T> responseMapper,
             String providerName,
             String errorMessagePrefix) {
         return new ProviderConfig<>(
