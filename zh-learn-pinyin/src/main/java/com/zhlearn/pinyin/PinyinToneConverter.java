@@ -8,25 +8,24 @@ import java.util.regex.Pattern;
 /**
  * Utility to convert numbered pinyin (e.g., "shun4") to tone marks (e.g., "shùn").
  *
- * Rules implemented:
- * - Identify syllables as letter blocks optionally ending with tone 1–5.
- * - Neutral tone (5 or 0) removes the number without diacritics.
- * - Vowel selection priority: a > e > ou (mark the 'o') > last vowel (covers iu/ui).
- * - Treat 'u:' and 'v' as 'ü'.
- * - Case-insensitive processing; output is lowercase (common for pinyin display).
+ * <p>Rules implemented: - Identify syllables as letter blocks optionally ending with tone 1–5. -
+ * Neutral tone (5 or 0) removes the number without diacritics. - Vowel selection priority: a > e >
+ * ou (mark the 'o') > last vowel (covers iu/ui). - Treat 'u:' and 'v' as 'ü'. - Case-insensitive
+ * processing; output is lowercase (common for pinyin display).
  */
 public class PinyinToneConverter {
 
     private static final Pattern SYLLABLE_WITH_TONE = Pattern.compile("(?i)([a-züv:]+)([1-5])");
 
     private static final Map<Character, char[]> DIACRITIC_MAP = new HashMap<>();
+
     static {
-        DIACRITIC_MAP.put('a', new char[]{'ā', 'á', 'ǎ', 'à'});
-        DIACRITIC_MAP.put('e', new char[]{'ē', 'é', 'ě', 'è'});
-        DIACRITIC_MAP.put('i', new char[]{'ī', 'í', 'ǐ', 'ì'});
-        DIACRITIC_MAP.put('o', new char[]{'ō', 'ó', 'ǒ', 'ò'});
-        DIACRITIC_MAP.put('u', new char[]{'ū', 'ú', 'ǔ', 'ù'});
-        DIACRITIC_MAP.put('ü', new char[]{'ǖ', 'ǘ', 'ǚ', 'ǜ'});
+        DIACRITIC_MAP.put('a', new char[] {'ā', 'á', 'ǎ', 'à'});
+        DIACRITIC_MAP.put('e', new char[] {'ē', 'é', 'ě', 'è'});
+        DIACRITIC_MAP.put('i', new char[] {'ī', 'í', 'ǐ', 'ì'});
+        DIACRITIC_MAP.put('o', new char[] {'ō', 'ó', 'ǒ', 'ò'});
+        DIACRITIC_MAP.put('u', new char[] {'ū', 'ú', 'ǔ', 'ù'});
+        DIACRITIC_MAP.put('ü', new char[] {'ǖ', 'ǘ', 'ǚ', 'ǜ'});
     }
 
     public static String convertToToneMarks(String numberedPinyin) {
@@ -122,4 +121,3 @@ public class PinyinToneConverter {
         };
     }
 }
-

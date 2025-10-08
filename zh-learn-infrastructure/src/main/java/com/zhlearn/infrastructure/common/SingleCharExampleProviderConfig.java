@@ -1,8 +1,8 @@
 package com.zhlearn.infrastructure.common;
 
-import com.zhlearn.domain.model.Example;
-
 import java.util.function.Function;
+
+import com.zhlearn.domain.model.Example;
 
 public class SingleCharExampleProviderConfig {
 
@@ -12,8 +12,7 @@ public class SingleCharExampleProviderConfig {
     private static final Double DEFAULT_TEMPERATURE = 0.3;
     private static final Integer DEFAULT_MAX_TOKENS = 8000;
 
-    public SingleCharExampleProviderConfig() {
-    }
+    public SingleCharExampleProviderConfig() {}
 
     public String templatePath() {
         return TEMPLATE_PATH;

@@ -18,19 +18,21 @@ public class DictionaryPinyinProvider implements PinyinProvider {
         // Use the dictionary's name directly (e.g., "pleco-export")
         return dictionary.getName();
     }
-    
+
     @Override
     public String getDescription() {
-        return "Dictionary-based pinyin provider using " + dictionary.getName() + " dictionary data";
+        return "Dictionary-based pinyin provider using "
+                + dictionary.getName()
+                + " dictionary data";
     }
-    
+
     @Override
-    public ProviderType getType() { return ProviderType.DICTIONARY; }
+    public ProviderType getType() {
+        return ProviderType.DICTIONARY;
+    }
 
     @Override
     public Pinyin getPinyin(Hanzi word) {
-        return dictionary.lookup(word.characters())
-            .map(analysis -> analysis.pinyin())
-            .orElse(null);
+        return dictionary.lookup(word.characters()).map(analysis -> analysis.pinyin()).orElse(null);
     }
 }

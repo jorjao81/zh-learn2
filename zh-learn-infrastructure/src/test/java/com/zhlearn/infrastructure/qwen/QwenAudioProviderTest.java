@@ -1,15 +1,13 @@
 package com.zhlearn.infrastructure.qwen;
 
-import com.zhlearn.domain.model.Hanzi;
-import com.zhlearn.domain.model.Pinyin;
-import com.zhlearn.domain.provider.AudioProvider;
-import com.zhlearn.domain.model.ProviderInfo.ProviderType;
-import com.zhlearn.infrastructure.audio.AudioCache;
-import com.zhlearn.infrastructure.audio.AudioNormalizer;
-import com.zhlearn.infrastructure.audio.AudioPaths;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URI;
@@ -20,15 +18,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import com.zhlearn.domain.model.Hanzi;
+import com.zhlearn.domain.model.Pinyin;
+import com.zhlearn.domain.model.ProviderInfo.ProviderType;
+import com.zhlearn.infrastructure.audio.AudioCache;
+import com.zhlearn.infrastructure.audio.AudioNormalizer;
+import com.zhlearn.infrastructure.audio.AudioPaths;
 
 class QwenAudioProviderTest {
 
-    @TempDir
-    Path tmpHome;
+    @TempDir Path tmpHome;
 
     @AfterEach
     void tearDown() {
@@ -49,22 +52,22 @@ class QwenAudioProviderTest {
         FakeQwenClient client = new FakeQwenClient();
         HttpClient http = mock(HttpClient.class);
 
-        HttpResponse<byte[]> cherryResp = mockBinaryResponse(new byte[]{1, 2, 3});
-        HttpResponse<byte[]> ethanResp = mockBinaryResponse(new byte[]{4, 5});
-        HttpResponse<byte[]> nofishResp = mockBinaryResponse(new byte[]{6});
-        HttpResponse<byte[]> jenniferResp = mockBinaryResponse(new byte[]{7, 8});
-        HttpResponse<byte[]> ryanResp = mockBinaryResponse(new byte[]{9});
-        HttpResponse<byte[]> katerinaResp = mockBinaryResponse(new byte[]{10, 11});
-        HttpResponse<byte[]> eliasResp = mockBinaryResponse(new byte[]{12});
+        HttpResponse<byte[]> cherryResp = mockBinaryResponse(new byte[] {1, 2, 3});
+        HttpResponse<byte[]> ethanResp = mockBinaryResponse(new byte[] {4, 5});
+        HttpResponse<byte[]> nofishResp = mockBinaryResponse(new byte[] {6});
+        HttpResponse<byte[]> jenniferResp = mockBinaryResponse(new byte[] {7, 8});
+        HttpResponse<byte[]> ryanResp = mockBinaryResponse(new byte[] {9});
+        HttpResponse<byte[]> katerinaResp = mockBinaryResponse(new byte[] {10, 11});
+        HttpResponse<byte[]> eliasResp = mockBinaryResponse(new byte[] {12});
 
         when(http.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
-            .thenReturn((HttpResponse) cherryResp)
-            .thenReturn((HttpResponse) ethanResp)
-            .thenReturn((HttpResponse) nofishResp)
-            .thenReturn((HttpResponse) jenniferResp)
-            .thenReturn((HttpResponse) ryanResp)
-            .thenReturn((HttpResponse) katerinaResp)
-            .thenReturn((HttpResponse) eliasResp);
+                .thenReturn((HttpResponse) cherryResp)
+                .thenReturn((HttpResponse) ethanResp)
+                .thenReturn((HttpResponse) nofishResp)
+                .thenReturn((HttpResponse) jenniferResp)
+                .thenReturn((HttpResponse) ryanResp)
+                .thenReturn((HttpResponse) katerinaResp)
+                .thenReturn((HttpResponse) eliasResp);
 
         QwenAudioProvider provider = createProvider(client, http);
 
@@ -78,7 +81,9 @@ class QwenAudioProviderTest {
             assertThat(path).isAbsolute();
         }
 
-        assertThat(pronunciations.get(0).getFileName().toString()).contains("Cherry").doesNotContain("xuéxí");
+        assertThat(pronunciations.get(0).getFileName().toString())
+                .contains("Cherry")
+                .doesNotContain("xuéxí");
         assertThat(pronunciations.get(1).getFileName().toString()).contains("Ethan");
         assertThat(pronunciations.get(2).getFileName().toString()).contains("Nofish");
         assertThat(pronunciations.get(3).getFileName().toString()).contains("Jennifer");
@@ -108,7 +113,8 @@ class QwenAudioProviderTest {
 
         HttpResponse<byte[]> failure = mock(HttpResponse.class);
         when(failure.statusCode()).thenReturn(500);
-        when(http.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn((HttpResponse) failure);
+        when(http.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
+                .thenReturn((HttpResponse) failure);
 
         QwenAudioProvider provider = createProvider(client, http);
 
@@ -117,17 +123,25 @@ class QwenAudioProviderTest {
 
         Throwable thrown = catchThrowable(() -> provider.getPronunciations(word, pinyin));
         assertThat(thrown)
-            .isInstanceOf(RuntimeException.class)
-            .hasCauseInstanceOf(IOException.class);
+                .isInstanceOf(RuntimeException.class)
+                .hasCauseInstanceOf(IOException.class);
         assertThat(thrown.getCause()).hasMessageContaining("Failed to download audio");
     }
 
     @Test
     void reportsMetadataAccurately() {
-        QwenAudioProvider provider = createProvider(new FakeQwenClient(), HttpClient.newHttpClient());
+        QwenAudioProvider provider =
+                createProvider(new FakeQwenClient(), HttpClient.newHttpClient());
         assertThat(provider.getName()).isEqualTo("qwen-tts");
         assertThat(provider.getType()).isEqualTo(ProviderType.AI);
-        assertThat(provider.getDescription()).contains("Cherry").contains("Ethan").contains("Nofish").contains("Jennifer").contains("Ryan").contains("Katerina").contains("Elias");
+        assertThat(provider.getDescription())
+                .contains("Cherry")
+                .contains("Ethan")
+                .contains("Nofish")
+                .contains("Jennifer")
+                .contains("Ryan")
+                .contains("Katerina")
+                .contains("Elias");
     }
 
     private HttpResponse<byte[]> mockBinaryResponse(byte[] data) {
@@ -149,9 +163,8 @@ class QwenAudioProviderTest {
         public QwenTtsResult synthesize(String voice, String text) {
             callCount++;
             return new QwenTtsResult(
-                URI.create("https://example.com/" + voice.toLowerCase() + callCount + ".mp3"),
-                "req-" + voice.toLowerCase()
-            );
+                    URI.create("https://example.com/" + voice.toLowerCase() + callCount + ".mp3"),
+                    "req-" + voice.toLowerCase());
         }
     }
 }

@@ -1,13 +1,13 @@
 package com.zhlearn.infrastructure.common;
 
+import java.util.Optional;
+import java.util.function.BiFunction;
+
 import com.zhlearn.domain.model.Definition;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.model.WordType;
 import com.zhlearn.domain.provider.DefinitionFormatterProvider;
-
-import java.util.Optional;
-import java.util.function.BiFunction;
 
 public class ConfigurableDefinitionFormatterProvider implements DefinitionFormatterProvider {
 
@@ -18,59 +18,100 @@ public class ConfigurableDefinitionFormatterProvider implements DefinitionFormat
     private final String name;
     private final String description;
 
-    public ConfigurableDefinitionFormatterProvider(ProviderConfig<Definition> config, String name, String description) {
-        this(new GenericChatModelProvider<>(config)::process, new GenericChatModelProvider<>(config)::process,
-            Optional.of(config), Optional.of(config), name, description);
+    public ConfigurableDefinitionFormatterProvider(
+            ProviderConfig<Definition> config, String name, String description) {
+        this(
+                new GenericChatModelProvider<>(config)::process,
+                new GenericChatModelProvider<>(config)::process,
+                Optional.of(config),
+                Optional.of(config),
+                name,
+                description);
     }
 
-    public ConfigurableDefinitionFormatterProvider(GenericChatModelProvider<Definition> provider, String name, String description) {
-        this(provider::process, provider::process, Optional.empty(), Optional.empty(), name, description);
+    public ConfigurableDefinitionFormatterProvider(
+            GenericChatModelProvider<Definition> provider, String name, String description) {
+        this(
+                provider::process,
+                provider::process,
+                Optional.empty(),
+                Optional.empty(),
+                name,
+                description);
     }
 
-    public ConfigurableDefinitionFormatterProvider(ProviderConfig<Definition> singleCharConfig,
-                                       ProviderConfig<Definition> multiCharConfig,
-                                       String name,
-                                       String description) {
-        this(new GenericChatModelProvider<>(singleCharConfig)::process,
-            new GenericChatModelProvider<>(multiCharConfig)::process,
-            Optional.of(singleCharConfig), Optional.of(multiCharConfig), name, description);
+    public ConfigurableDefinitionFormatterProvider(
+            ProviderConfig<Definition> singleCharConfig,
+            ProviderConfig<Definition> multiCharConfig,
+            String name,
+            String description) {
+        this(
+                new GenericChatModelProvider<>(singleCharConfig)::process,
+                new GenericChatModelProvider<>(multiCharConfig)::process,
+                Optional.of(singleCharConfig),
+                Optional.of(multiCharConfig),
+                name,
+                description);
     }
 
-    public ConfigurableDefinitionFormatterProvider(GenericChatModelProvider<Definition> singleCharProvider,
-                                       GenericChatModelProvider<Definition> multiCharProvider,
-                                       String name,
-                                       String description) {
-        this(singleCharProvider::process, multiCharProvider::process,
-            Optional.empty(), Optional.empty(), name, description);
+    public ConfigurableDefinitionFormatterProvider(
+            GenericChatModelProvider<Definition> singleCharProvider,
+            GenericChatModelProvider<Definition> multiCharProvider,
+            String name,
+            String description) {
+        this(
+                singleCharProvider::process,
+                multiCharProvider::process,
+                Optional.empty(),
+                Optional.empty(),
+                name,
+                description);
     }
 
-    public ConfigurableDefinitionFormatterProvider(BiFunction<Hanzi, Optional<String>, Definition> processor, String name, String description) {
+    public ConfigurableDefinitionFormatterProvider(
+            BiFunction<Hanzi, Optional<String>, Definition> processor,
+            String name,
+            String description) {
         this(processor, processor, Optional.empty(), Optional.empty(), name, description);
     }
 
-    public ConfigurableDefinitionFormatterProvider(BiFunction<Hanzi, Optional<String>, Definition> singleCharProcessor,
-                                       BiFunction<Hanzi, Optional<String>, Definition> multiCharProcessor,
-                                       String name,
-                                       String description) {
-        this(singleCharProcessor, multiCharProcessor, Optional.empty(), Optional.empty(), name, description);
+    public ConfigurableDefinitionFormatterProvider(
+            BiFunction<Hanzi, Optional<String>, Definition> singleCharProcessor,
+            BiFunction<Hanzi, Optional<String>, Definition> multiCharProcessor,
+            String name,
+            String description) {
+        this(
+                singleCharProcessor,
+                multiCharProcessor,
+                Optional.empty(),
+                Optional.empty(),
+                name,
+                description);
     }
 
-    public ConfigurableDefinitionFormatterProvider(BiFunction<Hanzi, Optional<String>, Definition> singleCharProcessor,
-                                       ProviderConfig<Definition> singleCharConfig,
-                                       BiFunction<Hanzi, Optional<String>, Definition> multiCharProcessor,
-                                       ProviderConfig<Definition> multiCharConfig,
-                                       String name,
-                                       String description) {
-        this(singleCharProcessor, multiCharProcessor,
-            Optional.of(singleCharConfig), Optional.of(multiCharConfig), name, description);
+    public ConfigurableDefinitionFormatterProvider(
+            BiFunction<Hanzi, Optional<String>, Definition> singleCharProcessor,
+            ProviderConfig<Definition> singleCharConfig,
+            BiFunction<Hanzi, Optional<String>, Definition> multiCharProcessor,
+            ProviderConfig<Definition> multiCharConfig,
+            String name,
+            String description) {
+        this(
+                singleCharProcessor,
+                multiCharProcessor,
+                Optional.of(singleCharConfig),
+                Optional.of(multiCharConfig),
+                name,
+                description);
     }
 
-    ConfigurableDefinitionFormatterProvider(BiFunction<Hanzi, Optional<String>, Definition> singleCharProcessor,
-                                BiFunction<Hanzi, Optional<String>, Definition> multiCharProcessor,
-                                Optional<ProviderConfig<Definition>> singleCharConfig,
-                                Optional<ProviderConfig<Definition>> multiCharConfig,
-                                String name,
-                                String description) {
+    ConfigurableDefinitionFormatterProvider(
+            BiFunction<Hanzi, Optional<String>, Definition> singleCharProcessor,
+            BiFunction<Hanzi, Optional<String>, Definition> multiCharProcessor,
+            Optional<ProviderConfig<Definition>> singleCharConfig,
+            Optional<ProviderConfig<Definition>> multiCharConfig,
+            String name,
+            String description) {
         this.singleCharProcessor = singleCharProcessor;
         this.multiCharProcessor = multiCharProcessor;
         this.singleCharConfig = singleCharConfig;
@@ -125,9 +166,9 @@ public class ConfigurableDefinitionFormatterProvider implements DefinitionFormat
     }
 
     private boolean containsEtymologyMarkers(String text) {
-        return text.contains("=>") ||
-               text.contains("⇒") ||
-               text.contains("→") ||
-               text.contains("(orig.)");
+        return text.contains("=>")
+                || text.contains("⇒")
+                || text.contains("→")
+                || text.contains("(orig.)");
     }
 }

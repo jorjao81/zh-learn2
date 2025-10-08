@@ -1,7 +1,8 @@
 package com.zhlearn.infrastructure.cache;
 
-import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 class CacheKeyGeneratorTest {
     private final CacheKeyGenerator generator = new CacheKeyGenerator();
@@ -61,7 +62,7 @@ class CacheKeyGeneratorTest {
     @Test
     void shouldGenerateValidSHA256Hash() {
         String key = generator.generateKey("test", "url", "model", 0.5, 100);
-        
+
         assertThat(key).isNotNull();
         assertThat(key).hasSize(64); // SHA-256 produces 64 character hex string
         assertThat(key).matches("^[0-9a-f]+$"); // Only hex characters

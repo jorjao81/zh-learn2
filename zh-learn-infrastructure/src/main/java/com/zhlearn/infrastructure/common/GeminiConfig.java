@@ -1,8 +1,8 @@
 package com.zhlearn.infrastructure.common;
 
 /**
- * Configuration for Google Gemini models via LangChain4j.
- * Singleton service that reads configuration from environment variables.
+ * Configuration for Google Gemini models via LangChain4j. Singleton service that reads
+ * configuration from environment variables.
  */
 public class GeminiConfig {
 

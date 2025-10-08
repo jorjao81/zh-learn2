@@ -1,9 +1,5 @@
 package com.zhlearn.infrastructure.anki;
 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
@@ -12,19 +8,24 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+
 /**
- * Parser for the Anki collection TSV export (Chinese.txt).
- * Only rows with note type "Chinese 2" are returned.
+ * Parser for the Anki collection TSV export (Chinese.txt). Only rows with note type "Chinese 2" are
+ * returned.
  */
 public class AnkiNoteParser {
 
-    private static final CSVFormat TSV = CSVFormat.DEFAULT
-        .builder()
-        .setDelimiter('\t')
-        .setQuote('"')
-        .setIgnoreEmptyLines(false)
-        .setTrim(false)
-        .build();
+    private static final CSVFormat TSV =
+            CSVFormat.DEFAULT
+                    .builder()
+                    .setDelimiter('\t')
+                    .setQuote('"')
+                    .setIgnoreEmptyLines(false)
+                    .setTrim(false)
+                    .build();
 
     public List<AnkiNote> parseFile(Path file) throws IOException {
         try (Reader r = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
@@ -57,16 +58,28 @@ public class AnkiNoteParser {
                 String alt = get(record, 10);
                 String noHearing = get(record, 11);
 
-                notes.add(AnkiNote.ofCollection(
-                    noteType, pinyin, simplified, pronunciation, definition,
-                    examples, etymology, components, similar, passive, alt, noHearing
-                ));
+                notes.add(
+                        AnkiNote.ofCollection(
+                                noteType,
+                                pinyin,
+                                simplified,
+                                pronunciation,
+                                definition,
+                                examples,
+                                etymology,
+                                components,
+                                similar,
+                                passive,
+                                alt,
+                                noHearing));
             }
         }
         return notes;
     }
 
-    private static String get(CSVRecord r, int i) { return i < r.size() ? r.get(i) : ""; }
+    private static String get(CSVRecord r, int i) {
+        return i < r.size() ? r.get(i) : "";
+    }
 
     private static boolean shouldSkipLine(String firstColumn) {
         return firstColumn == null || firstColumn.trim().isEmpty() || firstColumn.startsWith("#");
@@ -77,5 +90,4 @@ public class AnkiNoteParser {
         String t = noteType.trim();
         return "Chinese 2".equals(t);
     }
-
 }

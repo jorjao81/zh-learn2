@@ -1,12 +1,12 @@
 package com.zhlearn.infrastructure.tencent;
 
+import java.util.UUID;
+
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.tts.v20190823.TtsClient;
 import com.tencentcloudapi.tts.v20190823.models.TextToVoiceRequest;
 import com.tencentcloudapi.tts.v20190823.models.TextToVoiceResponse;
-
-import java.util.UUID;
 
 class TencentTtsClient {
     private final TtsClient client;

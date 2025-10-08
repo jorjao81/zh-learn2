@@ -1,21 +1,21 @@
 package com.zhlearn.infrastructure.audio;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class AudioNormalizer {
     private final Logger log = LoggerFactory.getLogger(AudioNormalizer.class);
 
-    public AudioNormalizer() {
-    }
+    public AudioNormalizer() {}
 
     public void normalizeToMp3(Path input, Path output) throws IOException, InterruptedException {
-        if (input == null || !Files.exists(input)) throw new IOException("input not found: " + input);
+        if (input == null || !Files.exists(input))
+            throw new IOException("input not found: " + input);
         Files.createDirectories(output.getParent());
 
         // Allow disabling external tools in tests/CI
@@ -28,16 +28,23 @@ public class AudioNormalizer {
         String os = System.getProperty("os.name", "").toLowerCase();
         // Prefer ffmpeg on all OS; mac users likely have it via brew
         if (isOnPath("ffmpeg")) {
-            ProcessBuilder pb = new ProcessBuilder(
-                "ffmpeg", "-y",
-                "-i", input.toAbsolutePath().toString(),
-                "-af", "loudnorm=I=-16:LRA=11:TP=-1.5,areverse,atrim=start=0.01,areverse",
-                "-ar", "44100",
-                "-ac", "1",
-                "-codec:a", "libmp3lame",
-                "-b:a", "128k",
-                output.toAbsolutePath().toString()
-            );
+            ProcessBuilder pb =
+                    new ProcessBuilder(
+                            "ffmpeg",
+                            "-y",
+                            "-i",
+                            input.toAbsolutePath().toString(),
+                            "-af",
+                            "loudnorm=I=-16:LRA=11:TP=-1.5,areverse,atrim=start=0.01,areverse",
+                            "-ar",
+                            "44100",
+                            "-ac",
+                            "1",
+                            "-codec:a",
+                            "libmp3lame",
+                            "-b:a",
+                            "128k",
+                            output.toAbsolutePath().toString());
             pb.redirectError(ProcessBuilder.Redirect.DISCARD);
             Process p = pb.start();
             int code = p.waitFor();

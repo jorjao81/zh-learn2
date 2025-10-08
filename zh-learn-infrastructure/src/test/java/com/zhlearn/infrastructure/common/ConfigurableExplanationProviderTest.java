@@ -1,12 +1,13 @@
 package com.zhlearn.infrastructure.common;
 
-import com.zhlearn.domain.model.Explanation;
-import com.zhlearn.domain.model.Hanzi;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
+
+import com.zhlearn.domain.model.Explanation;
+import com.zhlearn.domain.model.Hanzi;
 
 class ConfigurableExplanationProviderTest {
 
@@ -16,18 +17,18 @@ class ConfigurableExplanationProviderTest {
         Explanation multi = new Explanation("multi explanation");
         AtomicReference<String> invocations = new AtomicReference<>();
 
-        ConfigurableExplanationProvider provider = new ConfigurableExplanationProvider(
-            hanzi -> {
-                invocations.set("single");
-                return single;
-            },
-            hanzi -> {
-                invocations.set("multi");
-                return multi;
-            },
-            "test",
-            "Test provider"
-        );
+        ConfigurableExplanationProvider provider =
+                new ConfigurableExplanationProvider(
+                        hanzi -> {
+                            invocations.set("single");
+                            return single;
+                        },
+                        hanzi -> {
+                            invocations.set("multi");
+                            return multi;
+                        },
+                        "test",
+                        "Test provider");
 
         Explanation result = provider.getExplanation(new Hanzi("学"));
 
@@ -41,18 +42,18 @@ class ConfigurableExplanationProviderTest {
         Explanation multi = new Explanation("multi explanation");
         AtomicReference<String> invocations = new AtomicReference<>();
 
-        ConfigurableExplanationProvider provider = new ConfigurableExplanationProvider(
-            hanzi -> {
-                invocations.set("single");
-                return single;
-            },
-            hanzi -> {
-                invocations.set("multi");
-                return multi;
-            },
-            "test",
-            "Test provider"
-        );
+        ConfigurableExplanationProvider provider =
+                new ConfigurableExplanationProvider(
+                        hanzi -> {
+                            invocations.set("single");
+                            return single;
+                        },
+                        hanzi -> {
+                            invocations.set("multi");
+                            return multi;
+                        },
+                        "test",
+                        "Test provider");
 
         Explanation result = provider.getExplanation(new Hanzi("学校"));
 
@@ -62,39 +63,39 @@ class ConfigurableExplanationProviderTest {
 
     @Test
     void shouldExposeConfigsWhenConstructedWithProviderConfigs() {
-        ProviderConfig<Explanation> singleConfig = new ProviderConfig<>(
-            "api",
-            "base",
-            "model",
-            0.1,
-            100,
-            "/template",
-            "/examples/",
-            Explanation::new,
-            "name",
-            "error"
-        );
-        ProviderConfig<Explanation> multiConfig = new ProviderConfig<>(
-            "api2",
-            "base2",
-            "model2",
-            0.1,
-            100,
-            "/template2",
-            "/examples2/",
-            Explanation::new,
-            "name2",
-            "error2"
-        );
+        ProviderConfig<Explanation> singleConfig =
+                new ProviderConfig<>(
+                        "api",
+                        "base",
+                        "model",
+                        0.1,
+                        100,
+                        "/template",
+                        "/examples/",
+                        Explanation::new,
+                        "name",
+                        "error");
+        ProviderConfig<Explanation> multiConfig =
+                new ProviderConfig<>(
+                        "api2",
+                        "base2",
+                        "model2",
+                        0.1,
+                        100,
+                        "/template2",
+                        "/examples2/",
+                        Explanation::new,
+                        "name2",
+                        "error2");
 
-        ConfigurableExplanationProvider provider = new ConfigurableExplanationProvider(
-            hanzi -> singleConfig.getResponseMapper().apply("single"),
-            singleConfig,
-            hanzi -> multiConfig.getResponseMapper().apply("multi"),
-            multiConfig,
-            "test",
-            "Test provider"
-        );
+        ConfigurableExplanationProvider provider =
+                new ConfigurableExplanationProvider(
+                        hanzi -> singleConfig.getResponseMapper().apply("single"),
+                        singleConfig,
+                        hanzi -> multiConfig.getResponseMapper().apply("multi"),
+                        multiConfig,
+                        "test",
+                        "Test provider");
 
         assertThat(provider.singleCharConfig()).containsSame(singleConfig);
         assertThat(provider.multiCharConfig()).containsSame(multiConfig);

@@ -1,12 +1,13 @@
 package com.zhlearn.infrastructure.dummy;
 
-import com.zhlearn.domain.model.Hanzi;
-import com.zhlearn.domain.model.Example;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
+
+import com.zhlearn.domain.model.Example;
+import com.zhlearn.domain.model.Hanzi;
 
 class DummyExampleProviderTest {
 

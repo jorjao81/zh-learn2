@@ -1,12 +1,5 @@
 package com.zhlearn.infrastructure.tencent;
 
-import com.zhlearn.domain.model.Hanzi;
-import com.zhlearn.domain.model.Pinyin;
-import com.zhlearn.domain.model.ProviderInfo.ProviderType;
-import com.zhlearn.infrastructure.audio.AbstractTtsAudioProvider;
-import com.zhlearn.infrastructure.audio.AudioCache;
-import com.zhlearn.infrastructure.audio.AudioPaths;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,6 +8,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+
+import com.zhlearn.domain.model.Hanzi;
+import com.zhlearn.domain.model.Pinyin;
+import com.zhlearn.domain.model.ProviderInfo.ProviderType;
+import com.zhlearn.infrastructure.audio.AbstractTtsAudioProvider;
+import com.zhlearn.infrastructure.audio.AudioCache;
+import com.zhlearn.infrastructure.audio.AudioPaths;
 
 public class TencentAudioProvider extends AbstractTtsAudioProvider {
     private static final String NAME = "tencent-tts";
@@ -25,6 +25,7 @@ public class TencentAudioProvider extends AbstractTtsAudioProvider {
 
     // Voice mapping as specified by user
     private static final Map<Integer, String> VOICES = new LinkedHashMap<>();
+
     static {
         VOICES.put(101052, "zhiwei");
         VOICES.put(101002, "zhiling");
@@ -34,7 +35,11 @@ public class TencentAudioProvider extends AbstractTtsAudioProvider {
     private final TencentTtsClient injectedClient;
     private final Map<String, Integer> voiceNameToType;
 
-    public TencentAudioProvider(AudioCache audioCache, AudioPaths audioPaths, ExecutorService executorService, TencentTtsClient client) {
+    public TencentAudioProvider(
+            AudioCache audioCache,
+            AudioPaths audioPaths,
+            ExecutorService executorService,
+            TencentTtsClient client) {
         super(audioCache, audioPaths, executorService);
         this.injectedClient = client;
         this.voiceNameToType = buildVoiceNameToTypeMap();
@@ -69,7 +74,8 @@ public class TencentAudioProvider extends AbstractTtsAudioProvider {
     }
 
     @Override
-    protected Path synthesizeVoice(String voice, String text) throws IOException, InterruptedException {
+    protected Path synthesizeVoice(String voice, String text)
+            throws IOException, InterruptedException {
         Integer voiceType = voiceNameToType.get(voice);
         if (voiceType == null) {
             throw new IllegalArgumentException("Unknown voice: " + voice);
@@ -83,7 +89,9 @@ public class TencentAudioProvider extends AbstractTtsAudioProvider {
             if (injectedClient != null) {
                 client = injectedClient;
             } else {
-                client = new TencentTtsClient(resolveSecretId(), resolveSecretKey(), resolveRegion());
+                client =
+                        new TencentTtsClient(
+                                resolveSecretId(), resolveSecretKey(), resolveRegion());
             }
         }
         return client;
@@ -109,7 +117,8 @@ public class TencentAudioProvider extends AbstractTtsAudioProvider {
     private String resolveSecretId() {
         String secretId = System.getenv(SECRET_ID_ENV);
         if (secretId == null || secretId.isBlank()) {
-            throw new IllegalStateException("TENCENT_SECRET_ID is required for Tencent TTS provider");
+            throw new IllegalStateException(
+                    "TENCENT_SECRET_ID is required for Tencent TTS provider");
         }
         return secretId;
     }

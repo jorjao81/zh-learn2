@@ -1,6 +1,12 @@
 package com.zhlearn.cli;
 
-import com.zhlearn.domain.model.Example;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 import org.jsoup.Jsoup;
@@ -9,17 +15,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.zhlearn.domain.model.Example;
 
 public class TerminalFormatter {
 
-    public TerminalFormatter() {
-    }
+    public TerminalFormatter() {}
 
     // Box drawing characters
     private static final String TOP_LEFT = "┌";
@@ -28,7 +28,7 @@ public class TerminalFormatter {
     private static final String BOTTOM_RIGHT = "┘";
     private static final String HORIZONTAL = "─";
     private static final String VERTICAL = "│";
-    
+
     // Color scheme
     public static class Colors {
         public static final Ansi.Color CHINESE = Ansi.Color.CYAN;
@@ -39,14 +39,14 @@ public class TerminalFormatter {
         public static final Ansi.Color SEMANTIC_PATH = Ansi.Color.MAGENTA;
         public static final Ansi.Color BOX = Ansi.Color.BLUE;
     }
-    
+
     // ANSI escape sequences as constants
     private static class AnsiCodes {
         public static final String RESET = "\u001B[0m";
         public static final String BOLD = "\u001B[1m";
         public static final String BOLD_OFF = "\u001B[22m";
         public static final String ITALIC = "\u001B[3m";
-        
+
         // Colors
         public static final String CYAN = "\u001B[36m";
         public static final String YELLOW = "\u001B[33m";
@@ -58,7 +58,7 @@ public class TerminalFormatter {
         public static final String GREEN = "\u001B[32m";
         public static final String RED = "\u001B[31m";
     }
-    
+
     // Helper class to track active ANSI formatting state
     private static class AnsiState {
         private String foregroundColor = null;
@@ -66,9 +66,9 @@ public class TerminalFormatter {
         private boolean bold = false;
         private boolean italic = false;
         private boolean underline = false;
-        
+
         public AnsiState() {}
-        
+
         public AnsiState(AnsiState other) {
             this.foregroundColor = other.foregroundColor;
             this.backgroundColor = other.backgroundColor;
@@ -76,7 +76,7 @@ public class TerminalFormatter {
             this.italic = other.italic;
             this.underline = other.underline;
         }
-        
+
         public void reset() {
             foregroundColor = null;
             backgroundColor = null;
@@ -84,16 +84,20 @@ public class TerminalFormatter {
             italic = false;
             underline = false;
         }
-        
+
         public boolean hasActiveFormatting() {
-            return foregroundColor != null || backgroundColor != null || bold || italic || underline;
+            return foregroundColor != null
+                    || backgroundColor != null
+                    || bold
+                    || italic
+                    || underline;
         }
-        
+
         public String generateRestoreCode() {
             if (!hasActiveFormatting()) {
                 return "";
             }
-            
+
             StringBuilder restore = new StringBuilder();
             if (foregroundColor != null) {
                 restore.append(foregroundColor);
@@ -113,36 +117,36 @@ public class TerminalFormatter {
             return restore.toString();
         }
     }
-    
+
     // Extract the active ANSI state at the end of a text string
     private AnsiState extractAnsiState(String text) {
         AnsiState state = new AnsiState();
         if (text == null || text.isEmpty()) {
             return state;
         }
-        
+
         // Pattern to match ANSI escape sequences
         Pattern ansiPattern = Pattern.compile("\u001B\\[[0-9;]*[mK]");
         Matcher matcher = ansiPattern.matcher(text);
-        
+
         while (matcher.find()) {
             String sequence = matcher.group();
             updateAnsiState(state, sequence);
         }
-        
+
         return state;
     }
-    
+
     // Update ANSI state based on an escape sequence
     private void updateAnsiState(AnsiState state, String sequence) {
         // Remove the \u001B[ prefix and the m suffix to get the codes
         String codes = sequence.substring(2, sequence.length() - 1);
-        
+
         if (codes.isEmpty() || "0".equals(codes)) {
             state.reset();
             return;
         }
-        
+
         String[] parts = codes.split(";");
         for (String code : parts) {
             try {
@@ -182,32 +186,44 @@ public class TerminalFormatter {
             }
         }
     }
-    
+
     static {
         AnsiConsole.systemInstall();
     }
-    
+
     public static void shutdown() {
         AnsiConsole.systemUninstall();
     }
-    
+
     public String createBox(String title, String content, int width) {
         int titleDisplayWidth = getDisplayLength(title);
         if (width < titleDisplayWidth + 6) {
             width = titleDisplayWidth + 10;
         }
-        
+
         StringBuilder box = new StringBuilder();
-        
+
         // Top border with title
-        box.append(Ansi.ansi().fg(Colors.BOX).a(TOP_LEFT).a(HORIZONTAL).a(" ").bold().a(title).boldOff().a(" "));
-        int remainingWidth = width - titleDisplayWidth - 5;  // TOP_LEFT + HORIZONTAL + space + space + TOP_RIGHT = 5
+        box.append(
+                Ansi.ansi()
+                        .fg(Colors.BOX)
+                        .a(TOP_LEFT)
+                        .a(HORIZONTAL)
+                        .a(" ")
+                        .bold()
+                        .a(title)
+                        .boldOff()
+                        .a(" "));
+        int remainingWidth =
+                width
+                        - titleDisplayWidth
+                        - 5; // TOP_LEFT + HORIZONTAL + space + space + TOP_RIGHT = 5
         for (int i = 0; i < remainingWidth; i++) {
             box.append(HORIZONTAL);
         }
         box.append(Ansi.ansi().fg(Colors.BOX).a(TOP_RIGHT).reset().toString());
         box.append("\n");
-        
+
         // Content lines with wrapping
         String[] lines = content.split("\n");
         for (String line : lines) {
@@ -217,17 +233,17 @@ public class TerminalFormatter {
                 box.append(Ansi.ansi().fg(Colors.BOX).a(VERTICAL).reset().toString());
                 box.append(" ");
                 box.append(wrappedLine);
-                
+
                 int padding = width - getDisplayLength(wrappedLine) - 3;
                 for (int i = 0; i < padding; i++) {
                     box.append(" ");
                 }
-                
+
                 box.append(Ansi.ansi().fg(Colors.BOX).a(VERTICAL).reset().toString());
                 box.append("\n");
             }
         }
-        
+
         // Bottom border
         box.append(Ansi.ansi().fg(Colors.BOX).a(BOTTOM_LEFT));
         for (int i = 0; i < width - 2; i++) {
@@ -235,32 +251,36 @@ public class TerminalFormatter {
         }
         box.append(Ansi.ansi().fg(Colors.BOX).a(BOTTOM_RIGHT).reset().toString());
         box.append("\n");
-        
+
         return box.toString();
     }
-    
+
     public String formatChineseWord(String characters, String pinyin) {
         return Ansi.ansi()
-                .bold().fg(Colors.CHINESE).a(characters).reset()
+                .bold()
+                .fg(Colors.CHINESE)
+                .a(characters)
+                .reset()
                 .a(" (")
-                .fg(Colors.PINYIN).a(pinyin).reset()
+                .fg(Colors.PINYIN)
+                .a(pinyin)
+                .reset()
                 .a(")")
                 .toString();
     }
-    
+
     public String formatProvider(String providerName) {
-        return Ansi.ansi()
-                .fg(Colors.PROVIDER).a("Provider: ").a(providerName).reset()
-                .toString();
+        return Ansi.ansi().fg(Colors.PROVIDER).a("Provider: ").a(providerName).reset().toString();
     }
-    
+
     public String formatDefinition(String meaning) {
         return Ansi.ansi().fg(Colors.ENGLISH).a(meaning).reset().toString();
     }
-    
+
     public String formatExample(String chinese, String pinyin, String english, String context) {
         StringBuilder result = new StringBuilder();
-        result.append(Ansi.ansi().fg(Colors.CHINESE).a("Chinese: ").a(chinese).reset()).append("\n");
+        result.append(Ansi.ansi().fg(Colors.CHINESE).a("Chinese: ").a(chinese).reset())
+                .append("\n");
         result.append(Ansi.ansi().fg(Colors.PINYIN).a("Pinyin:  ").a(pinyin).reset()).append("\n");
         result.append(Ansi.ansi().fg(Colors.ENGLISH).a("English: ").a(english).reset());
         if (context != null && !context.isEmpty()) {
@@ -269,14 +289,14 @@ public class TerminalFormatter {
         }
         return result.toString();
     }
-    
+
     public String formatGroupedExamples(List<Example.Usage> usages) {
         if (usages == null || usages.isEmpty()) {
             return "";
         }
-        
+
         StringBuilder result = new StringBuilder();
-        
+
         // Group examples by context (meaning + pinyin combination)
         Map<String, List<Example.Usage>> groupedUsages = new LinkedHashMap<>();
         for (Example.Usage usage : usages) {
@@ -284,22 +304,22 @@ public class TerminalFormatter {
             if (context == null) context = "";
             groupedUsages.computeIfAbsent(context, k -> new ArrayList<>()).add(usage);
         }
-        
+
         boolean firstGroup = true;
         for (Map.Entry<String, List<Example.Usage>> entry : groupedUsages.entrySet()) {
             if (!firstGroup) {
                 result.append("\n\n");
             }
             firstGroup = false;
-            
+
             String context = entry.getKey();
             List<Example.Usage> examples = entry.getValue();
-            
+
             // Format header like: "to estimate, assess (gū)"
             if (!context.isEmpty()) {
                 result.append(Ansi.ansi().bold().fg(Colors.HEADER).a(context).reset()).append("\n");
             }
-            
+
             // Format examples in list format
             for (Example.Usage example : examples) {
                 result.append("• ");
@@ -308,15 +328,16 @@ public class TerminalFormatter {
                 result.append(Ansi.ansi().fg(Colors.PINYIN).a(example.pinyin()).reset());
                 result.append(" ");
                 result.append(Ansi.ansi().fg(Colors.ENGLISH).a(example.translation()).reset());
-                
+
                 if (example.breakdown() != null && !example.breakdown().isEmpty()) {
                     result.append("\n  ");
-                    result.append(Ansi.ansi().fgBright(Colors.PROVIDER).a(example.breakdown()).reset());
+                    result.append(
+                            Ansi.ansi().fgBright(Colors.PROVIDER).a(example.breakdown()).reset());
                 }
                 result.append("\n");
             }
         }
-        
+
         return result.toString();
     }
 
@@ -328,7 +349,8 @@ public class TerminalFormatter {
         }
         if (example.phoneticSeries() != null && !example.phoneticSeries().isEmpty()) {
             if (!grouped.isEmpty()) sb.append("\n\n");
-            sb.append(Ansi.ansi().bold().fg(Colors.HEADER).a("Phonetic series").reset()).append("\n");
+            sb.append(Ansi.ansi().bold().fg(Colors.HEADER).a("Phonetic series").reset())
+                    .append("\n");
             for (Example.SeriesItem item : example.phoneticSeries()) {
                 sb.append("• ");
                 sb.append(Ansi.ansi().bold().fg(Colors.CHINESE).a(item.hanzi()).reset());
@@ -346,15 +368,15 @@ public class TerminalFormatter {
         // No standalone sentence section
         return sb.toString();
     }
-    
+
     public String formatStructuralDecomposition(String html) {
         if (html == null || html.isEmpty()) {
             return html;
         }
-        
+
         // Parse HTML with JSoup
         Document doc = Jsoup.parse(html);
-        
+
         // Extract components from HTML
         List<DecompositionComponent> components = new ArrayList<>();
         Element ulElement = doc.selectFirst("ul");
@@ -364,60 +386,63 @@ public class TerminalFormatter {
                 String hanzi = "";
                 String pinyin = "";
                 String definition = "";
-                
+
                 Element hanziSpan = li.selectFirst("span.hanzi");
                 if (hanziSpan != null) hanzi = hanziSpan.text();
-                
+
                 Element pinyinSpan = li.selectFirst("span.pinyin");
                 if (pinyinSpan != null) pinyin = pinyinSpan.text();
-                
+
                 Element definitionSpan = li.selectFirst("span.definition");
                 if (definitionSpan != null) definition = definitionSpan.text();
-                
+
                 components.add(new DecompositionComponent(type, hanzi, pinyin, definition));
             }
         }
-        
+
         if (components.isEmpty()) {
             return html; // Fallback to original if no components found
         }
-        
+
         return formatComponentBoxes(components);
     }
-    
+
     private String formatComponentBoxes(List<DecompositionComponent> components) {
         StringBuilder result = new StringBuilder();
-        
+
         for (int i = 0; i < components.size(); i++) {
             if (i > 0) {
                 result.append(" + ");
             }
             result.append(formatSimpleComponent(components.get(i)));
         }
-        
+
         return result.toString();
     }
-    
+
     private String formatSimpleComponent(DecompositionComponent component) {
         String badgeText = component.type.equals("semantic") ? "SEMANTIC" : "PHONETIC";
-        String badgeColor = component.type.equals("semantic") ? "\u001B[44m\u001B[97m" : "\u001B[42m\u001B[97m"; // Blue or Green bg, white text
+        String badgeColor =
+                component.type.equals("semantic")
+                        ? "\u001B[44m\u001B[97m"
+                        : "\u001B[42m\u001B[97m"; // Blue or Green bg, white text
         String badge = badgeColor + " " + badgeText + " " + AnsiCodes.RESET;
-        
+
         String hanzi = Ansi.ansi().bold().fg(Colors.CHINESE).a(component.hanzi).reset().toString();
         String pinyin = Ansi.ansi().fg(Colors.PINYIN).a(component.pinyin).reset().toString();
-        String definition = Ansi.ansi().fg(Colors.ENGLISH).a(component.definition).reset().toString();
-        
+        String definition =
+                Ansi.ansi().fg(Colors.ENGLISH).a(component.definition).reset().toString();
+
         return badge + " " + hanzi + " " + pinyin + " (" + definition + ")";
     }
-    
-    
+
     // Helper class for decomposition components
     private static class DecompositionComponent {
         final String type;
         final String hanzi;
         final String pinyin;
         final String definition;
-        
+
         DecompositionComponent(String type, String hanzi, String pinyin, String definition) {
             this.type = type;
             this.hanzi = hanzi != null ? hanzi : "";
@@ -425,27 +450,27 @@ public class TerminalFormatter {
             this.definition = definition != null ? definition : "";
         }
     }
-    
+
     public String convertHtmlToAnsi(String html) {
         if (html == null || html.isEmpty()) {
             return html;
         }
-        
+
         // Parse HTML with JSoup
         Document doc = Jsoup.parse(html);
-        
+
         // Convert DOM to ANSI formatted text
         StringBuilder result = new StringBuilder();
         convertElementToAnsi(doc.body(), result);
-        
+
         // Clean up excessive whitespace and line breaks
         String output = result.toString();
-        output = output.replaceAll("[ \t]+", " ");  // Multiple spaces to single space
+        output = output.replaceAll("[ \t]+", " "); // Multiple spaces to single space
         output = output.replaceAll(" *\n *", "\n"); // Remove spaces around line breaks
         output = output.replaceAll("\n{3,}", "\n\n"); // Max 2 consecutive line breaks
         return output.trim(); // Remove leading/trailing whitespace
     }
-    
+
     private void convertElementToAnsi(Element element, StringBuilder result) {
         for (Node node : element.childNodes()) {
             if (node instanceof TextNode textNode) {
@@ -454,55 +479,94 @@ public class TerminalFormatter {
             } else if (node instanceof Element childElement) {
                 String tagName = childElement.tagName().toLowerCase();
                 String className = childElement.className();
-                
+
                 switch (tagName) {
                     case "h1", "h2", "h3" -> {
                         result.append("\n\n");
                         // Simple text decoration since ANSI bold is showing as literal text
-                        result.append("=== ").append(Ansi.ansi().bold().fg(Ansi.Color.WHITE)
-                                .a(childElement.text()).reset().toString()).append(" ===");
+                        result.append("=== ")
+                                .append(
+                                        Ansi.ansi()
+                                                .bold()
+                                                .fg(Ansi.Color.WHITE)
+                                                .a(childElement.text())
+                                                .reset()
+                                                .toString())
+                                .append(" ===");
                         result.append("\n\n");
                     }
                     case "h4", "h5", "h6" -> {
                         result.append("\n\n");
-                        result.append(Ansi.ansi().bold().fg(Ansi.Color.WHITE)
-                                .a(childElement.text()).reset().toString());
+                        result.append(
+                                Ansi.ansi()
+                                        .bold()
+                                        .fg(Ansi.Color.WHITE)
+                                        .a(childElement.text())
+                                        .reset()
+                                        .toString());
                         result.append("\n\n");
                     }
                     case "p" -> {
                         result.append("\n\n");
                         if ("semantic-evolution-path".equals(className)) {
-                            result.append(Ansi.ansi().fg(Colors.SEMANTIC_PATH)
-                                    .a(">> ").a(AnsiCodes.ITALIC)
-                                    .a(childElement.text()).reset().toString());
+                            result.append(
+                                    Ansi.ansi()
+                                            .fg(Colors.SEMANTIC_PATH)
+                                            .a(">> ")
+                                            .a(AnsiCodes.ITALIC)
+                                            .a(childElement.text())
+                                            .reset()
+                                            .toString());
                         } else {
                             convertElementToAnsi(childElement, result);
                         }
                         result.append("\n\n");
                     }
                     case "b", "strong" -> {
-                        result.append(Ansi.ansi().bold().a(childElement.text()).boldOff().toString());
+                        result.append(
+                                Ansi.ansi().bold().a(childElement.text()).boldOff().toString());
                     }
                     case "i", "em" -> {
-                        result.append(Ansi.ansi().a(AnsiCodes.ITALIC)
-                                .a(childElement.text()).reset().toString());
+                        result.append(
+                                Ansi.ansi()
+                                        .a(AnsiCodes.ITALIC)
+                                        .a(childElement.text())
+                                        .reset()
+                                        .toString());
                     }
                     case "span" -> {
                         if ("hanzi".equals(className)) {
-                            result.append(Ansi.ansi().bold().fg(Colors.CHINESE)
-                                    .a(childElement.text()).reset().toString());
+                            result.append(
+                                    Ansi.ansi()
+                                            .bold()
+                                            .fg(Colors.CHINESE)
+                                            .a(childElement.text())
+                                            .reset()
+                                            .toString());
                         } else if ("pinyin".equals(className)) {
                             result.append(" ");
-                            result.append(Ansi.ansi().fg(Colors.PINYIN)
-                                    .a(childElement.text()).reset().toString());
+                            result.append(
+                                    Ansi.ansi()
+                                            .fg(Colors.PINYIN)
+                                            .a(childElement.text())
+                                            .reset()
+                                            .toString());
                         } else if ("translation".equals(className)) {
                             result.append(" ");
-                            result.append(Ansi.ansi().fg(Colors.ENGLISH)
-                                    .a(childElement.text()).reset().toString());
+                            result.append(
+                                    Ansi.ansi()
+                                            .fg(Colors.ENGLISH)
+                                            .a(childElement.text())
+                                            .reset()
+                                            .toString());
                         } else if ("breakdown".equals(className)) {
                             result.append("\n  ");
-                            result.append(Ansi.ansi().fgBright(Colors.PROVIDER)
-                                    .a(childElement.text()).reset().toString());
+                            result.append(
+                                    Ansi.ansi()
+                                            .fgBright(Colors.PROVIDER)
+                                            .a(childElement.text())
+                                            .reset()
+                                            .toString());
                         } else {
                             convertElementToAnsi(childElement, result);
                         }
@@ -532,30 +596,30 @@ public class TerminalFormatter {
             }
         }
     }
-    
+
     public int getTerminalWidth() {
         // Default width, could be enhanced to detect actual terminal width
         return 80;
     }
-    
+
     private List<String> wrapText(String text, int maxWidth) {
         List<String> result = new ArrayList<>();
         if (text == null || text.isEmpty()) {
             result.add("");
             return result;
         }
-        
+
         // Extract the initial ANSI state from the beginning of the text
         AnsiState initialState = extractAnsiState(text);
-        
+
         String[] words = text.split("\\s+");
         StringBuilder currentLine = new StringBuilder();
         AnsiState currentState = new AnsiState();
-        
+
         for (String word : words) {
             // Update current state with any ANSI codes in this word
             AnsiState wordState = extractAnsiState(word);
-            
+
             // Check if adding this word would exceed the width
             String testLine = currentLine.isEmpty() ? word : currentLine + " " + word;
             if (getDisplayLength(testLine) <= maxWidth) {
@@ -570,13 +634,14 @@ public class TerminalFormatter {
                 if (!currentLine.isEmpty()) {
                     result.add(currentLine.toString());
                     currentLine = new StringBuilder();
-                    
-                    // Start the next line with the current formatting state if it has active formatting
+
+                    // Start the next line with the current formatting state if it has active
+                    // formatting
                     if (currentState.hasActiveFormatting()) {
                         currentLine.append(currentState.generateRestoreCode());
                     }
                 }
-                
+
                 // If the word itself is too long, we need to break it
                 if (getDisplayLength(word) > maxWidth) {
                     String remainingWord = word;
@@ -584,14 +649,14 @@ public class TerminalFormatter {
                         // Find the best break point
                         int breakPoint = findBreakPoint(remainingWord, maxWidth);
                         String part = remainingWord.substring(0, breakPoint);
-                        
+
                         // If we're continuing formatting from previous line, prepend restore code
                         if (currentState.hasActiveFormatting() && currentLine.isEmpty()) {
                             currentLine.append(currentState.generateRestoreCode());
                         }
                         currentLine.append(part);
                         result.add(currentLine.toString());
-                        
+
                         remainingWord = remainingWord.substring(breakPoint);
                         currentLine = new StringBuilder();
                         updateStateFromText(currentState, part);
@@ -614,26 +679,26 @@ public class TerminalFormatter {
                 }
             }
         }
-        
+
         // Add any remaining content
         if (!currentLine.isEmpty()) {
             result.add(currentLine.toString());
         }
-        
+
         return result.isEmpty() ? List.of("") : result;
     }
-    
+
     // Helper method to update ANSI state from text content
     private void updateStateFromText(AnsiState state, String text) {
         Pattern ansiPattern = Pattern.compile("\u001B\\[[0-9;]*[mK]");
         Matcher matcher = ansiPattern.matcher(text);
-        
+
         while (matcher.find()) {
             String sequence = matcher.group();
             updateAnsiState(state, sequence);
         }
     }
-    
+
     private int findBreakPoint(String text, int maxWidth) {
         // Simple approach: break at maxWidth, but could be enhanced
         // to break at word boundaries or avoid breaking ANSI sequences
@@ -649,31 +714,31 @@ public class TerminalFormatter {
 
         return breakPoint;
     }
-    
+
     private int getDisplayLength(String text) {
         if (text == null) return 0;
-        
+
         // Remove ANSI escape sequences to get actual display length
         // Using the same pattern as in our ANSI parsing methods for consistency
         String cleaned = text.replaceAll("\u001B\\[[0-9;]*[mK]", "");
-        
+
         int width = 0;
         for (int i = 0; i < cleaned.length(); ) {
             int codePoint = cleaned.codePointAt(i);
-            
+
             // Check if this is a wide character (CJK characters, emojis, etc.)
             if (isWideCharacter(codePoint)) {
                 width += 2;
             } else {
                 width += 1;
             }
-            
+
             i += Character.charCount(codePoint);
         }
-        
+
         return width;
     }
-    
+
     private boolean isWideCharacter(int codePoint) {
         // CJK Unified Ideographs
         if (codePoint >= 0x4E00 && codePoint <= 0x9FFF) return true;
@@ -696,28 +761,28 @@ public class TerminalFormatter {
         // Halfwidth and Fullwidth Forms (fullwidth only)
         if (codePoint >= 0xFF01 && codePoint <= 0xFF60) return true;
         if (codePoint >= 0xFFE0 && codePoint <= 0xFFE6) return true;
-        
+
         return false;
     }
-    
+
     // New formatting methods for providers command
 
     public String formatBoldLabel(String label) {
         return Ansi.ansi().bold().a(label).boldOff().toString();
     }
-    
+
     public String formatSupportedCapability(String capability) {
         return Ansi.ansi().fg(Ansi.Color.GREEN).a("✓ ").reset().a(capability).toString();
     }
-    
+
     public String formatUnsupportedCapability(String capability) {
         return Ansi.ansi().fg(Ansi.Color.RED).a("✗ ").reset().a(capability).toString();
     }
-    
+
     public String formatWarning(String message) {
         return Ansi.ansi().fg(Ansi.Color.YELLOW).a("⚠ ").reset().a(message).toString();
     }
-    
+
     public String formatProviderDescription(String description) {
         return formatBoldLabel("Description: ") + description;
     }

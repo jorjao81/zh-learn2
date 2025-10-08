@@ -1,10 +1,5 @@
 package com.zhlearn.infrastructure.pleco;
 
-import com.zhlearn.pinyin.PinyinToneConverter;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
@@ -13,26 +8,32 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+
+import com.zhlearn.pinyin.PinyinToneConverter;
+
 /**
- * Parser for Pleco export files (TSV format).
- * Parses entries with format: 汉字	pinyin	definition_text
+ * Parser for Pleco export files (TSV format). Parses entries with format: 汉字 pinyin definition_text
  * Converts numbered pinyin to tone marks during parsing.
  */
 public class PlecoExportParser {
-    
-    private static final CSVFormat TSV = CSVFormat.DEFAULT
-        .builder()
-        .setDelimiter('\t')
-        .setQuote('"')
-        .setIgnoreEmptyLines(false)
-        .setTrim(false)
-        .build();
-    
+
+    private static final CSVFormat TSV =
+            CSVFormat.DEFAULT
+                    .builder()
+                    .setDelimiter('\t')
+                    .setQuote('"')
+                    .setIgnoreEmptyLines(false)
+                    .setTrim(false)
+                    .build();
+
     // No sequence pattern needed after simplification
-    
+
     /**
      * Parse a Pleco export file from a file path.
-     * 
+     *
      * @param file path to the Pleco export file
      * @return list of parsed PlecoEntry objects
      * @throws IOException if file cannot be read
@@ -42,7 +43,7 @@ public class PlecoExportParser {
             return parseFromReader(r);
         }
     }
-    
+
     /**
      * Parse Pleco export data from a Reader.
      *
@@ -62,17 +63,21 @@ public class PlecoExportParser {
                     PlecoEntry entry = parseRecord(record);
                     entries.add(entry);
                 } catch (IllegalArgumentException e) {
-                    throw new IllegalArgumentException("Failed to parse record " + record.getRecordNumber() + ": " + e.getMessage(), e);
+                    throw new IllegalArgumentException(
+                            "Failed to parse record "
+                                    + record.getRecordNumber()
+                                    + ": "
+                                    + e.getMessage(),
+                            e);
                 }
             }
         }
 
         return entries;
     }
-    
+
     /**
-     * Parse a single TSV record into a PlecoEntry.
-     * Expected format: 汉字	pinyin	[definition_text]
+     * Parse a single TSV record into a PlecoEntry. Expected format: 汉字 pinyin [definition_text]
      * Definition text is optional (supports 2 or 3 column format)
      *
      * @param record the CSV record to parse
@@ -81,10 +86,16 @@ public class PlecoExportParser {
      */
     private PlecoEntry parseRecord(CSVRecord record) {
         if (record.size() < 2) {
-            throw new IllegalArgumentException("Record must have at least 2 columns (hanzi, pinyin), got " + record.size() + " columns");
+            throw new IllegalArgumentException(
+                    "Record must have at least 2 columns (hanzi, pinyin), got "
+                            + record.size()
+                            + " columns");
         }
         if (record.size() > 3) {
-            throw new IllegalArgumentException("Record must have at most 3 columns (hanzi, pinyin, definition), got " + record.size() + " columns");
+            throw new IllegalArgumentException(
+                    "Record must have at most 3 columns (hanzi, pinyin, definition), got "
+                            + record.size()
+                            + " columns");
         }
 
         String firstColumn = get(record, 0);
@@ -94,13 +105,15 @@ public class PlecoExportParser {
         // Extract hanzi from first column (remove sequence number prefix)
         String hanzi = extractHanzi(firstColumn);
         if (hanzi == null || hanzi.isEmpty()) {
-            throw new IllegalArgumentException("Invalid or empty hanzi in first column: '" + firstColumn + "'");
+            throw new IllegalArgumentException(
+                    "Invalid or empty hanzi in first column: '" + firstColumn + "'");
         }
 
         // Convert numbered pinyin to tone marks
         String pinyin = PinyinToneConverter.convertToToneMarks(pinyinColumn);
         if (pinyin == null || pinyin.isEmpty()) {
-            throw new IllegalArgumentException("Invalid or empty pinyin in second column: '" + pinyinColumn + "'");
+            throw new IllegalArgumentException(
+                    "Invalid or empty pinyin in second column: '" + pinyinColumn + "'");
         }
 
         // Definition text is used as-is (empty if not provided)
@@ -108,10 +121,10 @@ public class PlecoExportParser {
 
         return new PlecoEntry(hanzi, pinyin, definitionText);
     }
-    
+
     /**
-     * Extract hanzi characters from the first column.
-     * The first column is the hanzi itself in the export.
+     * Extract hanzi characters from the first column. The first column is the hanzi itself in the
+     * export.
      *
      * @param firstColumn the first column value
      * @return hanzi characters or null if invalid
@@ -130,10 +143,10 @@ public class PlecoExportParser {
 
         return s;
     }
-    
+
     /**
      * Get a column value from a CSV record, handling null/empty cases.
-     * 
+     *
      * @param record the CSV record
      * @param index the column index
      * @return column value or null if not available

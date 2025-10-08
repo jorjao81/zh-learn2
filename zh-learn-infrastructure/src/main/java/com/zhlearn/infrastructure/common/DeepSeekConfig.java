@@ -1,8 +1,8 @@
 package com.zhlearn.infrastructure.common;
 
 /**
- * Configuration for DeepSeek providers (OpenAI-compatible endpoint).
- * Singleton service that reads configuration from environment variables.
+ * Configuration for DeepSeek providers (OpenAI-compatible endpoint). Singleton service that reads
+ * configuration from environment variables.
  */
 public class DeepSeekConfig {
 

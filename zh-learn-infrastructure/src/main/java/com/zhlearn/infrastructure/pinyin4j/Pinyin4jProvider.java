@@ -1,15 +1,16 @@
 package com.zhlearn.infrastructure.pinyin4j;
 
+import com.zhlearn.domain.model.Hanzi;
+import com.zhlearn.domain.model.Pinyin;
+import com.zhlearn.domain.model.ProviderInfo.ProviderType;
+import com.zhlearn.domain.provider.PinyinProvider;
+
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
-import com.zhlearn.domain.model.Hanzi;
-import com.zhlearn.domain.model.Pinyin;
-import com.zhlearn.domain.model.ProviderInfo.ProviderType;
-import com.zhlearn.domain.provider.PinyinProvider;
 
 public class Pinyin4jProvider implements PinyinProvider {
 
@@ -31,9 +32,11 @@ public class Pinyin4jProvider implements PinyinProvider {
     public String getDescription() {
         return "Pure Java pinyin provider using Pinyin4j library";
     }
-    
+
     @Override
-    public ProviderType getType() { return ProviderType.LOCAL; }
+    public ProviderType getType() {
+        return ProviderType.LOCAL;
+    }
 
     @Override
     public Pinyin getPinyin(Hanzi word) {
@@ -56,7 +59,9 @@ public class Pinyin4jProvider implements PinyinProvider {
                 }
             } else {
                 // Add spacing between CJK and non-CJK boundaries for readability
-                if (pinyinBuilder.length() > 0 && i > 0 && isCjkIdeograph(characters.charAt(i - 1))) {
+                if (pinyinBuilder.length() > 0
+                        && i > 0
+                        && isCjkIdeograph(characters.charAt(i - 1))) {
                     pinyinBuilder.append(' ');
                 }
                 pinyinBuilder.append(c);
@@ -72,14 +77,14 @@ public class Pinyin4jProvider implements PinyinProvider {
     private boolean isCjkIdeograph(char c) {
         Character.UnicodeBlock block = Character.UnicodeBlock.of(c);
         return block == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
-            || block == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
-            || block == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B
-            || block == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_C
-            || block == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_D
-            || block == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_E
-            || block == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_F
-            || block == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_G
-            || block == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
-            || block == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS_SUPPLEMENT;
+                || block == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
+                || block == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B
+                || block == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_C
+                || block == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_D
+                || block == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_E
+                || block == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_F
+                || block == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_G
+                || block == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
+                || block == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS_SUPPLEMENT;
     }
 }

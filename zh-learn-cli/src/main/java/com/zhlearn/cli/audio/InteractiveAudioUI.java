@@ -1,17 +1,16 @@
 package com.zhlearn.cli.audio;
 
-import com.zhlearn.application.audio.PronunciationCandidate;
-import com.zhlearn.application.audio.SelectionSession;
-import com.zhlearn.cli.TerminalFormatter;
-import com.zhlearn.domain.model.Hanzi;
-import com.zhlearn.domain.model.Pinyin;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.NonBlockingReader;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.Path;
+import com.zhlearn.application.audio.PronunciationCandidate;
+import com.zhlearn.application.audio.SelectionSession;
+import com.zhlearn.domain.model.Hanzi;
+import com.zhlearn.domain.model.Pinyin;
 
 public class InteractiveAudioUI {
 
@@ -71,7 +70,8 @@ public class InteractiveAudioUI {
         }
     }
 
-    private void renderModernUI(PrintWriter writer, SelectionSession session, Hanzi word, Pinyin pinyin) {
+    private void renderModernUI(
+            PrintWriter writer, SelectionSession session, Hanzi word, Pinyin pinyin) {
         clearScreen(writer);
 
         // Fixed width approach to ensure perfect alignment
@@ -92,7 +92,8 @@ public class InteractiveAudioUI {
         writer.print(" ");
 
         // Calculate remaining dashes for top border to match total width
-        String titleContent = "┌─ Pronunciation for: " + word.characters() + " " + pinyin.pinyin() + " ";
+        String titleContent =
+                "┌─ Pronunciation for: " + word.characters() + " " + pinyin.pinyin() + " ";
         int remainingDashes = boxWidth - titleContent.length() - 1; // -1 for the closing ┐
         writer.print("─".repeat(Math.max(0, remainingDashes)));
         writer.println("┐");
@@ -157,11 +158,29 @@ public class InteractiveAudioUI {
 
 // Small tri-state to distinguish selected/skip/unavailable
 class TriState {
-    enum State { SELECTED, SKIPPED, UNAVAILABLE }
+    enum State {
+        SELECTED,
+        SKIPPED,
+        UNAVAILABLE
+    }
+
     final State state;
     final PronunciationCandidate value;
-    private TriState(State s, PronunciationCandidate v) { this.state = s; this.value = v; }
-    static TriState selected(PronunciationCandidate v) { return new TriState(State.SELECTED, v); }
-    static TriState skipped() { return new TriState(State.SKIPPED, null); }
-    static TriState unavailable() { return new TriState(State.UNAVAILABLE, null); }
+
+    private TriState(State s, PronunciationCandidate v) {
+        this.state = s;
+        this.value = v;
+    }
+
+    static TriState selected(PronunciationCandidate v) {
+        return new TriState(State.SELECTED, v);
+    }
+
+    static TriState skipped() {
+        return new TriState(State.SKIPPED, null);
+    }
+
+    static TriState unavailable() {
+        return new TriState(State.UNAVAILABLE, null);
+    }
 }

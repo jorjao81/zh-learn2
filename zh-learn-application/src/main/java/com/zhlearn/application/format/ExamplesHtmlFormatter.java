@@ -1,19 +1,16 @@
 package com.zhlearn.application.format;
 
-import com.zhlearn.domain.model.Example;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Formats Example usages into HTML suitable for both CLI (converted to ANSI) and Anki export.
- */
+import com.zhlearn.domain.model.Example;
+
+/** Formats Example usages into HTML suitable for both CLI (converted to ANSI) and Anki export. */
 public class ExamplesHtmlFormatter {
 
-    public ExamplesHtmlFormatter() {
-    }
+    public ExamplesHtmlFormatter() {}
 
     public String format(Example example) {
         if (example == null || example.usages() == null || example.usages().isEmpty()) {
@@ -45,12 +42,13 @@ public class ExamplesHtmlFormatter {
                 html.append("<span class=\"pinyin\">").append(nz(u.pinyin())).append("</span>\n");
                 if (u.translation() != null && !u.translation().isBlank()) {
                     html.append("<span class=\"translation\">- ")
-                        .append(u.translation()).append("</span>\n");
+                            .append(u.translation())
+                            .append("</span>\n");
                 }
                 if (u.breakdown() != null && !u.breakdown().isBlank()) {
                     html.append("<span class=\"breakdown\">")
-                        .append(prefixBreakdown(u.breakdown()))
-                        .append("</span>\n");
+                            .append(prefixBreakdown(u.breakdown()))
+                            .append("</span>\n");
                 }
                 html.append("</li>\n");
             }
@@ -68,7 +66,9 @@ public class ExamplesHtmlFormatter {
     }
 
     private String formatPhoneticSeriesOnly(Example example) {
-        if (example == null || example.phoneticSeries() == null || example.phoneticSeries().isEmpty()) {
+        if (example == null
+                || example.phoneticSeries() == null
+                || example.phoneticSeries().isEmpty()) {
             return "";
         }
         StringBuilder html = new StringBuilder();
@@ -79,7 +79,8 @@ public class ExamplesHtmlFormatter {
             html.append("<span class=\"pinyin\">").append(nz(item.pinyin())).append("</span>\n");
             if (item.meaning() != null && !item.meaning().isBlank()) {
                 html.append("<span class=\"translation\">- ")
-                    .append(item.meaning()).append("</span>\n");
+                        .append(item.meaning())
+                        .append("</span>\n");
             }
             html.append("</li>\n");
         }
@@ -96,7 +97,7 @@ public class ExamplesHtmlFormatter {
         return t;
     }
 
-    private String nz(String s) { return s == null ? "" : s; }
-
+    private String nz(String s) {
+        return s == null ? "" : s;
+    }
 }
-

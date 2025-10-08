@@ -18,27 +18,33 @@ public class DictionaryDefinitionProvider implements DefinitionProvider {
         // Use the dictionary's name directly (e.g., "pleco-export")
         return dictionary.getName();
     }
-    
+
     @Override
     public String getDescription() {
-        return "Dictionary-based definition provider using " + dictionary.getName() + " dictionary data";
+        return "Dictionary-based definition provider using "
+                + dictionary.getName()
+                + " dictionary data";
     }
-    
+
     @Override
-    public ProviderType getType() { return ProviderType.DICTIONARY; }
+    public ProviderType getType() {
+        return ProviderType.DICTIONARY;
+    }
 
     @Override
     public Definition getDefinition(Hanzi word) {
-        return dictionary.lookup(word.characters())
-            .map(analysis -> {
-                // If the dictionary definition is a placeholder for empty definitions,
-                // return null to trigger AI generation
-                String defText = analysis.definition().meaning();
-                if ("[No definition available in dictionary]".equals(defText)) {
-                    return null;
-                }
-                return analysis.definition();
-            })
-            .orElse(null);
+        return dictionary
+                .lookup(word.characters())
+                .map(
+                        analysis -> {
+                            // If the dictionary definition is a placeholder for empty definitions,
+                            // return null to trigger AI generation
+                            String defText = analysis.definition().meaning();
+                            if ("[No definition available in dictionary]".equals(defText)) {
+                                return null;
+                            }
+                            return analysis.definition();
+                        })
+                .orElse(null);
     }
 }

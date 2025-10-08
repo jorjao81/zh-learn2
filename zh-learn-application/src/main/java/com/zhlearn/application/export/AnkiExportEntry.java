@@ -1,23 +1,22 @@
 package com.zhlearn.application.export;
 
 /**
- * Represents a single Anki note entry for export in "Chinese 2" format.
- * Contains all the fields needed for Anki TSV import.
+ * Represents a single Anki note entry for export in "Chinese 2" format. Contains all the fields
+ * needed for Anki TSV import.
  */
 public record AnkiExportEntry(
-    String noteType,
-    String simplified,
-    String pinyin,
-    String pronunciation,
-    String definition,
-    String examples,
-    String etymology,
-    String components,
-    String similar,
-    String passive,
-    String alternatePronunciations,
-    String noHearing
-) {
+        String noteType,
+        String simplified,
+        String pinyin,
+        String pronunciation,
+        String definition,
+        String examples,
+        String etymology,
+        String components,
+        String similar,
+        String passive,
+        String alternatePronunciations,
+        String noHearing) {
     public AnkiExportEntry {
         if (noteType == null) noteType = "";
         if (simplified == null) simplified = "";
@@ -33,4 +32,3 @@ public record AnkiExportEntry(
         if (noHearing == null) noHearing = "";
     }
 }
-

@@ -1,13 +1,14 @@
 package com.zhlearn.infrastructure.common;
 
 /**
- * Configuration for Alibaba Cloud DashScope (Qwen3) via OpenAI-compatible endpoint.
- * Singleton service that reads configuration from environment variables.
- * Uses DASHSCOPE_API_KEY and optional DASHSCOPE_BASE_URL (defaults to Singapore international endpoint).
+ * Configuration for Alibaba Cloud DashScope (Qwen3) via OpenAI-compatible endpoint. Singleton
+ * service that reads configuration from environment variables. Uses DASHSCOPE_API_KEY and optional
+ * DASHSCOPE_BASE_URL (defaults to Singapore international endpoint).
  */
 public class DashScopeConfig {
 
-    private static final String DEFAULT_BASE_URL = "https://dashscope-intl.aliyuncs.com/compatible-mode/v1";
+    private static final String DEFAULT_BASE_URL =
+            "https://dashscope-intl.aliyuncs.com/compatible-mode/v1";
     private static final String API_KEY_ENVIRONMENT_VARIABLE = "DASHSCOPE_API_KEY";
     private static final String BASE_URL_ENVIRONMENT_VARIABLE = "DASHSCOPE_BASE_URL";
 

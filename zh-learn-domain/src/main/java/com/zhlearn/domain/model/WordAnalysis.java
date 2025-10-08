@@ -4,14 +4,13 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 public record WordAnalysis(
-    Hanzi word,
-    Pinyin pinyin,
-    Definition definition,
-    StructuralDecomposition structuralDecomposition,
-    Example examples,
-    Explanation explanation,
-    Optional<Path> pronunciation
-) {
+        Hanzi word,
+        Pinyin pinyin,
+        Definition definition,
+        StructuralDecomposition structuralDecomposition,
+        Example examples,
+        Explanation explanation,
+        Optional<Path> pronunciation) {
     public WordAnalysis {
         if (word == null) {
             throw new IllegalArgumentException("Chinese word cannot be null");

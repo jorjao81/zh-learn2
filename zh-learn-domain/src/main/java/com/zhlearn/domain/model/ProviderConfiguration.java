@@ -1,7 +1,7 @@
 package com.zhlearn.domain.model;
 
 public class ProviderConfiguration {
-    
+
     private final String defaultProvider;
     private final String pinyinProvider;
     private final String definitionProvider;
@@ -10,7 +10,7 @@ public class ProviderConfiguration {
     private final String exampleProvider;
     private final String explanationProvider;
     private final String audioProvider;
-    
+
     public ProviderConfiguration(String defaultProvider) {
         this(defaultProvider, null, null, null, null, null, null, null);
     }
@@ -33,12 +33,12 @@ public class ProviderConfiguration {
         this.explanationProvider = explanationProvider;
         this.audioProvider = audioProvider;
     }
-    
+
     public String getPinyinProvider() {
         // Always default to pinyin4j unless explicitly set
         return pinyinProvider != null ? pinyinProvider : "pinyin4j";
     }
-    
+
     public String getDefinitionProvider() {
         return definitionProvider != null ? definitionProvider : defaultProvider;
     }
@@ -50,15 +50,15 @@ public class ProviderConfiguration {
     public String getDecompositionProvider() {
         return decompositionProvider != null ? decompositionProvider : defaultProvider;
     }
-    
+
     public String getExampleProvider() {
         return exampleProvider != null ? exampleProvider : defaultProvider;
     }
-    
+
     public String getExplanationProvider() {
         return explanationProvider != null ? explanationProvider : defaultProvider;
     }
-    
+
     public String getAudioProvider() {
         return audioProvider != null ? audioProvider : defaultProvider;
     }
@@ -66,18 +66,26 @@ public class ProviderConfiguration {
     public String getDefaultProvider() {
         return defaultProvider;
     }
-    
+
     @Override
     public String toString() {
-        return "ProviderConfiguration{" +
-                "default=" + defaultProvider +
-                ", pinyin=" + getPinyinProvider() +
-                ", definition=" + getDefinitionProvider() +
-                ", definitionFormatter=" + getDefinitionFormatterProvider() +
-                ", decomposition=" + getDecompositionProvider() +
-                ", example=" + getExampleProvider() +
-                ", explanation=" + getExplanationProvider() +
-                ", audio=" + getAudioProvider() +
-                '}';
+        return "ProviderConfiguration{"
+                + "default="
+                + defaultProvider
+                + ", pinyin="
+                + getPinyinProvider()
+                + ", definition="
+                + getDefinitionProvider()
+                + ", definitionFormatter="
+                + getDefinitionFormatterProvider()
+                + ", decomposition="
+                + getDecompositionProvider()
+                + ", example="
+                + getExampleProvider()
+                + ", explanation="
+                + getExplanationProvider()
+                + ", audio="
+                + getAudioProvider()
+                + '}';
     }
 }
