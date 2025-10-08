@@ -61,18 +61,21 @@ class QwenTtsClient {
         this.retry = retry;
     }
 
-public QwenTtsResult synthesize(String voice, String text) throws IOException, InterruptedException {
+    public QwenTtsResult synthesize(String voice, String text)
+            throws IOException, InterruptedException {
         try {
-            return retry.invoke(() -> {
-                try {
-                    return synthesizeOnce(voice, text);
-                } catch (IOException | InterruptedException e) {
-                    throw new RuntimeException(e);
-                } catch (ContentModerationException e) {
-                    // ContentModerationException is a RuntimeException, so it doesn't need wrapping
-                    throw e;
-                }
-            });
+            return retry.invoke(
+                    () -> {
+                        try {
+                            return synthesizeOnce(voice, text);
+                        } catch (IOException | InterruptedException e) {
+                            throw new RuntimeException(e);
+                        } catch (ContentModerationException e) {
+                            // ContentModerationException is a RuntimeException, so it doesn't need
+                            // wrapping
+                            throw e;
+                        }
+                    });
         } catch (RateLimitException rateLimit) {
             log.warn(
                     "[QwenTTS] Rate limit exhausted after {} attempts for voice '{}'",
@@ -93,7 +96,8 @@ public QwenTtsResult synthesize(String voice, String text) throws IOException, I
         }
     }
 
-private QwenTtsResult synthesizeOnce(String voice, String text) throws IOException, InterruptedException {
+    private QwenTtsResult synthesizeOnce(String voice, String text)
+            throws IOException, InterruptedException {
         Map<String, Object> payload = new HashMap<>();
         payload.put("model", model);
         Map<String, Object> input = new HashMap<>();

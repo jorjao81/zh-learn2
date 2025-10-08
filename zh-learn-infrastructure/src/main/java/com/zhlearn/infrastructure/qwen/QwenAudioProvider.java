@@ -1,12 +1,5 @@
 package com.zhlearn.infrastructure.qwen;
 
-import com.zhlearn.domain.model.Hanzi;
-import com.zhlearn.domain.model.Pinyin;
-import com.zhlearn.domain.model.ProviderInfo.ProviderType;
-import com.zhlearn.infrastructure.audio.AbstractTtsAudioProvider;
-import com.zhlearn.infrastructure.audio.AudioCache;
-import com.zhlearn.infrastructure.audio.AudioPaths;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -18,6 +11,13 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
+
+import com.zhlearn.domain.model.Hanzi;
+import com.zhlearn.domain.model.Pinyin;
+import com.zhlearn.domain.model.ProviderInfo.ProviderType;
+import com.zhlearn.infrastructure.audio.AbstractTtsAudioProvider;
+import com.zhlearn.infrastructure.audio.AudioCache;
+import com.zhlearn.infrastructure.audio.AudioPaths;
 
 public class QwenAudioProvider extends AbstractTtsAudioProvider {
     private static final String NAME = "qwen-tts";
@@ -32,7 +32,12 @@ public class QwenAudioProvider extends AbstractTtsAudioProvider {
     private final HttpClient httpClient;
     private final QwenTtsClient injectedClient;
 
-    public QwenAudioProvider(AudioCache audioCache, AudioPaths audioPaths, ExecutorService executorService, HttpClient httpClient, QwenTtsClient client) {
+    public QwenAudioProvider(
+            AudioCache audioCache,
+            AudioPaths audioPaths,
+            ExecutorService executorService,
+            HttpClient httpClient,
+            QwenTtsClient client) {
         super(audioCache, audioPaths, executorService);
         this.httpClient = Objects.requireNonNull(httpClient, "httpClient");
         this.injectedClient = client;
@@ -61,7 +66,8 @@ public class QwenAudioProvider extends AbstractTtsAudioProvider {
     }
 
     @Override
-    protected Path synthesizeVoice(String voice, String text) throws IOException, InterruptedException {
+    protected Path synthesizeVoice(String voice, String text)
+            throws IOException, InterruptedException {
         QwenTtsResult result = getClient().synthesize(voice, text);
         return download(result.audioUrl());
     }
@@ -77,7 +83,7 @@ public class QwenAudioProvider extends AbstractTtsAudioProvider {
         return client;
     }
 
-@Override
+    @Override
     protected String formatDescription(String voice) {
         return voice + " 🤖";
     }

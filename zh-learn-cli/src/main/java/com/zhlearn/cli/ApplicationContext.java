@@ -1,5 +1,6 @@
 package com.zhlearn.cli;
 
+import java.net.http.HttpClient;
 import java.util.List;
 
 import com.zhlearn.application.audio.AnkiMediaLocator;
@@ -62,8 +63,14 @@ public class ApplicationContext {
                 List.of(
                         new AnkiPronunciationProvider(),
                         new ForvoAudioProvider(audioExecutor),
-                        new QwenAudioProvider(audioExecutor),
-                        new TencentAudioProvider(audioExecutor));
+                        new QwenAudioProvider(
+                                audioCache,
+                                audioPaths,
+                                audioExecutor.getExecutor(),
+                                HttpClient.newHttpClient(),
+                                null),
+                        new TencentAudioProvider(
+                                audioCache, audioPaths, audioExecutor.getExecutor(), null));
     }
 
     /** Create a new ApplicationContext with default configuration. */

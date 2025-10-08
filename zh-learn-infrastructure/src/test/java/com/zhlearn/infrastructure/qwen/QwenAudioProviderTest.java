@@ -1,15 +1,13 @@
 package com.zhlearn.infrastructure.qwen;
 
-import com.zhlearn.domain.model.Hanzi;
-import com.zhlearn.domain.model.Pinyin;
-import com.zhlearn.domain.provider.AudioProvider;
-import com.zhlearn.domain.model.ProviderInfo.ProviderType;
-import com.zhlearn.infrastructure.audio.AudioCache;
-import com.zhlearn.infrastructure.audio.AudioNormalizer;
-import com.zhlearn.infrastructure.audio.AudioPaths;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URI;
@@ -27,6 +25,9 @@ import org.junit.jupiter.api.io.TempDir;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
+import com.zhlearn.infrastructure.audio.AudioCache;
+import com.zhlearn.infrastructure.audio.AudioNormalizer;
+import com.zhlearn.infrastructure.audio.AudioPaths;
 
 class QwenAudioProviderTest {
 
@@ -129,7 +130,8 @@ class QwenAudioProviderTest {
 
     @Test
     void reportsMetadataAccurately() {
-        QwenAudioProvider provider = createProvider(new FakeQwenClient(), HttpClient.newHttpClient());
+        QwenAudioProvider provider =
+                createProvider(new FakeQwenClient(), HttpClient.newHttpClient());
         assertThat(provider.getName()).isEqualTo("qwen-tts");
         assertThat(provider.getType()).isEqualTo(ProviderType.AI);
         assertThat(provider.getDescription())

@@ -1,24 +1,13 @@
 package com.zhlearn.infrastructure.tencent;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.HexFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
@@ -26,15 +15,6 @@ import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.infrastructure.audio.AbstractTtsAudioProvider;
 import com.zhlearn.infrastructure.audio.AudioCache;
 import com.zhlearn.infrastructure.audio.AudioPaths;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Base64;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
 
 public class TencentAudioProvider extends AbstractTtsAudioProvider {
     private static final String NAME = "tencent-tts";
@@ -55,13 +35,17 @@ public class TencentAudioProvider extends AbstractTtsAudioProvider {
     private final TencentTtsClient injectedClient;
     private final Map<String, Integer> voiceNameToType;
 
-    public TencentAudioProvider(AudioCache audioCache, AudioPaths audioPaths, ExecutorService executorService, TencentTtsClient client) {
+    public TencentAudioProvider(
+            AudioCache audioCache,
+            AudioPaths audioPaths,
+            ExecutorService executorService,
+            TencentTtsClient client) {
         super(audioCache, audioPaths, executorService);
         this.injectedClient = client;
         this.voiceNameToType = buildVoiceNameToTypeMap();
     }
 
-private Map<String, Integer> buildVoiceNameToTypeMap() {
+    private Map<String, Integer> buildVoiceNameToTypeMap() {
         Map<String, Integer> map = new LinkedHashMap<>();
         for (Map.Entry<Integer, String> entry : VOICES.entrySet()) {
             map.put(entry.getValue(), entry.getKey());
@@ -90,7 +74,8 @@ private Map<String, Integer> buildVoiceNameToTypeMap() {
     }
 
     @Override
-    protected Path synthesizeVoice(String voice, String text) throws IOException, InterruptedException {
+    protected Path synthesizeVoice(String voice, String text)
+            throws IOException, InterruptedException {
         Integer voiceType = voiceNameToType.get(voice);
         if (voiceType == null) {
             throw new IllegalArgumentException("Unknown voice: " + voice);
@@ -104,7 +89,9 @@ private Map<String, Integer> buildVoiceNameToTypeMap() {
             if (injectedClient != null) {
                 client = injectedClient;
             } else {
-                client = new TencentTtsClient(resolveSecretId(), resolveSecretKey(), resolveRegion());
+                client =
+                        new TencentTtsClient(
+                                resolveSecretId(), resolveSecretKey(), resolveRegion());
             }
         }
         return client;
@@ -130,7 +117,8 @@ private Map<String, Integer> buildVoiceNameToTypeMap() {
     private String resolveSecretId() {
         String secretId = System.getenv(SECRET_ID_ENV);
         if (secretId == null || secretId.isBlank()) {
-            throw new IllegalStateException("TENCENT_SECRET_ID is required for Tencent TTS provider");
+            throw new IllegalStateException(
+                    "TENCENT_SECRET_ID is required for Tencent TTS provider");
         }
         return secretId;
     }
