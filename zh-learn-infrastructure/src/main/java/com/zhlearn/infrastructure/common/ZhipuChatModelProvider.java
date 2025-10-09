@@ -80,7 +80,13 @@ public class ZhipuChatModelProvider<T> {
 
             return config.getResponseMapper().apply(response);
         } catch (Exception e) {
-            throw new RuntimeException(config.getErrorMessagePrefix() + ": " + e.getMessage(), e);
+            throw new RuntimeException(
+                    config.getErrorMessagePrefix()
+                            + " for word '"
+                            + word.characters()
+                            + "': "
+                            + e.getMessage(),
+                    e);
         }
     }
 
