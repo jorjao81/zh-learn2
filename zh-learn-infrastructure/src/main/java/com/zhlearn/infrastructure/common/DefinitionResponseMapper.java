@@ -2,38 +2,22 @@ package com.zhlearn.infrastructure.common;
 
 import java.util.function.Function;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.zhlearn.domain.model.Definition;
 
 public class DefinitionResponseMapper implements Function<String, Definition> {
 
-    private static final Logger log = LoggerFactory.getLogger(DefinitionResponseMapper.class);
-
     @Override
     public Definition apply(String response) {
-        try {
-            // Strip markdown code blocks if present
-            String cleanedResponse = stripMarkdownCodeBlocks(response);
+        // Strip markdown code blocks if present
+        String cleanedResponse = stripMarkdownCodeBlocks(response);
 
-            // Trim whitespace and return as Definition
-            String trimmed = cleanedResponse.trim();
-            if (trimmed.isEmpty()) {
-                throw new IllegalStateException("Empty definition response");
-            }
-
-            return new Definition(trimmed);
-
-        } catch (IllegalStateException e) {
-            throw e;
-        } catch (Exception e) {
-            String errorMessage =
-                    e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
-            log.warn("Failed to parse definition response: {}", errorMessage);
-            log.debug("Original response: {}", response);
-            throw new RuntimeException("Failed to parse definition response: " + errorMessage, e);
+        // Trim whitespace and return as Definition
+        String trimmed = cleanedResponse.trim();
+        if (trimmed.isEmpty()) {
+            throw new IllegalStateException("Empty definition response");
         }
+
+        return new Definition(trimmed);
     }
 
     private String stripMarkdownCodeBlocks(String input) {

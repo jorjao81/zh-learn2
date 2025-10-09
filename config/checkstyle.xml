@@ -15,9 +15,28 @@
         <property name="checks" value="RegexpSingleline"/>
     </module>
 
+    <!-- Exclude test files from IllegalCatch rule -->
+    <module name="SuppressionSingleFilter">
+        <property name="files" value=".*[\\/]src[\\/]test[\\/].*"/>
+        <property name="checks" value="IllegalCatch"/>
+    </module>
+
     <!-- Require imports instead of fully qualified class names in code -->
     <module name="RegexpSingleline">
         <property name="format" value="^(?!import\s).*\b[a-z]+(?:\.[a-z0-9_]+)+\.[A-Z][A-Za-z0-9_]*"/>
         <property name="message" value="Use an import and the simple class name; avoid fully qualified references."/>
+    </module>
+
+    <!-- Enforce specific exception catching -->
+    <module name="TreeWalker">
+        <module name="SuppressionCommentFilter"/>
+        <module name="IllegalCatch">
+            <property name="illegalClassNames" value="Exception, RuntimeException, Throwable, Error, NullPointerException"/>
+        </module>
+    </module>
+
+    <!-- Exclude module descriptors from processing (different syntax) -->
+    <module name="BeforeExecutionExclusionFileFilter">
+        <property name="fileNamePattern" value="module\-info\.java$"/>
     </module>
 </module>

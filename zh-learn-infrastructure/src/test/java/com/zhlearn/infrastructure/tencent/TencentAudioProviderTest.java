@@ -161,7 +161,7 @@ class TencentAudioProviderTest {
 
         @Override
         public TencentTtsResult synthesize(int voiceType, String text) {
-            throw new RuntimeException("Test failure for voice " + voiceType);
+            throw new TencentTtsClientException("Test failure for voice " + voiceType);
         }
     }
 
@@ -172,7 +172,7 @@ class TencentAudioProviderTest {
 
         @Override
         public TencentTtsResult synthesize(int voiceType, String text) {
-            throw new RuntimeException("No voices available");
+            throw new TencentTtsClientException("No voices available");
         }
     }
 }

@@ -10,8 +10,7 @@ import com.zhlearn.domain.exception.GracefulProviderFailureException;
  * <p>This is a RuntimeException to avoid polluting method signatures while still being catchable by
  * the abstract provider framework via isSkippableException().
  */
-public class ContentModerationException extends RuntimeException
-        implements GracefulProviderFailureException {
+public class ContentModerationException extends GracefulProviderFailureException {
     public ContentModerationException(String message) {
         super(message);
     }

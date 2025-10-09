@@ -58,36 +58,26 @@ public class ZhipuChatModelProvider<T> {
     }
 
     public T processWithContext(Hanzi word, Optional<String> additionalContext) {
-        try {
-            String prompt = buildPrompt(word.characters(), additionalContext.orElse(null));
+        String prompt = buildPrompt(word.characters(), additionalContext.orElse(null));
 
-            long startTime = System.currentTimeMillis();
-            String timestamp = Instant.now().toString();
-            log.info(
-                    "[AI Call] {} for '{}': sent at {}",
-                    config.getProviderName(),
-                    word.characters(),
-                    timestamp);
+        long startTime = System.currentTimeMillis();
+        String timestamp = Instant.now().toString();
+        log.info(
+                "[AI Call] {} for '{}': sent at {}",
+                config.getProviderName(),
+                word.characters(),
+                timestamp);
 
-            String response = chatModel.chat(prompt);
+        String response = chatModel.chat(prompt);
 
-            long duration = System.currentTimeMillis() - startTime;
-            log.info(
-                    "[AI Call] {} for '{}': received after {}ms",
-                    config.getProviderName(),
-                    word.characters(),
-                    duration);
+        long duration = System.currentTimeMillis() - startTime;
+        log.info(
+                "[AI Call] {} for '{}': received after {}ms",
+                config.getProviderName(),
+                word.characters(),
+                duration);
 
-            return config.getResponseMapper().apply(response);
-        } catch (Exception e) {
-            throw new RuntimeException(
-                    config.getErrorMessagePrefix()
-                            + " for word '"
-                            + word.characters()
-                            + "': "
-                            + e.getMessage(),
-                    e);
-        }
+        return config.getResponseMapper().apply(response);
     }
 
     private String buildPrompt(String chineseWord) {

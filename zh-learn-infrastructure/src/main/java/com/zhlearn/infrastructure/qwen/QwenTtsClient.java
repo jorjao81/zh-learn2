@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zhlearn.infrastructure.common.CheckedExceptionWrapper;
 
 import io.helidon.faulttolerance.Retry;
 
@@ -68,8 +69,10 @@ class QwenTtsClient {
                     () -> {
                         try {
                             return synthesizeOnce(voice, text);
-                        } catch (IOException | InterruptedException e) {
-                            throw new RuntimeException(e);
+                        } catch (IOException e) {
+                            throw CheckedExceptionWrapper.wrap(e);
+                        } catch (InterruptedException e) {
+                            throw CheckedExceptionWrapper.wrap(e);
                         } catch (ContentModerationException e) {
                             // ContentModerationException is a RuntimeException, so it doesn't need
                             // wrapping
@@ -82,17 +85,9 @@ class QwenTtsClient {
                     MAX_ATTEMPTS,
                     voice);
             throw new IOException("DashScope rate limit exhausted after retries", rateLimit);
-        } catch (RuntimeException runtime) {
-            Throwable cause = runtime.getCause();
-            if (cause instanceof IOException io) {
-                throw io;
-            }
-            if (cause instanceof InterruptedException interrupted) {
-                Thread.currentThread().interrupt();
-                throw interrupted;
-            }
-            // ContentModerationException is a RuntimeException, let it propagate as-is
-            throw runtime;
+        } catch (CheckedExceptionWrapper wrapper) {
+            wrapper.unwrapAndThrow();
+            throw new AssertionError("Unreachable code after unwrapAndThrow()", wrapper);
         }
     }
 

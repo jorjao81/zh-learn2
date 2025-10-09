@@ -87,26 +87,15 @@ public class AudioOrchestrator {
                     candidates.size());
 
             return candidates;
-        } catch (Exception e) {
+        } catch (GracefulProviderFailureException e) {
             long duration = System.currentTimeMillis() - startTime;
-            if (e instanceof GracefulProviderFailureException) {
-                log.warn(
-                        "[Audio] Provider '{}' gracefully failed for '{}' after {}ms: {}",
-                        provider.getName(),
-                        word.characters(),
-                        duration,
-                        e.getMessage());
-                return List.of();
-            } else {
-                log.error(
-                        "[Audio] Provider '{}' failed for '{}' after {}ms: {}",
-                        provider.getName(),
-                        word.characters(),
-                        duration,
-                        e.getMessage(),
-                        e);
-                throw e;
-            }
+            log.warn(
+                    "[Audio] Provider '{}' gracefully failed for '{}' after {}ms: {}",
+                    provider.getName(),
+                    word.characters(),
+                    duration,
+                    e.getMessage());
+            return List.of();
         }
     }
 

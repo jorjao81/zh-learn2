@@ -103,7 +103,7 @@ public abstract class AbstractTtsAudioProvider implements AudioProvider {
                 } finally {
                     Files.deleteIfExists(tempFile);
                 }
-            } catch (Exception e) {
+            } catch (IOException | InterruptedException e) {
                 if (isSkippableException(e)) {
                     log.warn(
                             "[{}] Skipping voice '{}' for '{}': {}",
@@ -133,43 +133,24 @@ public abstract class AbstractTtsAudioProvider implements AudioProvider {
                 word.characters(),
                 getVoices().size());
 
-        try {
-            List<PronunciationDescription> results;
-            if (executorService != null) {
-                log.debug(
-                        "[{}] Using parallel voice synthesis for '{}'",
-                        getName(),
-                        word.characters());
-                results = synthesizeParallel(word, pinyin);
-            } else {
-                log.debug(
-                        "[{}] Using sequential voice synthesis for '{}'",
-                        getName(),
-                        word.characters());
-                results = synthesizeSequential(word, pinyin);
-            }
-
-            long duration = System.currentTimeMillis() - startTime;
-            log.info(
-                    "[{}] Completed TTS synthesis for '{}' in {}ms - {} pronunciations",
-                    getName(),
-                    word.characters(),
-                    duration,
-                    results.size());
-            return results;
-
-        } catch (Exception e) {
-            long duration = System.currentTimeMillis() - startTime;
-            log.error(
-                    "[{}] Failed TTS synthesis for '{}' after {}ms: {}",
-                    getName(),
-                    word.characters(),
-                    duration,
-                    e.getMessage(),
-                    e);
-            throw new RuntimeException(
-                    "Failed to get audio pronunciations for " + word.characters(), e);
+        List<PronunciationDescription> results;
+        if (executorService != null) {
+            log.debug("[{}] Using parallel voice synthesis for '{}'", getName(), word.characters());
+            results = synthesizeParallel(word, pinyin);
+        } else {
+            log.debug(
+                    "[{}] Using sequential voice synthesis for '{}'", getName(), word.characters());
+            results = synthesizeSequential(word, pinyin);
         }
+
+        long duration = System.currentTimeMillis() - startTime;
+        log.info(
+                "[{}] Completed TTS synthesis for '{}' in {}ms - {} pronunciations",
+                getName(),
+                word.characters(),
+                duration,
+                results.size());
+        return results;
     }
 
     private List<PronunciationDescription> synthesizeParallel(Hanzi word, Pinyin pinyin) {
@@ -182,7 +163,7 @@ public abstract class AbstractTtsAudioProvider implements AudioProvider {
                                                     try {
                                                         return downloadVoiceDescription(
                                                                 voice, word, pinyin);
-                                                    } catch (Exception e) {
+                                                    } catch (IOException | InterruptedException e) {
                                                         if (isSkippableException(e)) {
                                                             log.warn(
                                                                     "[{}] Skipping voice '{}' for '{}': {}",
@@ -215,7 +196,7 @@ public abstract class AbstractTtsAudioProvider implements AudioProvider {
             try {
                 PronunciationDescription desc = downloadVoiceDescription(voice, word, pinyin);
                 results.add(desc);
-            } catch (Exception e) {
+            } catch (IOException | InterruptedException e) {
                 if (isSkippableException(e)) {
                     log.warn(
                             "[{}] Skipping voice '{}' for '{}': {}",
