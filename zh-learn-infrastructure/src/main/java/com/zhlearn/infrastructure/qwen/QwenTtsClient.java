@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zhlearn.domain.exception.UnrecoverableProviderException;
 import com.zhlearn.infrastructure.common.CheckedExceptionWrapper;
 
 import io.helidon.faulttolerance.Retry;
@@ -63,7 +64,7 @@ class QwenTtsClient {
     }
 
     public QwenTtsResult synthesize(String voice, String text)
-            throws IOException, InterruptedException {
+            throws IOException, InterruptedException, UnrecoverableProviderException {
         try {
             return retry.invoke(
                     () -> {
@@ -73,10 +74,10 @@ class QwenTtsClient {
                             throw CheckedExceptionWrapper.wrap(e);
                         } catch (InterruptedException e) {
                             throw CheckedExceptionWrapper.wrap(e);
-                        } catch (ContentModerationException e) {
-                            // ContentModerationException is a RuntimeException, so it doesn't need
-                            // wrapping
-                            throw e;
+                        } catch (UnrecoverableProviderException e) {
+                            // UnrecoverableProviderException is checked, wrap it to propagate
+                            // through retry
+                            throw CheckedExceptionWrapper.wrap(e);
                         }
                     });
         } catch (RateLimitException rateLimit) {
@@ -92,7 +93,7 @@ class QwenTtsClient {
     }
 
     private QwenTtsResult synthesizeOnce(String voice, String text)
-            throws IOException, InterruptedException {
+            throws IOException, InterruptedException, UnrecoverableProviderException {
         Map<String, Object> payload = new HashMap<>();
         payload.put("model", model);
         Map<String, Object> input = new HashMap<>();

@@ -2,12 +2,14 @@ package com.zhlearn.infrastructure.common;
 
 import java.io.IOException;
 
+import com.zhlearn.domain.exception.UnrecoverableProviderException;
+
 /**
  * Type-safe wrapper for checked exceptions in lambda/retry scenarios.
  *
  * <p>This wrapper allows checked exceptions to be thrown from lambdas (which cannot declare checked
- * exceptions) and then safely unwrapped. The wrapper only accepts IOException and
- * InterruptedException via its factory methods, providing compile-time safety.
+ * exceptions) and then safely unwrapped. The wrapper accepts IOException, InterruptedException, and
+ * UnrecoverableProviderException via its factory methods, providing compile-time safety.
  *
  * <p>Usage:
  *
@@ -39,6 +41,10 @@ public final class CheckedExceptionWrapper extends RuntimeException {
         return new CheckedExceptionWrapper(e);
     }
 
+    public static CheckedExceptionWrapper wrap(UnrecoverableProviderException e) {
+        return new CheckedExceptionWrapper(e);
+    }
+
     /**
      * Unwraps and re-throws the wrapped checked exception.
      *
@@ -46,8 +52,10 @@ public final class CheckedExceptionWrapper extends RuntimeException {
      *
      * @throws IOException if wrapped exception is IOException
      * @throws InterruptedException if wrapped exception is InterruptedException
+     * @throws UnrecoverableProviderException if wrapped exception is UnrecoverableProviderException
      */
-    public void unwrapAndThrow() throws IOException, InterruptedException {
+    public void unwrapAndThrow()
+            throws IOException, InterruptedException, UnrecoverableProviderException {
         Throwable cause = getCause();
         if (cause instanceof IOException io) {
             throw io;
@@ -55,6 +63,9 @@ public final class CheckedExceptionWrapper extends RuntimeException {
         if (cause instanceof InterruptedException ie) {
             Thread.currentThread().interrupt();
             throw ie;
+        }
+        if (cause instanceof UnrecoverableProviderException upe) {
+            throw upe;
         }
         throw new AssertionError("Unexpected wrapped exception type: " + cause.getClass(), cause);
     }
