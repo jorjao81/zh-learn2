@@ -81,7 +81,7 @@ public class MultiCharExampleResponseMapper implements Function<String, Example>
             log.warn("Failed to parse examples YAML: {}", e.getMessage());
             log.debug("Original response: {}", yamlResponse);
             log.debug("YAML parse exception", e);
-            throw new RuntimeException("Failed to parse YAML response: " + errorMessage, e);
+            throw new ResponseParsingException("Failed to parse YAML response: " + errorMessage, e);
         }
     }
 

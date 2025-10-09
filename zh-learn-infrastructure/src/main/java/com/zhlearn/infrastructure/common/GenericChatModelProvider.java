@@ -101,7 +101,17 @@ public class GenericChatModelProvider<T> {
                 word.characters(),
                 duration);
 
-        return config.getResponseMapper().apply(response);
+        try {
+            return config.getResponseMapper().apply(response);
+        } catch (IllegalStateException | ResponseParsingException e) {
+            throw new RuntimeException(
+                    config.getErrorMessagePrefix()
+                            + " for word '"
+                            + word.characters()
+                            + "': "
+                            + e.getMessage(),
+                    e);
+        }
     }
 
     private String buildPrompt(String chineseWord) {
