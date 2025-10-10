@@ -87,8 +87,7 @@ class QwenTtsClient {
                     voice);
             throw new IOException("DashScope rate limit exhausted after retries", rateLimit);
         } catch (CheckedExceptionWrapper wrapper) {
-            wrapper.unwrapAndThrow();
-            throw new AssertionError("Unreachable code after unwrapAndThrow()", wrapper);
+            throw wrapper.unwrap();
         }
     }
 
