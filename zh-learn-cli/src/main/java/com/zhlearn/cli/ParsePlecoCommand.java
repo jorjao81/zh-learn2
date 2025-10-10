@@ -459,79 +459,70 @@ public class ParsePlecoCommand implements Runnable {
                                                         analysisFuture, audioCandidatesFuture)
                                                 .thenAccept(
                                                         ignored -> {
-                                                            try {
-                                                                WordAnalysisResult analysisResult =
-                                                                        analysisFuture.get();
+                                                            WordAnalysisResult analysisResult =
+                                                                    analysisFuture.join();
+                                                            List<PronunciationCandidate>
+                                                                    audioCandidates =
+                                                                            audioCandidatesFuture
+                                                                                    .join();
+                                                            CombinedResult combinedResult =
+                                                                    new CombinedResult(
+                                                                            analysisResult,
+                                                                            audioCandidates);
+
+                                                            // Display result immediately when
+                                                            // ready
+                                                            synchronized (this) {
+                                                                WordAnalysisResult result =
+                                                                        combinedResult
+                                                                                .analysisResult();
                                                                 List<PronunciationCandidate>
-                                                                        audioCandidates =
-                                                                                audioCandidatesFuture
-                                                                                        .get();
-                                                                CombinedResult combinedResult =
-                                                                        new CombinedResult(
-                                                                                analysisResult,
-                                                                                audioCandidates);
+                                                                        audioCandsFromResult =
+                                                                                combinedResult
+                                                                                        .audioCandidates();
 
-                                                                // Display result immediately when
-                                                                // ready
-                                                                synchronized (this) {
-                                                                    WordAnalysisResult result =
-                                                                            combinedResult
-                                                                                    .analysisResult();
-                                                                    List<PronunciationCandidate>
-                                                                            audioCandsFromResult =
-                                                                                    combinedResult
-                                                                                            .audioCandidates();
+                                                                int completed =
+                                                                        completedCount
+                                                                                .incrementAndGet();
+                                                                double percentage =
+                                                                        (completed * 100.0)
+                                                                                / maxToProcess;
 
-                                                                    int completed =
-                                                                            completedCount
-                                                                                    .incrementAndGet();
-                                                                    double percentage =
-                                                                            (completed * 100.0)
-                                                                                    / maxToProcess;
+                                                                int successIndex =
+                                                                        successCount
+                                                                                .incrementAndGet();
 
-                                                                    int successIndex =
-                                                                            successCount
-                                                                                    .incrementAndGet();
+                                                                System.out.println("=".repeat(80));
+                                                                System.out.printf(
+                                                                        "Word %d/%d (%.1f%%) - '%s' (completed in %.2fs)%n",
+                                                                        completed,
+                                                                        maxToProcess,
+                                                                        percentage,
+                                                                        result.entry.hanzi(),
+                                                                        result.duration / 1000.0);
+                                                                System.out.println("=".repeat(80));
 
-                                                                    System.out.println(
-                                                                            "=".repeat(80));
-                                                                    System.out.printf(
-                                                                            "Word %d/%d (%.1f%%) - '%s' (completed in %.2fs)%n",
-                                                                            completed,
-                                                                            maxToProcess,
-                                                                            percentage,
-                                                                            result.entry.hanzi(),
-                                                                            result.duration
-                                                                                    / 1000.0);
-                                                                    System.out.println(
-                                                                            "=".repeat(80));
-
-                                                                    if (rawOutput) {
-                                                                        parent.getAnalysisPrinter()
-                                                                                .printRaw(
-                                                                                        result.analysis);
-                                                                    } else {
-                                                                        parent.getAnalysisPrinter()
-                                                                                .printFormatted(
-                                                                                        result.analysis);
-                                                                    }
-
-                                                                    System.out.println();
-
-                                                                    // Collect for export and store
-                                                                    // with audio candidates for
-                                                                    // later selection
-                                                                    successfulAnalyses.add(
-                                                                            result.analysis);
-                                                                    wordsWithAudio.add(
-                                                                            new WordWithAudioCandidates(
-                                                                                    result.analysis,
-                                                                                    audioCandsFromResult));
+                                                                if (rawOutput) {
+                                                                    parent.getAnalysisPrinter()
+                                                                            .printRaw(
+                                                                                    result.analysis);
+                                                                } else {
+                                                                    parent.getAnalysisPrinter()
+                                                                            .printFormatted(
+                                                                                    result.analysis);
                                                                 }
-                                                            } catch (Exception e) {
-                                                                throw new RuntimeException(
-                                                                        "Error processing combined analysis and audio results",
-                                                                        e);
+
+                                                                System.out.println();
+
+                                                                // Collect for export and store
+                                                                // with audio candidates for
+                                                                // later selection
+                                                                successfulAnalyses.add(
+                                                                        result.analysis);
+                                                                wordsWithAudio.add(
+                                                                        new WordWithAudioCandidates(
+                                                                                result.analysis,
+                                                                                audioCandsFromResult));
                                                             }
                                                         });
                                     })

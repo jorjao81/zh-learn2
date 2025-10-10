@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 
+import com.zhlearn.domain.exception.UnrecoverableProviderException;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
@@ -67,7 +68,7 @@ public class QwenAudioProvider extends AbstractTtsAudioProvider {
 
     @Override
     protected Path synthesizeVoice(String voice, String text)
-            throws IOException, InterruptedException {
+            throws IOException, InterruptedException, UnrecoverableProviderException {
         QwenTtsResult result = getClient().synthesize(voice, text);
         return download(result.audioUrl());
     }
@@ -91,11 +92,6 @@ public class QwenAudioProvider extends AbstractTtsAudioProvider {
     @Override
     protected String cacheKey(Hanzi word, Pinyin pinyin, String voice) {
         return voice + "|" + word.characters() + "|" + pinyin.pinyin();
-    }
-
-    @Override
-    protected boolean isSkippableException(Exception e) {
-        return e instanceof ContentModerationException;
     }
 
     private Path download(URI audioUrl) throws IOException, InterruptedException {

@@ -41,7 +41,7 @@ class TencentTtsClient {
             TextToVoiceResponse resp = client.TextToVoice(req);
             return new TencentTtsResult(resp.getAudio(), resp.getSessionId());
         } catch (TencentCloudSDKException e) {
-            throw new RuntimeException("Tencent TTS API error", e);
+            throw new TencentTtsClientException("Tencent TTS API error", e);
         }
     }
 }

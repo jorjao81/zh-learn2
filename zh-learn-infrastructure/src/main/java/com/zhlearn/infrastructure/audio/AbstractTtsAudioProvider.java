@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.zhlearn.domain.exception.UnrecoverableProviderException;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.provider.AudioProvider;
@@ -53,23 +54,16 @@ public abstract class AbstractTtsAudioProvider implements AudioProvider {
      * @return Path to temporary audio file
      * @throws IOException if synthesis fails
      * @throws InterruptedException if interrupted
+     * @throws UnrecoverableProviderException if the provider encounters an unrecoverable error
      */
     protected abstract Path synthesizeVoice(String voice, String text)
-            throws IOException, InterruptedException;
+            throws IOException, InterruptedException, UnrecoverableProviderException;
 
     /** Format a human-readable description for a voice. */
     protected abstract String formatDescription(String voice);
 
     /** Generate a cache key for this word/pinyin/voice combination. */
     protected abstract String cacheKey(Hanzi word, Pinyin pinyin, String voice);
-
-    /**
-     * Check if an exception should be logged as a warning and skipped (e.g., content moderation).
-     * Default: false (all exceptions are propagated).
-     */
-    protected boolean isSkippableException(Exception e) {
-        return false;
-    }
 
     @Override
     public Optional<Path> getPronunciation(Hanzi word, Pinyin pinyin) {
@@ -103,16 +97,15 @@ public abstract class AbstractTtsAudioProvider implements AudioProvider {
                 } finally {
                     Files.deleteIfExists(tempFile);
                 }
-            } catch (Exception e) {
-                if (isSkippableException(e)) {
-                    log.warn(
-                            "[{}] Skipping voice '{}' for '{}': {}",
-                            getName(),
-                            voice,
-                            word.characters(),
-                            e.getMessage());
-                    continue;
-                }
+            } catch (UnrecoverableProviderException e) {
+                log.warn(
+                        "[{}] Skipping voice '{}' for '{}': {}",
+                        getName(),
+                        voice,
+                        word.characters(),
+                        e.getMessage());
+                continue;
+            } catch (IOException | InterruptedException e) {
                 if (e instanceof InterruptedException) {
                     Thread.currentThread().interrupt();
                 }
@@ -133,43 +126,24 @@ public abstract class AbstractTtsAudioProvider implements AudioProvider {
                 word.characters(),
                 getVoices().size());
 
-        try {
-            List<PronunciationDescription> results;
-            if (executorService != null) {
-                log.debug(
-                        "[{}] Using parallel voice synthesis for '{}'",
-                        getName(),
-                        word.characters());
-                results = synthesizeParallel(word, pinyin);
-            } else {
-                log.debug(
-                        "[{}] Using sequential voice synthesis for '{}'",
-                        getName(),
-                        word.characters());
-                results = synthesizeSequential(word, pinyin);
-            }
-
-            long duration = System.currentTimeMillis() - startTime;
-            log.info(
-                    "[{}] Completed TTS synthesis for '{}' in {}ms - {} pronunciations",
-                    getName(),
-                    word.characters(),
-                    duration,
-                    results.size());
-            return results;
-
-        } catch (Exception e) {
-            long duration = System.currentTimeMillis() - startTime;
-            log.error(
-                    "[{}] Failed TTS synthesis for '{}' after {}ms: {}",
-                    getName(),
-                    word.characters(),
-                    duration,
-                    e.getMessage(),
-                    e);
-            throw new RuntimeException(
-                    "Failed to get audio pronunciations for " + word.characters(), e);
+        List<PronunciationDescription> results;
+        if (executorService != null) {
+            log.debug("[{}] Using parallel voice synthesis for '{}'", getName(), word.characters());
+            results = synthesizeParallel(word, pinyin);
+        } else {
+            log.debug(
+                    "[{}] Using sequential voice synthesis for '{}'", getName(), word.characters());
+            results = synthesizeSequential(word, pinyin);
         }
+
+        long duration = System.currentTimeMillis() - startTime;
+        log.info(
+                "[{}] Completed TTS synthesis for '{}' in {}ms - {} pronunciations",
+                getName(),
+                word.characters(),
+                duration,
+                results.size());
+        return results;
     }
 
     private List<PronunciationDescription> synthesizeParallel(Hanzi word, Pinyin pinyin) {
@@ -182,16 +156,15 @@ public abstract class AbstractTtsAudioProvider implements AudioProvider {
                                                     try {
                                                         return downloadVoiceDescription(
                                                                 voice, word, pinyin);
-                                                    } catch (Exception e) {
-                                                        if (isSkippableException(e)) {
-                                                            log.warn(
-                                                                    "[{}] Skipping voice '{}' for '{}': {}",
-                                                                    getName(),
-                                                                    voice,
-                                                                    word.characters(),
-                                                                    e.getMessage());
-                                                            return null;
-                                                        }
+                                                    } catch (UnrecoverableProviderException e) {
+                                                        log.warn(
+                                                                "[{}] Skipping voice '{}' for '{}': {}",
+                                                                getName(),
+                                                                voice,
+                                                                word.characters(),
+                                                                e.getMessage());
+                                                        return null;
+                                                    } catch (IOException | InterruptedException e) {
                                                         throw new RuntimeException(
                                                                 "Failed to download voice "
                                                                         + voice
@@ -215,16 +188,15 @@ public abstract class AbstractTtsAudioProvider implements AudioProvider {
             try {
                 PronunciationDescription desc = downloadVoiceDescription(voice, word, pinyin);
                 results.add(desc);
-            } catch (Exception e) {
-                if (isSkippableException(e)) {
-                    log.warn(
-                            "[{}] Skipping voice '{}' for '{}': {}",
-                            getName(),
-                            voice,
-                            word.characters(),
-                            e.getMessage());
-                    continue;
-                }
+            } catch (UnrecoverableProviderException e) {
+                log.warn(
+                        "[{}] Skipping voice '{}' for '{}': {}",
+                        getName(),
+                        voice,
+                        word.characters(),
+                        e.getMessage());
+                continue;
+            } catch (IOException | InterruptedException e) {
                 throw new RuntimeException("Failed to synthesize voice " + voice, e);
             }
         }
@@ -232,7 +204,8 @@ public abstract class AbstractTtsAudioProvider implements AudioProvider {
     }
 
     private PronunciationDescription downloadVoiceDescription(
-            String voice, Hanzi word, Pinyin pinyin) throws IOException, InterruptedException {
+            String voice, Hanzi word, Pinyin pinyin)
+            throws IOException, InterruptedException, UnrecoverableProviderException {
         long startTime = System.currentTimeMillis();
         log.debug("[{}] Processing voice '{}' for '{}'", getName(), voice, word.characters());
 

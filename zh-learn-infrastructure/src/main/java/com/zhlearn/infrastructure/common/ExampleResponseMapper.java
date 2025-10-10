@@ -8,6 +8,7 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.zhlearn.domain.model.Example;
@@ -70,36 +71,31 @@ public class ExampleResponseMapper implements Function<String, Example> {
 
         } catch (IllegalStateException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             String errorMessage =
                     e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
             log.warn("Failed to parse examples YAML: {}", e.getMessage());
             log.debug("Original response: {}", yamlResponse);
             log.debug("YAML parse exception", e);
-            throw new RuntimeException("Failed to parse YAML response: " + errorMessage, e);
+            throw new ResponseParsingException("Failed to parse YAML response: " + errorMessage, e);
         }
     }
 
     private List<Example.SeriesItem> parsePhoneticSeries(Map<String, Object> response) {
-        try {
-            Object raw = response.get("phonetic_series");
-            if (raw == null) return List.of();
-            List<Map<String, Object>> list = (List<Map<String, Object>>) raw;
-            List<Example.SeriesItem> result = new ArrayList<>();
-            for (Map<String, Object> item : list) {
-                if (item == null) continue;
-                String hanzi = (String) item.get("hanzi");
-                String pinyin = (String) item.get("pinyin");
-                String meaning = (String) item.get("meaning");
-                if (hanzi != null && !hanzi.isBlank()) {
-                    result.add(new Example.SeriesItem(hanzi, pinyin, meaning));
-                }
+        Object raw = response.get("phonetic_series");
+        if (raw == null) return List.of();
+        List<Map<String, Object>> list = (List<Map<String, Object>>) raw;
+        List<Example.SeriesItem> result = new ArrayList<>();
+        for (Map<String, Object> item : list) {
+            if (item == null) continue;
+            String hanzi = (String) item.get("hanzi");
+            String pinyin = (String) item.get("pinyin");
+            String meaning = (String) item.get("meaning");
+            if (hanzi != null && !hanzi.isBlank()) {
+                result.add(new Example.SeriesItem(hanzi, pinyin, meaning));
             }
-            return result;
-        } catch (RuntimeException ex) {
-            log.debug("Failed to parse phonetic_series: {}", ex.getMessage());
-            throw new RuntimeException("Failed to parse phonetic_series", ex);
         }
+        return result;
     }
 
     // Standalone sentences not supported

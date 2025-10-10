@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.zhlearn.domain.exception.GracefulProviderFailureException;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.provider.AudioProvider;
@@ -65,49 +64,27 @@ public class AudioOrchestrator {
         long startTime = System.currentTimeMillis();
         log.info("[Audio] Starting provider '{}' for '{}'", provider.getName(), word.characters());
 
-        try {
-            List<PronunciationCandidate> candidates =
-                    provider.getPronunciationsWithDescriptions(word, pinyin).stream()
-                            .map(
-                                    desc ->
-                                            new PronunciationCandidate(
-                                                    provider.getName(),
-                                                    validateAbsolutePath(
-                                                            provider.getName(), desc.path()),
-                                                    desc.description()))
-                            .filter(candidate -> candidate.file() != null)
-                            .collect(Collectors.toList());
+        List<PronunciationCandidate> candidates =
+                provider.getPronunciationsWithDescriptions(word, pinyin).stream()
+                        .map(
+                                desc ->
+                                        new PronunciationCandidate(
+                                                provider.getName(),
+                                                validateAbsolutePath(
+                                                        provider.getName(), desc.path()),
+                                                desc.description()))
+                        .filter(candidate -> candidate.file() != null)
+                        .collect(Collectors.toList());
 
-            long duration = System.currentTimeMillis() - startTime;
-            log.info(
-                    "[Audio] Provider '{}' completed for '{}' in {}ms - {} candidates",
-                    provider.getName(),
-                    word.characters(),
-                    duration,
-                    candidates.size());
+        long duration = System.currentTimeMillis() - startTime;
+        log.info(
+                "[Audio] Provider '{}' completed for '{}' in {}ms - {} candidates",
+                provider.getName(),
+                word.characters(),
+                duration,
+                candidates.size());
 
-            return candidates;
-        } catch (Exception e) {
-            long duration = System.currentTimeMillis() - startTime;
-            if (e instanceof GracefulProviderFailureException) {
-                log.warn(
-                        "[Audio] Provider '{}' gracefully failed for '{}' after {}ms: {}",
-                        provider.getName(),
-                        word.characters(),
-                        duration,
-                        e.getMessage());
-                return List.of();
-            } else {
-                log.error(
-                        "[Audio] Provider '{}' failed for '{}' after {}ms: {}",
-                        provider.getName(),
-                        word.characters(),
-                        duration,
-                        e.getMessage(),
-                        e);
-                throw e;
-            }
-        }
+        return candidates;
     }
 
     static Path validateAbsolutePath(String providerName, Path provided) {

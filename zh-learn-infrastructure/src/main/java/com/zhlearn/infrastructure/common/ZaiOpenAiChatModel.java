@@ -1,5 +1,6 @@
 package com.zhlearn.infrastructure.common;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -73,7 +74,7 @@ public class ZaiOpenAiChatModel implements ChatModel {
                 } else {
                     throw new RuntimeException("HTTP " + resp.statusCode() + ": " + resp.body());
                 }
-            } catch (Exception e) {
+            } catch (IOException | InterruptedException e) {
                 lastError = new RuntimeException(e);
             }
         }
@@ -112,7 +113,7 @@ public class ZaiOpenAiChatModel implements ChatModel {
         return sb.toString();
     }
 
-    private String extractContent(String json) throws Exception {
+    private String extractContent(String json) throws IOException {
         JsonNode root = MAPPER.readTree(json);
         JsonNode choices = root.path("choices");
         if (choices.isArray() && choices.size() > 0) {

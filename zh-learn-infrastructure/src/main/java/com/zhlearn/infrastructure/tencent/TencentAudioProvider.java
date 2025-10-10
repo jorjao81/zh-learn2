@@ -80,8 +80,12 @@ public class TencentAudioProvider extends AbstractTtsAudioProvider {
         if (voiceType == null) {
             throw new IllegalArgumentException("Unknown voice: " + voice);
         }
-        TencentTtsResult result = getClient().synthesize(voiceType, text);
-        return decodeAudioData(result.audioData());
+        try {
+            TencentTtsResult result = getClient().synthesize(voiceType, text);
+            return decodeAudioData(result.audioData());
+        } catch (TencentTtsClientException e) {
+            throw new RuntimeException("Tencent TTS synthesis failed for voice " + voice, e);
+        }
     }
 
     private TencentTtsClient getClient() {
