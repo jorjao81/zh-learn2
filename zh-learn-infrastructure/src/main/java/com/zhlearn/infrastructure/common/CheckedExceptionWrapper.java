@@ -46,9 +46,35 @@ public final class CheckedExceptionWrapper extends RuntimeException {
     }
 
     /**
+     * Returns the wrapped checked exception for explicit re-throwing.
+     *
+     * <p>For InterruptedException, restores the thread's interrupted status before returning the
+     * exception.
+     *
+     * @return the wrapped checked exception
+     * @throws IOException if wrapped exception is IOException
+     * @throws InterruptedException if wrapped exception is InterruptedException
+     * @throws UnrecoverableProviderException if wrapped exception is UnrecoverableProviderException
+     */
+    public Throwable unwrap() throws IOException, InterruptedException, UnrecoverableProviderException {
+        Throwable cause = getCause();
+        if (cause instanceof IOException io) {
+            return io;
+        }
+        if (cause instanceof InterruptedException ie) {
+            Thread.currentThread().interrupt();
+            return ie;
+        }
+        if (cause instanceof UnrecoverableProviderException upe) {
+            return upe;
+        }
+        throw new AssertionError("Unexpected wrapped exception type: " + cause.getClass(), cause);
+    }
+
+    /**
      * Unwraps and re-throws the wrapped checked exception.
      *
-     * <p>For InterruptedException, also restores the thread's interrupted status before throwing.
+     * <p>Provided for compatibility with callers that expect a re-throwing helper.
      *
      * @throws IOException if wrapped exception is IOException
      * @throws InterruptedException if wrapped exception is InterruptedException
@@ -56,17 +82,6 @@ public final class CheckedExceptionWrapper extends RuntimeException {
      */
     public void unwrapAndThrow()
             throws IOException, InterruptedException, UnrecoverableProviderException {
-        Throwable cause = getCause();
-        if (cause instanceof IOException io) {
-            throw io;
-        }
-        if (cause instanceof InterruptedException ie) {
-            Thread.currentThread().interrupt();
-            throw ie;
-        }
-        if (cause instanceof UnrecoverableProviderException upe) {
-            throw upe;
-        }
-        throw new AssertionError("Unexpected wrapped exception type: " + cause.getClass(), cause);
+        throw unwrap();
     }
 }
