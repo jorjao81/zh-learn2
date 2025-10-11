@@ -310,7 +310,7 @@
                         </dependency>
                     </dependencies>
                     <configuration>
-                        <configLocation>config/checkstyle.xml</configLocation>
+                        <configLocation>${maven.multiModuleProjectDirectory}/config/checkstyle.xml</configLocation>
                         <consoleOutput>true</consoleOutput>
                         <failsOnError>false</failsOnError>
                         <includeTestSourceDirectory>true</includeTestSourceDirectory>
@@ -322,7 +322,7 @@
                     <version>${maven-pmd-plugin.version}</version>
                     <configuration>
                         <rulesets>
-                            <ruleset>config/pmd-ruleset.xml</ruleset>
+                            <ruleset>${maven.multiModuleProjectDirectory}/config/pmd-ruleset.xml</ruleset>
                         </rulesets>
                         <printFailingErrors>true</printFailingErrors>
                         <failOnViolation>true</failOnViolation>
