@@ -46,42 +46,26 @@ public final class CheckedExceptionWrapper extends RuntimeException {
     }
 
     /**
-     * Returns the wrapped checked exception for explicit re-throwing.
+     * Unwraps and throws the wrapped checked exception.
      *
-     * <p>For InterruptedException, restores the thread's interrupted status before returning the
-     * exception.
+     * <p>For InterruptedException, restores the thread's interrupted status before throwing.
      *
-     * @return the wrapped checked exception
      * @throws IOException if wrapped exception is IOException
      * @throws InterruptedException if wrapped exception is InterruptedException
      * @throws UnrecoverableProviderException if wrapped exception is UnrecoverableProviderException
      */
-    public Throwable unwrap() throws IOException, InterruptedException, UnrecoverableProviderException {
+    public void unwrap() throws IOException, InterruptedException, UnrecoverableProviderException {
         Throwable cause = getCause();
         if (cause instanceof IOException io) {
-            return io;
+            throw io;
         }
         if (cause instanceof InterruptedException ie) {
             Thread.currentThread().interrupt();
-            return ie;
+            throw ie;
         }
         if (cause instanceof UnrecoverableProviderException upe) {
-            return upe;
+            throw upe;
         }
         throw new AssertionError("Unexpected wrapped exception type: " + cause.getClass(), cause);
-    }
-
-    /**
-     * Unwraps and re-throws the wrapped checked exception.
-     *
-     * <p>Provided for compatibility with callers that expect a re-throwing helper.
-     *
-     * @throws IOException if wrapped exception is IOException
-     * @throws InterruptedException if wrapped exception is InterruptedException
-     * @throws UnrecoverableProviderException if wrapped exception is UnrecoverableProviderException
-     */
-    public void unwrapAndThrow()
-            throws IOException, InterruptedException, UnrecoverableProviderException {
-        throw unwrap();
     }
 }

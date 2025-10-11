@@ -75,8 +75,8 @@ class QwenTtsClient {
                         } catch (InterruptedException e) {
                             throw CheckedExceptionWrapper.wrap(e);
                         } catch (UnrecoverableProviderException e) {
-                            // UnrecoverableProviderException is checked, wrap it to propagate
-                            // through retry
+                            // UnrecoverableProviderException (including ContentModerationException)
+                            // is checked, wrap it to propagate through retry
                             throw CheckedExceptionWrapper.wrap(e);
                         }
                     });
@@ -87,7 +87,8 @@ class QwenTtsClient {
                     voice);
             throw new IOException("DashScope rate limit exhausted after retries", rateLimit);
         } catch (CheckedExceptionWrapper wrapper) {
-            throw wrapper.unwrap();
+            wrapper.unwrap();
+            throw new AssertionError("unreachable");
         }
     }
 
