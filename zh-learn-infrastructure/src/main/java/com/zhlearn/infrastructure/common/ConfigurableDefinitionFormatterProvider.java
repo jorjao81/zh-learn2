@@ -13,32 +13,8 @@ public class ConfigurableDefinitionFormatterProvider implements DefinitionFormat
 
     private final BiFunction<Hanzi, Optional<String>, Definition> singleCharProcessor;
     private final BiFunction<Hanzi, Optional<String>, Definition> multiCharProcessor;
-    private final Optional<ProviderConfig<Definition>> singleCharConfig;
-    private final Optional<ProviderConfig<Definition>> multiCharConfig;
     private final String name;
     private final String description;
-
-    public ConfigurableDefinitionFormatterProvider(
-            ProviderConfig<Definition> config, String name, String description) {
-        this(
-                new GenericChatModelProvider<>(config)::process,
-                new GenericChatModelProvider<>(config)::process,
-                Optional.of(config),
-                Optional.of(config),
-                name,
-                description);
-    }
-
-    public ConfigurableDefinitionFormatterProvider(
-            GenericChatModelProvider<Definition> provider, String name, String description) {
-        this(
-                provider::process,
-                provider::process,
-                Optional.empty(),
-                Optional.empty(),
-                name,
-                description);
-    }
 
     public ConfigurableDefinitionFormatterProvider(
             ProviderConfig<Definition> singleCharConfig,
@@ -48,74 +24,17 @@ public class ConfigurableDefinitionFormatterProvider implements DefinitionFormat
         this(
                 new GenericChatModelProvider<>(singleCharConfig)::process,
                 new GenericChatModelProvider<>(multiCharConfig)::process,
-                Optional.of(singleCharConfig),
-                Optional.of(multiCharConfig),
-                name,
-                description);
-    }
-
-    public ConfigurableDefinitionFormatterProvider(
-            GenericChatModelProvider<Definition> singleCharProvider,
-            GenericChatModelProvider<Definition> multiCharProvider,
-            String name,
-            String description) {
-        this(
-                singleCharProvider::process,
-                multiCharProvider::process,
-                Optional.empty(),
-                Optional.empty(),
-                name,
-                description);
-    }
-
-    public ConfigurableDefinitionFormatterProvider(
-            BiFunction<Hanzi, Optional<String>, Definition> processor,
-            String name,
-            String description) {
-        this(processor, processor, Optional.empty(), Optional.empty(), name, description);
-    }
-
-    public ConfigurableDefinitionFormatterProvider(
-            BiFunction<Hanzi, Optional<String>, Definition> singleCharProcessor,
-            BiFunction<Hanzi, Optional<String>, Definition> multiCharProcessor,
-            String name,
-            String description) {
-        this(
-                singleCharProcessor,
-                multiCharProcessor,
-                Optional.empty(),
-                Optional.empty(),
                 name,
                 description);
     }
 
     public ConfigurableDefinitionFormatterProvider(
             BiFunction<Hanzi, Optional<String>, Definition> singleCharProcessor,
-            ProviderConfig<Definition> singleCharConfig,
             BiFunction<Hanzi, Optional<String>, Definition> multiCharProcessor,
-            ProviderConfig<Definition> multiCharConfig,
-            String name,
-            String description) {
-        this(
-                singleCharProcessor,
-                multiCharProcessor,
-                Optional.of(singleCharConfig),
-                Optional.of(multiCharConfig),
-                name,
-                description);
-    }
-
-    ConfigurableDefinitionFormatterProvider(
-            BiFunction<Hanzi, Optional<String>, Definition> singleCharProcessor,
-            BiFunction<Hanzi, Optional<String>, Definition> multiCharProcessor,
-            Optional<ProviderConfig<Definition>> singleCharConfig,
-            Optional<ProviderConfig<Definition>> multiCharConfig,
             String name,
             String description) {
         this.singleCharProcessor = singleCharProcessor;
         this.multiCharProcessor = multiCharProcessor;
-        this.singleCharConfig = singleCharConfig;
-        this.multiCharConfig = multiCharConfig;
         this.name = name;
         this.description = description;
     }
@@ -148,14 +67,6 @@ public class ConfigurableDefinitionFormatterProvider implements DefinitionFormat
         }
 
         return selectProcessor(type).apply(word, rawDefinition);
-    }
-
-    Optional<ProviderConfig<Definition>> singleCharConfig() {
-        return singleCharConfig;
-    }
-
-    Optional<ProviderConfig<Definition>> multiCharConfig() {
-        return multiCharConfig;
     }
 
     private BiFunction<Hanzi, Optional<String>, Definition> selectProcessor(WordType type) {

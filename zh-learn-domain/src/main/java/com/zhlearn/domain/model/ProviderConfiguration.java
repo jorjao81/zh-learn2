@@ -63,10 +63,6 @@ public class ProviderConfiguration {
         return audioProvider != null ? audioProvider : defaultProvider;
     }
 
-    public String getDefaultProvider() {
-        return defaultProvider;
-    }
-
     @Override
     public String toString() {
         return "ProviderConfiguration{"

@@ -18,10 +18,6 @@ public class CacheEntry implements Serializable {
         return response;
     }
 
-    public Instant getTimestamp() {
-        return timestamp;
-    }
-
     public boolean isExpired(Instant now, long maxAgeSeconds) {
         return now.isAfter(timestamp.plusSeconds(maxAgeSeconds));
     }

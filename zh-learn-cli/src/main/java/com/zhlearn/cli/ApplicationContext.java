@@ -24,7 +24,6 @@ import com.zhlearn.infrastructure.tencent.TencentAudioProvider;
  */
 public class ApplicationContext {
 
-    private final Configuration config;
     private final TerminalFormatter terminalFormatter;
     private final ExamplesHtmlFormatter examplesHtmlFormatter;
     private final AnalysisPrinter analysisPrinter;
@@ -38,9 +37,7 @@ public class ApplicationContext {
     private final AudioDownloadExecutor audioExecutor;
     private final List<AudioProvider> audioProviders;
 
-    private ApplicationContext(Configuration config) {
-        this.config = config;
-
+    private ApplicationContext() {
         // Initialize core singleton services
         this.terminalFormatter = new TerminalFormatter();
         this.examplesHtmlFormatter = new ExamplesHtmlFormatter();
@@ -62,7 +59,7 @@ public class ApplicationContext {
         this.audioProviders =
                 List.of(
                         new AnkiPronunciationProvider(),
-                        new ForvoAudioProvider(audioExecutor),
+                        new ForvoAudioProvider(),
                         new QwenAudioProvider(
                                 audioCache,
                                 audioPaths,
@@ -73,19 +70,9 @@ public class ApplicationContext {
                                 audioCache, audioPaths, audioExecutor.getExecutor(), null));
     }
 
-    /** Create a new ApplicationContext with default configuration. */
+    /** Create a new ApplicationContext. */
     public static ApplicationContext create() {
-        return create(Configuration.defaultConfig());
-    }
-
-    /** Create a new ApplicationContext with custom configuration. */
-    public static ApplicationContext create(Configuration config) {
-        return new ApplicationContext(config);
-    }
-
-    // Getters for all managed beans
-    public Configuration getConfig() {
-        return config;
+        return new ApplicationContext();
     }
 
     public TerminalFormatter getTerminalFormatter() {
@@ -110,10 +97,6 @@ public class ApplicationContext {
 
     public AudioPaths getAudioPaths() {
         return audioPaths;
-    }
-
-    public AudioNormalizer getAudioNormalizer() {
-        return audioNormalizer;
     }
 
     public AudioCache getAudioCache() {

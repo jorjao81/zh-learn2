@@ -12,8 +12,6 @@ public class MultiCharStructuralDecompositionProviderConfig {
             "/multi-char/structural-decomposition/examples/";
     private static final Function<String, StructuralDecomposition> RESPONSE_MAPPER =
             StructuralDecomposition::new;
-    private static final Double DEFAULT_TEMPERATURE = 0.3;
-    private static final Integer DEFAULT_MAX_TOKENS = 8000;
 
     public MultiCharStructuralDecompositionProviderConfig() {}
 
@@ -27,13 +25,5 @@ public class MultiCharStructuralDecompositionProviderConfig {
 
     public Function<String, StructuralDecomposition> responseMapper() {
         return RESPONSE_MAPPER;
-    }
-
-    public Double defaultTemperature() {
-        return DEFAULT_TEMPERATURE;
-    }
-
-    public Integer defaultMaxTokens() {
-        return DEFAULT_MAX_TOKENS;
     }
 }

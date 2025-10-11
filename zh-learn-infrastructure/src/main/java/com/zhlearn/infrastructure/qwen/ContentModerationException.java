@@ -14,8 +14,4 @@ public class ContentModerationException extends UnrecoverableProviderException {
     public ContentModerationException(String message) {
         super(message);
     }
-
-    public ContentModerationException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

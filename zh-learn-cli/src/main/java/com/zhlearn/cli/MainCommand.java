@@ -113,10 +113,6 @@ public class MainCommand implements Runnable {
         return audioProviders;
     }
 
-    public AudioProvider getAudioProvider() {
-        return audioProviders.isEmpty() ? null : audioProviders.get(0);
-    }
-
     public AudioDownloadExecutor getAudioExecutor() {
         return audioExecutor;
     }
@@ -127,10 +123,6 @@ public class MainCommand implements Runnable {
 
     public TerminalFormatter getTerminalFormatter() {
         return terminalFormatter;
-    }
-
-    public ExamplesHtmlFormatter getExamplesHtmlFormatter() {
-        return examplesHtmlFormatter;
     }
 
     public AnalysisPrinter getAnalysisPrinter() {
@@ -200,12 +192,6 @@ public class MainCommand implements Runnable {
     public DefinitionFormatterProvider createDefinitionFormatterProvider(
             String providerName, String model) {
         return aiProviderFactory.createDefinitionFormatterProvider(providerName, model);
-    }
-
-    public void shutdown() {
-        if (audioExecutor != null) {
-            audioExecutor.shutdown();
-        }
     }
 
     @Override

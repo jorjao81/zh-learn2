@@ -19,28 +19,6 @@ public class ConfigurableExampleProvider implements ExampleProvider {
     private final String description;
 
     public ConfigurableExampleProvider(
-            ProviderConfig<Example> config, String name, String description) {
-        this(
-                new GenericChatModelProvider<>(config)::process,
-                new GenericChatModelProvider<>(config)::process,
-                Optional.of(config),
-                Optional.of(config),
-                name,
-                description);
-    }
-
-    public ConfigurableExampleProvider(
-            GenericChatModelProvider<Example> provider, String name, String description) {
-        this(
-                provider::process,
-                provider::process,
-                Optional.empty(),
-                Optional.empty(),
-                name,
-                description);
-    }
-
-    public ConfigurableExampleProvider(
             ProviderConfig<Example> singleCharConfig,
             ProviderConfig<Example> multiCharConfig,
             String name,
@@ -55,27 +33,6 @@ public class ConfigurableExampleProvider implements ExampleProvider {
     }
 
     public ConfigurableExampleProvider(
-            GenericChatModelProvider<Example> singleCharProvider,
-            GenericChatModelProvider<Example> multiCharProvider,
-            String name,
-            String description) {
-        this(
-                singleCharProvider::process,
-                multiCharProvider::process,
-                Optional.empty(),
-                Optional.empty(),
-                name,
-                description);
-    }
-
-    public ConfigurableExampleProvider(
-            BiFunction<Hanzi, Optional<String>, Example> processor,
-            String name,
-            String description) {
-        this(processor, processor, Optional.empty(), Optional.empty(), name, description);
-    }
-
-    public ConfigurableExampleProvider(
             BiFunction<Hanzi, Optional<String>, Example> singleCharProcessor,
             BiFunction<Hanzi, Optional<String>, Example> multiCharProcessor,
             String name,
@@ -85,22 +42,6 @@ public class ConfigurableExampleProvider implements ExampleProvider {
                 multiCharProcessor,
                 Optional.empty(),
                 Optional.empty(),
-                name,
-                description);
-    }
-
-    public ConfigurableExampleProvider(
-            BiFunction<Hanzi, Optional<String>, Example> singleCharProcessor,
-            ProviderConfig<Example> singleCharConfig,
-            BiFunction<Hanzi, Optional<String>, Example> multiCharProcessor,
-            ProviderConfig<Example> multiCharConfig,
-            String name,
-            String description) {
-        this(
-                singleCharProcessor,
-                multiCharProcessor,
-                Optional.of(singleCharConfig),
-                Optional.of(multiCharConfig),
                 name,
                 description);
     }
