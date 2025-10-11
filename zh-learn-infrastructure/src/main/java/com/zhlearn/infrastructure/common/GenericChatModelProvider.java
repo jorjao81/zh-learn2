@@ -114,10 +114,6 @@ public class GenericChatModelProvider<T> {
         }
     }
 
-    private String buildPrompt(String chineseWord) {
-        return buildPrompt(chineseWord, null);
-    }
-
     private String buildPrompt(String chineseWord, String additionalContext) {
         String allExamples = String.join("\n\n", examples);
 

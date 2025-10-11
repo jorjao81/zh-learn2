@@ -118,25 +118,6 @@ public class TerminalFormatter {
         }
     }
 
-    // Extract the active ANSI state at the end of a text string
-    private AnsiState extractAnsiState(String text) {
-        AnsiState state = new AnsiState();
-        if (text == null || text.isEmpty()) {
-            return state;
-        }
-
-        // Pattern to match ANSI escape sequences
-        Pattern ansiPattern = Pattern.compile("\u001B\\[[0-9;]*[mK]");
-        Matcher matcher = ansiPattern.matcher(text);
-
-        while (matcher.find()) {
-            String sequence = matcher.group();
-            updateAnsiState(state, sequence);
-        }
-
-        return state;
-    }
-
     // Update ANSI state based on an escape sequence
     private void updateAnsiState(AnsiState state, String sequence) {
         // Remove the \u001B[ prefix and the m suffix to get the codes
@@ -609,17 +590,11 @@ public class TerminalFormatter {
             return result;
         }
 
-        // Extract the initial ANSI state from the beginning of the text
-        AnsiState initialState = extractAnsiState(text);
-
         String[] words = text.split("\\s+");
         StringBuilder currentLine = new StringBuilder();
         AnsiState currentState = new AnsiState();
 
         for (String word : words) {
-            // Update current state with any ANSI codes in this word
-            AnsiState wordState = extractAnsiState(word);
-
             // Check if adding this word would exceed the width
             String testLine = currentLine.isEmpty() ? word : currentLine + " " + word;
             if (getDisplayLength(testLine) <= maxWidth) {

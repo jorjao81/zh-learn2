@@ -8,11 +8,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class AudioCache {
-    private final Logger log = LoggerFactory.getLogger(AudioCache.class);
     private final AudioPaths audioPaths;
     private final AudioNormalizer audioNormalizer;
 

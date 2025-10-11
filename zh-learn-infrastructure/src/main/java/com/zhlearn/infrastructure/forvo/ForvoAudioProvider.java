@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +27,6 @@ import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.AudioProvider;
 import com.zhlearn.infrastructure.audio.AudioCache;
-import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;
 import com.zhlearn.infrastructure.audio.AudioNormalizer;
 import com.zhlearn.infrastructure.audio.AudioPaths;
 
@@ -52,30 +50,16 @@ public class ForvoAudioProvider implements AudioProvider {
         this(
                 HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build(),
                 new ObjectMapper(),
-                null,
                 createDefaultAudioCache(),
                 createDefaultAudioPaths());
     }
 
     public ForvoAudioProvider(HttpClient http, ObjectMapper mapper) {
-        this(http, mapper, null, createDefaultAudioCache(), createDefaultAudioPaths());
-    }
-
-    public ForvoAudioProvider(AudioDownloadExecutor audioExecutor) {
-        this(
-                HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build(),
-                new ObjectMapper(),
-                null,
-                createDefaultAudioCache(),
-                createDefaultAudioPaths());
+        this(http, mapper, createDefaultAudioCache(), createDefaultAudioPaths());
     }
 
     public ForvoAudioProvider(
-            HttpClient http,
-            ObjectMapper mapper,
-            ExecutorService executorService,
-            AudioCache audioCache,
-            AudioPaths audioPaths) {
+            HttpClient http, ObjectMapper mapper, AudioCache audioCache, AudioPaths audioPaths) {
         this.http = http;
         this.mapper = mapper;
         this.audioCache = audioCache;

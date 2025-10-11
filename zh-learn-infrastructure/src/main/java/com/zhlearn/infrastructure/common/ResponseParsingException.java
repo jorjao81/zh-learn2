@@ -11,11 +11,6 @@ package com.zhlearn.infrastructure.common;
  * catching broad exception types.
  */
 public class ResponseParsingException extends RuntimeException {
-
-    public ResponseParsingException(String message) {
-        super(message);
-    }
-
     public ResponseParsingException(String message, Throwable cause) {
         super(message, cause);
     }

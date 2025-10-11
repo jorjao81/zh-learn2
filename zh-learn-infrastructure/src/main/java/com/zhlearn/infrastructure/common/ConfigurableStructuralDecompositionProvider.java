@@ -20,30 +20,6 @@ public class ConfigurableStructuralDecompositionProvider
     private final String description;
 
     public ConfigurableStructuralDecompositionProvider(
-            ProviderConfig<StructuralDecomposition> config, String name, String description) {
-        this(
-                new GenericChatModelProvider<>(config)::process,
-                new GenericChatModelProvider<>(config)::process,
-                Optional.of(config),
-                Optional.of(config),
-                name,
-                description);
-    }
-
-    public ConfigurableStructuralDecompositionProvider(
-            GenericChatModelProvider<StructuralDecomposition> provider,
-            String name,
-            String description) {
-        this(
-                provider::process,
-                provider::process,
-                Optional.empty(),
-                Optional.empty(),
-                name,
-                description);
-    }
-
-    public ConfigurableStructuralDecompositionProvider(
             ProviderConfig<StructuralDecomposition> singleCharConfig,
             ProviderConfig<StructuralDecomposition> multiCharConfig,
             String name,
@@ -55,25 +31,6 @@ public class ConfigurableStructuralDecompositionProvider
                 Optional.of(multiCharConfig),
                 name,
                 description);
-    }
-
-    public ConfigurableStructuralDecompositionProvider(
-            GenericChatModelProvider<StructuralDecomposition> singleCharProvider,
-            GenericChatModelProvider<StructuralDecomposition> multiCharProvider,
-            String name,
-            String description) {
-        this(
-                singleCharProvider::process,
-                multiCharProvider::process,
-                Optional.empty(),
-                Optional.empty(),
-                name,
-                description);
-    }
-
-    public ConfigurableStructuralDecompositionProvider(
-            Function<Hanzi, StructuralDecomposition> processor, String name, String description) {
-        this(processor, processor, Optional.empty(), Optional.empty(), name, description);
     }
 
     public ConfigurableStructuralDecompositionProvider(

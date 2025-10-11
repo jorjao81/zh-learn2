@@ -19,28 +19,6 @@ public class ConfigurableExplanationProvider implements ExplanationProvider {
     private final String description;
 
     public ConfigurableExplanationProvider(
-            ProviderConfig<Explanation> config, String name, String description) {
-        this(
-                new GenericChatModelProvider<>(config)::process,
-                new GenericChatModelProvider<>(config)::process,
-                Optional.of(config),
-                Optional.of(config),
-                name,
-                description);
-    }
-
-    public ConfigurableExplanationProvider(
-            GenericChatModelProvider<Explanation> provider, String name, String description) {
-        this(
-                provider::process,
-                provider::process,
-                Optional.empty(),
-                Optional.empty(),
-                name,
-                description);
-    }
-
-    public ConfigurableExplanationProvider(
             ProviderConfig<Explanation> singleCharConfig,
             ProviderConfig<Explanation> multiCharConfig,
             String name,
@@ -52,25 +30,6 @@ public class ConfigurableExplanationProvider implements ExplanationProvider {
                 Optional.of(multiCharConfig),
                 name,
                 description);
-    }
-
-    public ConfigurableExplanationProvider(
-            GenericChatModelProvider<Explanation> singleCharProvider,
-            GenericChatModelProvider<Explanation> multiCharProvider,
-            String name,
-            String description) {
-        this(
-                singleCharProvider::process,
-                multiCharProvider::process,
-                Optional.empty(),
-                Optional.empty(),
-                name,
-                description);
-    }
-
-    public ConfigurableExplanationProvider(
-            Function<Hanzi, Explanation> processor, String name, String description) {
-        this(processor, processor, Optional.empty(), Optional.empty(), name, description);
     }
 
     public ConfigurableExplanationProvider(

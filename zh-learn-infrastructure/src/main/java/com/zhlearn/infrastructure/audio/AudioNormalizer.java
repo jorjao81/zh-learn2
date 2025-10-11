@@ -25,7 +25,6 @@ public class AudioNormalizer {
             return;
         }
 
-        String os = System.getProperty("os.name", "").toLowerCase();
         // Prefer ffmpeg on all OS; mac users likely have it via brew
         if (isOnPath("ffmpeg")) {
             ProcessBuilder pb =
