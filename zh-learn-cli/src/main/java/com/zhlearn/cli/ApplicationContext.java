@@ -135,20 +135,4 @@ public class ApplicationContext {
     public List<AudioProvider> getAudioProviders() {
         return audioProviders;
     }
-
-    /** Create a MainCommand with all dependencies injected. */
-    public MainCommand createMainCommand() {
-        return new MainCommand(
-                terminalFormatter,
-                examplesHtmlFormatter,
-                analysisPrinter,
-                ankiMediaLocator,
-                ankiExporter,
-                audioPaths,
-                audioCache,
-                prePlayback,
-                aiProviderFactory,
-                audioExecutor,
-                audioProviders);
-    }
 }

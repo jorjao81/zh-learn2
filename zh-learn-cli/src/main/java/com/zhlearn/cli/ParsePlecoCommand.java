@@ -488,9 +488,7 @@ public class ParsePlecoCommand implements Runnable {
                                                                         (completed * 100.0)
                                                                                 / maxToProcess;
 
-                                                                int successIndex =
-                                                                        successCount
-                                                                                .incrementAndGet();
+                                                                successCount.incrementAndGet();
 
                                                                 System.out.println("=".repeat(80));
                                                                 System.out.printf(

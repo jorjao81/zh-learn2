@@ -30,7 +30,6 @@ public class DictionaryStepDefs {
     private Optional<Pinyin> pinyin;
     private Optional<Definition> definition;
     private List<AnkiNote> ankiNotes;
-    private Optional<Pinyin> providerReturn;
 
     @Given("I have a Dictionary from AnkiCard data:")
     public void i_have_the_following_anki_card_data(DataTable dataTable) throws Exception {

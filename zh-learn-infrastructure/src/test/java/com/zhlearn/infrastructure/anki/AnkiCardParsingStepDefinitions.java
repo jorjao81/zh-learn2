@@ -18,7 +18,6 @@ public class AnkiCardParsingStepDefinitions {
     private String currentFileContent;
     private AnkiCard parsedCard;
     private List<AnkiCard> parsedCards;
-    private Exception lastException;
 
     private String unescapeTabCharacters(String input) {
         return input.replace("\\t", "\t");
@@ -68,7 +67,7 @@ public class AnkiCardParsingStepDefinitions {
         try {
             this.parsedCard = parser.parseLine(currentLine);
         } catch (Exception e) {
-            this.lastException = e;
+            // Exception swallowed
         }
     }
 
@@ -77,7 +76,7 @@ public class AnkiCardParsingStepDefinitions {
         try {
             this.parsedCard = parser.parseLine(currentLine);
         } catch (Exception e) {
-            this.lastException = e;
+            // Exception swallowed
         }
     }
 
@@ -87,7 +86,7 @@ public class AnkiCardParsingStepDefinitions {
             StringReader reader = new StringReader(currentFileContent);
             this.parsedCards = parser.parseFromReader(reader);
         } catch (IOException e) {
-            this.lastException = e;
+            // Exception swallowed
         }
     }
 

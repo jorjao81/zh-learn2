@@ -325,7 +325,7 @@
                             <ruleset>config/pmd-ruleset.xml</ruleset>
                         </rulesets>
                         <printFailingErrors>true</printFailingErrors>
-                        <failOnViolation>false</failOnViolation>
+                        <failOnViolation>true</failOnViolation>
                         <includeTests>true</includeTests>
                         <linkXRef>false</linkXRef>
                     </configuration>
@@ -385,7 +385,7 @@
                 <executions>
                     <execution>
                         <id>pmd-check</id>
-                        <phase>verify</phase>
+                        <phase>test</phase>
                         <goals>
                             <goal>check</goal>
                         </goals>

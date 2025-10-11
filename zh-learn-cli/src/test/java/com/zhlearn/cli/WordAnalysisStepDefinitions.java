@@ -43,7 +43,7 @@ public class WordAnalysisStepDefinitions {
     @When("I analyze the word {string} using provider {string}")
     public void i_analyze_the_word_using_provider(String word, String providerName) {
         this.requestedWord = word;
-        performAnalysis(word, providerName);
+        performAnalysis(word);
     }
 
     @When("I analyze the word using {string} providers")
@@ -51,7 +51,7 @@ public class WordAnalysisStepDefinitions {
         if (requestedWord == null) {
             throw new IllegalStateException("Word must be defined before analysis");
         }
-        performAnalysis(requestedWord, providerName);
+        performAnalysis(requestedWord);
     }
 
     @Then("the analysis should be successful")
@@ -85,7 +85,7 @@ public class WordAnalysisStepDefinitions {
         assertThat(decompositionText).contains(":");
     }
 
-    private void performAnalysis(String word, String providerName) {
+    private void performAnalysis(String word) {
         try {
             Hanzi hanzi = new Hanzi(word);
             PinyinProvider pinyinProvider = new DummyPinyinProvider();
