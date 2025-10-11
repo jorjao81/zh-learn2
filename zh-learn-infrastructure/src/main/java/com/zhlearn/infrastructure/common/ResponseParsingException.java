@@ -10,4 +10,8 @@ package com.zhlearn.infrastructure.common;
  * <p>This is used instead of generic RuntimeException to comply with linter rules that forbid
  * catching broad exception types.
  */
-public class ResponseParsingException extends RuntimeException {}
+public class ResponseParsingException extends RuntimeException {
+    public ResponseParsingException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}
