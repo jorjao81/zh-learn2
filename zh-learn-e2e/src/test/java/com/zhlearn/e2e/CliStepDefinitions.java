@@ -36,6 +36,11 @@ public class CliStepDefinitions {
     private Path ankiExportFile;
     private Path ankiMediaDir;
 
+    // Improve-anki specific state
+    private Path ankiInputFile;
+    private Path improvedAnkiExportFile;
+    private List<AnkiNote> originalNotes;
+
     @When("I run the CLI with {string}")
     public void iRunTheCliWith(String args) throws IOException, InterruptedException {
         Path projectRoot = Paths.get(System.getProperty("user.dir")).getParent();
@@ -445,6 +450,201 @@ public class CliStepDefinitions {
                         filename)
                 .exists()
                 .isRegularFile();
+    }
+
+    @Given("I have an Anki export file with content:")
+    public void iHaveAnAnkiExportFileWithContent(String tsvContent) throws IOException {
+        tempHomeDir = Files.createTempDirectory("zh-learn-e2e-test");
+        ankiInputFile = tempHomeDir.resolve("input-anki.tsv");
+        improvedAnkiExportFile = tempHomeDir.resolve("improved-export.tsv");
+
+        Files.writeString(ankiInputFile, tsvContent, StandardCharsets.UTF_8);
+
+        // Parse and store original notes for later comparison
+        originalNotes = ankiParser.parseFile(ankiInputFile);
+    }
+
+    @When("I run improve-anki with parameters {string}")
+    public void iRunImproveAnkiWithParameters(String parameters)
+            throws IOException, InterruptedException {
+        Path projectRoot = Paths.get(System.getProperty("user.dir")).getParent();
+        Path cliScript = projectRoot.resolve("zh-learn.sh");
+
+        List<String> command = new ArrayList<>();
+        command.add(cliScript.toString());
+        command.add("improve-anki");
+        command.add(ankiInputFile.toString());
+
+        String[] paramArray = parameters.trim().split("\\s+");
+        for (String param : paramArray) {
+            command.add(param);
+        }
+
+        command.add("--export-anki=" + improvedAnkiExportFile.toString());
+
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        processBuilder.directory(projectRoot.toFile());
+
+        // Override user.home to use temp directory for clean cache
+        processBuilder.environment().put("JAVA_OPTS", "-Duser.home=" + tempHomeDir.toString());
+
+        Process process = processBuilder.start();
+
+        StringBuilder stdoutBuilder = new StringBuilder();
+        StringBuilder stderrBuilder = new StringBuilder();
+
+        Thread stdoutThread =
+                new Thread(
+                        () -> {
+                            try (BufferedReader reader =
+                                    new BufferedReader(
+                                            new InputStreamReader(
+                                                    process.getInputStream(),
+                                                    StandardCharsets.UTF_8))) {
+                                String line;
+                                while ((line = reader.readLine()) != null) {
+                                    System.out.println(line);
+                                    stdoutBuilder.append(line).append("\n");
+                                }
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+
+        Thread stderrThread =
+                new Thread(
+                        () -> {
+                            try (BufferedReader reader =
+                                    new BufferedReader(
+                                            new InputStreamReader(
+                                                    process.getErrorStream(),
+                                                    StandardCharsets.UTF_8))) {
+                                String line;
+                                while ((line = reader.readLine()) != null) {
+                                    System.err.println(line);
+                                    stderrBuilder.append(line).append("\n");
+                                }
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+
+        stdoutThread.start();
+        stderrThread.start();
+
+        exitCode = process.waitFor();
+
+        stdoutThread.join();
+        stderrThread.join();
+
+        stdout = stdoutBuilder.toString();
+        stderr = stderrBuilder.toString();
+    }
+
+    @Then("the improved Anki export file should exist")
+    public void theImprovedAnkiExportFileShouldExist() {
+        assertThat(improvedAnkiExportFile)
+                .as("Improved Anki export file should exist at %s", improvedAnkiExportFile)
+                .exists();
+    }
+
+    @Then("the audio field of {string} should not be empty")
+    public void theAudioFieldOfShouldNotBeEmpty(String word) throws IOException {
+        List<AnkiNote> improvedNotes = ankiParser.parseFile(improvedAnkiExportFile);
+
+        AnkiNote improvedNote =
+                improvedNotes.stream()
+                        .filter(n -> word.equals(n.simplified()))
+                        .findFirst()
+                        .orElseThrow(
+                                () ->
+                                        new AssertionError(
+                                                String.format(
+                                                        "Word '%s' not found in improved export",
+                                                        word)));
+
+        assertThat(improvedNote.pronunciation())
+                .as("Audio field for word '%s' should not be empty", word)
+                .isNotEmpty();
+    }
+
+    @Then("the {word} field of {string} should remain unchanged")
+    public void theFieldOfShouldRemainUnchanged(String fieldName, String word) throws IOException {
+        // Find original note
+        AnkiNote originalNote =
+                originalNotes.stream()
+                        .filter(n -> word.equals(n.simplified()))
+                        .findFirst()
+                        .orElseThrow(
+                                () ->
+                                        new AssertionError(
+                                                String.format(
+                                                        "Word '%s' not found in original export",
+                                                        word)));
+
+        // Find improved note
+        List<AnkiNote> improvedNotes = ankiParser.parseFile(improvedAnkiExportFile);
+        AnkiNote improvedNote =
+                improvedNotes.stream()
+                        .filter(n -> word.equals(n.simplified()))
+                        .findFirst()
+                        .orElseThrow(
+                                () ->
+                                        new AssertionError(
+                                                String.format(
+                                                        "Word '%s' not found in improved export",
+                                                        word)));
+
+        // Get field values
+        String originalValue = getFieldValue(originalNote, fieldName);
+        String improvedValue = getFieldValue(improvedNote, fieldName);
+
+        assertThat(improvedValue)
+                .as(
+                        "Field '%s' for word '%s' should remain unchanged. Original: '%s', Improved: '%s'",
+                        fieldName, word, originalValue, improvedValue)
+                .isEqualTo(originalValue);
+    }
+
+    @Then("the {word} field of {string} should contain more than {int} characters")
+    public void theFieldOfShouldContainMoreThanCharacters(
+            String fieldName, String word, int minLength) throws IOException {
+        List<AnkiNote> improvedNotes = ankiParser.parseFile(improvedAnkiExportFile);
+
+        AnkiNote improvedNote =
+                improvedNotes.stream()
+                        .filter(n -> word.equals(n.simplified()))
+                        .findFirst()
+                        .orElseThrow(
+                                () ->
+                                        new AssertionError(
+                                                String.format(
+                                                        "Word '%s' not found in improved export",
+                                                        word)));
+
+        String fieldValue = getFieldValue(improvedNote, fieldName);
+
+        assertThat(fieldValue.length())
+                .as(
+                        "Field '%s' for word '%s' should have more than %d characters, but was: %s",
+                        fieldName, word, minLength, fieldValue)
+                .isGreaterThan(minLength);
+    }
+
+    private String getFieldValue(AnkiNote note, String fieldName) {
+        return switch (fieldName.toLowerCase()) {
+            case "audio", "pronunciation" -> note.pronunciation();
+            case "etymology", "explanation" -> note.etymology();
+            case "examples" -> note.examples();
+            case "definition" -> note.definition();
+            case "pinyin" -> note.pinyin();
+            case "components", "decomposition" -> note.components();
+            default ->
+                    throw new IllegalArgumentException(
+                            "Unknown field name: "
+                                    + fieldName
+                                    + ". Valid fields: audio, pronunciation, etymology, explanation, examples, definition, pinyin, components, decomposition");
+        };
     }
 
     @After

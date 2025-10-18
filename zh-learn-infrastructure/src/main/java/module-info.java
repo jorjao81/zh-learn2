@@ -42,6 +42,7 @@ module com.zhlearn.infrastructure {
     exports com.zhlearn.infrastructure.audio;
     exports com.zhlearn.infrastructure.cache;
     exports com.zhlearn.infrastructure.pinyin4j;
+    exports com.zhlearn.infrastructure.passthrough;
     // pinyin utility moved to separate module com.zhlearn.pinyin
     exports com.zhlearn.infrastructure.pleco;
     exports com.zhlearn.infrastructure.qwen;
