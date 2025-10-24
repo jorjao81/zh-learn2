@@ -103,7 +103,7 @@ public class GenericChatModelProvider<T> {
 
         try {
             return config.getResponseMapper().apply(response);
-        } catch (IllegalStateException | ResponseParsingException e) {
+        } catch (IllegalStateException | ResponseParsingException | IllegalArgumentException e) {
             throw new RuntimeException(
                     config.getErrorMessagePrefix()
                             + " for word '"

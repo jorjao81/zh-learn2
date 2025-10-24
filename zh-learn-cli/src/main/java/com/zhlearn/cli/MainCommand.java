@@ -32,6 +32,7 @@ import picocli.CommandLine.ScopeType;
             ProvidersCommand.class,
             ParseAnkiCommand.class,
             ParsePlecoCommand.class,
+            ImproveAnkiCommand.class,
             AudioCommand.class,
             AudioSelectCommand.class,
             picocli.CommandLine.HelpCommand.class
