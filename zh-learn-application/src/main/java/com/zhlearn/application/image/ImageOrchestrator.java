@@ -83,7 +83,7 @@ public class ImageOrchestrator {
                             + word.characters()
                             + "' ("
                             + definition.meaning()
-                            + "). All downloads failed.");
+                            + "). No images found after downloading candidates.");
         }
 
         return candidates;

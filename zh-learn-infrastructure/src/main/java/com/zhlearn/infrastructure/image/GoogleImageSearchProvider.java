@@ -126,9 +126,9 @@ public class GoogleImageSearchProvider implements ImageProvider {
 
             if (items == null || !items.isArray() || items.size() == 0) {
                 throw new IllegalStateException(
-                        "Google Image Search returned 0 results for query '"
+                        "Google Image Search returned no images found for query '"
                                 + query
-                                + "'. This may indicate a configuration issue.");
+                                + "'. Verify the word and definition or adjust image settings.");
             }
 
             List<Image> results = new ArrayList<>();

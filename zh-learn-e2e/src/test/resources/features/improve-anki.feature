@@ -51,6 +51,67 @@ Feature: Improve Anki Command
     And the audio field of "液态" should remain unchanged
     And the audio field of "秽" should remain unchanged
 
+  @images
+  Scenario: Improve without --improve-images flag
+    Given I have an Anki export file with content:
+      """
+      #separator:tab
+      #html:true
+      #notetype column:1
+      Chinese 2	学习	xué xí		to study; to learn	<div>我在<b>学习</b>中文。<br>Wǒ zài <b>xué xí</b> zhōng wén.<br>I am studying Chinese.</div>	Brief note.	学(study) + 习(practice)	y		y
+      """
+    And the Anki media directory is set up
+    When I run improve-anki without --improve-images flag
+    Then the exit code should be 0
+    And no images are downloaded
+    And the definition field contains plain text only
+
+  @images
+  Scenario: Missing API key fails fast
+    Given I have an Anki export file with content:
+      """
+      #separator:tab
+      #html:true
+      #notetype column:1
+      Chinese 2	灯塔	dēng tǎ		lighthouse	<div>远处的<b>灯塔</b>指引着船只。<br>Yuǎn chù de <b>dēng tǎ</b> zhǐyǐn zhe chuánzhī.<br>The distant lighthouse guides the ships.</div>	Brief explanation.	石(stone) + 灯(lamp)	y		y
+      """
+    And the Anki media directory is set up
+    And Google Search API key is not configured
+    When I run improve-anki with image parameters "--improve-images --image-selections=灯塔:1"
+    Then the exit code should be non-zero
+    And the error message should mention "GOOGLE_SEARCH_API_KEY"
+
+  @images
+  Scenario: No images found fails fast
+    Given I have an Anki export file with content:
+      """
+      #separator:tab
+      #html:true
+      #notetype column:1
+      Chinese 2	罕见测试	hǎn jiàn cè shì		unique zxqvzqvnonexistentconcept token	<div>这是一条<b>罕见测试</b>语句。</div>	Brief explanation.	罕(rare) + 见(see)	y		y
+      """
+    And Google Custom Search API is configured
+    And the Anki media directory is set up
+    When I run improve-anki with image parameters "--improve-images --image-selections=罕见测试:1"
+    Then the exit code should be non-zero
+    And the error message should mention "no images found"
+
+  @images
+  Scenario: Anki media directory not found fails fast
+    Given I have an Anki export file with content:
+      """
+      #separator:tab
+      #html:true
+      #notetype column:1
+      Chinese 2	大象	dà xiàng		elephant	<examples>	explanation	components	y		y
+      """
+    And Google Custom Search API is configured
+    And Anki media directory does not exist
+    When I run improve-anki with image parameters "--improve-images --image-selections=大象:1,2"
+    Then the exit code should be non-zero
+    And the error message should mention "Anki media directory"
+
+  @images
   Scenario: Improve with images for existing Anki export
     Given I have an Anki export file with content:
       """

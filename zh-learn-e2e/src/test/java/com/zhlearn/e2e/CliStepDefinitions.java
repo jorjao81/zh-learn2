@@ -43,6 +43,7 @@ public class CliStepDefinitions {
 
     // Image-specific state
     private boolean googleImageSearchConfigured = false;
+    private boolean forceUnsetGoogleApiCredentials = false;
 
     @When("I run the CLI with {string}")
     public void iRunTheCliWith(String args) throws IOException, InterruptedException {
@@ -655,7 +656,24 @@ public class CliStepDefinitions {
         // Set mock values for Google Custom Search API credentials
         // In a real test, these would be set from actual environment variables
         // For now, we just mark that they should be configured
+        String apiKey = System.getenv("GOOGLE_SEARCH_API_KEY");
+        String engineId = System.getenv("GOOGLE_SEARCH_ENGINE_ID");
+
+        assertThat(apiKey)
+                .as("GOOGLE_SEARCH_API_KEY environment variable must be set for image scenarios")
+                .isNotNull()
+                .isNotBlank();
+        assertThat(engineId)
+                .as("GOOGLE_SEARCH_ENGINE_ID environment variable must be set for image scenarios")
+                .isNotNull()
+                .isNotBlank();
         googleImageSearchConfigured = true;
+    }
+
+    @Given("Google Search API key is not configured")
+    public void googleSearchApiKeyIsNotConfigured() {
+        forceUnsetGoogleApiCredentials = true;
+        googleImageSearchConfigured = false;
     }
 
     @Given("the Anki media directory is set up")
@@ -665,6 +683,34 @@ public class CliStepDefinitions {
         }
         ankiMediaDir = tempHomeDir.resolve("anki-media");
         Files.createDirectories(ankiMediaDir);
+    }
+
+    @Given("Anki media directory does not exist")
+    public void ankiMediaDirectoryDoesNotExist() throws IOException {
+        if (tempHomeDir == null) {
+            tempHomeDir = Files.createTempDirectory("zh-learn-e2e-test");
+        }
+        ankiMediaDir = tempHomeDir.resolve("missing-anki-media");
+        if (Files.exists(ankiMediaDir)) {
+            try (Stream<Path> files = Files.walk(ankiMediaDir)) {
+                files.sorted(Comparator.reverseOrder())
+                        .forEach(
+                                path -> {
+                                    try {
+                                        Files.delete(path);
+                                    } catch (IOException e) {
+                                        // Ignore cleanup errors
+                                    }
+                                });
+            }
+        }
+        // Ensure directory truly does not exist
+        Files.deleteIfExists(ankiMediaDir);
+    }
+
+    @When("I run improve-anki without --improve-images flag")
+    public void iRunImproveAnkiWithoutImproveImagesFlag() throws IOException, InterruptedException {
+        iRunImproveAnkiWithParameters("--improve-examples --example-provider=dummy --skip-audio");
     }
 
     @When("I run improve-anki with image parameters {string}")
@@ -695,7 +741,10 @@ public class CliStepDefinitions {
         }
 
         // Pass through Google Custom Search API credentials from environment if configured
-        if (googleImageSearchConfigured) {
+        if (forceUnsetGoogleApiCredentials) {
+            processBuilder.environment().remove("GOOGLE_SEARCH_API_KEY");
+            processBuilder.environment().remove("GOOGLE_SEARCH_ENGINE_ID");
+        } else if (googleImageSearchConfigured) {
             String apiKey = System.getenv("GOOGLE_SEARCH_API_KEY");
             String engineId = System.getenv("GOOGLE_SEARCH_ENGINE_ID");
             if (apiKey != null) {
@@ -814,8 +863,60 @@ public class CliStepDefinitions {
         }
     }
 
+    @Then("the exit code should be non-zero")
+    public void theExitCodeShouldBeNonZero() {
+        assertThat(exitCode)
+                .as("Exit code should be non-zero. stdout=%s, stderr=%s", stdout, stderr)
+                .isNotZero();
+    }
+
+    @Then("no images are downloaded")
+    public void noImagesAreDownloaded() throws IOException {
+        assertThat(ankiMediaDir)
+                .as("Anki media directory should exist at %s for verification", ankiMediaDir)
+                .exists()
+                .isDirectory();
+
+        try (Stream<Path> files = Files.list(ankiMediaDir)) {
+            long count = files.filter(Files::isRegularFile).count();
+            assertThat(count)
+                    .as("Expected no image files to be downloaded, but found %d", count)
+                    .isZero();
+        }
+    }
+
+    @Then("the definition field contains plain text only")
+    public void theDefinitionFieldContainsPlainTextOnly() throws IOException {
+        List<AnkiNote> improvedNotes = ankiParser.parseFile(improvedAnkiExportFile);
+        assertThat(improvedNotes)
+                .as("Improved export should contain at least one note")
+                .isNotEmpty();
+
+        AnkiNote improved = improvedNotes.get(0);
+        assertThat(improved.definition())
+                .as("Definition should not contain image tags")
+                .doesNotContain("<img");
+
+        if (originalNotes != null && !originalNotes.isEmpty()) {
+            AnkiNote original = originalNotes.get(0);
+            assertThat(improved.definition())
+                    .as("Definition should remain unchanged when images are not enabled")
+                    .isEqualTo(original.definition());
+        }
+    }
+
+    @Then("the error message should mention {string}")
+    public void theErrorMessageShouldMention(String expected) {
+        String stripped = stripAnsi(stderr);
+        assertThat(stripped)
+                .as("Expected error message to mention \"%s\" but was: %s", expected, stripped)
+                .contains(expected);
+    }
+
     @After
     public void cleanup() throws IOException {
+        googleImageSearchConfigured = false;
+        forceUnsetGoogleApiCredentials = false;
         if (tempHomeDir != null && Files.exists(tempHomeDir)) {
             try (Stream<Path> paths = Files.walk(tempHomeDir)) {
                 paths.sorted(Comparator.reverseOrder())

@@ -52,9 +52,19 @@ public class AnkiImageManager {
         Path mediaDir = mediaDirOpt.get().toAbsolutePath().normalize();
         log.debug("[AnkiImageManager] Using Anki media directory: {}", mediaDir);
 
+        if (!Files.exists(mediaDir)) {
+            throw new IllegalStateException(
+                    "Anki media directory not found: "
+                            + mediaDir
+                            + ". Configure zhlearn.anki.media.dir or set ANKI_MEDIA_DIR.");
+        }
+
+        if (!Files.isDirectory(mediaDir)) {
+            throw new IllegalStateException(
+                    "Anki media directory path is not a directory: " + mediaDir);
+        }
+
         try {
-            // Ensure media directory exists
-            Files.createDirectories(mediaDir);
 
             List<Path> copiedPaths = new ArrayList<>();
 
