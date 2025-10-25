@@ -9,6 +9,8 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
@@ -22,9 +24,29 @@ import com.zhlearn.domain.model.ImageCandidate;
 public class InteractiveImageUI {
 
     private final HttpClient httpClient;
+    private final Supplier<Terminal> terminalSupplier;
+    private final Function<String, String> environmentLookup;
 
     public InteractiveImageUI() {
-        this.httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build();
+        this(
+                HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build(),
+                () -> {
+                    try {
+                        return TerminalBuilder.builder().system(true).build();
+                    } catch (IOException e) {
+                        throw new IllegalStateException("Failed to create system terminal", e);
+                    }
+                },
+                System::getenv);
+    }
+
+    InteractiveImageUI(
+            HttpClient httpClient,
+            Supplier<Terminal> terminalSupplier,
+            Function<String, String> environmentLookup) {
+        this.httpClient = httpClient;
+        this.terminalSupplier = terminalSupplier;
+        this.environmentLookup = environmentLookup;
     }
 
     /**
@@ -43,7 +65,7 @@ public class InteractiveImageUI {
     }
 
     private TriState runUsingJLine(ImageSelectionSession session, Hanzi word) {
-        try (Terminal terminal = TerminalBuilder.builder().system(true).build()) {
+        try (Terminal terminal = terminalSupplier.get()) {
             if ("dumb".equalsIgnoreCase(terminal.getType())) {
                 return TriState.unavailable();
             }
@@ -176,7 +198,7 @@ public class InteractiveImageUI {
 
     private boolean isITerm2() {
         // Check TERM_PROGRAM environment variable
-        String termProgram = System.getenv("TERM_PROGRAM");
+        String termProgram = environmentLookup.apply("TERM_PROGRAM");
         return "iTerm.app".equals(termProgram);
     }
 

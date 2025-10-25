@@ -103,7 +103,8 @@ public class AnkiImageManager {
             case "image/png" -> ".png";
             case "image/webp" -> ".webp";
             default ->
-                    ".jpg"; // Default to .jpg for unknown types (should not happen with validation)
+                    throw new IllegalStateException(
+                            "Unsupported image content type for Anki copy: " + contentType);
         };
     }
 }

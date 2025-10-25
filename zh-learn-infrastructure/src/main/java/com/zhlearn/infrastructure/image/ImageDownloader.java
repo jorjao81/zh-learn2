@@ -26,18 +26,20 @@ public class ImageDownloader {
     private static final Set<String> VALID_CONTENT_TYPES =
             Set.of("image/jpeg", "image/png", "image/webp");
 
+    private static final Path DEFAULT_TEMP_DIR = initializeDefaultTempDirectory();
+
     private final HttpClient httpClient;
     private final Path tempDirectory;
 
     public ImageDownloader() {
         this(
                 HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build(),
-                createTempDirectory());
+                DEFAULT_TEMP_DIR);
     }
 
     public ImageDownloader(HttpClient httpClient, Path tempDirectory) {
         this.httpClient = httpClient;
-        this.tempDirectory = tempDirectory;
+        this.tempDirectory = ensureDirectory(tempDirectory).toAbsolutePath();
     }
 
     /**
@@ -90,6 +92,7 @@ public class ImageDownloader {
 
             // Save to temp file
             Files.write(localPath, response.body());
+            localPath.toFile().deleteOnExit();
 
             log.debug(
                     "[ImageDownloader] Successfully downloaded image to: {}",
@@ -137,14 +140,28 @@ public class ImageDownloader {
         }
     }
 
-    private static Path createTempDirectory() {
+    private static Path ensureDirectory(Path dir) {
         try {
-            Path tempDir = Files.createTempDirectory("zh-learn-images-");
-            log.debug("[ImageDownloader] Created temp directory: {}", tempDir.toAbsolutePath());
-            return tempDir;
+            Files.createDirectories(dir);
+            dir.toFile().deleteOnExit();
+            return dir;
         } catch (IOException e) {
             throw new IllegalStateException(
-                    "Failed to create temporary directory for images: " + e.getMessage(), e);
+                    "Failed to create temporary directory for images at "
+                            + dir
+                            + ": "
+                            + e.getMessage(),
+                    e);
         }
+    }
+
+    private static Path initializeDefaultTempDirectory() {
+        Path baseDir =
+                Path.of(System.getProperty("java.io.tmpdir"))
+                        .resolve("zh-learn-images")
+                        .toAbsolutePath();
+        Path ensured = ensureDirectory(baseDir);
+        log.debug("[ImageDownloader] Using temp directory: {}", ensured);
+        return ensured;
     }
 }
