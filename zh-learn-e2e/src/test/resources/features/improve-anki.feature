@@ -50,3 +50,19 @@ Feature: Improve Anki Command
     And the examples field of "秽" should contain more than 200 characters
     And the audio field of "液态" should remain unchanged
     And the audio field of "秽" should remain unchanged
+
+  Scenario: Improve with images for existing Anki export
+    Given I have an Anki export file with content:
+      """
+      #separator:tab
+      #html:true
+      #notetype column:1
+      Chinese 2	大象	dà xiàng		elephant	<examples>	explanation	components	y		y
+      """
+    And Google Custom Search API is configured
+    And the Anki media directory is set up
+    When I run improve-anki with image parameters "--improve-images --image-selections=大象:1,2,3"
+    Then the exit code should be 0
+    And the improved Anki export file should exist
+    And the definition field of "大象" should contain image references
+    And the Anki media directory should contain 3 images for "大象"
