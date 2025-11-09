@@ -57,7 +57,8 @@ public class AnkiExporter {
                                 "", // similar
                                 "y", // passive
                                 "", // alternatePronunciations
-                                "y" // noHearing
+                                "y", // noHearing
+                                Optional.empty() // images (to be wired in Phase 9)
                                 );
                 writer.println(formatAsTabSeparated(entry));
             }
@@ -127,7 +128,7 @@ public class AnkiExporter {
                 escapeForTSV(entry.simplified()),
                 escapeForTSV(entry.pinyin()),
                 escapeForTSV(entry.pronunciation()),
-                escapeForTSV(entry.definition()),
+                escapeForTSV(entry.formattedDefinition()), // Use formatted definition with images
                 escapeForTSV(entry.examples()),
                 escapeForTSV(entry.etymology()),
                 escapeForTSV(entry.components()),
