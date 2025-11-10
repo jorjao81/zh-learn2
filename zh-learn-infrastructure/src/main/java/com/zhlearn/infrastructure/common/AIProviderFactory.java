@@ -7,6 +7,7 @@ import com.zhlearn.domain.model.Example;
 import com.zhlearn.domain.model.Explanation;
 import com.zhlearn.domain.model.StructuralDecomposition;
 import com.zhlearn.domain.provider.DefinitionFormatterProvider;
+import com.zhlearn.domain.provider.DefinitionGeneratorProvider;
 import com.zhlearn.domain.provider.ExampleProvider;
 import com.zhlearn.domain.provider.ExplanationProvider;
 import com.zhlearn.domain.provider.StructuralDecompositionProvider;
@@ -41,6 +42,10 @@ public class AIProviderFactory {
             new SingleCharDefinitionFormatterProviderConfig();
     private final MultiCharDefinitionFormatterProviderConfig multiCharDefinitionConfig =
             new MultiCharDefinitionFormatterProviderConfig();
+    private final SingleCharDefinitionGeneratorProviderConfig singleCharDefinitionGeneratorConfig =
+            new SingleCharDefinitionGeneratorProviderConfig();
+    private final MultiCharDefinitionGeneratorProviderConfig multiCharDefinitionGeneratorConfig =
+            new MultiCharDefinitionGeneratorProviderConfig();
 
     public AIProviderFactory() {}
 
@@ -873,6 +878,203 @@ public class AIProviderFactory {
                             "Unknown definition formatter provider: "
                                     + providerName
                                     + ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter, gemini-2.5-flash, gemini-2.5-pro");
+        };
+    }
+
+    public DefinitionGeneratorProvider createDefinitionGeneratorProvider(String providerName) {
+        return createDefinitionGeneratorProvider(providerName, null);
+    }
+
+    public DefinitionGeneratorProvider createDefinitionGeneratorProvider(
+            String providerName, String model) {
+        if (providerName == null) providerName = "deepseek-chat";
+        if (providerName.equals("openrouter") && (model == null || model.trim().isEmpty())) {
+            model = "gpt-3.5-turbo";
+        }
+
+        return switch (providerName) {
+            case "deepseek-chat" -> {
+                requireAPIKey("DEEPSEEK_API_KEY", providerName);
+                ProviderConfig<Definition> singleConfig =
+                        createProviderConfig(
+                                deepSeekConfig.getApiKey(),
+                                deepSeekConfig.getBaseUrl(),
+                                "deepseek-chat",
+                                singleCharDefinitionGeneratorConfig.templatePath(),
+                                singleCharDefinitionGeneratorConfig.examplesDirectory(),
+                                singleCharDefinitionGeneratorConfig.responseMapper(),
+                                providerName,
+                                "Failed to generate definition from DeepSeek (deepseek-chat)");
+                ProviderConfig<Definition> multiConfig =
+                        createProviderConfig(
+                                deepSeekConfig.getApiKey(),
+                                deepSeekConfig.getBaseUrl(),
+                                "deepseek-chat",
+                                multiCharDefinitionGeneratorConfig.templatePath(),
+                                multiCharDefinitionGeneratorConfig.examplesDirectory(),
+                                multiCharDefinitionGeneratorConfig.responseMapper(),
+                                providerName,
+                                "Failed to generate definition from DeepSeek (deepseek-chat)");
+                yield new ConfigurableDefinitionGeneratorProvider(
+                        singleConfig,
+                        multiConfig,
+                        providerName,
+                        "DeepSeek AI-powered definition generator");
+            }
+            case "glm-4-flash" -> {
+                requireAPIKey("ZHIPU_API_KEY", providerName);
+                ProviderConfig<Definition> singleConfig =
+                        createProviderConfig(
+                                zhipuConfig.getApiKey(),
+                                zhipuConfig.getBaseUrl(),
+                                "glm-4-flash",
+                                singleCharDefinitionGeneratorConfig.templatePath(),
+                                singleCharDefinitionGeneratorConfig.examplesDirectory(),
+                                singleCharDefinitionGeneratorConfig.responseMapper(),
+                                providerName,
+                                "Failed to generate definition from Zhipu (glm-4-flash)");
+                ProviderConfig<Definition> multiConfig =
+                        createProviderConfig(
+                                zhipuConfig.getApiKey(),
+                                zhipuConfig.getBaseUrl(),
+                                "glm-4-flash",
+                                multiCharDefinitionGeneratorConfig.templatePath(),
+                                multiCharDefinitionGeneratorConfig.examplesDirectory(),
+                                multiCharDefinitionGeneratorConfig.responseMapper(),
+                                providerName,
+                                "Failed to generate definition from Zhipu (glm-4-flash)");
+                ZhipuChatModelProvider<Definition> singleDelegate =
+                        new ZhipuChatModelProvider<>(singleConfig);
+                ZhipuChatModelProvider<Definition> multiDelegate =
+                        new ZhipuChatModelProvider<>(multiConfig);
+                yield new ConfigurableDefinitionGeneratorProvider(
+                        singleDelegate::process,
+                        multiDelegate::process,
+                        providerName,
+                        "GLM-4 Flash AI definition generator");
+            }
+            case "glm-4.5" -> {
+                requireAPIKey("ZHIPU_API_KEY", providerName);
+                ProviderConfig<Definition> singleConfig =
+                        createProviderConfig(
+                                zhipuConfig.getApiKey(),
+                                zhipuConfig.getBaseUrl(),
+                                "glm-4.5",
+                                singleCharDefinitionGeneratorConfig.templatePath(),
+                                singleCharDefinitionGeneratorConfig.examplesDirectory(),
+                                singleCharDefinitionGeneratorConfig.responseMapper(),
+                                providerName,
+                                "Failed to generate definition from Zhipu (glm-4.5)");
+                ProviderConfig<Definition> multiConfig =
+                        createProviderConfig(
+                                zhipuConfig.getApiKey(),
+                                zhipuConfig.getBaseUrl(),
+                                "glm-4.5",
+                                multiCharDefinitionGeneratorConfig.templatePath(),
+                                multiCharDefinitionGeneratorConfig.examplesDirectory(),
+                                multiCharDefinitionGeneratorConfig.responseMapper(),
+                                providerName,
+                                "Failed to generate definition from Zhipu (glm-4.5)");
+                ZhipuChatModelProvider<Definition> singleDelegate =
+                        new ZhipuChatModelProvider<>(singleConfig);
+                ZhipuChatModelProvider<Definition> multiDelegate =
+                        new ZhipuChatModelProvider<>(multiConfig);
+                yield new ConfigurableDefinitionGeneratorProvider(
+                        singleDelegate::process,
+                        multiDelegate::process,
+                        providerName,
+                        "GLM-4.5 AI definition generator");
+            }
+            case "qwen-max", "qwen-plus", "qwen-turbo" -> {
+                requireAPIKey("DASHSCOPE_API_KEY", providerName);
+                ProviderConfig<Definition> singleConfig =
+                        createProviderConfig(
+                                dashScopeConfig.getApiKey(),
+                                dashScopeConfig.getBaseUrl(),
+                                providerName,
+                                singleCharDefinitionGeneratorConfig.templatePath(),
+                                singleCharDefinitionGeneratorConfig.examplesDirectory(),
+                                singleCharDefinitionGeneratorConfig.responseMapper(),
+                                providerName,
+                                "Failed to generate definition from DashScope ("
+                                        + providerName
+                                        + ")");
+                ProviderConfig<Definition> multiConfig =
+                        createProviderConfig(
+                                dashScopeConfig.getApiKey(),
+                                dashScopeConfig.getBaseUrl(),
+                                providerName,
+                                multiCharDefinitionGeneratorConfig.templatePath(),
+                                multiCharDefinitionGeneratorConfig.examplesDirectory(),
+                                multiCharDefinitionGeneratorConfig.responseMapper(),
+                                providerName,
+                                "Failed to generate definition from DashScope ("
+                                        + providerName
+                                        + ")");
+                yield new ConfigurableDefinitionGeneratorProvider(
+                        singleConfig,
+                        multiConfig,
+                        providerName,
+                        "Qwen AI definition generator (" + providerName + ")");
+            }
+            case "openrouter" -> {
+                requireAPIKey("OPENROUTER_API_KEY", providerName);
+                ProviderConfig<Definition> singleConfig =
+                        createProviderConfig(
+                                openRouterConfig.getApiKey(),
+                                openRouterConfig.getBaseUrl(),
+                                model,
+                                singleCharDefinitionGeneratorConfig.templatePath(),
+                                singleCharDefinitionGeneratorConfig.examplesDirectory(),
+                                singleCharDefinitionGeneratorConfig.responseMapper(),
+                                providerName,
+                                "Failed to generate definition from OpenRouter (" + model + ")");
+                ProviderConfig<Definition> multiConfig =
+                        createProviderConfig(
+                                openRouterConfig.getApiKey(),
+                                openRouterConfig.getBaseUrl(),
+                                model,
+                                multiCharDefinitionGeneratorConfig.templatePath(),
+                                multiCharDefinitionGeneratorConfig.examplesDirectory(),
+                                multiCharDefinitionGeneratorConfig.responseMapper(),
+                                providerName,
+                                "Failed to generate definition from OpenRouter (" + model + ")");
+                yield new ConfigurableDefinitionGeneratorProvider(
+                        singleConfig, multiConfig, providerName, "OpenRouter AI (" + model + ")");
+            }
+            case "gemini-2.5-flash", "gemini-2.5-pro" -> {
+                requireAPIKey("GEMINI_API_KEY", providerName);
+                ProviderConfig<Definition> singleConfig =
+                        createProviderConfig(
+                                geminiConfig.getApiKey(),
+                                null, // LangChain4j handles base URL internally
+                                geminiConfig.getModelName(providerName),
+                                singleCharDefinitionGeneratorConfig.templatePath(),
+                                singleCharDefinitionGeneratorConfig.examplesDirectory(),
+                                singleCharDefinitionGeneratorConfig.responseMapper(),
+                                providerName,
+                                "Failed to generate definition from Gemini (" + providerName + ")");
+                ProviderConfig<Definition> multiConfig =
+                        createProviderConfig(
+                                geminiConfig.getApiKey(),
+                                null,
+                                geminiConfig.getModelName(providerName),
+                                multiCharDefinitionGeneratorConfig.templatePath(),
+                                multiCharDefinitionGeneratorConfig.examplesDirectory(),
+                                multiCharDefinitionGeneratorConfig.responseMapper(),
+                                providerName,
+                                "Failed to generate definition from Gemini (" + providerName + ")");
+                yield new ConfigurableDefinitionGeneratorProvider(
+                        singleConfig,
+                        multiConfig,
+                        providerName,
+                        "Gemini AI provider (" + providerName + ")");
+            }
+            default ->
+                    throw new RuntimeException(
+                            "Unknown definition generator provider: "
+                                    + providerName
+                                    + ". Available: deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter, gemini-2.5-flash, gemini-2.5-pro");
         };
     }
 }

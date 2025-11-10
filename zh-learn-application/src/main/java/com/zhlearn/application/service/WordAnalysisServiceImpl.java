@@ -15,6 +15,7 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
     private final PinyinProvider pinyinProvider;
     private final DefinitionProvider definitionProvider;
     private final DefinitionFormatterProvider definitionFormatterProvider;
+    private final DefinitionGeneratorProvider definitionGeneratorProvider;
     private final AudioProvider audioProvider;
 
     public WordAnalysisServiceImpl(
@@ -24,6 +25,7 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
             PinyinProvider pinyinProvider,
             DefinitionProvider definitionProvider,
             DefinitionFormatterProvider definitionFormatterProvider,
+            DefinitionGeneratorProvider definitionGeneratorProvider,
             AudioProvider audioProvider) {
         this.exampleProvider = exampleProvider;
         this.explanationProvider = explanationProvider;
@@ -31,6 +33,7 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
         this.pinyinProvider = pinyinProvider;
         this.definitionProvider = definitionProvider;
         this.definitionFormatterProvider = definitionFormatterProvider;
+        this.definitionGeneratorProvider = definitionGeneratorProvider;
         this.audioProvider = audioProvider;
     }
 
@@ -42,6 +45,11 @@ public class WordAnalysisServiceImpl implements WordAnalysisService {
     @Override
     public Definition getDefinition(Hanzi word, String providerName) {
         Definition rawDefinition = definitionProvider.getDefinition(word);
+
+        // If no raw definition and generator is available, generate one
+        if (rawDefinition == null && definitionGeneratorProvider != null) {
+            rawDefinition = definitionGeneratorProvider.generateDefinition(word);
+        }
 
         // Format definition if formatter is available
         if (definitionFormatterProvider != null) {

@@ -32,6 +32,7 @@ import com.zhlearn.domain.model.ProviderConfiguration;
 import com.zhlearn.domain.model.WordAnalysis;
 import com.zhlearn.domain.provider.AudioProvider;
 import com.zhlearn.domain.provider.DefinitionFormatterProvider;
+import com.zhlearn.domain.provider.DefinitionGeneratorProvider;
 import com.zhlearn.domain.provider.DefinitionProvider;
 import com.zhlearn.domain.provider.ExampleProvider;
 import com.zhlearn.domain.provider.ExplanationProvider;
@@ -80,6 +81,12 @@ public class ParsePlecoCommand implements Runnable {
                     "Set specific provider for definition formatting (default: deepseek-chat). Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter",
             defaultValue = "deepseek-chat")
     private String definitionFormatterProvider;
+
+    @Option(
+            names = {"--definition-generator-provider"},
+            description =
+                    "Set specific provider for definition generation when missing (default: same as formatter). Available: deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter")
+    private String definitionGeneratorProvider;
 
     @Option(
             names = {"--decomposition-provider"},
@@ -206,6 +213,17 @@ public class ParsePlecoCommand implements Runnable {
                             ? parent.createDefinitionFormatterProvider(
                                     definitionFormatterProvider, model)
                             : parent.createDefinitionFormatterProvider(definitionFormatterProvider);
+
+            // Use same provider as formatter if not specified
+            String defGenProvider =
+                    definitionGeneratorProvider != null
+                            ? definitionGeneratorProvider
+                            : definitionFormatterProvider;
+            DefinitionGeneratorProvider defGeneratorProv =
+                    model != null
+                            ? parent.createDefinitionGeneratorProvider(defGenProvider, model)
+                            : parent.createDefinitionGeneratorProvider(defGenProvider);
+
             AudioProvider audioProv = resolveAudioProvider(audioProvider);
 
             WordAnalysisServiceImpl baseService =
@@ -216,6 +234,7 @@ public class ParsePlecoCommand implements Runnable {
                             pinyinProv,
                             definitionProv,
                             defFormatterProv,
+                            defGeneratorProv,
                             audioProv);
 
             if (disableParallelism) {

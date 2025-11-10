@@ -45,6 +45,7 @@ import com.zhlearn.domain.model.ProviderConfiguration;
 import com.zhlearn.domain.model.WordAnalysis;
 import com.zhlearn.domain.provider.AudioProvider;
 import com.zhlearn.domain.provider.DefinitionFormatterProvider;
+import com.zhlearn.domain.provider.DefinitionGeneratorProvider;
 import com.zhlearn.domain.provider.DefinitionProvider;
 import com.zhlearn.domain.provider.ExampleProvider;
 import com.zhlearn.domain.provider.ExplanationProvider;
@@ -100,9 +101,28 @@ public class ImproveAnkiCommand implements Runnable {
     private boolean improveDecomposition = false;
 
     @Option(
+            names = {"--improve-definition"},
+            description =
+                    "Regenerate definitions for all words (generate if missing, format if present)")
+    private boolean improveDefinition = false;
+
+    @Option(
             names = {"--improve-images"},
             description = "Add representative images to definitions")
     private boolean improveImages = false;
+
+    @Option(
+            names = {"--definition-formatter-provider"},
+            description =
+                    "Set specific provider for definition formatting (default: deepseek-chat). Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter",
+            defaultValue = "deepseek-chat")
+    private String definitionFormatterProvider;
+
+    @Option(
+            names = {"--definition-generator-provider"},
+            description =
+                    "Set specific provider for definition generation when missing (default: same as formatter). Available: deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter")
+    private String definitionGeneratorProvider;
 
     @Option(
             names = {"--decomposition-provider"},
@@ -189,9 +209,10 @@ public class ImproveAnkiCommand implements Runnable {
                     && !improveExplanation
                     && !improveExamples
                     && !improveDecomposition
+                    && !improveDefinition
                     && !improveImages) {
                 throw new IllegalArgumentException(
-                        "At least one --improve-* flag must be specified. Available: --improve-audio, --improve-explanation, --improve-examples, --improve-decomposition, --improve-images");
+                        "At least one --improve-* flag must be specified. Available: --improve-audio, --improve-explanation, --improve-examples, --improve-decomposition, --improve-definition, --improve-images");
             }
 
             Path path = Paths.get(filePath);
@@ -205,6 +226,7 @@ public class ImproveAnkiCommand implements Runnable {
                             + (improveExplanation ? "explanation " : "")
                             + (improveExamples ? "examples " : "")
                             + (improveDecomposition ? "decomposition " : "")
+                            + (improveDefinition ? "definition " : "")
                             + (improveImages ? "images " : ""));
             System.out.println();
 
@@ -241,11 +263,36 @@ public class ImproveAnkiCommand implements Runnable {
                                     : parent.createDecompositionProvider(decompositionProvider))
                             : new DictionaryStructuralDecompositionProvider(dictionary);
 
-            // Always use dictionary for pinyin and definition (never improved)
+            // Always use dictionary for pinyin (never improved)
             PinyinProvider pinyinProv = new DictionaryPinyinProvider(dictionary);
+
+            // Definition providers: use AI if improving, dictionary+passthrough if not
             DefinitionProvider definitionProv = new DictionaryDefinitionProvider(dictionary);
-            DefinitionFormatterProvider defFormatterProv =
-                    new PassthroughDefinitionFormatterProvider();
+            DefinitionFormatterProvider defFormatterProv;
+            DefinitionGeneratorProvider defGeneratorProv;
+
+            if (improveDefinition) {
+                // Use AI providers for definition generation and formatting
+                defFormatterProv =
+                        model != null
+                                ? parent.createDefinitionFormatterProvider(
+                                        definitionFormatterProvider, model)
+                                : parent.createDefinitionFormatterProvider(
+                                        definitionFormatterProvider);
+
+                String defGenProvider =
+                        definitionGeneratorProvider != null
+                                ? definitionGeneratorProvider
+                                : definitionFormatterProvider;
+                defGeneratorProv =
+                        model != null
+                                ? parent.createDefinitionGeneratorProvider(defGenProvider, model)
+                                : parent.createDefinitionGeneratorProvider(defGenProvider);
+            } else {
+                // Use passthrough (no modification)
+                defFormatterProv = new PassthroughDefinitionFormatterProvider();
+                defGeneratorProv = null;
+            }
 
             // Audio provider: use dummy if not improving, real provider if improving
             AudioProvider audioProv =
@@ -260,6 +307,7 @@ public class ImproveAnkiCommand implements Runnable {
                             pinyinProv,
                             definitionProv,
                             defFormatterProv,
+                            defGeneratorProv,
                             audioProv);
 
             WordAnalysisService wordAnalysisService;

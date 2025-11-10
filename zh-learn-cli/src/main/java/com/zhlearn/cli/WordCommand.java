@@ -89,6 +89,7 @@ public class WordCommand implements Runnable {
                         parent.createDefinitionProvider(definitionProvider),
                         parent.createDefinitionFormatterProvider(
                                 definitionFormatterProvider, model),
+                        null, // No definition generation needed for word command
                         resolveAudioProvider(audioProvider));
 
         ProviderConfiguration config =
