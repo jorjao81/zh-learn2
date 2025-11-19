@@ -635,6 +635,51 @@ public class CliStepDefinitions {
                 .isGreaterThan(minLength);
     }
 
+    @Then("the definition field of {string} should not be empty")
+    public void theDefinitionFieldOfShouldNotBeEmpty(String word) throws IOException {
+        // Determine which export file to check (parse-pleco or improve-anki)
+        Path exportFile = ankiExportFile != null ? ankiExportFile : improvedAnkiExportFile;
+        List<AnkiNote> notes = ankiParser.parseFile(exportFile);
+
+        AnkiNote note =
+                notes.stream()
+                        .filter(n -> word.equals(n.simplified()))
+                        .findFirst()
+                        .orElseThrow(
+                                () ->
+                                        new AssertionError(
+                                                String.format(
+                                                        "Word '%s' not found in export", word)));
+
+        assertThat(note.definition())
+                .as("Definition for word '%s' should not be empty", word)
+                .isNotEmpty();
+    }
+
+    @Then("the definition field of {string} should not contain {string}")
+    public void theDefinitionFieldOfShouldNotContain(String word, String unwantedText)
+            throws IOException {
+        // Determine which export file to check (parse-pleco or improve-anki)
+        Path exportFile = ankiExportFile != null ? ankiExportFile : improvedAnkiExportFile;
+        List<AnkiNote> notes = ankiParser.parseFile(exportFile);
+
+        AnkiNote note =
+                notes.stream()
+                        .filter(n -> word.equals(n.simplified()))
+                        .findFirst()
+                        .orElseThrow(
+                                () ->
+                                        new AssertionError(
+                                                String.format(
+                                                        "Word '%s' not found in export", word)));
+
+        assertThat(note.definition())
+                .as(
+                        "Definition for word '%s' should not contain '%s', but was: %s",
+                        word, unwantedText, note.definition())
+                .doesNotContain(unwantedText);
+    }
+
     private String getFieldValue(AnkiNote note, String fieldName) {
         return switch (fieldName.toLowerCase()) {
             case "audio", "pronunciation" -> note.pronunciation();

@@ -44,6 +44,7 @@ public class AudioCommand implements Runnable {
                         parent.createPinyinProvider(null), // Use default
                         parent.createDefinitionProvider(null), // Use default
                         parent.createDefinitionFormatterProvider(null), // Use default
+                        null, // No definition generation needed for audio command
                         selectedAudioProvider);
 
         Hanzi word = new Hanzi(chineseWord);

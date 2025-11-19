@@ -118,14 +118,17 @@ public class GenericChatModelProvider<T> {
         String allExamples = String.join("\n\n", examples);
 
         String contextSection = "";
+        String rawDefinition = "";
         if (additionalContext != null && !additionalContext.trim().isEmpty()) {
             contextSection = "Known context: " + additionalContext;
+            rawDefinition = additionalContext;
         }
 
         return promptTemplate
                 .replace("{WORD}", chineseWord)
                 .replace("{EXAMPLES}", allExamples)
-                .replace("{CONTEXT}", contextSection);
+                .replace("{CONTEXT}", contextSection)
+                .replace("{RAW_DEFINITION}", rawDefinition);
     }
 
     private String loadPromptTemplate(String templateResourcePath) {

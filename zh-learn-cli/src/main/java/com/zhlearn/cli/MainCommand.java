@@ -9,6 +9,7 @@ import com.zhlearn.application.service.AnkiExporter;
 import com.zhlearn.cli.audio.PrePlayback;
 import com.zhlearn.domain.provider.AudioProvider;
 import com.zhlearn.domain.provider.DefinitionFormatterProvider;
+import com.zhlearn.domain.provider.DefinitionGeneratorProvider;
 import com.zhlearn.domain.provider.DefinitionProvider;
 import com.zhlearn.domain.provider.ExampleProvider;
 import com.zhlearn.domain.provider.ExplanationProvider;
@@ -202,6 +203,15 @@ public class MainCommand implements Runnable {
     public DefinitionFormatterProvider createDefinitionFormatterProvider(
             String providerName, String model) {
         return aiProviderFactory.createDefinitionFormatterProvider(providerName, model);
+    }
+
+    public DefinitionGeneratorProvider createDefinitionGeneratorProvider(String providerName) {
+        return aiProviderFactory.createDefinitionGeneratorProvider(providerName);
+    }
+
+    public DefinitionGeneratorProvider createDefinitionGeneratorProvider(
+            String providerName, String model) {
+        return aiProviderFactory.createDefinitionGeneratorProvider(providerName, model);
     }
 
     @Override

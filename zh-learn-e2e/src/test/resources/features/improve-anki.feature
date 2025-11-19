@@ -127,3 +127,22 @@ Feature: Improve Anki Command
     And the improved Anki export file should exist
     And the definition field of "大象" should contain image references
     And the Anki media directory should contain 3 images for "大象"
+
+  Scenario: Improve Anki export with missing definitions using --improve-definition
+    Given I have an Anki export file with content:
+      """
+      #separator:tab
+      #html:true
+      #notetype column:1
+      Chinese 2	交通拥堵费	jiāo tōng yōng dǔ fèi			<div>example placeholder</div>	explanation here	components	y		y
+      Chinese 2	学习	xué xí			<div>another example</div>	another explanation	学(study) + 习(practice)	y		y
+      """
+    When I run improve-anki with parameters "--improve-definition --definition-generator-provider=openrouter --definition-formatter-provider=openrouter --model=google/gemini-2.5-flash-lite-preview-09-2025"
+    Then the exit code should be 0
+    And the improved Anki export file should exist
+    And the definition field of "交通拥堵费" should not be empty
+    And the definition field of "交通拥堵费" should not contain "[No definition available"
+    And the definition field of "学习" should not be empty
+    And the definition field of "学习" should not contain "[No definition available"
+    And the etymology field of "交通拥堵费" should remain unchanged
+    And the examples field of "学习" should remain unchanged
