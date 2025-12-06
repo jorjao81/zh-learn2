@@ -31,28 +31,28 @@ public class WordCommand implements Runnable {
     @Option(
             names = {"--definition-formatter-provider"},
             description =
-                    "Set specific provider for definition formatting. Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter",
+                    "Set specific provider for definition formatting. Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter, gemini-2.5-flash, gemini-2.5-pro, gemini-3-pro-preview",
             defaultValue = "dummy")
     private String definitionFormatterProvider;
 
     @Option(
             names = {"--decomposition-provider"},
             description =
-                    "Set specific provider for structural decomposition. Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5, openrouter",
+                    "Set specific provider for structural decomposition. Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter, gemini-2.5-flash, gemini-2.5-pro, gemini-3-pro-preview",
             defaultValue = "dummy")
     private String decompositionProvider;
 
     @Option(
             names = {"--example-provider"},
             description =
-                    "Set specific provider for examples. Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5, openrouter",
+                    "Set specific provider for examples. Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter, gemini-2.5-flash, gemini-2.5-pro, gemini-3-pro-preview",
             defaultValue = "dummy")
     private String exampleProvider;
 
     @Option(
             names = {"--explanation-provider"},
             description =
-                    "Set specific provider for explanation. Available: dummy, deepseek-chat, qwen-max, qwen-plus, qwen-turbo, glm-4-flash, glm-4.5, openrouter",
+                    "Set specific provider for explanation. Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter, gemini-2.5-flash, gemini-2.5-pro, gemini-3-pro-preview",
             defaultValue = "dummy")
     private String explanationProvider;
 

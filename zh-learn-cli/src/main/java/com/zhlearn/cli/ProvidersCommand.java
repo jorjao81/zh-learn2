@@ -79,6 +79,17 @@ public class ProvidersCommand implements Runnable {
 
         // Show Gemini providers if GEMINI_API_KEY is available
         if (hasAPIKey("GEMINI_API_KEY")) {
+            if (!currentAI.equals("gemini-3-pro-preview")) {
+                providers.add(
+                        new ProviderInfo(
+                                "gemini-3-pro-preview",
+                                "Gemini 3 Pro Preview AI provider (available)",
+                                ProviderType.AI,
+                                EnumSet.of(
+                                        ProviderClass.EXAMPLE,
+                                        ProviderClass.EXPLANATION,
+                                        ProviderClass.STRUCTURAL_DECOMPOSITION)));
+            }
             if (!currentAI.equals("gemini-2.5-flash")) {
                 providers.add(
                         new ProviderInfo(
@@ -304,7 +315,7 @@ public class ProvidersCommand implements Runnable {
     private String getCurrentAIProvider() {
         // Use same logic as MainCommand
         if (hasAPIKey("GEMINI_API_KEY")) {
-            return "gemini-2.5-flash";
+            return "gemini-3-pro-preview";
         }
         if (hasAPIKey("ZHIPU_API_KEY")) {
             return "glm-4.5";
@@ -317,6 +328,7 @@ public class ProvidersCommand implements Runnable {
 
     private String getAIProviderDescription(String provider) {
         return switch (provider) {
+            case "gemini-3-pro-preview" -> "Gemini 3 Pro Preview AI provider (active)";
             case "gemini-2.5-flash" -> "Gemini 2.5 Flash AI provider (active)";
             case "gemini-2.5-pro" -> "Gemini 2.5 Pro AI provider (active)";
             case "glm-4.5" -> "GLM-4.5 AI provider (active)";

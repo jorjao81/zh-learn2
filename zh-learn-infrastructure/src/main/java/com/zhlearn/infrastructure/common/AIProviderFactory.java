@@ -206,7 +206,7 @@ public class AIProviderFactory {
                 yield new ConfigurableExampleProvider(
                         singleConfig, multiConfig, providerName, "OpenRouter AI (" + model + ")");
             }
-            case "gemini-2.5-flash", "gemini-2.5-pro" -> {
+            case "gemini-2.5-flash", "gemini-2.5-pro", "gemini-3-pro-preview" -> {
                 requireAPIKey("GEMINI_API_KEY", providerName);
                 ProviderConfig<Example> singleConfig =
                         createProviderConfig(
@@ -238,7 +238,7 @@ public class AIProviderFactory {
                     throw new RuntimeException(
                             "Unknown example provider: "
                                     + providerName
-                                    + ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter, gemini-2.5-flash, gemini-2.5-pro");
+                                    + ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter, gemini-2.5-flash, gemini-2.5-pro, gemini-3-pro-preview");
         };
     }
 
@@ -399,7 +399,7 @@ public class AIProviderFactory {
                 yield new ConfigurableExplanationProvider(
                         singleConfig, multiConfig, providerName, "OpenRouter AI (" + model + ")");
             }
-            case "gemini-2.5-flash", "gemini-2.5-pro" -> {
+            case "gemini-2.5-flash", "gemini-2.5-pro", "gemini-3-pro-preview" -> {
                 requireAPIKey("GEMINI_API_KEY", providerName);
                 ProviderConfig<Explanation> singleConfig =
                         createProviderConfig(
@@ -431,7 +431,7 @@ public class AIProviderFactory {
                     throw new RuntimeException(
                             "Unknown explanation provider: "
                                     + providerName
-                                    + ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter, gemini-2.5-flash, gemini-2.5-pro");
+                                    + ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter, gemini-2.5-flash, gemini-2.5-pro, gemini-3-pro-preview");
         };
     }
 
@@ -601,7 +601,7 @@ public class AIProviderFactory {
                 yield new ConfigurableStructuralDecompositionProvider(
                         singleConfig, multiConfig, providerName, "OpenRouter AI (" + model + ")");
             }
-            case "gemini-2.5-flash", "gemini-2.5-pro" -> {
+            case "gemini-2.5-flash", "gemini-2.5-pro", "gemini-3-pro-preview" -> {
                 requireAPIKey("GEMINI_API_KEY", providerName);
                 ProviderConfig<StructuralDecomposition> singleConfig =
                         createProviderConfig(
@@ -637,7 +637,7 @@ public class AIProviderFactory {
                     throw new RuntimeException(
                             "Unknown decomposition provider: "
                                     + providerName
-                                    + ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter, gemini-2.5-flash, gemini-2.5-pro");
+                                    + ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter, gemini-2.5-flash, gemini-2.5-pro, gemini-3-pro-preview");
         };
     }
 
@@ -845,7 +845,7 @@ public class AIProviderFactory {
                 yield new ConfigurableDefinitionFormatterProvider(
                         singleConfig, multiConfig, providerName, "OpenRouter AI (" + model + ")");
             }
-            case "gemini-2.5-flash", "gemini-2.5-pro" -> {
+            case "gemini-2.5-flash", "gemini-2.5-pro", "gemini-3-pro-preview" -> {
                 requireAPIKey("GEMINI_API_KEY", providerName);
                 ProviderConfig<Definition> singleConfig =
                         createProviderConfig(
@@ -877,7 +877,7 @@ public class AIProviderFactory {
                     throw new RuntimeException(
                             "Unknown definition formatter provider: "
                                     + providerName
-                                    + ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter, gemini-2.5-flash, gemini-2.5-pro");
+                                    + ". Available: dummy, deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter, gemini-2.5-flash, gemini-2.5-pro, gemini-3-pro-preview");
         };
     }
 
@@ -1042,7 +1042,7 @@ public class AIProviderFactory {
                 yield new ConfigurableDefinitionGeneratorProvider(
                         singleConfig, multiConfig, providerName, "OpenRouter AI (" + model + ")");
             }
-            case "gemini-2.5-flash", "gemini-2.5-pro" -> {
+            case "gemini-2.5-flash", "gemini-2.5-pro", "gemini-3-pro-preview" -> {
                 requireAPIKey("GEMINI_API_KEY", providerName);
                 ProviderConfig<Definition> singleConfig =
                         createProviderConfig(
@@ -1074,7 +1074,7 @@ public class AIProviderFactory {
                     throw new RuntimeException(
                             "Unknown definition generator provider: "
                                     + providerName
-                                    + ". Available: deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter, gemini-2.5-flash, gemini-2.5-pro");
+                                    + ". Available: deepseek-chat, glm-4-flash, glm-4.5, qwen-max, qwen-plus, qwen-turbo, openrouter, gemini-2.5-flash, gemini-2.5-pro, gemini-3-pro-preview");
         };
     }
 }
