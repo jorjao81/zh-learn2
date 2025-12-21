@@ -1,6 +1,6 @@
 # AGENTS.md — Contributor Guide
 
-**IMPORTANT: The Constitution in `constitution.md` is the most important document and supersedes all guidance in this file. Always consult the Constitution first.**
+**IMPORTANT: The Constitution in `CONSTITUTION.md` is the most important document and supersedes all guidance in this file. Always consult the Constitution first.**
 
 This document is the contributor guide for this repository. It defines project structure, coding standards, build/test workflows, and agent-specific rules. For AI agents and humans alike, follow the Constitution first, then this guide.
 
