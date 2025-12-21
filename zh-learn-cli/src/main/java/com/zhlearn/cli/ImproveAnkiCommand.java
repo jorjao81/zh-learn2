@@ -334,13 +334,18 @@ public class ImproveAnkiCommand implements Runnable {
                             explanationProvider,
                             audioProvider);
 
-            // Check if interactive audio needed
-            if (improveAudio && !skipAudio && !notes.isEmpty()) {
+            // Check if interactive audio needed (skip if all notes have pre-configured selections)
+            boolean allNotesHaveAudioSelections =
+                    notes.stream().allMatch(note -> audioSelections.containsKey(note.simplified()));
+            if (improveAudio && !skipAudio && !allNotesHaveAudioSelections && !notes.isEmpty()) {
                 ensureInteractiveAudioSupported();
             }
 
-            // Check if interactive image selection needed
-            if (improveImages && !notes.isEmpty()) {
+            // Check if interactive image selection needed (skip if all notes have pre-configured
+            // selections)
+            boolean allNotesHaveImageSelections =
+                    notes.stream().allMatch(note -> imageSelections.containsKey(note.simplified()));
+            if (improveImages && !allNotesHaveImageSelections && !notes.isEmpty()) {
                 ensureInteractiveImageSupported();
             }
 

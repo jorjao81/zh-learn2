@@ -266,7 +266,12 @@ public class ParsePlecoCommand implements Runnable {
             List<PlecoEntry> entriesToProcess =
                     entries.stream().limit(maxToProcess).collect(Collectors.toList());
 
-            if (!entriesToProcess.isEmpty() && !skipAudio) {
+            // Check if interactive audio needed (skip if all entries have pre-configured
+            // selections)
+            boolean allEntriesHaveAudioSelections =
+                    entriesToProcess.stream()
+                            .allMatch(entry -> audioSelections.containsKey(entry.hanzi()));
+            if (!entriesToProcess.isEmpty() && !skipAudio && !allEntriesHaveAudioSelections) {
                 ensureInteractiveAudioSupported();
             }
 
