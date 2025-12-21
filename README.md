@@ -7,6 +7,15 @@ code.
 
 - Java 25+ with GraalVM (for native compilation)
 - Maven 3.8+
+- pre-commit (for git hooks)
+
+## Development Setup
+
+```bash
+# Install pre-commit hooks
+pip install pre-commit
+pre-commit install
+```
 
 ## Build
 
