@@ -145,10 +145,10 @@ public final class AdaptiveTokenBucketRateLimiter implements ProviderRateLimiter
             pauseUntilNanos.updateAndGet(current -> Math.max(current, newPauseUntil));
 
             log.warn(
-                    "[{}] Rate limited! Reducing rate from {:.2f}/s to {:.2f}/s, pausing for {}ms",
+                    "[{}] Rate limited! Reducing rate from {}/s to {}/s, pausing for {}ms",
                     providerName,
-                    oldRate,
-                    newRate,
+                    String.format("%.2f", oldRate),
+                    String.format("%.2f", newRate),
                     pauseDuration.toMillis());
 
             // Wake up all waiting threads so they see the pause
@@ -167,7 +167,10 @@ public final class AdaptiveTokenBucketRateLimiter implements ProviderRateLimiter
         if (currentRate < baseRefillRate) {
             double newRate = Math.min(currentRate * recoveryMultiplier, baseRefillRate);
             currentRefillRate = newRate;
-            log.trace("[{}] Success - recovering rate to {:.2f}/s", providerName, newRate);
+            log.trace(
+                    "[{}] Success - recovering rate to {}/s",
+                    providerName,
+                    String.format("%.2f", newRate));
         }
     }
 
