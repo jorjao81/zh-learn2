@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.zhlearn.application.audio.AnkiMediaLocator;
 import com.zhlearn.application.format.ExamplesHtmlFormatter;
-import com.zhlearn.application.image.ImageOrchestrator;
 import com.zhlearn.application.service.AnkiExporter;
 import com.zhlearn.cli.audio.PrePlayback;
 import com.zhlearn.domain.provider.AudioProvider;
@@ -20,8 +19,6 @@ import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;
 import com.zhlearn.infrastructure.audio.AudioPaths;
 import com.zhlearn.infrastructure.common.AIProviderFactory;
 import com.zhlearn.infrastructure.dummy.DummyDefinitionProvider;
-import com.zhlearn.infrastructure.image.GoogleImageSearchProvider;
-import com.zhlearn.infrastructure.image.ImageDownloader;
 import com.zhlearn.infrastructure.pinyin4j.Pinyin4jProvider;
 
 import picocli.CommandLine.Command;
@@ -140,12 +137,6 @@ public class MainCommand implements Runnable {
 
     public AnkiExporter getAnkiExporter() {
         return ankiExporter;
-    }
-
-    public ImageOrchestrator createImageOrchestrator() {
-        GoogleImageSearchProvider imageProvider = new GoogleImageSearchProvider();
-        ImageDownloader imageDownloader = new ImageDownloader();
-        return new ImageOrchestrator(imageProvider, imageDownloader, audioExecutor.getExecutor());
     }
 
     // AI Provider factory methods - create on demand and crash if fails

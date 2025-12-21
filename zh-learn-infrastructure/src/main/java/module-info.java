@@ -48,5 +48,4 @@ module com.zhlearn.infrastructure {
     exports com.zhlearn.infrastructure.qwen;
     exports com.zhlearn.infrastructure.forvo;
     exports com.zhlearn.infrastructure.tencent;
-    exports com.zhlearn.infrastructure.image;
 }
