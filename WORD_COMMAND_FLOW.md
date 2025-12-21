@@ -6,7 +6,7 @@ The `word` command performs comprehensive analysis of a single Chinese word usin
 
 ## Command Structure
 
-```
+```bash
 ./zh-learn.sh word <chinese-word> [options]
 ```
 

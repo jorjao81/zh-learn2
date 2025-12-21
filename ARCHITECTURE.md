@@ -483,7 +483,7 @@ flowchart TD
 
 ### Test Module Organization
 
-```
+```text
 src/test/java/
 ├── unit/           # Fast, isolated tests
 ├── integration/    # API and service tests

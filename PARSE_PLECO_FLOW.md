@@ -6,7 +6,7 @@ The `parse-pleco` command processes Pleco export files (TSV format) and analyzes
 
 ## Command Structure
 
-```
+```bash
 ./zh-learn.sh parse-pleco <file> [options]
 ```
 

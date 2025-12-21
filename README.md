@@ -67,7 +67,6 @@ cd zh-learn-cli && mvn native:compile-no-fork -Pnative
 ./zh-learn-cli/target/zh-learn word 学习
 ```
 
-
 ## Performance
 
 - **Native executable**: 27ms startup time

@@ -1,0 +1,86 @@
+// Configuration for markdownlint-cli2
+// This file is used by both pre-commit hooks and nvim
+// See: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+{
+  // markdownlint rules configuration
+  "config": {
+    // Default state for all rules
+    "default": true,
+
+    // MD013/line-length - Line length
+    // Disabled because it's too restrictive for documentation
+    "MD013": false,
+
+    // MD024/no-duplicate-heading - Multiple headings with the same content
+    // Allow duplicate headings in different sections
+    "MD024": {
+      "siblings_only": true
+    },
+
+    // MD033/no-inline-html - Inline HTML
+    // Allow inline HTML as it's sometimes necessary
+    "MD033": false,
+
+    // MD025/single-title - Multiple top-level headings
+    // Disabled to allow multiple H1s in documentation
+    "MD025": false,
+
+    // MD041/first-line-heading - First line in file should be a top-level heading
+    // Disabled to allow introductory text
+    "MD041": false,
+
+    // MD022/blanks-around-headings - Headings should be surrounded by blank lines
+    // Disabled as project documentation uses compact heading style
+    "MD022": false,
+
+    // MD031/blanks-around-fences - Fenced code blocks should be surrounded by blank lines
+    // Disabled as project uses compact code block style in lists
+    "MD031": false,
+
+    // MD032/blanks-around-lists - Lists should be surrounded by blank lines
+    // Disabled as project uses compact list style
+    "MD032": false,
+
+    // MD029/ol-prefix - Ordered list item prefix
+    // Disabled as different documentation uses different styles
+    "MD029": false,
+
+    // MD060/table-column-style - Table column style
+    // Disabled as compact tables are used in some docs
+    "MD060": false,
+
+    // MD026/no-trailing-punctuation - Trailing punctuation in heading
+    // Disabled as some headings naturally end with colons
+    "MD026": false,
+
+    // MD046/code-block-style - Code block style
+    // Prefer fenced code blocks with language specified
+    "MD046": {
+      "style": "fenced"
+    },
+
+    // MD049/emphasis-style - Emphasis style
+    // Allow any consistent style
+    "MD049": {
+      "style": "consistent"
+    },
+
+    // MD050/strong-style - Strong style
+    // Use asterisks for strong emphasis
+    "MD050": {
+      "style": "asterisk"
+    }
+  },
+  // Glob patterns to lint
+  "globs": [
+    "**/*.md"
+  ],
+  // Ignore files in common directories
+  "ignores": [
+    "node_modules/**",
+    "target/**",
+    "**/target/**",
+    "**/.git/**",
+    "**/resources/**/prompt-template.md"
+  ]
+}

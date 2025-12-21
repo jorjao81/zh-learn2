@@ -4,6 +4,13 @@ repos:
     hooks:
       - id: no-claude-commit
 
+  # Markdown linting (check only, no auto-fix)
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.20.0
+    hooks:
+      - id: markdownlint-cli2
+        name: Lint Markdown files
+
   - repo: local
     hooks:
       - id: spotless-check
