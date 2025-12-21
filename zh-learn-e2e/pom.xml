@@ -80,13 +80,23 @@
 
     <build>
         <plugins>
-            <!-- Skip JAR creation - this module only has test sources -->
+            <!-- Skip JAR creation and install - this module only has test sources -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.4.1</version>
+                <executions>
+                    <execution>
+                        <id>default-jar</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
                 <configuration>
-                    <skipIfEmpty>true</skipIfEmpty>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
             <plugin>
