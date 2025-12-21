@@ -12,7 +12,7 @@ jobs:
     - name: Set up Oracle GraalVM
       uses: actions/setup-java@v4
       with:
-        java-version: '24'
+        java-version: '25'
         distribution: 'graalvm'
         java-package: 'jdk'
         cache: 'maven'
