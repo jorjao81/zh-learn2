@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhlearn.domain.exception.UnrecoverableProviderException;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
@@ -19,6 +20,7 @@ import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.infrastructure.audio.AbstractTtsAudioProvider;
 import com.zhlearn.infrastructure.audio.AudioCache;
 import com.zhlearn.infrastructure.audio.AudioPaths;
+import com.zhlearn.infrastructure.ratelimit.ProviderRateLimiter;
 
 public class QwenAudioProvider extends AbstractTtsAudioProvider {
     private static final String NAME = "qwen-tts";
@@ -32,16 +34,19 @@ public class QwenAudioProvider extends AbstractTtsAudioProvider {
     private QwenTtsClient client;
     private final HttpClient httpClient;
     private final QwenTtsClient injectedClient;
+    private final ProviderRateLimiter rateLimiter;
 
     public QwenAudioProvider(
             AudioCache audioCache,
             AudioPaths audioPaths,
             ExecutorService executorService,
             HttpClient httpClient,
-            QwenTtsClient client) {
+            QwenTtsClient client,
+            ProviderRateLimiter rateLimiter) {
         super(audioCache, audioPaths, executorService);
         this.httpClient = Objects.requireNonNull(httpClient, "httpClient");
         this.injectedClient = client;
+        this.rateLimiter = rateLimiter;
     }
 
     @Override
@@ -78,7 +83,14 @@ public class QwenAudioProvider extends AbstractTtsAudioProvider {
             if (injectedClient != null) {
                 client = injectedClient;
             } else {
-                client = new QwenTtsClient(httpClient, resolveApiKey(), MODEL);
+                client =
+                        new QwenTtsClient(
+                                httpClient,
+                                resolveApiKey(),
+                                MODEL,
+                                new ObjectMapper(),
+                                null, // use default retry
+                                rateLimiter);
             }
         }
         return client;

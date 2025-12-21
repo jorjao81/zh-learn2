@@ -61,7 +61,7 @@ class QwenTtsClientTest {
                                         .applyOn(Set.of(QwenTtsClient.RateLimitException.class)));
 
         QwenTtsClient client =
-                new QwenTtsClient(http, "key", "qwen3-tts-flash", new ObjectMapper(), retry);
+                new QwenTtsClient(http, "key", "qwen3-tts-flash", new ObjectMapper(), retry, null);
 
         QwenTtsResult result = client.synthesize("Cherry", "学习");
 
@@ -89,7 +89,7 @@ class QwenTtsClientTest {
                                         .applyOn(Set.of(QwenTtsClient.RateLimitException.class)));
 
         QwenTtsClient client =
-                new QwenTtsClient(http, "key", "qwen3-tts-flash", new ObjectMapper(), retry);
+                new QwenTtsClient(http, "key", "qwen3-tts-flash", new ObjectMapper(), retry, null);
 
         assertThatThrownBy(() -> client.synthesize("Cherry", "学习"))
                 .isInstanceOf(IOException.class)

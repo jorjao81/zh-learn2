@@ -33,7 +33,7 @@ class TencentAudioProviderTest {
         AudioPaths audioPaths = new AudioPaths();
         AudioNormalizer normalizer = new AudioNormalizer();
         AudioCache audioCache = new AudioCache(audioPaths, normalizer);
-        return new TencentAudioProvider(audioCache, audioPaths, null, client);
+        return new TencentAudioProvider(audioCache, audioPaths, null, client, null);
     }
 
     @Test
@@ -139,7 +139,7 @@ class TencentAudioProviderTest {
         final List<Integer> receivedVoiceTypes = new ArrayList<>();
 
         FakeTencentClient() {
-            super("test-secret-id", "test-secret-key", "ap-singapore");
+            super("test-secret-id", "test-secret-key", "ap-singapore", null);
         }
 
         @Override
@@ -156,7 +156,7 @@ class TencentAudioProviderTest {
 
     private static class FailingTencentClient extends TencentTtsClient {
         FailingTencentClient() {
-            super("test-secret-id", "test-secret-key", "ap-singapore");
+            super("test-secret-id", "test-secret-key", "ap-singapore", null);
         }
 
         @Override
@@ -167,7 +167,7 @@ class TencentAudioProviderTest {
 
     private static class EmptyTencentClient extends TencentTtsClient {
         EmptyTencentClient() {
-            super("test-secret-id", "test-secret-key", "ap-singapore");
+            super("test-secret-id", "test-secret-key", "ap-singapore", null);
         }
 
         @Override

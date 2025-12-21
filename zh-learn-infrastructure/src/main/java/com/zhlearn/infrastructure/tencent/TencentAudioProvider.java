@@ -15,6 +15,7 @@ import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.infrastructure.audio.AbstractTtsAudioProvider;
 import com.zhlearn.infrastructure.audio.AudioCache;
 import com.zhlearn.infrastructure.audio.AudioPaths;
+import com.zhlearn.infrastructure.ratelimit.ProviderRateLimiter;
 
 public class TencentAudioProvider extends AbstractTtsAudioProvider {
     private static final String NAME = "tencent-tts";
@@ -34,14 +35,17 @@ public class TencentAudioProvider extends AbstractTtsAudioProvider {
     private TencentTtsClient client;
     private final TencentTtsClient injectedClient;
     private final Map<String, Integer> voiceNameToType;
+    private final ProviderRateLimiter rateLimiter;
 
     public TencentAudioProvider(
             AudioCache audioCache,
             AudioPaths audioPaths,
             ExecutorService executorService,
-            TencentTtsClient client) {
+            TencentTtsClient client,
+            ProviderRateLimiter rateLimiter) {
         super(audioCache, audioPaths, executorService);
         this.injectedClient = client;
+        this.rateLimiter = rateLimiter;
         this.voiceNameToType = buildVoiceNameToTypeMap();
     }
 
@@ -95,7 +99,10 @@ public class TencentAudioProvider extends AbstractTtsAudioProvider {
             } else {
                 client =
                         new TencentTtsClient(
-                                resolveSecretId(), resolveSecretKey(), resolveRegion());
+                                resolveSecretId(),
+                                resolveSecretKey(),
+                                resolveRegion(),
+                                rateLimiter);
             }
         }
         return client;

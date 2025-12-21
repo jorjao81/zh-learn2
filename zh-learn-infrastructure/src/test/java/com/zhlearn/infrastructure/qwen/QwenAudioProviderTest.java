@@ -42,7 +42,7 @@ class QwenAudioProviderTest {
         AudioPaths audioPaths = new AudioPaths();
         AudioNormalizer normalizer = new AudioNormalizer();
         AudioCache audioCache = new AudioCache(audioPaths, normalizer);
-        return new QwenAudioProvider(audioCache, audioPaths, null, http, client);
+        return new QwenAudioProvider(audioCache, audioPaths, null, http, client, null);
     }
 
     @Test
