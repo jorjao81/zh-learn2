@@ -24,7 +24,7 @@ public class QwenAudioProvider extends AbstractTtsAudioProvider {
     private static final String NAME = "qwen-tts";
     private static final String MODEL = "qwen3-tts-flash";
     private static final List<String> VOICES =
-            List.of("Cherry", "Ethan", "Nofish", "Jennifer", "Ryan", "Katerina", "Elias");
+            List.of("Cherry", "Ethan", "Nofish", "Jennifer", "Elias");
     private static final Duration TIMEOUT = Duration.ofSeconds(15);
     private static final String API_KEY_ENV = "DASHSCOPE_API_KEY";
     private static final String USER_AGENT = "zh-learn-cli/1.0 (QwenAudioProvider)";
