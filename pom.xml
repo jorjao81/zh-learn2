@@ -14,9 +14,9 @@
     <description>A modern CLI tool for learning Chinese words with AI-powered analysis</description>
 
     <properties>
-        <maven.compiler.source>24</maven.compiler.source>
-        <maven.compiler.target>24</maven.compiler.target>
-        <maven.compiler.release>24</maven.compiler.release>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
+        <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependency versions -->
@@ -32,7 +32,7 @@
         <maven-surefire-plugin.version>3.2.2</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.2.2</maven-failsafe-plugin.version>
         <native-maven-plugin.version>0.9.28</native-maven-plugin.version>
-        <spotless-maven-plugin.version>2.43.0</spotless-maven-plugin.version>
+        <spotless-maven-plugin.version>3.1.0</spotless-maven-plugin.version>
         <maven-checkstyle-plugin.version>3.5.0</maven-checkstyle-plugin.version>
         <checkstyle.version>10.23.1</checkstyle.version>
         <maven-pmd-plugin.version>3.27.0</maven-pmd-plugin.version>
@@ -229,9 +229,9 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
                     <configuration>
-                        <source>24</source>
-                        <target>24</target>
-                        <release>24</release>
+                        <source>25</source>
+                        <target>25</target>
+                        <release>25</release>
                         <compilerArgs>
                             <arg>--enable-preview</arg>
                         </compilerArgs>
@@ -288,7 +288,7 @@
                     <configuration>
                         <java>
                             <googleJavaFormat>
-                                <version>1.25.2</version>
+                                <version>1.28.0</version>
                                 <style>AOSP</style>
                             </googleJavaFormat>
                             <importOrder>

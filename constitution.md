@@ -59,7 +59,7 @@ Always prefer existing modules and libraries over custom implementations:
 ## Technical Standards
 
 ### Java Platform Requirements
-- Java 24+ with preview features enabled
+- Java 25+ with preview features enabled
 - Maven 3.8+ for build management
 - GraalVM for native compilation
 - Helidon for dependency injection framework

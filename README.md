@@ -5,7 +5,7 @@ code.
 
 ## Prerequisites
 
-- Java 24+ with GraalVM (for native compilation)
+- Java 25+ with GraalVM (for native compilation)
 - Maven 3.8+
 
 ## Build

@@ -5,7 +5,7 @@
 This document is the contributor guide for this repository. It defines project structure, coding standards, build/test workflows, and agent-specific rules. For AI agents and humans alike, follow the Constitution first, then this guide.
 
 ## Overview
-- Language/tooling: Java 24 (preview features enabled) + Maven multi-module + Java Platform Module System (JPMS).
+- Language/tooling: Java 25 (preview features enabled) + Maven multi-module + Java Platform Module System (JPMS).
 - Primary goal: CLI for Chinese learning with modular architecture and clean boundaries.
 - Entrypoint: `com.zhlearn.cli.ZhLearnApplication` (Picocli). Run via `./zh-learn.sh` or the native binary under `zh-learn-cli/target`.
 
@@ -22,7 +22,7 @@ Boundary rules
 - Prefer immutable domain types and explicit value objects. Avoid leaking infrastructure types into domain/application.
 
 ## Development Setup
-- JDK: Install Java 24; ensure `--enable-preview` is used by Maven (already configured in root `pom.xml`).
+- JDK: Install Java 25; ensure `--enable-preview` is used by Maven (already configured in root `pom.xml`).
 - Maven: 3.8+.
 - Optional: GraalVM for native builds.
 - Env management: `direnv` + 1Password via `.envrc`. Do not commit secrets.
@@ -229,7 +229,7 @@ this.audioProviders = List.of(
   - Implement in `zh-learn-pinyin`; export minimal API via `module-info.java`.
 
 ## Troubleshooting
-- Preview features: ensure Java 24 is active; Maven compiler plugin already passes `--enable-preview`.
+- Preview features: ensure Java 25 is active; Maven compiler plugin already passes `--enable-preview`.
 - Native image issues: verify GraalVM and `native` profile; reduce reflection and ensure JPMS compatibility.
 - Test discovery: unit tests run via Surefire (`*Test.java`), IT via Failsafe (`*IT.java`), Cucumber via `RunCucumberTest.java`.
 
