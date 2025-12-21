@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,6 +32,8 @@ import com.zhlearn.application.service.ParallelWordAnalysisService;
 import com.zhlearn.application.service.WordAnalysisServiceImpl;
 import com.zhlearn.cli.audio.InteractiveAudioUI;
 import com.zhlearn.cli.audio.SystemAudioPlayer;
+import com.zhlearn.cli.util.AudioSelectionUtils;
+import com.zhlearn.cli.util.AudioSelectionUtils.AudioSelection;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.ProviderConfiguration;
@@ -211,7 +212,7 @@ public class ImproveAnkiCommand implements Runnable {
             System.out.println();
 
             // Parse audio selections if provided
-            audioSelections = parseAudioSelections(audioSelectionsParam);
+            audioSelections = AudioSelectionUtils.parseAudioSelections(audioSelectionsParam);
 
             // Create dictionary from existing notes for unchanged fields
             AnkiNoteDictionary dictionary = new AnkiNoteDictionary(notes);
@@ -635,7 +636,7 @@ public class ImproveAnkiCommand implements Runnable {
 
         AudioSelection selection = audioSelections.get(analysis.word().characters());
         if (selection != null) {
-            choice = findMatchingCandidate(candidates, selection);
+            choice = AudioSelectionUtils.findMatchingCandidate(candidates, selection);
             if (choice == null) {
                 throw new IllegalStateException(
                         String.format(
@@ -708,7 +709,7 @@ public class ImproveAnkiCommand implements Runnable {
 
         AudioSelection selection = audioSelections.get(analysis.word().characters());
         if (selection != null) {
-            choice = findMatchingCandidate(candidates, selection);
+            choice = AudioSelectionUtils.findMatchingCandidate(candidates, selection);
             if (choice == null) {
                 throw new IllegalStateException(
                         String.format(
@@ -793,9 +794,6 @@ public class ImproveAnkiCommand implements Runnable {
     /** Helper record to combine analysis result with audio candidates from parallel processing */
     private record CombinedResult(
             WordAnalysisResult analysisResult, List<PronunciationCandidate> audioCandidates) {}
-
-    /** Record to hold audio selection preference for a word */
-    private record AudioSelection(String provider, String description) {}
 
     /**
      * Export the improved WordAnalysis results to an Anki-compatible TSV file. Merges improved
@@ -975,47 +973,5 @@ public class ImproveAnkiCommand implements Runnable {
                         () ->
                                 new IllegalArgumentException(
                                         "Unknown audio provider: " + providerName));
-    }
-
-    private Map<String, AudioSelection> parseAudioSelections(String param) {
-        if (param == null || param.trim().isEmpty()) {
-            return Map.of();
-        }
-
-        Map<String, AudioSelection> selections = new HashMap<>();
-        String[] entries = param.split(";");
-        for (String entry : entries) {
-            String[] parts = entry.split(":");
-            if (parts.length != 3) {
-                throw new IllegalArgumentException(
-                        "Invalid audio selection format: "
-                                + entry
-                                + ". Expected format: word:provider:description");
-            }
-            String word = parts[0].trim();
-            String provider = parts[1].trim();
-            String description = parts[2].trim();
-            selections.put(word, new AudioSelection(provider, description));
-        }
-        return selections;
-    }
-
-    private PronunciationCandidate findMatchingCandidate(
-            List<PronunciationCandidate> candidates, AudioSelection selection) {
-        for (PronunciationCandidate candidate : candidates) {
-            String candidateDesc = stripEmojis(candidate.description());
-            if (candidate.label().equals(selection.provider())
-                    && candidateDesc.equals(selection.description())) {
-                return candidate;
-            }
-        }
-        return null;
-    }
-
-    private String stripEmojis(String text) {
-        if (text == null) {
-            return "";
-        }
-        return text.replaceAll("[\\p{So}\\p{Cn}]", "").trim();
     }
 }
