@@ -1,0 +1,35 @@
+repos:
+  - repo: https://github.com/jorjao81/no-claude-commit-hook
+    rev: v1.0.0
+    hooks:
+      - id: no-claude-commit
+
+  - repo: local
+    hooks:
+      - id: spotless-check
+        name: Spotless code formatting check
+        entry: mvn spotless:check
+        language: system
+        types: [java]
+        pass_filenames: false
+
+      - id: checkstyle
+        name: Checkstyle
+        entry: mvn checkstyle:check
+        language: system
+        types: [java]
+        pass_filenames: false
+
+      - id: pmd
+        name: PMD static analysis
+        entry: mvn pmd:check
+        language: system
+        types: [java]
+        pass_filenames: false
+
+      - id: maven-test
+        name: Maven tests
+        entry: mvn test
+        language: system
+        types: [java]
+        pass_filenames: false

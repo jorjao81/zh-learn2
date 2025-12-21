@@ -1,7 +1,0 @@
-#!/bin/sh
-echo "Running linters before commit..."
-mvn -fae spotless:check checkstyle:check pmd:check
-if [ $? -ne 0 ]; then
-    echo "Linter checks failed. Run 'mvn spotless:apply' to fix formatting issues."
-    exit 1
-fi
