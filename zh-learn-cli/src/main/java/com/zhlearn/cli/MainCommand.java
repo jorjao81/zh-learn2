@@ -29,7 +29,6 @@ import picocli.CommandLine.ScopeType;
         mixinStandardHelpOptions = true,
         version = "1.0.0-SNAPSHOT",
         subcommands = {
-            WordCommand.class,
             ProvidersCommand.class,
             ParseAnkiCommand.class,
             ParsePlecoCommand.class,

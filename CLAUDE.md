@@ -30,9 +30,9 @@ Boundary rules
 ## Build & Run
 - Build all modules: `mvn clean package`
 - Quick build (CLI and deps): `mvn -pl zh-learn-cli -am package`
-- Run (modular JVM): `./zh-learn.sh word 学习`
+- Run (modular JVM): `./zh-learn.sh parse-pleco input.tsv --export-anki=output.tsv`
 - Build native (GraalVM): `cd zh-learn-cli && mvn native:compile-no-fork -Pnative`
-- Run native: `./zh-learn-cli/target/zh-learn word 学习`
+- Run native: `./zh-learn-cli/target/zh-learn parse-pleco input.tsv --export-anki=output.tsv`
 
 ## Testing
 - Frameworks: JUnit 5, AssertJ, Mockito, Cucumber.
@@ -173,7 +173,7 @@ this.audioProviders = List.of(
 ## CLI Usage (quick reference)
 - Main: `./zh-learn.sh` (modular JVM) or `./zh-learn-cli/target/zh-learn` (native).
 - Examples:
-  - Word lookup: `./zh-learn.sh word 学习`
+  - Parse Pleco export: `./zh-learn.sh parse-pleco input.tsv --export-anki=output.tsv`
   - List providers: `./zh-learn.sh providers -d`
   - Audio lookup (existing Anki TSV): `./zh-learn.sh audio 学习 xuéxí`
   - Qwen TTS audio (requires `DASHSCOPE_API_KEY`): `./zh-learn.sh audio 学习 xuéxí --audio-provider qwen-tts`
