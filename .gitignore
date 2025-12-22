@@ -15,6 +15,15 @@ target/
 .vscode/
 .run/
 
+# Eclipse IDE
+.project
+.classpath
+.factorypath
+.settings/
+
+# Maven local repository (misplaced)
+.m2/
+
 # OS cruft
 .DS_Store
 Thumbs.db
@@ -22,9 +31,5 @@ Thumbs.db
 # Local caches
 .zh-learn-cache/
 
-# Large local data files
-Chinese.txt
-flash.txt
-
-# Local selection dump
-SelectedNotes.txt
+# Data files
+*.tsv

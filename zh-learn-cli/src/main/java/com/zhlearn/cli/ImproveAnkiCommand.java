@@ -8,8 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,16 +28,13 @@ import com.zhlearn.application.audio.PronunciationCandidate;
 import com.zhlearn.application.audio.SelectionSession;
 import com.zhlearn.application.export.AnkiExportEntry;
 import com.zhlearn.application.format.ExamplesHtmlFormatter;
-import com.zhlearn.application.image.AnkiImageManager;
-import com.zhlearn.application.image.ImageOrchestrator;
-import com.zhlearn.application.image.ImageSelectionSession;
 import com.zhlearn.application.service.ParallelWordAnalysisService;
 import com.zhlearn.application.service.WordAnalysisServiceImpl;
 import com.zhlearn.cli.audio.InteractiveAudioUI;
 import com.zhlearn.cli.audio.SystemAudioPlayer;
-import com.zhlearn.cli.image.InteractiveImageUI;
+import com.zhlearn.cli.util.AudioSelectionUtils;
+import com.zhlearn.cli.util.AudioSelectionUtils.AudioSelection;
 import com.zhlearn.domain.model.Hanzi;
-import com.zhlearn.domain.model.ImageCandidate;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.ProviderConfiguration;
 import com.zhlearn.domain.model.WordAnalysis;
@@ -105,11 +100,6 @@ public class ImproveAnkiCommand implements Runnable {
             description =
                     "Regenerate definitions for all words (generate if missing, format if present)")
     private boolean improveDefinition = false;
-
-    @Option(
-            names = {"--improve-images"},
-            description = "Add representative images to definitions")
-    private boolean improveImages = false;
 
     @Option(
             names = {"--definition-formatter-provider"},
@@ -186,18 +176,11 @@ public class ImproveAnkiCommand implements Runnable {
     private String audioSelectionsParam;
 
     @Option(
-            names = {"--image-selections"},
-            description = "Pre-configured image selections (format: word:1,2,3;word:4,5,6)")
-    private String imageSelectionsParam;
-
-    @Option(
             names = {"--raw", "--raw-output"},
             description = "Display raw HTML content instead of formatted output")
     private boolean rawOutput = false;
 
     private Map<String, AudioSelection> audioSelections;
-    private Map<String, ImageSelection> imageSelections;
-    private Map<String, List<Path>> selectedImagesPerWord = new HashMap<>();
 
     @picocli.CommandLine.ParentCommand private MainCommand parent;
 
@@ -209,10 +192,9 @@ public class ImproveAnkiCommand implements Runnable {
                     && !improveExplanation
                     && !improveExamples
                     && !improveDecomposition
-                    && !improveDefinition
-                    && !improveImages) {
+                    && !improveDefinition) {
                 throw new IllegalArgumentException(
-                        "At least one --improve-* flag must be specified. Available: --improve-audio, --improve-explanation, --improve-examples, --improve-decomposition, --improve-definition, --improve-images");
+                        "At least one --improve-* flag must be specified. Available: --improve-audio, --improve-explanation, --improve-examples, --improve-decomposition, --improve-definition");
             }
 
             Path path = Paths.get(filePath);
@@ -226,15 +208,11 @@ public class ImproveAnkiCommand implements Runnable {
                             + (improveExplanation ? "explanation " : "")
                             + (improveExamples ? "examples " : "")
                             + (improveDecomposition ? "decomposition " : "")
-                            + (improveDefinition ? "definition " : "")
-                            + (improveImages ? "images " : ""));
+                            + (improveDefinition ? "definition " : ""));
             System.out.println();
 
             // Parse audio selections if provided
-            audioSelections = parseAudioSelections(audioSelectionsParam);
-
-            // Parse image selections if provided
-            imageSelections = parseImageSelections(imageSelectionsParam);
+            audioSelections = AudioSelectionUtils.parseAudioSelections(audioSelectionsParam);
 
             // Create dictionary from existing notes for unchanged fields
             AnkiNoteDictionary dictionary = new AnkiNoteDictionary(notes);
@@ -334,14 +312,11 @@ public class ImproveAnkiCommand implements Runnable {
                             explanationProvider,
                             audioProvider);
 
-            // Check if interactive audio needed
-            if (improveAudio && !skipAudio && !notes.isEmpty()) {
+            // Check if interactive audio needed (skip if all notes have pre-configured selections)
+            boolean allNotesHaveAudioSelections =
+                    notes.stream().allMatch(note -> audioSelections.containsKey(note.simplified()));
+            if (improveAudio && !skipAudio && !allNotesHaveAudioSelections && !notes.isEmpty()) {
                 ensureInteractiveAudioSupported();
-            }
-
-            // Check if interactive image selection needed
-            if (improveImages && !notes.isEmpty()) {
-                ensureInteractiveImageSupported();
             }
 
             // Thread-safe collection to store successful analyses for export
@@ -398,30 +373,15 @@ public class ImproveAnkiCommand implements Runnable {
                         : null;
         InteractiveAudioUI audioUI = improveAudio && !skipAudio ? new InteractiveAudioUI() : null;
 
-        ImageOrchestrator imageOrchestrator = null;
-        InteractiveImageUI imageUI = null;
-        AnkiImageManager imageManager = null;
-
-        if (improveImages) {
-            imageOrchestrator = parent.createImageOrchestrator();
-            imageUI = new InteractiveImageUI();
-            imageManager = new AnkiImageManager(parent.getAnkiMediaLocator());
-        }
-
         for (AnkiNote note : notes) {
             Hanzi word = new Hanzi(note.simplified());
             WordAnalysis analysis = wordAnalysisService.getCompleteAnalysis(word, config);
             printWordAnalysis(analysis, processedCount + 1, maxToProcess);
 
-            WordAnalysis withAudio =
+            WordAnalysis updated =
                     (improveAudio && !skipAudio)
                             ? runAudioSelection(audioOrchestrator, audioUI, analysis)
                             : analysis;
-
-            WordAnalysis updated =
-                    improveImages
-                            ? runImageSelection(imageOrchestrator, imageUI, imageManager, withAudio)
-                            : withAudio;
 
             successfulAnalyses.add(updated);
             processedCount++;
@@ -626,19 +586,6 @@ public class ImproveAnkiCommand implements Runnable {
                 }
             }
 
-            if (improveImages && !successfulAnalyses.isEmpty()) {
-                ImageOrchestrator imageOrchestrator = parent.createImageOrchestrator();
-                InteractiveImageUI imageUI = new InteractiveImageUI();
-                AnkiImageManager imageManager = new AnkiImageManager(parent.getAnkiMediaLocator());
-
-                for (int i = 0; i < successfulAnalyses.size(); i++) {
-                    WordAnalysis analysis = successfulAnalyses.get(i);
-                    WordAnalysis updated =
-                            runImageSelection(imageOrchestrator, imageUI, imageManager, analysis);
-                    successfulAnalyses.set(i, updated);
-                }
-            }
-
             long overallDuration = System.currentTimeMillis() - overallStartTime;
             System.out.println("=".repeat(80));
             System.out.printf(
@@ -689,7 +636,7 @@ public class ImproveAnkiCommand implements Runnable {
 
         AudioSelection selection = audioSelections.get(analysis.word().characters());
         if (selection != null) {
-            choice = findMatchingCandidate(candidates, selection);
+            choice = AudioSelectionUtils.findMatchingCandidate(candidates, selection);
             if (choice == null) {
                 throw new IllegalStateException(
                         String.format(
@@ -762,7 +709,7 @@ public class ImproveAnkiCommand implements Runnable {
 
         AudioSelection selection = audioSelections.get(analysis.word().characters());
         if (selection != null) {
-            choice = findMatchingCandidate(candidates, selection);
+            choice = AudioSelectionUtils.findMatchingCandidate(candidates, selection);
             if (choice == null) {
                 throw new IllegalStateException(
                         String.format(
@@ -810,62 +757,6 @@ public class ImproveAnkiCommand implements Runnable {
                 Optional.of(choice.file().toAbsolutePath()));
     }
 
-    private WordAnalysis runImageSelection(
-            ImageOrchestrator orchestrator,
-            InteractiveImageUI imageUI,
-            AnkiImageManager imageManager,
-            WordAnalysis analysis) {
-        List<ImageCandidate> candidates =
-                orchestrator.getImageCandidates(analysis.word(), analysis.definition());
-
-        if (candidates.isEmpty()) {
-            System.out.printf(
-                    "No image candidates available for '%s'.%n%n", analysis.word().characters());
-            return analysis;
-        }
-
-        List<ImageCandidate> selectedCandidates;
-
-        ImageSelection selection = imageSelections.get(analysis.word().characters());
-        if (selection != null) {
-            selectedCandidates = new ArrayList<>();
-            for (Integer index : selection.indices()) {
-                if (index >= 1 && index <= candidates.size()) {
-                    selectedCandidates.add(candidates.get(index - 1));
-                } else {
-                    throw new IllegalStateException(
-                            String.format(
-                                    "Invalid image index %d for '%s' (available: 1-%d)",
-                                    index, analysis.word().characters(), candidates.size()));
-                }
-            }
-            System.out.printf(
-                    "Programmatically selected %d images for '%s'%n",
-                    selectedCandidates.size(), analysis.word().characters());
-        } else {
-            System.out.printf("Selecting images for '%s'%n", analysis.word().characters());
-            ImageSelectionSession session = new ImageSelectionSession(candidates);
-            selectedCandidates = imageUI.run(session, analysis.word());
-
-            if (selectedCandidates == null || selectedCandidates.isEmpty()) {
-                System.out.println("No images selected.");
-                System.out.println();
-                return analysis;
-            }
-
-            System.out.printf("Selected %d images.%n", selectedCandidates.size());
-        }
-
-        System.out.println();
-
-        List<Path> imagePaths =
-                imageManager.copyImagesToAnkiMedia(selectedCandidates, analysis.word());
-
-        selectedImagesPerWord.put(analysis.word().characters(), imagePaths);
-
-        return analysis;
-    }
-
     private void ensureInteractiveAudioSupported() {
         if (System.console() != null) {
             return;
@@ -881,24 +772,6 @@ public class ImproveAnkiCommand implements Runnable {
             System.exit(1);
         } catch (IllegalStateException e) {
             failNonInteractiveTerminal("audio");
-        }
-    }
-
-    private void ensureInteractiveImageSupported() {
-        if (System.console() != null) {
-            return;
-        }
-
-        try (Terminal terminal = TerminalBuilder.builder().system(true).build()) {
-            if (terminal == null || "dumb".equalsIgnoreCase(terminal.getType())) {
-                failNonInteractiveTerminal("image");
-            }
-        } catch (IOException e) {
-            System.err.println(
-                    "Unable to initialize terminal for image selection: " + e.getMessage());
-            System.exit(1);
-        } catch (IllegalStateException e) {
-            failNonInteractiveTerminal("image");
         }
     }
 
@@ -921,12 +794,6 @@ public class ImproveAnkiCommand implements Runnable {
     /** Helper record to combine analysis result with audio candidates from parallel processing */
     private record CombinedResult(
             WordAnalysisResult analysisResult, List<PronunciationCandidate> audioCandidates) {}
-
-    /** Record to hold audio selection preference for a word */
-    private record AudioSelection(String provider, String description) {}
-
-    /** Record to hold image selection preferences for a word */
-    private record ImageSelection(List<Integer> indices) {}
 
     /**
      * Export the improved WordAnalysis results to an Anki-compatible TSV file. Merges improved
@@ -990,13 +857,6 @@ public class ImproveAnkiCommand implements Runnable {
                         componentsText = original.components(); // Keep original
                     }
 
-                    // Get selected images if any
-                    Optional<List<Path>> images =
-                            improveImages
-                                    ? Optional.ofNullable(
-                                            selectedImagesPerWord.get(analysis.word().characters()))
-                                    : Optional.empty();
-
                     AnkiExportEntry entry =
                             new AnkiExportEntry(
                                     "Chinese 2",
@@ -1010,8 +870,7 @@ public class ImproveAnkiCommand implements Runnable {
                                     original.similar(), // Always keep
                                     original.passive(), // Always keep
                                     original.alternatePronunciations(), // Always keep
-                                    original.noHearing(), // Always keep
-                                    images);
+                                    original.noHearing());
                     writer.println(formatAsTabSeparated(entry));
                 }
             }
@@ -1114,73 +973,5 @@ public class ImproveAnkiCommand implements Runnable {
                         () ->
                                 new IllegalArgumentException(
                                         "Unknown audio provider: " + providerName));
-    }
-
-    private Map<String, AudioSelection> parseAudioSelections(String param) {
-        if (param == null || param.trim().isEmpty()) {
-            return Map.of();
-        }
-
-        Map<String, AudioSelection> selections = new HashMap<>();
-        String[] entries = param.split(";");
-        for (String entry : entries) {
-            String[] parts = entry.split(":");
-            if (parts.length != 3) {
-                throw new IllegalArgumentException(
-                        "Invalid audio selection format: "
-                                + entry
-                                + ". Expected format: word:provider:description");
-            }
-            String word = parts[0].trim();
-            String provider = parts[1].trim();
-            String description = parts[2].trim();
-            selections.put(word, new AudioSelection(provider, description));
-        }
-        return selections;
-    }
-
-    private Map<String, ImageSelection> parseImageSelections(String param) {
-        if (param == null || param.trim().isEmpty()) {
-            return Map.of();
-        }
-
-        Map<String, ImageSelection> selections = new HashMap<>();
-        String[] entries = param.split(";");
-        for (String entry : entries) {
-            String[] parts = entry.split(":");
-            if (parts.length != 2) {
-                throw new IllegalArgumentException(
-                        "Invalid image selection format: "
-                                + entry
-                                + ". Expected format: word:1,2,3");
-            }
-            String word = parts[0].trim();
-            String[] indexStrs = parts[1].split(",");
-            List<Integer> indices = new ArrayList<>();
-            for (String indexStr : indexStrs) {
-                indices.add(Integer.parseInt(indexStr.trim()));
-            }
-            selections.put(word, new ImageSelection(indices));
-        }
-        return selections;
-    }
-
-    private PronunciationCandidate findMatchingCandidate(
-            List<PronunciationCandidate> candidates, AudioSelection selection) {
-        for (PronunciationCandidate candidate : candidates) {
-            String candidateDesc = stripEmojis(candidate.description());
-            if (candidate.label().equals(selection.provider())
-                    && candidateDesc.equals(selection.description())) {
-                return candidate;
-            }
-        }
-        return null;
-    }
-
-    private String stripEmojis(String text) {
-        if (text == null) {
-            return "";
-        }
-        return text.replaceAll("[\\p{So}\\p{Cn}]", "").trim();
     }
 }

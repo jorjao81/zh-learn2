@@ -57,8 +57,7 @@ public class AnkiExporter {
                                 "", // similar
                                 "y", // passive
                                 "", // alternatePronunciations
-                                "y", // noHearing
-                                Optional.empty() // images (to be wired in Phase 9)
+                                "y" // noHearing
                                 );
                 writer.println(formatAsTabSeparated(entry));
             }

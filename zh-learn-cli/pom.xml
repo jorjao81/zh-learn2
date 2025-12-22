@@ -230,7 +230,7 @@
                                     <directory>${project.parent.basedir}/target/moditect-libs</directory>
                                     <includes>
                                         <include>pinyin4j-*.jar</include>
-                                        <include>commons-csv-*.jar</include>
+                                        <!-- commons-csv 1.14.1 is already modular, no moditect processing needed -->
                                         <include>jtokkit-*.jar</include>
                                         <include>langchain4j-core-*.jar</include>
                                         <include>langchain4j-open-ai-*.jar</include>

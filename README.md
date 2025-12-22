@@ -5,8 +5,17 @@ code.
 
 ## Prerequisites
 
-- Java 24+ with GraalVM (for native compilation)
+- Java 25+ with GraalVM (for native compilation)
 - Maven 3.8+
+- pre-commit (for git hooks)
+
+## Development Setup
+
+```bash
+# Install pre-commit hooks
+pip install pre-commit
+pre-commit install
+```
 
 ## Build
 
@@ -22,7 +31,7 @@ cd zh-learn-cli && mvn native:compile-no-fork -Pnative
 
 ### Modular JVM execution
 ```bash
-./zh-learn.sh word 学习
+./zh-learn.sh parse-pleco input.tsv --export-anki=output.tsv
 ```
 
 ### Audio lookup (Existing Anki Pronunciation)
@@ -55,9 +64,8 @@ cd zh-learn-cli && mvn native:compile-no-fork -Pnative
 
 ### Native executable
 ```bash
-./zh-learn-cli/target/zh-learn word 学习
+./zh-learn-cli/target/zh-learn parse-pleco input.tsv --export-anki=output.tsv
 ```
-
 
 ## Performance
 
@@ -93,8 +101,7 @@ Set API keys and optional base URLs via environment variables (or JVM `-D` prope
 Select providers at runtime:
 ```bash
 ./zh-learn.sh providers -d
-./zh-learn.sh word 学习 --provider glm-4.5
-./zh-learn.sh word 学习 --explanation-provider glm-4.5 --example-provider glm-4.5
+./zh-learn.sh parse-pleco input.tsv --explanation-provider glm-4.5 --example-provider glm-4.5 --export-anki=output.tsv
 ```
 
 ## Providers: Audio (Pronunciation)
@@ -134,12 +141,10 @@ List providers and capabilities:
 
 Examples:
 ```bash
-# Analyze a single word with Qwen3 Flash
-./zh-learn.sh word 学习 --provider qwen3-flash
-
 # Parse TSV and analyze with Qwen3 Plus
 ./zh-learn.sh parse-pleco flash-test.txt \
   --decomposition-provider qwen3-plus \
   --example-provider qwen3-plus \
-  --explanation-provider qwen3-plus --limit 1
+  --explanation-provider qwen3-plus --limit 1 \
+  --export-anki=output.tsv
 ```

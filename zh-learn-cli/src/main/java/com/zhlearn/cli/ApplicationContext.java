@@ -16,6 +16,9 @@ import com.zhlearn.infrastructure.audio.AudioPaths;
 import com.zhlearn.infrastructure.common.AIProviderFactory;
 import com.zhlearn.infrastructure.forvo.ForvoAudioProvider;
 import com.zhlearn.infrastructure.qwen.QwenAudioProvider;
+import com.zhlearn.infrastructure.ratelimit.ProviderRateLimiter;
+import com.zhlearn.infrastructure.ratelimit.RateLimiterConfig;
+import com.zhlearn.infrastructure.ratelimit.RateLimiterRegistry;
 import com.zhlearn.infrastructure.tencent.TencentAudioProvider;
 
 /**
@@ -35,6 +38,7 @@ public class ApplicationContext {
     private final PrePlayback prePlayback;
     private final AIProviderFactory aiProviderFactory;
     private final AudioDownloadExecutor audioExecutor;
+    private final RateLimiterRegistry rateLimiterRegistry;
     private final List<AudioProvider> audioProviders;
 
     private ApplicationContext() {
@@ -54,6 +58,13 @@ public class ApplicationContext {
         // Initialize AI provider factory
         this.aiProviderFactory = new AIProviderFactory();
 
+        // Initialize rate limiter registry for per-provider rate limiting
+        this.rateLimiterRegistry = new RateLimiterRegistry();
+        ProviderRateLimiter qwenRateLimiter =
+                rateLimiterRegistry.getOrCreate("qwen-tts", RateLimiterConfig.forQwen());
+        ProviderRateLimiter tencentRateLimiter =
+                rateLimiterRegistry.getOrCreate("tencent-tts", RateLimiterConfig.forTencent());
+
         // Initialize audio executor and providers
         this.audioExecutor = new AudioDownloadExecutor();
         this.audioProviders =
@@ -65,9 +76,14 @@ public class ApplicationContext {
                                 audioPaths,
                                 audioExecutor.getExecutor(),
                                 HttpClient.newHttpClient(),
-                                null),
+                                null,
+                                qwenRateLimiter),
                         new TencentAudioProvider(
-                                audioCache, audioPaths, audioExecutor.getExecutor(), null));
+                                audioCache,
+                                audioPaths,
+                                audioExecutor.getExecutor(),
+                                null,
+                                tencentRateLimiter));
     }
 
     /** Create a new ApplicationContext. */

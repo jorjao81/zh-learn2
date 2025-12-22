@@ -40,7 +40,7 @@ public class DictionaryDefinitionProvider implements DefinitionProvider {
                             // If the dictionary definition is a placeholder for empty definitions,
                             // return null to trigger AI generation
                             String defText = analysis.definition().meaning();
-                            if ("[No definition available in dictionary]".equals(defText)) {
+                            if (defText != null && defText.startsWith("[No definition available")) {
                                 return null;
                             }
                             return analysis.definition();

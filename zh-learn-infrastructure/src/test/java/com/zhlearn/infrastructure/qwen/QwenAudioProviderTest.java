@@ -42,11 +42,11 @@ class QwenAudioProviderTest {
         AudioPaths audioPaths = new AudioPaths();
         AudioNormalizer normalizer = new AudioNormalizer();
         AudioCache audioCache = new AudioCache(audioPaths, normalizer);
-        return new QwenAudioProvider(audioCache, audioPaths, null, http, client);
+        return new QwenAudioProvider(audioCache, audioPaths, null, http, client, null);
     }
 
     @Test
-    void returnsSevenVoicesAndCachesResults() throws Exception {
+    void returnsFiveVoicesAndCachesResults() throws Exception {
         System.setProperty("zhlearn.home", tmpHome.toString());
 
         FakeQwenClient client = new FakeQwenClient();
@@ -56,8 +56,6 @@ class QwenAudioProviderTest {
         HttpResponse<byte[]> ethanResp = mockBinaryResponse(new byte[] {4, 5});
         HttpResponse<byte[]> nofishResp = mockBinaryResponse(new byte[] {6});
         HttpResponse<byte[]> jenniferResp = mockBinaryResponse(new byte[] {7, 8});
-        HttpResponse<byte[]> ryanResp = mockBinaryResponse(new byte[] {9});
-        HttpResponse<byte[]> katerinaResp = mockBinaryResponse(new byte[] {10, 11});
         HttpResponse<byte[]> eliasResp = mockBinaryResponse(new byte[] {12});
 
         when(http.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
@@ -65,8 +63,6 @@ class QwenAudioProviderTest {
                 .thenReturn((HttpResponse) ethanResp)
                 .thenReturn((HttpResponse) nofishResp)
                 .thenReturn((HttpResponse) jenniferResp)
-                .thenReturn((HttpResponse) ryanResp)
-                .thenReturn((HttpResponse) katerinaResp)
                 .thenReturn((HttpResponse) eliasResp);
 
         QwenAudioProvider provider = createProvider(client, http);
@@ -76,7 +72,7 @@ class QwenAudioProviderTest {
 
         List<Path> pronunciations = provider.getPronunciations(word, pinyin);
 
-        assertThat(pronunciations).hasSize(7);
+        assertThat(pronunciations).hasSize(5);
         for (Path path : pronunciations) {
             assertThat(path).isAbsolute();
         }
@@ -87,9 +83,7 @@ class QwenAudioProviderTest {
         assertThat(pronunciations.get(1).getFileName().toString()).contains("Ethan");
         assertThat(pronunciations.get(2).getFileName().toString()).contains("Nofish");
         assertThat(pronunciations.get(3).getFileName().toString()).contains("Jennifer");
-        assertThat(pronunciations.get(4).getFileName().toString()).contains("Ryan");
-        assertThat(pronunciations.get(5).getFileName().toString()).contains("Katerina");
-        assertThat(pronunciations.get(6).getFileName().toString()).contains("Elias");
+        assertThat(pronunciations.get(4).getFileName().toString()).contains("Elias");
 
         for (Path path : pronunciations) {
             assertThat(Files.exists(path)).isTrue();
@@ -100,7 +94,7 @@ class QwenAudioProviderTest {
         List<Path> cached = provider.getPronunciations(word, pinyin);
         assertThat(cached).containsExactlyElementsOf(pronunciations);
 
-        verify(http, times(7)).send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class));
+        verify(http, times(5)).send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class));
         verifyNoMoreInteractions(http);
     }
 
@@ -139,8 +133,6 @@ class QwenAudioProviderTest {
                 .contains("Ethan")
                 .contains("Nofish")
                 .contains("Jennifer")
-                .contains("Ryan")
-                .contains("Katerina")
                 .contains("Elias");
     }
 

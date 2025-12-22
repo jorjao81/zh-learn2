@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,6 +25,8 @@ import com.zhlearn.application.service.ParallelWordAnalysisService;
 import com.zhlearn.application.service.WordAnalysisServiceImpl;
 import com.zhlearn.cli.audio.InteractiveAudioUI;
 import com.zhlearn.cli.audio.SystemAudioPlayer;
+import com.zhlearn.cli.util.AudioSelectionUtils;
+import com.zhlearn.cli.util.AudioSelectionUtils.AudioSelection;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.ProviderConfiguration;
@@ -175,7 +176,7 @@ public class ParsePlecoCommand implements Runnable {
             System.out.println();
 
             // Parse audio selections if provided
-            audioSelections = parseAudioSelections(audioSelectionsParam);
+            audioSelections = AudioSelectionUtils.parseAudioSelections(audioSelectionsParam);
 
             // Create dictionary for any dictionary-based providers
             PlecoExportDictionary dictionary = new PlecoExportDictionary(entries);
@@ -266,7 +267,12 @@ public class ParsePlecoCommand implements Runnable {
             List<PlecoEntry> entriesToProcess =
                     entries.stream().limit(maxToProcess).collect(Collectors.toList());
 
-            if (!entriesToProcess.isEmpty() && !skipAudio) {
+            // Check if interactive audio needed (skip if all entries have pre-configured
+            // selections)
+            boolean allEntriesHaveAudioSelections =
+                    entriesToProcess.stream()
+                            .allMatch(entry -> audioSelections.containsKey(entry.hanzi()));
+            if (!entriesToProcess.isEmpty() && !skipAudio && !allEntriesHaveAudioSelections) {
                 ensureInteractiveAudioSupported();
             }
 
@@ -610,7 +616,7 @@ public class ParsePlecoCommand implements Runnable {
         // Check for programmatic selection
         AudioSelection selection = audioSelections.get(analysis.word().characters());
         if (selection != null) {
-            choice = findMatchingCandidate(candidates, selection);
+            choice = AudioSelectionUtils.findMatchingCandidate(candidates, selection);
             if (choice == null) {
                 throw new IllegalStateException(
                         String.format(
@@ -685,7 +691,7 @@ public class ParsePlecoCommand implements Runnable {
         // Check for programmatic selection
         AudioSelection selection = audioSelections.get(analysis.word().characters());
         if (selection != null) {
-            choice = findMatchingCandidate(candidates, selection);
+            choice = AudioSelectionUtils.findMatchingCandidate(candidates, selection);
             if (choice == null) {
                 throw new IllegalStateException(
                         String.format(
@@ -780,9 +786,6 @@ public class ParsePlecoCommand implements Runnable {
     private record CombinedResult(
             WordAnalysisResult analysisResult, List<PronunciationCandidate> audioCandidates) {}
 
-    /** Record to hold audio selection preference for a word */
-    private record AudioSelection(String provider, String description) {}
-
     /** Export the successful WordAnalysis results to an Anki-compatible TSV file. */
     private void exportToAnkiFile(List<WordAnalysis> analyses, String filename) {
         try {
@@ -808,48 +811,5 @@ public class ParsePlecoCommand implements Runnable {
                         () ->
                                 new IllegalArgumentException(
                                         "Unknown audio provider: " + providerName));
-    }
-
-    private Map<String, AudioSelection> parseAudioSelections(String param) {
-        if (param == null || param.trim().isEmpty()) {
-            return Map.of();
-        }
-
-        Map<String, AudioSelection> selections = new HashMap<>();
-        String[] entries = param.split(";");
-        for (String entry : entries) {
-            String[] parts = entry.split(":");
-            if (parts.length != 3) {
-                throw new IllegalArgumentException(
-                        "Invalid audio selection format: "
-                                + entry
-                                + ". Expected format: word:provider:description");
-            }
-            String word = parts[0].trim();
-            String provider = parts[1].trim();
-            String description = parts[2].trim();
-            selections.put(word, new AudioSelection(provider, description));
-        }
-        return selections;
-    }
-
-    private PronunciationCandidate findMatchingCandidate(
-            List<PronunciationCandidate> candidates, AudioSelection selection) {
-        for (PronunciationCandidate candidate : candidates) {
-            String candidateDesc = stripEmojis(candidate.description());
-            if (candidate.label().equals(selection.provider())
-                    && candidateDesc.equals(selection.description())) {
-                return candidate;
-            }
-        }
-        return null;
-    }
-
-    private String stripEmojis(String text) {
-        if (text == null) {
-            return "";
-        }
-        // Remove emoji characters (Unicode ranges for emoji)
-        return text.replaceAll("[\\p{So}\\p{Cn}]", "").trim();
     }
 }

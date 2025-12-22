@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhlearn.domain.exception.UnrecoverableProviderException;
 import com.zhlearn.infrastructure.common.CheckedExceptionWrapper;
+import com.zhlearn.infrastructure.ratelimit.ProviderRateLimiter;
 
 import io.helidon.faulttolerance.Retry;
 
@@ -33,23 +34,26 @@ class QwenTtsClient {
     private static final Duration INITIAL_BACKOFF = Duration.ofSeconds(5);
     private static final double BACKOFF_FACTOR = 3.0D;
     private static final Duration OVERALL_TIMEOUT = Duration.ofMinutes(15);
+    private static final Duration RATE_LIMIT_ACQUIRE_TIMEOUT = Duration.ofSeconds(30);
 
     private final HttpClient httpClient;
     private final ObjectMapper mapper;
     private final String apiKey;
     private final String model;
     private final Retry retry;
+    private final ProviderRateLimiter rateLimiter;
 
     QwenTtsClient(HttpClient httpClient, String apiKey, String model) {
-        this(httpClient, apiKey, model, new ObjectMapper());
-    }
-
-    QwenTtsClient(HttpClient httpClient, String apiKey, String model, ObjectMapper mapper) {
-        this(httpClient, apiKey, model, mapper, defaultRetry());
+        this(httpClient, apiKey, model, new ObjectMapper(), defaultRetry(), null);
     }
 
     QwenTtsClient(
-            HttpClient httpClient, String apiKey, String model, ObjectMapper mapper, Retry retry) {
+            HttpClient httpClient,
+            String apiKey,
+            String model,
+            ObjectMapper mapper,
+            Retry retry,
+            ProviderRateLimiter rateLimiter) {
         if (apiKey == null || apiKey.isBlank()) {
             throw new IllegalArgumentException("API key missing for DashScope request");
         }
@@ -60,26 +64,53 @@ class QwenTtsClient {
         this.mapper = mapper;
         this.apiKey = apiKey;
         this.model = model;
-        this.retry = retry;
+        this.retry = retry != null ? retry : defaultRetry();
+        this.rateLimiter = rateLimiter;
     }
 
     public QwenTtsResult synthesize(String voice, String text)
             throws IOException, InterruptedException, UnrecoverableProviderException {
+        // Acquire rate limit permit before making request (if rate limiter configured)
+        if (rateLimiter != null) {
+            boolean acquired = rateLimiter.acquire(RATE_LIMIT_ACQUIRE_TIMEOUT);
+            if (!acquired) {
+                throw new IOException(
+                        "Rate limit timeout - provider overwhelmed after waiting "
+                                + RATE_LIMIT_ACQUIRE_TIMEOUT.toSeconds()
+                                + "s");
+            }
+        }
+
         try {
-            return retry.invoke(
-                    () -> {
-                        try {
-                            return synthesizeOnce(voice, text);
-                        } catch (IOException e) {
-                            throw CheckedExceptionWrapper.wrap(e);
-                        } catch (InterruptedException e) {
-                            throw CheckedExceptionWrapper.wrap(e);
-                        } catch (UnrecoverableProviderException e) {
-                            // UnrecoverableProviderException (including ContentModerationException)
-                            // is checked, wrap it to propagate through retry
-                            throw CheckedExceptionWrapper.wrap(e);
-                        }
-                    });
+            QwenTtsResult result =
+                    retry.invoke(
+                            () -> {
+                                try {
+                                    return synthesizeOnce(voice, text);
+                                } catch (IOException e) {
+                                    throw CheckedExceptionWrapper.wrap(e);
+                                } catch (InterruptedException e) {
+                                    throw CheckedExceptionWrapper.wrap(e);
+                                } catch (UnrecoverableProviderException e) {
+                                    // UnrecoverableProviderException (including
+                                    // ContentModerationException)
+                                    // is checked, wrap it to propagate through retry
+                                    throw CheckedExceptionWrapper.wrap(e);
+                                } catch (RateLimitException e) {
+                                    // Notify rate limiter so ALL pending requests slow down
+                                    if (rateLimiter != null) {
+                                        rateLimiter.notifyRateLimited(null);
+                                    }
+                                    throw e; // Let Retry handle the retry logic
+                                }
+                            });
+
+            // Notify success for rate recovery
+            if (rateLimiter != null) {
+                rateLimiter.notifySuccess();
+            }
+            return result;
+
         } catch (RateLimitException rateLimit) {
             log.warn(
                     "[QwenTTS] Rate limit exhausted after {} attempts for voice '{}'",
