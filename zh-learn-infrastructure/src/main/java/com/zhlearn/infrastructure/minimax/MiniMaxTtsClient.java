@@ -142,6 +142,7 @@ class MiniMaxTtsClient {
         payload.put("text", text);
         payload.put("stream", false);
         payload.put("output_format", "hex");
+        payload.put("language_boost", "Chinese");
 
         // Voice settings
         ObjectNode voiceSetting = payload.putObject("voice_setting");
@@ -149,6 +150,7 @@ class MiniMaxTtsClient {
         voiceSetting.put("speed", 1.0);
         voiceSetting.put("vol", 1.0);
         voiceSetting.put("pitch", 0);
+        voiceSetting.put("emotion", "neutral");
 
         // Audio settings
         ObjectNode audioSetting = payload.putObject("audio_setting");
