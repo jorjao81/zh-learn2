@@ -49,4 +49,5 @@ module com.zhlearn.infrastructure {
     exports com.zhlearn.infrastructure.forvo;
     exports com.zhlearn.infrastructure.tencent;
     exports com.zhlearn.infrastructure.ratelimit;
+    exports com.zhlearn.infrastructure.minimax;
 }

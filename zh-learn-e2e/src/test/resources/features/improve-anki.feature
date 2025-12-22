@@ -11,7 +11,7 @@ Feature: Improve Anki Command
       #notetype column:1
       Chinese 2	学习	xué xí		to study; to learn	<div>我在<b>学习</b>中文。<br>Wǒ zài <b>xué xí</b> zhōng wén.<br>I am studying Chinese.</div>	This is a short explanation.	学(study) + 习(practice)	y		y
       """
-    When I run improve-anki with parameters "--improve-audio --audio-selections=学习:qwen-tts:Cherry"
+    When I run improve-anki with parameters "--improve-audio --audio-selections=学习:minimax-tts:Wise_Woman"
     Then the exit code should be 0
     And the improved Anki export file should exist
     And the audio field of "学习" should not be empty

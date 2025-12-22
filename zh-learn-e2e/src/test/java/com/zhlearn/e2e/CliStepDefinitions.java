@@ -692,6 +692,54 @@ public class CliStepDefinitions {
         };
     }
 
+    @Then("the audio cache should contain files for word {string} from provider {string}")
+    public void theAudioCacheShouldContainFilesForWordFromProvider(String word, String provider)
+            throws IOException {
+        Path providerDir = tempHomeDir.resolve(".zh-learn").resolve("audio").resolve(provider);
+        assertThat(providerDir)
+                .as("Provider audio directory should exist at %s", providerDir)
+                .exists()
+                .isDirectory();
+
+        try (Stream<Path> files = Files.list(providerDir)) {
+            long count =
+                    files.filter(Files::isRegularFile)
+                            .filter(f -> f.getFileName().toString().contains(word))
+                            .filter(f -> f.getFileName().toString().endsWith(".mp3"))
+                            .count();
+            assertThat(count)
+                    .as("Provider '%s' should have at least 1 audio file for '%s'", provider, word)
+                    .isGreaterThanOrEqualTo(1);
+        }
+    }
+
+    @Then("the audio file for {string} should be a valid MP3")
+    public void theAudioFileShouldBeValidMp3(String word) throws IOException {
+        // Find the MP3 file in Anki media directory
+        try (Stream<Path> files = Files.list(ankiMediaDir)) {
+            Path mp3File =
+                    files.filter(Files::isRegularFile)
+                            .filter(f -> f.getFileName().toString().contains(word))
+                            .filter(f -> f.getFileName().toString().endsWith(".mp3"))
+                            .findFirst()
+                            .orElseThrow(
+                                    () ->
+                                            new AssertionError(
+                                                    "No MP3 file found for word: " + word));
+
+            // Read and verify MP3 magic bytes (ID3 tag or MP3 sync word)
+            byte[] header = Files.readAllBytes(mp3File);
+            assertThat(header.length).as("MP3 file should not be empty").isGreaterThan(128);
+
+            boolean hasId3Tag = header[0] == 'I' && header[1] == 'D' && header[2] == '3';
+            boolean hasMp3Sync = (header[0] & 0xFF) == 0xFF && ((header[1] & 0xE0) == 0xE0);
+
+            assertThat(hasId3Tag || hasMp3Sync)
+                    .as("File should be valid MP3 (ID3 tag or sync word)")
+                    .isTrue();
+        }
+    }
+
     @After
     public void cleanup() throws IOException {
         if (tempHomeDir != null && Files.exists(tempHomeDir)) {
