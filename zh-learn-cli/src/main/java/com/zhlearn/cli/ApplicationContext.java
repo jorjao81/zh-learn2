@@ -15,6 +15,7 @@ import com.zhlearn.infrastructure.audio.AudioNormalizer;
 import com.zhlearn.infrastructure.audio.AudioPaths;
 import com.zhlearn.infrastructure.common.AIProviderFactory;
 import com.zhlearn.infrastructure.forvo.ForvoAudioProvider;
+import com.zhlearn.infrastructure.minimax.MiniMaxAudioProvider;
 import com.zhlearn.infrastructure.qwen.QwenAudioProvider;
 import com.zhlearn.infrastructure.ratelimit.ProviderRateLimiter;
 import com.zhlearn.infrastructure.ratelimit.RateLimiterConfig;
@@ -64,6 +65,8 @@ public class ApplicationContext {
                 rateLimiterRegistry.getOrCreate("qwen-tts", RateLimiterConfig.forQwen());
         ProviderRateLimiter tencentRateLimiter =
                 rateLimiterRegistry.getOrCreate("tencent-tts", RateLimiterConfig.forTencent());
+        ProviderRateLimiter minimaxRateLimiter =
+                rateLimiterRegistry.getOrCreate("minimax-tts", RateLimiterConfig.forMiniMax());
 
         // Initialize audio executor and providers
         this.audioExecutor = new AudioDownloadExecutor();
@@ -83,7 +86,14 @@ public class ApplicationContext {
                                 audioPaths,
                                 audioExecutor.getExecutor(),
                                 null,
-                                tencentRateLimiter));
+                                tencentRateLimiter),
+                        new MiniMaxAudioProvider(
+                                audioCache,
+                                audioPaths,
+                                audioExecutor.getExecutor(),
+                                HttpClient.newHttpClient(),
+                                null,
+                                minimaxRateLimiter));
     }
 
     /** Create a new ApplicationContext. */

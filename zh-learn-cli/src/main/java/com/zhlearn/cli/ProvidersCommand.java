@@ -179,6 +179,12 @@ public class ProvidersCommand implements Runnable {
                         "Tencent text-to-speech (voices: zhiwei, zhiling)",
                         ProviderType.AI,
                         EnumSet.of(ProviderClass.AUDIO)));
+        providers.add(
+                new ProviderInfo(
+                        "minimax-tts",
+                        "MiniMax Speech-2.6-HD (voices: Wise_Woman, Deep_Voice_Man, Lovely_Girl, Young_Knight, Calm_Woman)",
+                        ProviderType.AI,
+                        EnumSet.of(ProviderClass.AUDIO)));
 
         // Apply filters
         if (filterType != null) {

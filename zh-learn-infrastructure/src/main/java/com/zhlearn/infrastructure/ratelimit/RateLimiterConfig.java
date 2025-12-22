@@ -56,4 +56,16 @@ public record RateLimiterConfig(
                 Duration.ofSeconds(30) // 30 second pause on 429
                 );
     }
+
+    /** Configuration for MiniMax TTS - moderate limits (10-60 RPM depending on tier). */
+    public static RateLimiterConfig forMiniMax() {
+        return new RateLimiterConfig(
+                5, // 5 concurrent requests burst
+                1.0, // 1 request/second base rate (60 RPM)
+                0.2, // minimum 0.2 req/sec during heavy throttling
+                0.5, // halve rate on 429
+                1.1, // 10% recovery per success
+                Duration.ofSeconds(10) // 10 second pause on 429
+                );
+    }
 }
