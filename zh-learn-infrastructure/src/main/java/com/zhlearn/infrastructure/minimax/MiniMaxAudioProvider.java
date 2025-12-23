@@ -34,7 +34,7 @@ public class MiniMaxAudioProvider extends AbstractTtsAudioProvider {
 
     // Selected voices for diverse Mandarin Chinese coverage
     private static final List<String> VOICES =
-            List.of("Wise_Woman", "Deep_Voice_Man", "Lovely_Girl", "Young_Knight", "Calm_Woman");
+            List.of("Wise_Woman", "Deep_Voice_Man", "Young_Knight", "Calm_Woman");
 
     private MiniMaxTtsClient client;
     private final HttpClient httpClient;
@@ -61,7 +61,7 @@ public class MiniMaxAudioProvider extends AbstractTtsAudioProvider {
 
     @Override
     public String getDescription() {
-        return "MiniMax Speech-2.6-HD with 5 Mandarin voices (" + String.join(", ", VOICES) + ")";
+        return "MiniMax Speech-2.6-HD with 4 Mandarin voices (" + String.join(", ", VOICES) + ")";
     }
 
     @Override

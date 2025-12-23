@@ -21,15 +21,15 @@ public record RateLimiterConfig(
         double recoveryMultiplier,
         Duration defaultBackoff) {
 
-    /** Configuration for Qwen TTS - moderate burst, aggressive backoff. */
+    /** Configuration for Qwen TTS - 180 RPM limit for qwen3-tts-flash-2025-11-27. */
     public static RateLimiterConfig forQwen() {
         return new RateLimiterConfig(
-                5, // 5 concurrent requests burst
-                2.0, // 2 requests/second base rate
-                0.1, // minimum 0.1 req/sec during heavy throttling
+                3, // 3 concurrent requests burst (conservative)
+                2.5, // 2.5 requests/second base rate (150 RPM, under 180 RPM limit)
+                0.2, // minimum 0.2 req/sec during heavy throttling
                 0.5, // halve rate on 429
                 1.1, // 10% recovery per success
-                Duration.ofSeconds(10) // 10 second pause on 429
+                Duration.ofSeconds(5) // 5 second pause on 429
                 );
     }
 

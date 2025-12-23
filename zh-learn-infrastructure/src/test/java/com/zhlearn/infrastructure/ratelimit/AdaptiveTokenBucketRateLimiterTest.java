@@ -209,8 +209,8 @@ class AdaptiveTokenBucketRateLimiterTest {
     @Test
     void factoryMethodsShouldCreateValidConfigs() {
         RateLimiterConfig qwen = RateLimiterConfig.forQwen();
-        assertThat(qwen.maxBurst()).isEqualTo(5);
-        assertThat(qwen.baseRate()).isEqualTo(2.0);
+        assertThat(qwen.maxBurst()).isEqualTo(3);
+        assertThat(qwen.baseRate()).isEqualTo(2.5);
 
         RateLimiterConfig tencent = RateLimiterConfig.forTencent();
         assertThat(tencent.maxBurst()).isEqualTo(10);
