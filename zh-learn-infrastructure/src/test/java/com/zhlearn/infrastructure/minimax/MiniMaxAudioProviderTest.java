@@ -38,7 +38,7 @@ class MiniMaxAudioProviderTest {
     }
 
     @Test
-    void returnsFiveVoicesAndCachesResults() throws Exception {
+    void returnsFourVoicesAndCachesResults() throws Exception {
         System.setProperty("zhlearn.home", tmpHome.toString());
 
         FakeMiniMaxClient client = new FakeMiniMaxClient();
@@ -49,16 +49,15 @@ class MiniMaxAudioProviderTest {
 
         List<Path> pronunciations = provider.getPronunciations(word, pinyin);
 
-        assertThat(pronunciations).hasSize(5);
+        assertThat(pronunciations).hasSize(4);
         for (Path path : pronunciations) {
             assertThat(path).isAbsolute();
         }
 
         assertThat(pronunciations.get(0).getFileName().toString()).contains("Wise_Woman");
         assertThat(pronunciations.get(1).getFileName().toString()).contains("Deep_Voice_Man");
-        assertThat(pronunciations.get(2).getFileName().toString()).contains("Lovely_Girl");
-        assertThat(pronunciations.get(3).getFileName().toString()).contains("Young_Knight");
-        assertThat(pronunciations.get(4).getFileName().toString()).contains("Calm_Woman");
+        assertThat(pronunciations.get(2).getFileName().toString()).contains("Young_Knight");
+        assertThat(pronunciations.get(3).getFileName().toString()).contains("Calm_Woman");
 
         for (Path path : pronunciations) {
             assertThat(Files.exists(path)).isTrue();
@@ -70,8 +69,8 @@ class MiniMaxAudioProviderTest {
         List<Path> cached = provider.getPronunciations(word, pinyin);
         assertThat(cached).containsExactlyElementsOf(pronunciations);
 
-        // Verify client was only called 5 times (once per voice)
-        assertThat(client.callCount).isEqualTo(5);
+        // Verify client was only called 4 times (once per voice)
+        assertThat(client.callCount).isEqualTo(4);
     }
 
     @Test
@@ -101,9 +100,9 @@ class MiniMaxAudioProviderTest {
                 .contains("Speech-2.6-HD")
                 .contains("Wise_Woman")
                 .contains("Deep_Voice_Man")
-                .contains("Lovely_Girl")
                 .contains("Young_Knight")
-                .contains("Calm_Woman");
+                .contains("Calm_Woman")
+                .doesNotContain("Lovely_Girl");
     }
 
     /** Fake client that returns valid MP3-like data for testing. */

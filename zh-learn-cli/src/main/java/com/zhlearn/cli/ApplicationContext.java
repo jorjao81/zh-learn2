@@ -72,6 +72,13 @@ public class ApplicationContext {
         this.audioExecutor = new AudioDownloadExecutor();
         this.audioProviders =
                 List.of(
+                        new MiniMaxAudioProvider(
+                                audioCache,
+                                audioPaths,
+                                audioExecutor.getExecutor(),
+                                HttpClient.newHttpClient(),
+                                null,
+                                minimaxRateLimiter),
                         new AnkiPronunciationProvider(),
                         new ForvoAudioProvider(),
                         new QwenAudioProvider(
@@ -86,14 +93,7 @@ public class ApplicationContext {
                                 audioPaths,
                                 audioExecutor.getExecutor(),
                                 null,
-                                tencentRateLimiter),
-                        new MiniMaxAudioProvider(
-                                audioCache,
-                                audioPaths,
-                                audioExecutor.getExecutor(),
-                                HttpClient.newHttpClient(),
-                                null,
-                                minimaxRateLimiter));
+                                tencentRateLimiter));
     }
 
     /** Create a new ApplicationContext. */

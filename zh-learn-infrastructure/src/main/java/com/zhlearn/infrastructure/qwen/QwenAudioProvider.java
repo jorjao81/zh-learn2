@@ -24,7 +24,7 @@ import com.zhlearn.infrastructure.ratelimit.ProviderRateLimiter;
 
 public class QwenAudioProvider extends AbstractTtsAudioProvider {
     private static final String NAME = "qwen-tts";
-    private static final String MODEL = "qwen3-tts-flash";
+    private static final String MODEL = "qwen3-tts-flash-2025-11-27";
     private static final List<String> VOICES =
             List.of("Cherry", "Ethan", "Nofish", "Jennifer", "Elias");
     private static final Duration TIMEOUT = Duration.ofSeconds(15);

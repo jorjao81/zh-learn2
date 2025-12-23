@@ -10,7 +10,6 @@ Feature: MiniMax TTS audio provider integration
       | minimax-tts |
       | Wise_Woman |
       | Deep_Voice_Man |
-      | Lovely_Girl |
       | Young_Knight |
       | Calm_Woman |
 
