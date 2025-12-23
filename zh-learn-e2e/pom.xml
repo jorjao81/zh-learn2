@@ -76,6 +76,14 @@
             <artifactId>junit-platform-suite-engine</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- WireMock for API mocking -->
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>3.10.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
