@@ -37,7 +37,6 @@
         <checkstyle.version>12.3.0</checkstyle.version>
         <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
         <pmd.version>7.19.0</pmd.version>
-        <git-build-hook-maven-plugin.version>3.6.0</git-build-hook-maven-plugin.version>
     </properties>
 
     <modules>
@@ -382,11 +381,6 @@
                         </dependency>
                     </dependencies>
                 </plugin>
-                <plugin>
-                    <groupId>com.rudikershaw.gitbuildhook</groupId>
-                    <artifactId>git-build-hook-maven-plugin</artifactId>
-                    <version>${git-build-hook-maven-plugin.version}</version>
-                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -429,25 +423,6 @@
                         <goals>
                             <goal>check</goal>
                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- Git Build Hook: Configure git hooks path -->
-            <plugin>
-                <groupId>com.rudikershaw.gitbuildhook</groupId>
-                <artifactId>git-build-hook-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>configure-git-hooks</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>configure</goal>
-                        </goals>
-                        <configuration>
-                            <gitConfig>
-                                <core.hooksPath>hooks</core.hooksPath>
-                            </gitConfig>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
