@@ -21,6 +21,7 @@ module com.zhlearn.cli {
     uses com.zhlearn.domain.dictionary.Dictionary;
 
     exports com.zhlearn.cli;
+    exports com.zhlearn.cli.audio;
 
     opens com.zhlearn.cli to
             info.picocli;

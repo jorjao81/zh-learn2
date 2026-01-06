@@ -96,6 +96,20 @@
             <version>3.4.0</version>
         </dependency>
 
+        <!-- Gson - required by Tencent Cloud SDK internally -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+
+        <!-- Kotlin stdlib - required by OkHttp (used by Tencent SDK) -->
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>1.9.22</version>
+        </dependency>
+
         <!-- Testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

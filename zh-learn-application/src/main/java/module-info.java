@@ -1,6 +1,6 @@
 module com.zhlearn.application {
-    requires com.zhlearn.domain;
-    requires com.zhlearn.infrastructure;
+    requires transitive com.zhlearn.domain;
+    requires transitive com.zhlearn.infrastructure;
     requires org.slf4j;
 
     exports com.zhlearn.application.service;

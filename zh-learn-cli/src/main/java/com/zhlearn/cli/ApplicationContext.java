@@ -105,10 +105,6 @@ public class ApplicationContext {
         return terminalFormatter;
     }
 
-    public ExamplesHtmlFormatter getExamplesHtmlFormatter() {
-        return examplesHtmlFormatter;
-    }
-
     public AnalysisPrinter getAnalysisPrinter() {
         return analysisPrinter;
     }
@@ -119,14 +115,6 @@ public class ApplicationContext {
 
     public AnkiExporter getAnkiExporter() {
         return ankiExporter;
-    }
-
-    public AudioPaths getAudioPaths() {
-        return audioPaths;
-    }
-
-    public AudioCache getAudioCache() {
-        return audioCache;
     }
 
     public PrePlayback getPrePlayback() {

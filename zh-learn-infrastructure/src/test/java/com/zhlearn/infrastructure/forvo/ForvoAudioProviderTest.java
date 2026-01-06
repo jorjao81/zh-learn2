@@ -31,6 +31,7 @@ class ForvoAudioProviderTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void returnsMultiplePronunciationsFromJson() throws Exception {
         HttpClient http = mock(HttpClient.class);
 
@@ -44,27 +45,23 @@ class ForvoAudioProviderTest {
                         + "  ]\n"
                         + "}";
 
-        @SuppressWarnings("unchecked")
         HttpResponse<String> resp1 = (HttpResponse<String>) mock(HttpResponse.class);
         when(resp1.statusCode()).thenReturn(200);
         when(resp1.body()).thenReturn(json);
 
-        @SuppressWarnings("unchecked")
         HttpResponse<byte[]> resp2 = (HttpResponse<byte[]>) mock(HttpResponse.class);
         when(resp2.statusCode()).thenReturn(200);
         when(resp2.body()).thenReturn(new byte[] {1});
 
-        @SuppressWarnings("unchecked")
         HttpResponse<byte[]> resp3 = (HttpResponse<byte[]>) mock(HttpResponse.class);
         when(resp3.statusCode()).thenReturn(200);
         when(resp3.body()).thenReturn(new byte[] {2});
 
-        @SuppressWarnings("unchecked")
         HttpResponse<byte[]> resp4 = (HttpResponse<byte[]>) mock(HttpResponse.class);
         when(resp4.statusCode()).thenReturn(200);
         when(resp4.body()).thenReturn(new byte[] {3});
 
-        // First call returns JSON; next three return mp3 bytes
+        // First call returns JSON; next three return mp3 bytes (raw types needed for Mockito)
         when(http.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
                 .thenReturn((HttpResponse) resp1)
                 .thenReturn((HttpResponse) resp2)

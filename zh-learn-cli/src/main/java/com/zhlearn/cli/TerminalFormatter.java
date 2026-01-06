@@ -44,12 +44,9 @@ public class TerminalFormatter {
     private static class AnsiCodes {
         public static final String RESET = "\u001B[0m";
         public static final String BOLD = "\u001B[1m";
-        public static final String BOLD_OFF = "\u001B[22m";
         public static final String ITALIC = "\u001B[3m";
 
         // Colors
-        public static final String CYAN = "\u001B[36m";
-        public static final String YELLOW = "\u001B[33m";
         public static final String WHITE = "\u001B[37m";
         public static final String BRIGHT_WHITE = "\u001B[97m";
         public static final String MAGENTA = "\u001B[35m";
