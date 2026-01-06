@@ -164,6 +164,9 @@ public class CliStepDefinitions {
         // Override user.home to use temp directory for clean cache
         processBuilder.environment().put("JAVA_OPTS", "-Duser.home=" + tempHomeDir.toString());
 
+        // Add WireMock BASE_URL overrides for mocked providers
+        processBuilder.environment().putAll(WireMockHooks.getBaseUrlOverrides());
+
         Process process = processBuilder.start();
 
         StringBuilder stdoutBuilder = new StringBuilder();
@@ -251,6 +254,9 @@ public class CliStepDefinitions {
                                 + tempHomeDir.toString()
                                 + " -Dzhlearn.anki.media.dir="
                                 + ankiMediaDir.toString());
+
+        // Add WireMock BASE_URL overrides for mocked providers
+        processBuilder.environment().putAll(WireMockHooks.getBaseUrlOverrides());
 
         Process process = processBuilder.start();
 
@@ -487,6 +493,9 @@ public class CliStepDefinitions {
 
         // Override user.home to use temp directory for clean cache
         processBuilder.environment().put("JAVA_OPTS", "-Duser.home=" + tempHomeDir.toString());
+
+        // Add WireMock BASE_URL overrides for mocked providers
+        processBuilder.environment().putAll(WireMockHooks.getBaseUrlOverrides());
 
         Process process = processBuilder.start();
 

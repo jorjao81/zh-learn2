@@ -1,0 +1,39 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "POST",
+    "urlPathPattern": ".*/chat/completions",
+    "bodyPatterns": [
+      {
+        "contains": "YAML"
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "id": "gen-mock-e2e-example",
+      "object": "chat.completion",
+      "created": 1700000000,
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "words:\n  - meaning: \"test meaning\"\n    pinyin: \"cèshì\"\n    examples:\n      - hanzi: \"测试\"\n        pinyin: \"cèshì\"\n        translation: \"test; to test\"\n        breakdown: \"Test (测) and test (试) combine to form the word for testing.\"\n      - hanzi: \"测试一下\"\n        pinyin: \"cèshì yīxià\"\n        translation: \"give it a try; test it out\"\n        breakdown: \"Test (测试) with the action suffix (一下) meaning to do briefly.\""
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 150,
+        "completion_tokens": 100,
+        "total_tokens": 250
+      }
+    }
+  }
+}
