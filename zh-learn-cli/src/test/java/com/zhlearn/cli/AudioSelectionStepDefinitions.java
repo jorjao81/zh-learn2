@@ -86,6 +86,8 @@ public class AudioSelectionStepDefinitions {
     private static class TestAudioPlayer implements AudioPlayer {
         int playCount = 0;
         Path lastPlayed;
+
+        @SuppressWarnings("unused") // tracked for potential future test assertions
         int stopCount = 0;
 
         @Override

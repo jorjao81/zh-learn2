@@ -1,4 +1,7 @@
 {
+  "enabledPlugins": {
+    "jdtls-lsp@claude-plugins-official": true
+  },
   "hooks": {
     "SessionStart": [
       {
@@ -11,14 +14,14 @@
         ]
       }
     ],
-    "Stop": [
+    "PostToolUse": [
       {
-        "matcher": "",
+        "matcher": "Edit|Write",
         "hooks": [
           {
             "type": "command",
-            "command": "mvn spotless:apply",
-            "timeout": 30000
+            "command": "jq -r '.tool_input.file_path' | { read file_path; [[ \"$file_path\" == *.java ]] && mvn spotless:apply -q -DspotlessFiles=\"$file_path\" || true; }",
+            "timeout": 10000
           }
         ]
       }

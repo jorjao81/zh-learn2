@@ -1,5 +1,5 @@
 module com.zhlearn.infrastructure {
-    requires com.zhlearn.domain;
+    requires transitive com.zhlearn.domain;
     requires java.logging;
     requires java.net.http;
     requires java.sql;
@@ -26,7 +26,7 @@ module com.zhlearn.infrastructure {
     // Pinyin4j for Chinese to Pinyin conversion
     requires pinyin4j;
 
-    // Tencent Cloud SDK for TTS
+    // Tencent Cloud SDK for TTS (SDK uses Gson and OkHttp/Kotlin internally)
     requires tencentcloud.sdk.java.common;
     requires tencentcloud.sdk.java.tts;
     requires com.google.gson;
