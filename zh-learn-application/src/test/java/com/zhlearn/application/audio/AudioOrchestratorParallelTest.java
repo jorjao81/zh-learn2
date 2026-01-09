@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
@@ -14,7 +16,6 @@ import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.model.ProviderInfo.ProviderType;
 import com.zhlearn.domain.provider.AudioProvider;
-import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;
 
 class AudioOrchestratorParallelTest {
 
@@ -27,7 +28,7 @@ class AudioOrchestratorParallelTest {
         AudioProvider slowProvider1 = new SlowAudioProvider("slow1", callCount, 1000);
         AudioProvider slowProvider2 = new SlowAudioProvider("slow2", callCount, 1000);
 
-        AudioDownloadExecutor executor = new AudioDownloadExecutor();
+        ExecutorService executor = Executors.newFixedThreadPool(4);
         AudioOrchestrator orchestrator =
                 new AudioOrchestrator(List.of(slowProvider1, slowProvider2), executor);
 

@@ -21,12 +21,13 @@
             <groupId>com.zhlearn</groupId>
             <artifactId>zh-learn-domain</artifactId>
         </dependency>
+
+        <!-- Logging -->
         <dependency>
-            <groupId>com.zhlearn</groupId>
-            <artifactId>zh-learn-infrastructure</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
 
-  
         <!-- Testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

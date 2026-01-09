@@ -1,4 +1,4 @@
-package com.zhlearn.application.export;
+package com.zhlearn.infrastructure.anki;
 
 /**
  * Represents a single Anki note entry for export in "Chinese 2" format. Contains all the fields

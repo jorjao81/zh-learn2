@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
+import com.tencentcloudapi.common.profile.ClientProfile;
+import com.tencentcloudapi.common.profile.HttpProfile;
 import com.tencentcloudapi.tts.v20190823.TtsClient;
 import com.tencentcloudapi.tts.v20190823.models.TextToVoiceRequest;
 import com.tencentcloudapi.tts.v20190823.models.TextToVoiceResponse;
@@ -30,7 +32,12 @@ class TencentTtsClient {
     }
 
     TencentTtsClient(
-            String secretId, String secretKey, String region, ProviderRateLimiter rateLimiter) {
+            String secretId,
+            String secretKey,
+            String region,
+            String endpoint,
+            String protocol,
+            ProviderRateLimiter rateLimiter) {
         if (secretId == null || secretId.isBlank()) {
             throw new IllegalArgumentException("Secret ID missing for Tencent Cloud request");
         }
@@ -41,7 +48,21 @@ class TencentTtsClient {
             throw new IllegalArgumentException("Region missing for Tencent Cloud request");
         }
         Credential cred = new Credential(secretId, secretKey);
-        this.client = new TtsClient(cred, region);
+
+        // Configure custom endpoint if provided (for testing with WireMock)
+        HttpProfile httpProfile = new HttpProfile();
+        if (endpoint != null && !endpoint.isBlank()) {
+            httpProfile.setEndpoint(endpoint);
+            log.debug("[TencentTTS] Using custom endpoint: {}", endpoint);
+        }
+        if (protocol != null && !protocol.isBlank()) {
+            httpProfile.setProtocol(protocol);
+        }
+
+        ClientProfile clientProfile = new ClientProfile();
+        clientProfile.setHttpProfile(httpProfile);
+
+        this.client = new TtsClient(cred, region, clientProfile);
         this.rateLimiter = rateLimiter;
     }
 

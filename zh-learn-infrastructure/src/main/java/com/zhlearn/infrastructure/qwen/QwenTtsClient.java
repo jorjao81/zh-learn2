@@ -25,9 +25,6 @@ import io.helidon.faulttolerance.Retry;
 class QwenTtsClient {
     private static final Logger log = LoggerFactory.getLogger(QwenTtsClient.class);
 
-    private static final URI ENDPOINT =
-            URI.create(
-                    "https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation");
     private static final Duration TIMEOUT = Duration.ofSeconds(15);
 
     private static final int MAX_ATTEMPTS = 5;
@@ -40,17 +37,26 @@ class QwenTtsClient {
     private final ObjectMapper mapper;
     private final String apiKey;
     private final String model;
+    private final URI endpoint;
     private final Retry retry;
     private final ProviderRateLimiter rateLimiter;
 
     QwenTtsClient(HttpClient httpClient, String apiKey, String model) {
-        this(httpClient, apiKey, model, new ObjectMapper(), defaultRetry(), null);
+        this(
+                httpClient,
+                apiKey,
+                model,
+                DashScopeConfig.getBaseUrl(),
+                new ObjectMapper(),
+                defaultRetry(),
+                null);
     }
 
     QwenTtsClient(
             HttpClient httpClient,
             String apiKey,
             String model,
+            String baseUrl,
             ObjectMapper mapper,
             Retry retry,
             ProviderRateLimiter rateLimiter) {
@@ -60,10 +66,14 @@ class QwenTtsClient {
         if (model == null || model.isBlank()) {
             throw new IllegalArgumentException("Model name missing for DashScope request");
         }
+        if (baseUrl == null || baseUrl.isBlank()) {
+            throw new IllegalArgumentException("Base URL missing for DashScope request");
+        }
         this.httpClient = httpClient;
         this.mapper = mapper;
         this.apiKey = apiKey;
         this.model = model;
+        this.endpoint = URI.create(baseUrl + DashScopeConfig.TTS_ENDPOINT_PATH);
         this.retry = retry != null ? retry : defaultRetry();
         this.rateLimiter = rateLimiter;
     }
@@ -135,7 +145,7 @@ class QwenTtsClient {
         String body = mapper.writeValueAsString(payload);
 
         HttpRequest request =
-                HttpRequest.newBuilder(ENDPOINT)
+                HttpRequest.newBuilder(endpoint)
                         .timeout(TIMEOUT)
                         .header("Authorization", "Bearer " + apiKey)
                         .header("Content-Type", "application/json")

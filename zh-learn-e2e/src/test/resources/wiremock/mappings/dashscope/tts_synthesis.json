@@ -1,0 +1,14 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "POST",
+    "urlPathPattern": ".*/api/v1/services/aigc/multimodal-generation/generation.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "{\"output\":{\"audio\":{\"url\":\"{{{request.baseUrl}}}/mock-audio/tts.mp3\"}},\"request_id\":\"mock-request-id-e2e-test\"}"
+  }
+}

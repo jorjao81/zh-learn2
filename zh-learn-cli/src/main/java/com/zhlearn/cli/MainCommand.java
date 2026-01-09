@@ -2,8 +2,6 @@ package com.zhlearn.cli;
 
 import java.util.List;
 
-import com.zhlearn.application.audio.AnkiMediaLocator;
-import com.zhlearn.application.service.AnkiExporter;
 import com.zhlearn.cli.audio.PrePlayback;
 import com.zhlearn.domain.provider.AudioProvider;
 import com.zhlearn.domain.provider.DefinitionFormatterProvider;
@@ -13,6 +11,8 @@ import com.zhlearn.domain.provider.ExampleProvider;
 import com.zhlearn.domain.provider.ExplanationProvider;
 import com.zhlearn.domain.provider.PinyinProvider;
 import com.zhlearn.domain.provider.StructuralDecompositionProvider;
+import com.zhlearn.infrastructure.anki.AnkiExporter;
+import com.zhlearn.infrastructure.anki.AnkiMediaLocator;
 import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;
 import com.zhlearn.infrastructure.common.AIProviderFactory;
 import com.zhlearn.infrastructure.dummy.DummyDefinitionProvider;

@@ -25,6 +25,10 @@
             <groupId>com.zhlearn</groupId>
             <artifactId>zh-learn-pinyin</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.zhlearn</groupId>
+            <artifactId>zh-learn-application</artifactId>
+        </dependency>
 
         <!-- LangChain4J -->
         <dependency>

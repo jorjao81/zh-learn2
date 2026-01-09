@@ -8,8 +8,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 
-import com.zhlearn.application.audio.AnkiMediaLocator;
 import com.zhlearn.application.audio.AudioPlayer;
+import com.zhlearn.infrastructure.anki.AnkiMediaLocator;
 
 public class SystemAudioPlayer implements AudioPlayer {
     private final AnkiMediaLocator ankiMediaLocator;

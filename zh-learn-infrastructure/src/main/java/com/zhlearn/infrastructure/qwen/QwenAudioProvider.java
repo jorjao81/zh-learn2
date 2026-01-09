@@ -28,7 +28,6 @@ public class QwenAudioProvider extends AbstractTtsAudioProvider {
     private static final List<String> VOICES =
             List.of("Cherry", "Ethan", "Nofish", "Jennifer", "Elias");
     private static final Duration TIMEOUT = Duration.ofSeconds(15);
-    private static final String API_KEY_ENV = "DASHSCOPE_API_KEY";
     private static final String USER_AGENT = "zh-learn-cli/1.0 (QwenAudioProvider)";
 
     private QwenTtsClient client;
@@ -86,8 +85,9 @@ public class QwenAudioProvider extends AbstractTtsAudioProvider {
                 client =
                         new QwenTtsClient(
                                 httpClient,
-                                resolveApiKey(),
+                                DashScopeConfig.getApiKey(),
                                 MODEL,
+                                DashScopeConfig.getBaseUrl(),
                                 new ObjectMapper(),
                                 null, // use default retry
                                 rateLimiter);
@@ -121,13 +121,5 @@ public class QwenAudioProvider extends AbstractTtsAudioProvider {
         Path tmp = Files.createTempFile(NAME + "-", ".mp3");
         Files.write(tmp, response.body());
         return tmp;
-    }
-
-    private String resolveApiKey() {
-        String key = System.getenv(API_KEY_ENV);
-        if (key == null || key.isBlank()) {
-            throw new IllegalStateException("DASHSCOPE_API_KEY is required for Qwen TTS provider");
-        }
-        return key;
     }
 }

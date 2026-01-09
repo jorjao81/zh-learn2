@@ -30,7 +30,19 @@ public class WireMockHooks {
                     Provider.DASHSCOPE, "DASHSCOPE_BASE_URL",
                     Provider.ZHIPU, "ZHIPU_BASE_URL",
                     Provider.MINIMAX, "MINIMAX_BASE_URL",
-                    Provider.FORVO, "FORVO_BASE_URL");
+                    Provider.FORVO, "FORVO_BASE_URL",
+                    Provider.TENCENT, "TENCENT_BASE_URL");
+
+    // Environment variable names for each provider's API key
+    private static final Map<Provider, String> PROVIDER_API_KEY_ENV_VARS =
+            Map.of(
+                    Provider.OPENROUTER, "OPENROUTER_API_KEY",
+                    Provider.DEEPSEEK, "DEEPSEEK_API_KEY",
+                    Provider.DASHSCOPE, "DASHSCOPE_API_KEY",
+                    Provider.ZHIPU, "ZHIPU_API_KEY",
+                    Provider.MINIMAX, "MINIMAX_API_KEY",
+                    Provider.FORVO, "FORVO_API_KEY",
+                    Provider.TENCENT, "TENCENT_API_KEY");
 
     @BeforeAll
     public static void startWireMock() throws Exception {
@@ -52,20 +64,34 @@ public class WireMockHooks {
 
             System.out.println("[WireMock] Started on port " + wireMockServer.getPort());
 
-            // Build BASE_URL overrides for mocked providers
+            // Build BASE_URL and API_KEY overrides for mocked providers
             String baseUrl = wireMockServer.getBaseUrl();
             for (Provider provider : Provider.values()) {
                 if (mockConfig.isMocked(provider)) {
-                    String envVar = PROVIDER_BASE_URL_ENV_VARS.get(provider);
-                    if (envVar != null) {
-                        baseUrlOverrides.put(envVar, baseUrl);
+                    String baseUrlEnvVar = PROVIDER_BASE_URL_ENV_VARS.get(provider);
+                    if (baseUrlEnvVar != null) {
+                        baseUrlOverrides.put(baseUrlEnvVar, baseUrl);
                         System.out.println(
                                 "[WireMock] Mocking "
                                         + provider
                                         + " via "
-                                        + envVar
+                                        + baseUrlEnvVar
                                         + "="
                                         + baseUrl);
+                    }
+                    // Also set dummy API key so the application doesn't fail validation
+                    String apiKeyEnvVar = PROVIDER_API_KEY_ENV_VARS.get(provider);
+                    if (apiKeyEnvVar != null) {
+                        baseUrlOverrides.put(apiKeyEnvVar, "dummy-test-key-for-wiremock");
+                    }
+                    // MiniMax also requires GROUP_ID
+                    if (provider == Provider.MINIMAX) {
+                        baseUrlOverrides.put("MINIMAX_GROUP_ID", "dummy-group-id-for-wiremock");
+                    }
+                    // Tencent also requires SECRET_ID and REGION
+                    if (provider == Provider.TENCENT) {
+                        baseUrlOverrides.put("TENCENT_SECRET_ID", "dummy-secret-id-for-wiremock");
+                        baseUrlOverrides.put("TENCENT_REGION", "ap-guangzhou");
                     }
                 }
             }

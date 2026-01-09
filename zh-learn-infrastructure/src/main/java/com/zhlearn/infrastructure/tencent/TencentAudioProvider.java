@@ -19,10 +19,6 @@ import com.zhlearn.infrastructure.ratelimit.ProviderRateLimiter;
 
 public class TencentAudioProvider extends AbstractTtsAudioProvider {
     private static final String NAME = "tencent-tts";
-    private static final String SECRET_ID_ENV = "TENCENT_SECRET_ID";
-    private static final String SECRET_KEY_ENV = "TENCENT_API_KEY";
-    private static final String REGION_ENV = "TENCENT_REGION";
-    private static final String DEFAULT_REGION = "ap-singapore";
 
     // Voice mapping as specified by user
     private static final Map<Integer, String> VOICES = new LinkedHashMap<>();
@@ -99,9 +95,11 @@ public class TencentAudioProvider extends AbstractTtsAudioProvider {
             } else {
                 client =
                         new TencentTtsClient(
-                                resolveSecretId(),
-                                resolveSecretKey(),
-                                resolveRegion(),
+                                TencentConfig.getSecretId(),
+                                TencentConfig.getSecretKey(),
+                                TencentConfig.getRegion(),
+                                TencentConfig.getEndpoint(),
+                                TencentConfig.getProtocol(),
                                 rateLimiter);
             }
         }
@@ -123,30 +121,5 @@ public class TencentAudioProvider extends AbstractTtsAudioProvider {
         Path tmp = Files.createTempFile(NAME + "-", ".mp3");
         Files.write(tmp, audioBytes);
         return tmp;
-    }
-
-    private String resolveSecretId() {
-        String secretId = System.getenv(SECRET_ID_ENV);
-        if (secretId == null || secretId.isBlank()) {
-            throw new IllegalStateException(
-                    "TENCENT_SECRET_ID is required for Tencent TTS provider");
-        }
-        return secretId;
-    }
-
-    private String resolveSecretKey() {
-        String secretKey = System.getenv(SECRET_KEY_ENV);
-        if (secretKey == null || secretKey.isBlank()) {
-            throw new IllegalStateException("TENCENT_API_KEY is required for Tencent TTS provider");
-        }
-        return secretKey;
-    }
-
-    private String resolveRegion() {
-        String region = System.getenv(REGION_ENV);
-        if (region == null || region.isBlank()) {
-            return DEFAULT_REGION;
-        }
-        return region;
     }
 }

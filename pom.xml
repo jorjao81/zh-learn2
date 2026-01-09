@@ -42,8 +42,8 @@
     <modules>
         <module>zh-learn-domain</module>
         <module>zh-learn-pinyin</module>
-        <module>zh-learn-infrastructure</module>
         <module>zh-learn-application</module>
+        <module>zh-learn-infrastructure</module>
         <module>zh-learn-cli</module>
         <module>zh-learn-e2e</module>
     </modules>

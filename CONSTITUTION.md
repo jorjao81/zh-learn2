@@ -5,10 +5,23 @@
 ### I. Modular Architecture (NON-NEGOTIABLE)
 Java modules are strictly enforced for separation of concerns, in a Clean Code Architecture:
 - Domain layer contains only business logic and interfaces - no external dependencies except Java base
-- Infrastructure layer implements domain interfaces - can have external dependencies
-- Application layer orchestrates domain and infrastructure - no direct external I/O
-- CLI layer handles user interaction only - delegates to application layer
+- Infrastructure layer implements domain/application interfaces - can have external dependencies
+- Application layer orchestrates domain logic - depends on domain only, NOT infrastructure
+- CLI layer handles user interaction only - delegates to application layer, wires all modules together
+- Pinyin module is standalone utility - no dependencies on other zh-learn modules
 - Module exports/imports must be explicit - never bypass or disable module system
+
+#### Module Dependency Rules
+
+```text
+zh-learn-pinyin:         (standalone, no zh-learn dependencies)
+zh-learn-domain:         → pinyin
+zh-learn-application:    → domain, pinyin
+zh-learn-infrastructure: → domain, application, pinyin
+zh-learn-cli:            → all modules (wires everything together)
+```
+
+The application layer must NEVER depend on infrastructure. Infrastructure concerns (file I/O, environment variables, platform-specific paths, external APIs) belong in the infrastructure module. The CLI module is responsible for wiring all layers together.
 
 ### II. Fail-Fast Philosophy (NON-NEGOTIABLE)
 Never add fallbacks, error handling, or graceful degradation unless explicitly told to do so:
@@ -117,4 +130,4 @@ This constitution supersedes all other development practices. All code changes m
 
 **Implementation over Configuration**: If implementation doesn't match instructions exactly, fail rather than implementing differently.
 
-**Version**: 1.2.0 | **Ratified**: 2025-09-13 | **Last Amended**: 2025-09-20
+**Version**: 1.3.0 | **Ratified**: 2025-09-13 | **Last Amended**: 2026-01-09

@@ -1,4 +1,4 @@
-package com.zhlearn.application.service;
+package com.zhlearn.infrastructure.anki;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,8 +9,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 
-import com.zhlearn.application.audio.AnkiMediaLocator;
-import com.zhlearn.application.export.AnkiExportEntry;
 import com.zhlearn.application.format.ExamplesHtmlFormatter;
 import com.zhlearn.domain.model.WordAnalysis;
 

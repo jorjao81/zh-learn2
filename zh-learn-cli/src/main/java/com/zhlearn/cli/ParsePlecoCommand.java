@@ -20,7 +20,6 @@ import org.jline.terminal.TerminalBuilder;
 import com.zhlearn.application.audio.AudioOrchestrator;
 import com.zhlearn.application.audio.PronunciationCandidate;
 import com.zhlearn.application.audio.SelectionSession;
-import com.zhlearn.application.service.AnkiExporter;
 import com.zhlearn.application.service.ParallelWordAnalysisService;
 import com.zhlearn.application.service.WordAnalysisServiceImpl;
 import com.zhlearn.cli.audio.InteractiveAudioUI;
@@ -40,6 +39,7 @@ import com.zhlearn.domain.provider.ExplanationProvider;
 import com.zhlearn.domain.provider.PinyinProvider;
 import com.zhlearn.domain.provider.StructuralDecompositionProvider;
 import com.zhlearn.domain.service.WordAnalysisService;
+import com.zhlearn.infrastructure.anki.AnkiExporter;
 import com.zhlearn.infrastructure.dictionary.DictionaryDefinitionProvider;
 import com.zhlearn.infrastructure.dictionary.DictionaryPinyinProvider;
 import com.zhlearn.infrastructure.dictionary.PlecoExportDictionary;
@@ -327,7 +327,8 @@ public class ParsePlecoCommand implements Runnable {
                 skipAudio
                         ? null
                         : new AudioOrchestrator(
-                                parent.getAudioProviders(), parent.getAudioExecutor());
+                                parent.getAudioProviders(),
+                                parent.getAudioExecutor().getExecutor());
         InteractiveAudioUI audioUI = skipAudio ? null : new InteractiveAudioUI();
 
         for (PlecoEntry entry : entries) {
@@ -356,7 +357,8 @@ public class ParsePlecoCommand implements Runnable {
                 skipAudio
                         ? null
                         : new AudioOrchestrator(
-                                parent.getAudioProviders(), parent.getAudioExecutor());
+                                parent.getAudioProviders(),
+                                parent.getAudioExecutor().getExecutor());
 
         // Thread-safe counters for progress tracking
         AtomicInteger completedCount = new AtomicInteger(0);

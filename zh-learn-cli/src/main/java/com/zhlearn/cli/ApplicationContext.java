@@ -3,11 +3,11 @@ package com.zhlearn.cli;
 import java.net.http.HttpClient;
 import java.util.List;
 
-import com.zhlearn.application.audio.AnkiMediaLocator;
 import com.zhlearn.application.format.ExamplesHtmlFormatter;
-import com.zhlearn.application.service.AnkiExporter;
 import com.zhlearn.cli.audio.PrePlayback;
 import com.zhlearn.domain.provider.AudioProvider;
+import com.zhlearn.infrastructure.anki.AnkiExporter;
+import com.zhlearn.infrastructure.anki.AnkiMediaLocator;
 import com.zhlearn.infrastructure.anki.AnkiPronunciationProvider;
 import com.zhlearn.infrastructure.audio.AudioCache;
 import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;

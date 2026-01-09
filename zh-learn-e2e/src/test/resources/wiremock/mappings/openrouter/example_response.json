@@ -2,7 +2,7 @@
   "priority": 1,
   "request": {
     "method": "POST",
-    "urlPathPattern": ".*/chat/completions",
+    "urlPath": "/chat/completions",
     "bodyPatterns": [
       {
         "contains": "YAML"
@@ -14,26 +14,6 @@
     "headers": {
       "Content-Type": "application/json"
     },
-    "jsonBody": {
-      "id": "gen-mock-e2e-example",
-      "object": "chat.completion",
-      "created": 1700000000,
-      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
-      "choices": [
-        {
-          "index": 0,
-          "message": {
-            "role": "assistant",
-            "content": "words:\n  - meaning: \"test meaning\"\n    pinyin: \"cèshì\"\n    examples:\n      - hanzi: \"测试\"\n        pinyin: \"cèshì\"\n        translation: \"test; to test\"\n        breakdown: \"Test (测) and test (试) combine to form the word for testing.\"\n      - hanzi: \"测试一下\"\n        pinyin: \"cèshì yīxià\"\n        translation: \"give it a try; test it out\"\n        breakdown: \"Test (测试) with the action suffix (一下) meaning to do briefly.\""
-          },
-          "finish_reason": "stop"
-        }
-      ],
-      "usage": {
-        "prompt_tokens": 150,
-        "completion_tokens": 100,
-        "total_tokens": 250
-      }
-    }
+    "body": "{\"id\":\"gen-mock-e2e-example\",\"object\":\"chat.completion\",\"created\":1700000000,\"model\":\"google/gemini-2.5-flash-lite-preview-09-2025\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"words:\\n  - meaning: \\\"test meaning for this character\\\"\\n    pinyin: \\\"cèshì\\\"\\n    examples:\\n      - hanzi: \\\"测试\\\"\\n        pinyin: \\\"cèshì\\\"\\n        translation: \\\"test; to test something thoroughly\\\"\\n        breakdown: \\\"The first character means test and the second character also means test, combining to form the common word for testing or examination.\\\"\\n      - hanzi: \\\"考试\\\"\\n        pinyin: \\\"kǎoshì\\\"\\n        translation: \\\"examination; to take a test\\\"\\n        breakdown: \\\"Exam (考) combined with test (试) creates the word for formal examination or test-taking.\\\"\\n      - hanzi: \\\"试验\\\"\\n        pinyin: \\\"shìyàn\\\"\\n        translation: \\\"experiment; to experiment\\\"\\n        breakdown: \\\"Test (试) combined with verify (验) creates the word for scientific experiment.\\\"\\nphonetic_series: []\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":150,\"completion_tokens\":200,\"total_tokens\":350}}"
   }
 }

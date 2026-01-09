@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import com.zhlearn.domain.model.Hanzi;
 import com.zhlearn.domain.model.Pinyin;
 import com.zhlearn.domain.provider.AudioProvider;
-import com.zhlearn.infrastructure.audio.AudioDownloadExecutor;
 
 public class AudioOrchestrator {
     private static final Logger log = LoggerFactory.getLogger(AudioOrchestrator.class);
@@ -20,10 +19,9 @@ public class AudioOrchestrator {
     private final List<AudioProvider> audioProviders;
     private final ExecutorService executorService;
 
-    public AudioOrchestrator(
-            List<AudioProvider> audioProviders, AudioDownloadExecutor audioExecutor) {
+    public AudioOrchestrator(List<AudioProvider> audioProviders, ExecutorService executorService) {
         this.audioProviders = audioProviders;
-        this.executorService = audioExecutor.getExecutor();
+        this.executorService = executorService;
     }
 
     public List<PronunciationCandidate> candidatesFor(Hanzi word, Pinyin pinyin) {

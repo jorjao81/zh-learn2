@@ -96,7 +96,7 @@ public class ForvoAudioProvider implements AudioProvider {
         long startTime = System.currentTimeMillis();
         log.info("[Forvo] Starting pronunciation lookup for '{}'", word.characters());
 
-        String apiKey = getApiKey();
+        String apiKey = ForvoConfig.getApiKey();
         if (apiKey == null || apiKey.isBlank()) {
             log.warn(
                     "[Forvo] API key not configured for '{}'. Set FORVO_API_KEY env var or -Dforvo.api.key",
@@ -108,12 +108,7 @@ public class ForvoAudioProvider implements AudioProvider {
         try {
             String encoded = URLEncoder.encode(word.characters(), StandardCharsets.UTF_8);
             // Prefer top rated pronunciations in Mandarin Chinese; JSON response
-            String url =
-                    "https://apifree.forvo.com/key/"
-                            + apiKey
-                            + "/format/json/action/word-pronunciations/word/"
-                            + encoded
-                            + "/language/zh/porder/rate-desc/perpage/10";
+            String url = ForvoConfig.buildPronunciationUrl(apiKey, encoded, 10);
 
             log.debug("[Forvo] Making API request for '{}'", word.characters());
             HttpRequest req =
@@ -216,19 +211,14 @@ public class ForvoAudioProvider implements AudioProvider {
     @Override
     public List<Path> getPronunciations(Hanzi word, Pinyin pinyin) {
         List<Path> results = new ArrayList<>();
-        String apiKey = getApiKey();
+        String apiKey = ForvoConfig.getApiKey();
         if (apiKey == null || apiKey.isBlank()) {
             log.warn("Forvo API key not configured. Set FORVO_API_KEY env var or -Dforvo.api.key");
             return results;
         }
         try {
             String encoded = URLEncoder.encode(word.characters(), StandardCharsets.UTF_8);
-            String url =
-                    "https://apifree.forvo.com/key/"
-                            + apiKey
-                            + "/format/json/action/word-pronunciations/word/"
-                            + encoded
-                            + "/language/zh/porder/rate-desc/perpage/20";
+            String url = ForvoConfig.buildPronunciationUrl(apiKey, encoded, 20);
 
             HttpRequest req =
                     HttpRequest.newBuilder(URI.create(url))
@@ -290,19 +280,14 @@ public class ForvoAudioProvider implements AudioProvider {
     public List<PronunciationDescription> getPronunciationsWithDescriptions(
             Hanzi word, Pinyin pinyin) {
         List<PronunciationDescription> results = new ArrayList<>();
-        String apiKey = getApiKey();
+        String apiKey = ForvoConfig.getApiKey();
         if (apiKey == null || apiKey.isBlank()) {
             log.warn("Forvo API key not configured. Set FORVO_API_KEY env var or -Dforvo.api.key");
             return results;
         }
         try {
             String encoded = URLEncoder.encode(word.characters(), StandardCharsets.UTF_8);
-            String url =
-                    "https://apifree.forvo.com/key/"
-                            + apiKey
-                            + "/format/json/action/word-pronunciations/word/"
-                            + encoded
-                            + "/language/zh/porder/rate-desc/perpage/20";
+            String url = ForvoConfig.buildPronunciationUrl(apiKey, encoded, 20);
 
             HttpRequest req =
                     HttpRequest.newBuilder(URI.create(url))
@@ -423,11 +408,5 @@ public class ForvoAudioProvider implements AudioProvider {
     private static String text(JsonNode node, String field) {
         JsonNode v = node.get(field);
         return v != null && !v.isNull() ? v.asText() : null;
-    }
-
-    private static String getApiKey() {
-        String k = System.getenv("FORVO_API_KEY");
-        if (k == null || k.isBlank()) k = System.getProperty("forvo.api.key");
-        return k;
     }
 }

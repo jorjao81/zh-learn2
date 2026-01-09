@@ -22,11 +22,9 @@ import java.util.stream.Collectors;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
-import com.zhlearn.application.audio.AnkiMediaLocator;
 import com.zhlearn.application.audio.AudioOrchestrator;
 import com.zhlearn.application.audio.PronunciationCandidate;
 import com.zhlearn.application.audio.SelectionSession;
-import com.zhlearn.application.export.AnkiExportEntry;
 import com.zhlearn.application.format.ExamplesHtmlFormatter;
 import com.zhlearn.application.service.ParallelWordAnalysisService;
 import com.zhlearn.application.service.WordAnalysisServiceImpl;
@@ -47,6 +45,8 @@ import com.zhlearn.domain.provider.ExplanationProvider;
 import com.zhlearn.domain.provider.PinyinProvider;
 import com.zhlearn.domain.provider.StructuralDecompositionProvider;
 import com.zhlearn.domain.service.WordAnalysisService;
+import com.zhlearn.infrastructure.anki.AnkiExportEntry;
+import com.zhlearn.infrastructure.anki.AnkiMediaLocator;
 import com.zhlearn.infrastructure.anki.AnkiNote;
 import com.zhlearn.infrastructure.anki.AnkiNoteDictionary;
 import com.zhlearn.infrastructure.anki.AnkiNoteParser;
@@ -369,7 +369,7 @@ public class ImproveAnkiCommand implements Runnable {
         AudioOrchestrator audioOrchestrator =
                 improveAudio && !skipAudio
                         ? new AudioOrchestrator(
-                                parent.getAudioProviders(), parent.getAudioExecutor())
+                                parent.getAudioProviders(), parent.getAudioExecutor().getExecutor())
                         : null;
         InteractiveAudioUI audioUI = improveAudio && !skipAudio ? new InteractiveAudioUI() : null;
 
@@ -401,7 +401,7 @@ public class ImproveAnkiCommand implements Runnable {
         AudioOrchestrator audioOrchestrator =
                 improveAudio && !skipAudio
                         ? new AudioOrchestrator(
-                                parent.getAudioProviders(), parent.getAudioExecutor())
+                                parent.getAudioProviders(), parent.getAudioExecutor().getExecutor())
                         : null;
 
         AtomicInteger completedCount = new AtomicInteger(0);

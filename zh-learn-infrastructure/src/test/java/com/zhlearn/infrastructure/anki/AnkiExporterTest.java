@@ -1,4 +1,4 @@
-package com.zhlearn.application.service;
+package com.zhlearn.infrastructure.anki;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,7 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import com.zhlearn.application.audio.AnkiMediaLocator;
 import com.zhlearn.application.format.ExamplesHtmlFormatter;
 import com.zhlearn.domain.model.Definition;
 import com.zhlearn.domain.model.Example;

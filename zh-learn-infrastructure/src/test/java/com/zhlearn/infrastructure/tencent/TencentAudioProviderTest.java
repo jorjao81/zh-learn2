@@ -139,7 +139,13 @@ class TencentAudioProviderTest {
         final List<Integer> receivedVoiceTypes = new ArrayList<>();
 
         FakeTencentClient() {
-            super("test-secret-id", "test-secret-key", "ap-singapore", null);
+            super(
+                    "test-secret-id",
+                    "test-secret-key",
+                    "ap-singapore",
+                    "test.endpoint.com",
+                    "https://",
+                    null);
         }
 
         @Override
@@ -156,7 +162,13 @@ class TencentAudioProviderTest {
 
     private static class FailingTencentClient extends TencentTtsClient {
         FailingTencentClient() {
-            super("test-secret-id", "test-secret-key", "ap-singapore", null);
+            super(
+                    "test-secret-id",
+                    "test-secret-key",
+                    "ap-singapore",
+                    "test.endpoint.com",
+                    "https://",
+                    null);
         }
 
         @Override
@@ -167,7 +179,13 @@ class TencentAudioProviderTest {
 
     private static class EmptyTencentClient extends TencentTtsClient {
         EmptyTencentClient() {
-            super("test-secret-id", "test-secret-key", "ap-singapore", null);
+            super(
+                    "test-secret-id",
+                    "test-secret-key",
+                    "ap-singapore",
+                    "test.endpoint.com",
+                    "https://",
+                    null);
         }
 
         @Override

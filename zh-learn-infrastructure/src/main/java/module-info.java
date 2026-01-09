@@ -1,5 +1,6 @@
 module com.zhlearn.infrastructure {
     requires transitive com.zhlearn.domain;
+    requires com.zhlearn.application;
     requires java.logging;
     requires java.net.http;
     requires java.sql;

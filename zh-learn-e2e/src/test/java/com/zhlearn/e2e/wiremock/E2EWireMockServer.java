@@ -23,7 +23,8 @@ public class E2EWireMockServer {
                 new WireMockServer(
                         WireMockConfiguration.options()
                                 .dynamicPort()
-                                .withRootDirectory(wireMockRoot.toString()));
+                                .withRootDirectory(wireMockRoot.toString())
+                                .globalTemplating(true));
     }
 
     public void start() {

@@ -1,4 +1,4 @@
-package com.zhlearn.application.audio;
+package com.zhlearn.infrastructure.anki;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

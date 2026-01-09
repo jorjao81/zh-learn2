@@ -17,7 +17,8 @@ public class ProviderMockConfig {
         DASHSCOPE("dashscope-intl.aliyuncs.com"),
         ZHIPU("open.bigmodel.cn"),
         MINIMAX("api.minimax.chat"),
-        FORVO("apifree.forvo.com");
+        FORVO("apifree.forvo.com"),
+        TENCENT("tts.tencentcloudapi.com");
 
         private final String hostname;
 

@@ -2,33 +2,13 @@
   "priority": 10,
   "request": {
     "method": "POST",
-    "urlPathPattern": ".*/chat/completions"
+    "urlPath": "/chat/completions"
   },
   "response": {
     "status": 200,
     "headers": {
       "Content-Type": "application/json"
     },
-    "jsonBody": {
-      "id": "gen-mock-e2e-test-12345",
-      "object": "chat.completion",
-      "created": 1700000000,
-      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
-      "choices": [
-        {
-          "index": 0,
-          "message": {
-            "role": "assistant",
-            "content": "## Etymology and Meaning\n\nThis Chinese character has a rich history and deep cultural significance. The character evolved from ancient oracle bone script through bronze inscriptions to its modern form. Understanding its components helps learners grasp not just the meaning but also the cultural context in which it developed.\n\n### Character Analysis\n\nThe character consists of multiple meaningful components that work together to convey its meaning. Each radical and phonetic element contributes to both the pronunciation and semantic content. This type of semantic-phonetic compound is common in Chinese, representing approximately 80% of all characters.\n\n### Usage in Modern Chinese\n\nIn contemporary usage, this character appears frequently in both formal and informal contexts. It combines with other characters to form numerous compound words, each with specific nuances. Understanding these combinations is essential for developing native-like fluency.\n\n### Memory Tips\n\nTo remember this character, consider its visual structure and how the components relate to the overall meaning. Creating mental associations between the character's form and meaning can significantly improve retention. Regular practice writing and recognizing the character in context will reinforce learning.\n\n### Cultural Context\n\nThe character carries cultural connotations that go beyond its dictionary definition. In classical literature and modern media, it may evoke specific imagery or associations that are important for full comprehension. Learners should pay attention to how native speakers use this character in various social contexts."
-          },
-          "finish_reason": "stop"
-        }
-      ],
-      "usage": {
-        "prompt_tokens": 150,
-        "completion_tokens": 350,
-        "total_tokens": 500
-      }
-    }
+    "body": "{\"id\":\"gen-mock-e2e-test-12345\",\"object\":\"chat.completion\",\"created\":1700000000,\"model\":\"google/gemini-2.5-flash-lite-preview-09-2025\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"<h3>Origin: Phono-semantic compound (形声字)</h3>\\n<p>The character <span class=\\\"hanzi\\\">秽</span><span class=\\\"pinyin\\\">huì</span> is a phono-semantic compound. The semantic component <span class=\\\"hanzi\\\">禾</span><span class=\\\"pinyin\\\">hé</span> \\\"grain/crops\\\" suggests the original meaning related to weeds growing among crops, while the phonetic component provides the pronunciation guidance.</p>\\n\\n<h3>Character Analysis</h3>\\n<p>The character consists of the semantic radical <span class=\\\"hanzi\\\">禾</span> (grain) on the left and the phonetic component on the right. The original meaning was \\\"weeds growing among crops\\\" which evolved to mean \\\"filthy\\\" or \\\"dirty\\\" as weeds were seen as contaminating the crops. This semantic evolution from agricultural contamination to general uncleanliness is common in Chinese characters.</p>\\n\\n<h3>The Semantic Evolution</h3>\\n<p><b>\\\"Weeds among grain\\\" → \\\"dirty/filthy\\\" → \\\"obscene/debauchery\\\"</b></p>\\n<p>The character evolved from its agricultural origins to describe anything unclean or morally impure. In modern usage, it often appears in compounds like <span class=\\\"hanzi\\\">污秽</span><span class=\\\"pinyin\\\">wūhuì</span> (filthy) and <span class=\\\"hanzi\\\">秽语</span><span class=\\\"pinyin\\\">huìyǔ</span> (obscene language).</p>\\n\\n<h3>Usage in Modern Chinese</h3>\\n<p>Today, this character is commonly used in formal writing to describe uncleanliness or moral impurity. It appears in legal and literary contexts when discussing obscenity or pollution.</p>\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":150,\"completion_tokens\":500,\"total_tokens\":650}}"
   }
 }

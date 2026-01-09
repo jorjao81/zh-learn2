@@ -31,7 +31,8 @@ public class AudioSelectCommand implements Runnable {
     @Override
     public void run() {
         AudioOrchestrator orchestrator =
-                new AudioOrchestrator(parent.getAudioProviders(), parent.getAudioExecutor());
+                new AudioOrchestrator(
+                        parent.getAudioProviders(), parent.getAudioExecutor().getExecutor());
         Hanzi word = new Hanzi(chineseWord);
         Pinyin pin = new Pinyin(pinyin);
         List<PronunciationCandidate> raw = orchestrator.candidatesFor(word, pin);

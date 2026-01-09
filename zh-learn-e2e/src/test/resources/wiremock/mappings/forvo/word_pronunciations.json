@@ -1,0 +1,14 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/key/.*/format/json/action/word-pronunciations/.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "{\"items\":[{\"pathmp3\":\"{{{request.baseUrl}}}/mock-audio/forvo.mp3\",\"username\":\"mock_user_1\"},{\"pathmp3\":\"{{{request.baseUrl}}}/mock-audio/forvo.mp3\",\"username\":\"mock_user_2\"}]}"
+  }
+}
