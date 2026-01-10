@@ -1,0 +1,889 @@
+/* Chinese Learning Card Theme */
+/* Optimized for mobile and desktop, clean and functional design */
+/* CJK Font Declarations for Comprehensive Character Support */
+/* Import this file in themes to ensure rare character rendering */
+
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300&display=swap');
+
+/* KaiTi Font Face */
+@font-face {
+  font-family: 'KaiTi';
+  font-style: normal;
+  size-adjust: 130%;
+  src: local('KaiTi'), url('KaiTi-Regular.ttf') format('truetype');
+    unicode-range:
+      /* Common characters */
+      U+3000-303F, U+3400-4DBF, U+4E00-9FFF,
+      /* Rare characters */
+      U+20000-2A6DF, U+2A700-2B73F, U+2B740-2B81F, U+2B820-2CEAF, U+2CEB0-2EBEF,
+  U+30000-3134F, U+31350-323AF,
+      /* Radicals & components */
+      U+2E80-2EFF, U+2F00-2FDF, U+2FF0-2FFF, U+31C0-31EF,
+      /* Compatibility */
+      U+F900-FAFF, U+2F800-2FA1F, U+FE30-FE4F;
+}
+
+
+
+/* BabelStone Han - Comprehensive CJK support including Extensions */
+/* Font files should be placed in Anki media collection folder */
+@font-face {
+  font-family: 'BabelStone Han';
+  src: url('_BabelStoneHan.ttf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+4E00-9FFF, U+3400-4DBF, U+20000-2A6DF, U+2A700-2B73F, U+2B740-2B81F, U+2B820-2CEAF;
+}
+
+/* HanaMin Fonts - Alternative comprehensive CJK support */
+@font-face {
+  font-family: 'HanaMinA';
+  src: url('_HanaMinA.ttf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+4E00-9FFF, U+3400-4DBF;
+}
+
+@font-face {
+  font-family: 'HanaMinB';
+  src: url('_HanaMinB.ttf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+20000-2A6DF;
+}
+
+@font-face {
+  font-family: 'HanaMinC';
+  src: url('_HanaMinPlus.ttf');exa
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+2A700-2B73F, U+2B740-2B81F, U+2B820-2CEAF;
+}
+
+/* Noto CJK Fonts - Modern fallback support */
+@font-face {
+  font-family: 'Noto Sans CJK SC';
+  src: url('_NotoSansCJKsc.ttf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Noto Serif CJK SC';
+  src: url('_NotoSerifCJKsc.ttf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Comprehensive CJK Font Stack */
+:root {
+  --cjk-font-stack: 'KaiTi', 'BabelStone Han', 'HanaMinA', 'HanaMinB', 'HanaMinC';
+  --cjk-serif-stack: 'KaiTi','BabelStone Han', 'HanaMinA', 'HanaMinB', 'HanaMinC', 'Noto Serif CJK SC', 'Source Han Serif CN', 'Songti SC', 'SimSun', 'SimSun-ExtB', serif;
+  --cjk-mono-stack: 'KaiTi', 'BabelStone Han', 'HanaMinA', 'HanaMinB'
+}
+
+/* Base CJK character styling */
+.hanzi,
+.chinese,
+[lang="zh"],
+[lang="zh-CN"],
+[lang="zh-TW"] {
+  font-family: var(--cjk-font-stack);
+
+}
+
+/* Component-specific styling for rare characters */
+.components-content .hanzi,
+.etymology-content .hanzi,
+.etymology-content . .hanzi,
+.components-content .semantic,
+.components-content .unknown,
+.components-content .phonetic
+ {
+  font-family: var(--cjk-font-stack);
+  font-feature-settings: "kern" 1, "liga" 1;
+  background: black;
+
+}
+
+/* Card Container */
+.card {
+  /*font-family: var(--cjk-font-stack);*/
+  font-family: var(--cjk-font-stack), -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 15px;
+  background: #ffffff;
+  color: #333333;
+  line-height: 1.6;
+  min-height: 200px;
+}
+
+.card-container {
+  text-align: center;
+}
+
+/* Chinese Header - Horizontal Layout */
+.chinese-header {
+  font-family: var(--cjk-font-stack);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+/* Chinese Characters - Main Focus */
+.chinese-main {
+  font-family: var(--cjk-font-stack);
+  font-size: 2.7em;
+  font-weight: 300;
+  color: #2c3e50;
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+/* Chinese Side Content */
+.chinese-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Pinyin */
+.pinyin-main {
+  font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 1.2em;
+  color: #e74c3c;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+
+/* Audio */
+.audio-section {
+  margin: 0;
+}
+
+/* Prompt on front */
+.prompt {
+  font-size: 0.9em;
+  color: #7f8c8d;
+  font-style: italic;
+  margin-top: 40px;
+  opacity: 0.8;
+}
+
+/* Divider between front and back */
+.divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #bdc3c7, transparent);
+  margin: 25px 0;
+}
+
+/* Section Styling */
+h2.section-title {
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #34495e;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 15px 0 8px 0;
+  text-align: left;
+}
+
+.definition-section,
+.examples-section,
+.components-section,
+.etymology-section,
+.similar-section {
+  margin: 15px 0;
+  text-align: left;
+}
+
+.examples-content {
+  line-height: 1.8;
+}
+
+/* Examples section headings */
+.examples-content h4 {
+  font-size: 1em;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 20px 0 10px 0;
+  padding-bottom: 5px;
+  border-bottom: 2px solid #3498db;
+}
+
+/* Examples list styling */
+.examples-content ul {
+  margin: 15px 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.examples-content ul li.example {
+  margin: 10px 0;
+  padding: 12px 15px;
+  background: #f7f9fc;
+  border-radius: 8px;
+  border: 1px solid #e1e8ed;
+  font-size: 0.9em;
+  line-height: 1.6;
+}
+
+.examples-content .hanzi {
+// font-family: sans-serif;
+font-weight: 200;
+color: #2c3e50;
+ // margin-right: 8px;
+}
+
+.examples-content .pinyin {
+  color: #e74c3c;
+  font-weight: 500;
+  font-style: italic;
+  margin-right: 8px;
+}
+
+.examples-content .translation {
+  color: #34495e;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+.examples-content .breakdown {
+  display: block;
+  color: #7f8c8d;
+  font-style: italic;
+  font-size: 0.85em;
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+/* Definition Content */
+.definition-content {
+  font-size: 1.1em;
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+/* Etymology Content */
+.etymology-content {
+  font-size: 0.95em;
+  color: #2c3e50;
+  line-height: 1.7;
+}
+
+.etymology-content h3 {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: #34495e;
+  margin: 15px 0 8px 0;
+  text-align: left;
+}
+
+.etymology-content p {
+  margin: 10px 0;
+  line-height: 1.6;
+}
+
+/* Support for lists that remain as ul/li */
+.etymology-content ul {
+  margin: 10px 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.etymology-content > ul > li {
+  margin: 15px 0;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 3px solid #bdc3c7;
+  font-size: 0.95em;
+  line-height: 1.6;
+}
+
+/* Semantic Markup Styles */
+
+/* Part of Speech Tags */
+.part-of-speech {
+  display: inline-block;
+  background: #3498db;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.75em;
+  font-weight: 600;
+  margin: 2px 4px 2px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* Domain Tags */
+.domain {
+  display: inline-block;
+  background: #9b59b6;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 0.7em;
+  font-weight: 500;
+  margin: 2px 3px 2px 0;
+  text-transform: lowercase;
+}
+
+/* Usage Tags */
+.usage {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: 0.65em;
+  font-weight: 500;
+  margin: 2px 3px 2px 0;
+  border: 1px solid #95a5a6;
+  color: #7f8c8d;
+  background: #ecf0f1;
+  font-style: italic;
+}
+
+.usage.literary {
+  background: #d5f4e6;
+  border-color: #27ae60;
+  color: #27ae60;
+}
+
+.usage.dated {
+  background: #fdeaa7;
+  border-color: #f39c12;
+  color: #d68910;
+}
+
+.usage.colloquial {
+  background: #d6eaf8;
+  border-color: #3498db;
+  color: #2980b9;
+}
+
+.usage.pejorative {
+  background: #fadbd8;
+  border-color: #e74c3c;
+  color: #c0392b;
+}
+
+/* Definition Lists */
+ol {
+  margin: 15px 0;
+  padding-left: 0;
+  list-style: none;
+  counter-reset: definition-counter;
+}
+
+ol li {
+  counter-increment: definition-counter;
+  margin: 8px 0;
+  padding: 10px 12px 10px 35px;
+  background: #f8f9fa;
+  border-left: 3px solid #3498db;
+  border-radius: 0 6px 6px 0;
+  position: relative;
+  font-size: 0.95em;
+}
+
+ol li::before {
+  content: counter(definition-counter);
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #3498db;
+  color: white;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75em;
+  font-weight: bold;
+}
+
+/* Example Lists */
+ul {
+  margin: 15px 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+ul li.example {
+  margin: 10px 0;
+  padding: 12px 15px;
+  background: #f7f9fc;
+  border-radius: 8px;
+  border: 1px solid #e1e8ed;
+  font-size: 0.9em;
+}
+
+/* Meaning Tree - D3.js Professional Tree Visualization */
+.meaning-tree {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 15px 0;
+  position: relative;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow: visible;
+  min-height: 300px;
+  width: 100%;
+}
+
+.meaning-tree::before {
+  content: "Meaning Tree";
+  position: absolute;
+  top: -8px;
+  left: 12px;
+  background: #f8f9fa;
+  color: #6c757d;
+  font-size: 0.7em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  padding: 0 6px;
+}
+
+/* D3.js SVG container */
+.meaning-tree svg {
+  width: 100%;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* D3.js tree node styling */
+.meaning-tree .node circle {
+  fill: #fff;
+  stroke: #3498db;
+  stroke-width: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.meaning-tree .node circle:hover {
+  stroke-width: 3px;
+  fill: #e8f4fd;
+}
+
+/* Root node styling */
+.meaning-tree .node.root circle {
+  fill: #e8f5e8;
+  stroke: #28a745;
+  stroke-width: 3px;
+}
+
+/* Different levels with different colors */
+.meaning-tree .node.level-1 circle {
+  fill: #e6f3ff;
+  stroke: #17a2b8;
+}
+
+.meaning-tree .node.level-2 circle {
+  fill: #fffacd;
+  stroke: #ffc107;
+}
+
+.meaning-tree .node.level-3 circle {
+  fill: #fff0e6;
+  stroke: #fd7e14;
+}
+
+.meaning-tree .node.level-4 circle,
+.meaning-tree .node.level-5 circle,
+.meaning-tree .node.level-6 circle {
+  fill: #f3e8ff;
+  stroke: #6f42c1;
+}
+
+/* Node text styling */
+.meaning-tree .node text {
+  font-size: 12px;
+  font-weight: 500;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: #2c3e50;
+  pointer-events: none;
+}
+
+.meaning-tree .node.root text {
+  font-weight: 600;
+  fill: #1e5720;
+}
+
+/* Link styling - the connecting lines */
+.meaning-tree .link {
+  fill: none;
+  stroke: #6c757d;
+  stroke-width: 2px;
+  stroke-opacity: 0.8;
+}
+
+.meaning-tree .link:hover {
+  stroke-width: 3px;
+  stroke-opacity: 1;
+}
+
+/* Branch labels */
+.meaning-tree .branch-label {
+  font-size: 10px;
+  font-weight: 600;
+  fill: #495057;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+/* Tree container for D3 */
+.tree-container {
+  width: 100%;
+  height: 300px;
+  position: relative;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .meaning-tree {
+    padding: 15px;
+    margin: 12px 0;
+  }
+
+  .tree-container {
+    height: 250px;
+  }
+
+  .meaning-tree .node text {
+    font-size: 10px;
+  }
+
+  .meaning-tree .branch-label {
+    font-size: 8px;
+  }
+}
+
+/* Example Content Styling */
+.hanzi {
+  font-family: var(--cjk-font-stack);
+  font-weight: 500;
+  color: #2c3e50;
+  margin: 0 4px;
+}
+
+.pinyin {
+  color: #e74c3c;
+  font-weight: 500;
+  font-style: italic;
+  margin: 0 4px;
+}
+
+.translation {
+  color: #34495e;
+  font-weight: 500;
+}
+
+/* Structural Analysis - Horizontal Layout */
+.components-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin: 10px 0;
+  flex-wrap: wrap;
+  justify-content: center;
+  border: 1px solid #e9ecef;
+}
+
+/* Override Anki's default styling for all Chinese characters in components */
+.components-content *,
+.components-section * {
+  background: none !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Restore our intentional styling */
+.components-content {
+  background: #f8f9fa !important;
+  border: 1px solid #e9ecef !important;
+}
+
+.components-content ul li {
+  background: #ffffff !important;
+  border: 2px solid #3498db !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+}
+
+.components-content ul {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+.components-content ul li {
+  background: #ffffff;
+  color: #2c3e50;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-weight: 500;
+  text-align: center;
+  min-width: 60px;
+  max-width: 120px;
+  margin: 0;
+  border: 2px solid #3498db;
+  font-size: 0.85em;
+  line-height: 1.3;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.components-content ul li:not(:last-child)::after {
+  content: "+";
+  position: absolute;
+  color: #95a5a6;
+  font-weight: bold;
+  font-size: 1.2em;
+  background: none;
+  border: none;
+  right: -16px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Mobile adjustments for structural analysis */
+@media (max-width: 600px) {
+  .components-content {
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .components-content ul {
+    gap: 6px;
+  }
+
+  .components-content ul li {
+    min-width: 50px;
+    max-width: 100px;
+    padding: 6px 8px;
+    font-size: 0.8em;
+  }
+
+  .components-content ul li:not(:last-child)::after {
+    right: -12px;
+    font-size: 1em;
+  }
+}
+
+/* Component types in horizontal layout - with titles */
+.components-content .semantic,
+.components-content .phonetic,
+.components-content .unknown {
+  border-color: #bdc3c7;
+  background: #f8f9fa;
+  color: #2c3e50;
+  position: relative;
+  padding-top: 12px;
+}
+
+/* Component type titles */
+.components-content .semantic::before {
+  content: "SEMANTIC";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #34495e;
+  color: white;
+  font-size: 0.6em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.components-content .phonetic::before {
+  content: "PHONETIC";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #34495e;
+  color: white;
+  font-size: 0.6em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.components-content .unknown::before {
+  content: "UNKNOWN";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #34495e;
+  color: white;
+  font-size: 0.6em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+/* Component content styling */
+.components-content .hanzi {
+  font-size: 1.1em;
+  font-weight: 700;
+  font-family: var(--cjk-font-stack);
+  margin-right: 4px;
+  /* Override Anki's default CJK styling */
+  background: none !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.components-content .pinyin {
+  font-size: 0.75em;
+  opacity: 0.8;
+  font-style: italic;
+  font-weight: 500;
+  color: #e74c3c;
+  margin: 0 4px;
+}
+
+.components-content .definition {
+  display: block;
+  font-size: 0.7em;
+  opacity: 0.9;
+  line-height: 1.2;
+  font-weight: 400;
+  margin-top: 2px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.definition {
+  color: #7f8c8d;
+  font-style: italic;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+  .card {
+    padding: 12px;
+    margin: 5px;
+  }
+
+  .chinese-header {
+    flex-direction: column;
+    gap: 12px;
+    margin: 15px 0;
+  }
+
+  .chinese-main {
+    font-size: 2.8em;
+  }
+
+  .pinyin-main {
+    font-size: 1.1em;
+  }
+
+  h2.section-title {
+    font-size: 0.8em;
+  }
+
+  ol li, ul li.example {
+    padding: 8px 10px 8px 28px;
+    margin: 6px 0;
+    font-size: 0.9em;
+  }
+
+  ol li::before {
+    width: 16px;
+    height: 16px;
+    left: 6px;
+    font-size: 0.7em;
+  }
+
+  .part-of-speech, .domain {
+    font-size: 0.7em;
+    padding: 2px 6px;
+  }
+
+  .usage {
+    font-size: 0.6em;
+    padding: 1px 4px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .card {
+    background: #2c3e50;
+    color: #ecf0f1;
+  }
+
+  .chinese-main {
+    color: #ffffff;
+  }
+
+  .pinyin-main {
+    color: #e74c3c;
+  }
+
+  h2.section-title {
+    color: #bdc3c7;
+  }
+
+  .definition-content {
+    color: #ecf0f1;
+  }
+
+  ol li, ul li.example {
+    background: #34495e;
+    color: #ecf0f1;
+  }
+
+  .components-content ul li {
+    background: #3e2723;
+  }
+
+  .divider {
+    background: linear-gradient(to right, transparent, #7f8c8d, transparent);
+  }
+}
+

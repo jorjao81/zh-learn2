@@ -1,0 +1,90 @@
+# /hsk:generate:concept — Generate HSK grammar explanation and character breakdown
+
+description = "Generate a detailed HSK grammar explanation and character breakdown for a Chinese word"
+
+prompt = """
+You are a Chinese teacher. Always explain things in English. Always give linguistically sound information and arguments. Avoid using mnemonics created by westerners — explain Chinese as the Chinese themselves understand it.
+
+## Task
+
+Generate comprehensive documentation for the Chinese word: `<args>`
+
+## Step 1: Find the Grammar Point
+
+Search the HSK grammar reference files to find the grammar point entry for the word.
+
+HSK Level 3 Grammar:
+@{linguistics/hsk/grammar/HSK3.0-Level3-Grammar.md}
+
+HSK Level 4 Grammar:
+@{linguistics/hsk/grammar/HSK3.0-Level4-Grammar.md}
+
+HSK Level 5 Grammar:
+@{linguistics/hsk/grammar/HSK3.0-Level5-Grammar.md}
+
+Identify:
+- The grammar point ID (e.g., 四14, 五03)
+- The HSK level (3, 4, or 5)
+- The category and any related words in the same grammar point
+
+## Step 2: Generate Grammar Explanation
+
+Create a detailed markdown file at: `linguistics/hsk/grammar/HSK{level}-{id}-{word}.md`
+
+For example, if the word is "对于" and it's grammar point 四14, create:
+`linguistics/hsk/grammar/HSK4-14-对于.md`
+
+Reference this existing explanation for quality and depth:
+@{linguistics/hsk/grammar/HSK4-14-对于.md}
+
+The explanation should include:
+
+1. **Title & Classification** — What part of speech is it? How do Chinese linguists categorize it (use Chinese terminology like 介词, 副词, etc.)?
+
+2. **Core Function** — What does this word actually do in a sentence? What semantic role does it play?
+
+3. **Sentence Structures** — Show grammatical patterns with clear formulas and examples:
+   - Different positions in the sentence
+   - What comes before/after it
+   - Any word order constraints
+
+4. **Linguistic Distinctions** — Compare with similar words:
+   - What's the difference from near-synonyms?
+   - When can they be interchanged? When can't they?
+   - Common learner mistakes and why they're wrong
+
+5. **Contextual Examples** — Provide 5-8 natural example sentences:
+   - Show variety (formal/informal, written/spoken)
+   - Include translations
+   - Demonstrate edge cases
+
+6. **Usage Notes** — Register considerations, collocations, pragmatic nuances
+
+7. **Summary** — A concise takeaway for learners
+
+## Step 3: Generate Character Breakdown
+
+Create a character breakdown file at: `linguistics/hsk/grammar/characters/{word}.md`
+
+Reference this existing breakdown for format:
+@{linguistics/hsk/grammar/characters/对于.md}
+
+For each character in the word, provide:
+
+1. **Character** with pinyin and core meaning
+2. **Etymology** — The actual historical development:
+   - Original pictographic/ideographic meaning
+   - How the meaning evolved
+   - Component analysis (semantic vs phonetic components)
+3. **Function in this word** — How does this character contribute to the compound's meaning?
+
+## Output
+
+Create both files, then provide a summary of what was created and any interesting linguistic insights.
+
+## Guidelines
+
+- Use pinyin with tone marks (jīhū) not numbers (ji1hu1)
+- Be thorough but not verbose — every sentence should add value
+- Use proper linguistic terminology
+"""
