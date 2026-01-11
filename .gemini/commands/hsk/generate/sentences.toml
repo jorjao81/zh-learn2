@@ -1,0 +1,141 @@
+# /hsk:generate:sentences — Generate HSK grammar exercise sentences
+
+description = "Generate Anki-ready TSV exercises for an HSK grammar point with highlighted translation cards"
+
+prompt = """
+@{linguistics/llm/system-prompt.md}
+
+You are generating exercise sentences for Chinese grammar practice. Your output will be a TSV file for Anki import.
+
+## Task
+
+Generate exercises for the grammar point: `<args>`
+
+The first argument is the **word** (e.g., 似乎, 对于, 岂不).
+The second argument (optional) is the **number of exercises** to generate (default: 5).
+
+## Step 1: Find the Grammar File
+
+Search for the grammar explanation file matching the word in:
+```
+linguistics/hsk/grammar/*-<WORD>.md
+```
+
+Examples:
+- `linguistics/hsk/grammar/HSK4-11-似乎.md` for 似乎
+- `linguistics/hsk/grammar/NON-HSK-岂不.md` for 岂不
+
+If the file is not found, **STOP and inform the user** that they need to run `/hsk:generate:explain <word>` first.
+
+## Step 2: Find the Character Breakdown
+
+Look for the character breakdown at:
+```
+linguistics/hsk/grammar/characters/<WORD>.md
+```
+
+If not found, leave the CharacterBreakdown field empty.
+
+## Step 3: Extract Metadata
+
+From the grammar file name, extract:
+- **GrammarPoint**: e.g., "四11" from "HSK4-11-似乎.md" or "NON-HSK" from "NON-HSK-岂不.md"
+- **Word**: the target word (e.g., 似乎)
+- **Pinyin**: extract from the grammar file's title or first paragraph
+
+## Step 4: Generate Example Sentences
+
+Create exercise sentences following these rules:
+
+1. **NO DUPLICATES**: Do NOT use any sentences that already appear as examples in the grammar explanation file. These are for practice, not repetition of what the learner already saw.
+2. **Variety**: Each sentence should demonstrate the grammar point in a different context
+3. **Natural**: Use realistic, everyday scenarios
+4. **Appropriate level**: Match HSK level vocabulary (HSK 4 for 四11, etc.)
+5. **Highlight the target**: Wrap the target word with `<span class="hl">...</span>` in both Chinese and English
+
+### Sentence Requirements
+
+- Chinese sentence: natural usage of the grammar point
+- English translation: natural English (not word-for-word), with the equivalent expression highlighted
+- The highlighted portion in English should correspond semantically to the Chinese target word
+
+### Example Format
+
+| Chinese (with highlight) | English (with highlight) |
+|--------------------------|--------------------------|
+| `天<span class="hl">似乎</span>要下雨了。` | `It <span class="hl">seems like</span> it is going to rain.` |
+| `他<span class="hl">似乎</span>不太想去。` | `He doesn't <span class="hl">seem</span> to want to go.` |
+
+## Step 5: Output TSV File
+
+Create the TSV file at:
+```
+linguistics/hsk/grammar/sentences/<GRAMMAR_FILENAME>.tsv
+```
+
+Where `<GRAMMAR_FILENAME>` is the same as the grammar file without the `.md` extension.
+Example: `linguistics/hsk/grammar/sentences/HSK4-11-似乎.tsv`
+
+### TSV Format
+
+The file MUST start with these exact header directives:
+```
+#separator:Tab
+#html:true
+#notetype:Grammar Sentence
+#columns:SentenceCN	SentenceEN	Word	Pinyin	GrammarPoint	GrammarExplanation	CharacterBreakdown	Tags
+```
+
+**CRITICAL: Tab Separation**
+- The `#columns:` line must use ACTUAL TAB characters between field names
+- Each data row must use ACTUAL TAB characters between fields
+
+### Field Values
+
+| Field | Content |
+|-------|---------|
+| SentenceCN | Chinese sentence with `<span class="hl">` around target word |
+| SentenceEN | English translation with `<span class="hl">` around equivalent |
+| Word | The target word (plain text) |
+| Pinyin | Pinyin with tone marks (e.g., sìhū) |
+| GrammarPoint | Grammar ID (e.g., 四11, NON-HSK) |
+| GrammarExplanation | **VERBATIM** copy of the entire grammar file content |
+| CharacterBreakdown | **VERBATIM** copy of the character breakdown file content |
+| Tags | `grammar::<GrammarPoint> word::<Word>` (space-separated) |
+
+### TSV Escaping Rules (CRITICAL)
+
+Follow these escaping rules exactly:
+
+1. **Quotes inside fields**: Double all quote characters (`"` → `""`)
+2. **Fields with special characters**: Wrap in double quotes if the field contains:
+   - Newlines
+   - Tabs
+   - Double quotes
+3. **Newlines**: Keep actual newlines within quoted fields (not `\n` literals)
+
+Example of a properly escaped field with newlines:
+```
+"# HSK 4 Grammar: 似乎
+
+This is the first paragraph.
+
+This is the second paragraph with a ""quoted word"" inside."
+```
+
+## Quality Checks
+
+Before outputting:
+1. Verify the grammar file exists
+2. Ensure all sentences are unique and demonstrate different uses
+3. Confirm TSV escaping is correct
+4. Check that GrammarExplanation and CharacterBreakdown are VERBATIM copies
+
+## Output Summary
+
+After creating the file, report:
+- File path created
+- Number of exercises generated
+- The GrammarPoint ID used
+- Any warnings (e.g., missing character breakdown)
+"""
