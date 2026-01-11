@@ -33,4 +33,5 @@ Thumbs.db
 
 # Data files
 *.tsv
+!linguistics/hsk/grammar/sentences/*.tsv
 Chinese.txt
