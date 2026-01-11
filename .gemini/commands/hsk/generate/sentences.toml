@@ -56,15 +56,16 @@ Create exercise sentences following these rules:
 ### Sentence Requirements
 
 - Chinese sentence: natural usage of the grammar point
+- Sentence pinyin: full pinyin of the Chinese sentence with tone marks (no highlighting)
 - English translation: natural English (not word-for-word), with the equivalent expression highlighted
 - The highlighted portion in English should correspond semantically to the Chinese target word
 
 ### Example Format
 
-| Chinese (with highlight) | English (with highlight) |
-|--------------------------|--------------------------|
-| `天<span class="hl">似乎</span>要下雨了。` | `It <span class="hl">seems like</span> it is going to rain.` |
-| `他<span class="hl">似乎</span>不太想去。` | `He doesn't <span class="hl">seem</span> to want to go.` |
+| Chinese (with highlight) | Pinyin | English (with highlight) |
+|--------------------------|--------|--------------------------|
+| `天<span class="hl">似乎</span>要下雨了。` | `Tiān sìhū yào xiàyǔ le.` | `It <span class="hl">seems like</span> it is going to rain.` |
+| `他<span class="hl">似乎</span>不太想去。` | `Tā sìhū bù tài xiǎng qù.` | `He doesn't <span class="hl">seem</span> to want to go.` |
 
 ## Step 5: Output TSV File
 
@@ -83,7 +84,7 @@ The file MUST start with these exact header directives:
 #separator:Tab
 #html:true
 #notetype:Grammar Sentence
-#columns:SentenceCN	SentenceEN	Word	Pinyin	GrammarPoint	GrammarExplanation	CharacterBreakdown	Tags
+#columns:SentenceCN	SentencePinyin	SentenceEN	Word	Pinyin	GrammarPoint	GrammarExplanation	CharacterBreakdown	Tags
 ```
 
 **CRITICAL: Tab Separation**
@@ -95,9 +96,10 @@ The file MUST start with these exact header directives:
 | Field | Content |
 |-------|---------|
 | SentenceCN | Chinese sentence with `<span class="hl">` around target word |
+| SentencePinyin | Full pinyin of the sentence with tone marks, no highlighting (e.g., `Tiān sìhū yào xiàyǔ le.`) |
 | SentenceEN | English translation with `<span class="hl">` around equivalent |
 | Word | The target word (plain text) |
-| Pinyin | Pinyin with tone marks (e.g., sìhū) |
+| Pinyin | Pinyin of the target word with tone marks (e.g., sìhū) |
 | GrammarPoint | Grammar ID (e.g., 四11, NON-HSK) |
 | GrammarExplanation | **VERBATIM** copy of the entire grammar file content |
 | CharacterBreakdown | **VERBATIM** copy of the character breakdown file content |

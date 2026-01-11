@@ -120,6 +120,7 @@ For grammar points with multiple words (e.g., 四11 covers both 几乎 and 似�
 | Field                | Description                                                    | Example                                                |
 | -------------------- | -------------------------------------------------------------- | ------------------------------------------------------ |
 | `SentenceCN`         | Chinese sentence with `<span class="hl">` around target word   | `我<span class="hl">几乎</span>每天都运动。`           |
+| `SentencePinyin`     | Full pinyin of the Chinese sentence (tone marks, no highlight) | `Wǒ jīhū měitiān dōu yùndòng.`                         |
 | `SentenceEN`         | English translation with `<span class="hl">` around equivalent | `I exercise <span class="hl">almost</span> every day.` |
 | `Word`               | The target word (for reference/search)                         | `几乎`                                                 |
 | `Pinyin`             | Pinyin of the target word                                      | `jīhū`                                                 |
@@ -155,6 +156,7 @@ This allows filtering by either grammar point or word.
 
 <div class="sentence-section">
   <div class="sentence-content chinese">{{SentenceCN}}</div>
+  <div class="sentence-pinyin">{{SentencePinyin}}</div>
 </div>
 
 <hr class="divider" />
@@ -170,13 +172,13 @@ This allows filtering by either grammar point or word.
 
 <div class="characters-details">
   <div class="section-title">Character Breakdown</div>
-  <div class="characters-content">{{CharacterBreakdown}}</div>
+  <div class="characters-content md">{{CharacterBreakdown}}</div>
 </div>
 
 <script>
   document.querySelectorAll(".md").forEach((el) => {
     // Decode HTML entities using browser's built-in decoder
-    let decoder = document.createElement('textarea');
+    let decoder = document.createElement("textarea");
     decoder.innerHTML = el.innerHTML;
     el.innerHTML = marked.parse(decoder.value);
   });
@@ -190,11 +192,12 @@ This allows filtering by either grammar point or word.
 | Field              | Value                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | SentenceCN         | `我<span class="hl">几乎</span>每天都运动。`                                                                                                                                                                                                                                                                                                                                                                                             |
+| SentencePinyin     | `Wǒ jīhū měitiān dōu yùndòng.`                                                                                                                                                                                                                                                                                                                                                                                                           |
 | SentenceEN         | `I exercise <span class="hl">almost</span> every day.`                                                                                                                                                                                                                                                                                                                                                                                   |
 | Word               | `几乎`                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | Pinyin             | `jīhū`                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | GrammarPoint       | `四11`                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| GrammarExplanation | `<p><strong>几乎</strong> (jīhū) expresses that something is very close to 100% but not quite. It indicates degree/extent, not uncertainty.</p><h3>Usage</h3><ul><li>Use before verbs or 都/没有</li><li>Common patterns: 几乎都…, 几乎没有…, 几乎每…</li></ul>` |
+| GrammarExplanation | `<p><strong>几乎</strong> (jīhū) expresses that something is very close to 100% but not quite. It indicates degree/extent, not uncertainty.</p><h3>Usage</h3><ul><li>Use before verbs or 都/没有</li><li>Common patterns: 几乎都…, 几乎没有…, 几乎每…</li></ul>`                                                                                                                                                                         |
 | CharacterBreakdown | `<ul><li><span class="hanzi">几</span> <span class="pinyin">jǐ/jī</span> <span class="meaning">how many / nearly</span><span class="etymology">originally a picture of a small table, now means "how many" or "almost"</span></li><li><span class="hanzi">乎</span> <span class="pinyin">hū</span> <span class="meaning">particle</span><span class="etymology">classical question/exclamation particle, adds emphasis</span></li></ul>` |
 | Tags               | `grammar::四11 word::几乎`                                                                                                                                                                                                                                                                                                                                                                                                               |
 
@@ -203,11 +206,12 @@ This allows filtering by either grammar point or word.
 | Field              | Value                                                                                                                                                                                                                                                                                                                                                                                                               |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | SentenceCN         | `他<span class="hl">似乎</span>不太想去。`                                                                                                                                                                                                                                                                                                                                                                          |
+| SentencePinyin     | `Tā sìhū bù tài xiǎng qù.`                                                                                                                                                                                                                                                                                                                                                                                          |
 | SentenceEN         | `He doesn't <span class="hl">seem</span> to want to go.`                                                                                                                                                                                                                                                                                                                                                            |
 | Word               | `似乎`                                                                                                                                                                                                                                                                                                                                                                                                              |
 | Pinyin             | `sìhū`                                                                                                                                                                                                                                                                                                                                                                                                              |
 | GrammarPoint       | `四11`                                                                                                                                                                                                                                                                                                                                                                                                              |
-| GrammarExplanation | `<p><strong>似乎</strong> (sìhū) expresses a subjective impression or uncertain judgment based on observation.</p><h3>Meaning</h3><p>It means "it seems/appears that..." Use when you're not sure but inferring from evidence.</p><h3>vs. 好像</h3><p>Often interchangeable with 好像 but slightly more formal.</p>` |
+| GrammarExplanation | `<p><strong>似乎</strong> (sìhū) expresses a subjective impression or uncertain judgment based on observation.</p><h3>Meaning</h3><p>It means "it seems/appears that..." Use when you're not sure but inferring from evidence.</p><h3>vs. 好像</h3><p>Often interchangeable with 好像 but slightly more formal.</p>`                                                                                                |
 | CharacterBreakdown | `<ul><li><span class="hanzi">似</span> <span class="pinyin">sì</span> <span class="meaning">similar, seem</span><span class="etymology">left: person (亻), right: phonetic. Means "to resemble"</span></li><li><span class="hanzi">乎</span> <span class="pinyin">hū</span> <span class="meaning">particle</span><span class="etymology">same as in 几乎, adds the sense of "being in a state of"</span></li></ul>` |
 | Tags               | `grammar::四11 word::似乎`                                                                                                                                                                                                                                                                                                                                                                                          |
 
@@ -221,7 +225,7 @@ The TSV file uses Anki's import directives to specify note type, field mapping, 
 #separator:Tab
 #html:true
 #notetype:Grammar Sentence
-#columns:SentenceCN SentenceEN Word Pinyin GrammarPoint GrammarExplanation CharacterBreakdown Tags
+#columns:SentenceCN SentencePinyin SentenceEN Word Pinyin GrammarPoint GrammarExplanation CharacterBreakdown Tags
 ```
 
 | Directive        | Description                                      |
@@ -237,23 +241,24 @@ The TSV file uses Anki's import directives to specify note type, field mapping, 
 #separator:Tab
 #html:true
 #notetype:Grammar Sentence
-#columns:SentenceCN SentenceEN Word Pinyin GrammarPoint GrammarExplanation CharacterBreakdown Tags
-我<span class="hl">几乎</span>每天都运动。 I exercise <span class="hl">almost</span> every day. 几乎 jīhū 四11 <p><strong>几乎</strong> (jīhū) expresses that something is very close to 100% but not quite.</p><h3>Usage</h3><ul><li>Use before verbs or 都/没有</li><li>Common patterns: 几乎都…, 几乎没有…, 几乎每…</li></ul> <ul><li><span class="hanzi">几</span> <span class="pinyin">jǐ/jī</span> <span class="meaning">how many / nearly</span><span class="etymology">originally a picture of a small table</span></li><li><span class="hanzi">乎</span> <span class="pinyin">hū</span> <span class="meaning">particle</span><span class="etymology">classical question/exclamation particle</span></li></ul> grammar::四11 word::几乎
-他<span class="hl">似乎</span>不太想去。 He doesn't <span class="hl">seem</span> to want to go. 似乎 sìhū 四11 <p><strong>似乎</strong> (sìhū) expresses a subjective impression or uncertain judgment.</p><h3>Meaning</h3><p>"It seems/appears that..." — use when inferring from evidence.</p><h3>vs. 好像</h3><p>Often interchangeable, but 似乎 is more formal.</p> <ul><li><span class="hanzi">似</span> <span class="pinyin">sì</span> <span class="meaning">similar, seem</span><span class="etymology">left: person (亻), right: phonetic</span></li><li><span class="hanzi">乎</span> <span class="pinyin">hū</span> <span class="meaning">particle</span><span class="etymology">adds the sense of "being in a state of"</span></li></ul> grammar::四11 word::似乎
+#columns:SentenceCN SentencePinyin SentenceEN Word Pinyin GrammarPoint GrammarExplanation CharacterBreakdown Tags
+我<span class="hl">几乎</span>每天都运动。 Wǒ jīhū měitiān dōu yùndòng. I exercise <span class="hl">almost</span> every day. 几乎 jīhū 四11 <p><strong>几乎</strong> (jīhū) expresses that something is very close to 100% but not quite.</p><h3>Usage</h3><ul><li>Use before verbs or 都/没有</li><li>Common patterns: 几乎都…, 几乎没有…, 几乎每…</li></ul> <ul><li><span class="hanzi">几</span> <span class="pinyin">jǐ/jī</span> <span class="meaning">how many / nearly</span><span class="etymology">originally a picture of a small table</span></li><li><span class="hanzi">乎</span> <span class="pinyin">hū</span> <span class="meaning">particle</span><span class="etymology">classical question/exclamation particle</span></li></ul> grammar::四11 word::几乎
+他<span class="hl">似乎</span>不太想去。 Tā sìhū bù tài xiǎng qù. He doesn't <span class="hl">seem</span> to want to go. 似乎 sìhū 四11 <p><strong>似乎</strong> (sìhū) expresses a subjective impression or uncertain judgment.</p><h3>Meaning</h3><p>"It seems/appears that..." — use when inferring from evidence.</p><h3>vs. 好像</h3><p>Often interchangeable, but 似乎 is more formal.</p> <ul><li><span class="hanzi">似</span> <span class="pinyin">sì</span> <span class="meaning">similar, seem</span><span class="etymology">left: person (亻), right: phonetic</span></li><li><span class="hanzi">乎</span> <span class="pinyin">hū</span> <span class="meaning">particle</span><span class="etymology">adds the sense of "being in a state of"</span></li></ul> grammar::四11 word::似乎
 ```
 
 #### Field Notes
 
-| Field                | Format                                                                           |
-| -------------------- | -------------------------------------------------------------------------------- |
-| `SentenceCN`         | HTML with `<span class="hl">` around target word                                 |
-| `SentenceEN`         | HTML with `<span class="hl">` around English equivalent                          |
-| `Word`               | Plain text (target word)                                                         |
-| `Pinyin`             | Tone marks (jīhū), not numbers (ji1hu1)                                          |
-| `GrammarPoint`       | ID format: 四11, 五03, etc.                                                      |
-| `GrammarExplanation` | **Markdown** with real newlines (quoted field in TSV); rendered via marked.js    |
-| `CharacterBreakdown` | HTML list with semantic classes: `.hanzi`, `.pinyin`, `.meaning`, `.etymology`   |
-| `Tags`               | Space-separated, hierarchical with `::` (e.g., `grammar::四11 word::几乎`)       |
+| Field                | Format                                                                         |
+| -------------------- | ------------------------------------------------------------------------------ |
+| `SentenceCN`         | HTML with `<span class="hl">` around target word                               |
+| `SentencePinyin`     | Full pinyin of sentence with tone marks, no highlighting (e.g., `Wǒ jīhū...`)  |
+| `SentenceEN`         | HTML with `<span class="hl">` around English equivalent                        |
+| `Word`               | Plain text (target word)                                                       |
+| `Pinyin`             | Tone marks (jīhū), not numbers (ji1hu1)                                        |
+| `GrammarPoint`       | ID format: 四11, 五03, etc.                                                    |
+| `GrammarExplanation` | **Markdown** with real newlines (quoted field in TSV); rendered via marked.js  |
+| `CharacterBreakdown` | HTML list with semantic classes: `.hanzi`, `.pinyin`, `.meaning`, `.etymology` |
+| `Tags`               | Space-separated, hierarchical with `::` (e.g., `grammar::四11 word::几乎`)     |
 
 #### Import Instructions
 
