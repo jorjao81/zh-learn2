@@ -55,17 +55,20 @@ Create exercise sentences following these rules:
 
 ### Sentence Requirements
 
-- Chinese sentence: natural usage of the grammar point
-- Sentence pinyin: full pinyin of the Chinese sentence with tone marks (no highlighting)
-- English translation: natural English (not word-for-word), with the equivalent expression highlighted
-- The highlighted portion in English should correspond semantically to the Chinese target word
+For each exercise sentence, you MUST provide ALL THREE parts:
+
+1. **SentenceCN**: Chinese sentence with the target word highlighted using `<span class="hl">...</span>`
+2. **SentencePinyin**: Full pinyin romanization of the ENTIRE Chinese sentence with tone marks (e.g., `Tiān sìhū yào xiàyǔ le.`) — NO highlighting in pinyin
+3. **SentenceEN**: Natural English translation with the equivalent expression highlighted
 
 ### Example Format
 
-| Chinese (with highlight) | Pinyin | English (with highlight) |
-|--------------------------|--------|--------------------------|
+| SentenceCN | SentencePinyin | SentenceEN |
+|------------|----------------|------------|
 | `天<span class="hl">似乎</span>要下雨了。` | `Tiān sìhū yào xiàyǔ le.` | `It <span class="hl">seems like</span> it is going to rain.` |
 | `他<span class="hl">似乎</span>不太想去。` | `Tā sìhū bù tài xiǎng qù.` | `He doesn't <span class="hl">seem</span> to want to go.` |
+
+**IMPORTANT**: The SentencePinyin column is REQUIRED. Every row in the TSV must have pinyin for the full sentence.
 
 ## Step 5: Output TSV File
 
@@ -96,7 +99,7 @@ The file MUST start with these exact header directives:
 | Field | Content |
 |-------|---------|
 | SentenceCN | Chinese sentence with `<span class="hl">` around target word |
-| SentencePinyin | Full pinyin of the sentence with tone marks, no highlighting (e.g., `Tiān sìhū yào xiàyǔ le.`) |
+| SentencePinyin | **REQUIRED**: Full pinyin of the ENTIRE sentence with tone marks (e.g., `Tiān sìhū yào xiàyǔ le.`) |
 | SentenceEN | English translation with `<span class="hl">` around equivalent |
 | Word | The target word (plain text) |
 | Pinyin | Pinyin of the target word with tone marks (e.g., sìhū) |
@@ -124,6 +127,15 @@ This is the first paragraph.
 
 This is the second paragraph with a ""quoted word"" inside."
 ```
+
+### Example TSV Row (simplified, showing key columns)
+
+A complete data row with tabs between fields (represented as `[TAB]` here):
+```
+天<span class="hl">似乎</span>要下雨了。[TAB]Tiān sìhū yào xiàyǔ le.[TAB]It <span class="hl">seems like</span> it is going to rain.[TAB]似乎[TAB]sìhū[TAB]四11[TAB]"..."[TAB]"..."[TAB]grammar::四11 word::似乎
+```
+
+Note: The SentencePinyin field (`Tiān sìhū yào xiàyǔ le.`) comes IMMEDIATELY after SentenceCN and BEFORE SentenceEN.
 
 ## Quality Checks
 
