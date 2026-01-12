@@ -1,0 +1,574 @@
+#separator:Tab
+#html:true
+#notetype:Grammar Sentence
+#columns:SentenceCN	SentencePinyin	SentenceEN	Word	Pinyin	GrammarPoint	GrammarExplanation	CharacterBreakdown	Tags
+既然经理同意了，那我们就马上开始吧。	Jìrán jīnglǐ tóngyì le, nà wǒmen jiù mǎshàng kāishǐ ba.	<span class="hl">Since</span> the manager agreed, let's start immediately.	既然	jìrán	四20	"# HSK4-20 既然 (Since; Given that)
+
+**Pinyin:** jìrán (conjunction)
+
+The core function of **既然 (jìrán)** is to introduce a **factual premise** that is already known or accepted by the listener, serving as the basis for a subsequent suggestion, inference, or decision. It belongs to the category of **causal conjunctions** connecting clauses, but unlike simple ""because"" markers, it emphasizes the *givenness* of the situation—""Given that X is the case, [then] Y.""
+
+## 1. The Logical Structure: ""Given X, then Y""
+
+The standard structure connects two clauses:
+
+> **既然 + [Accepted Fact/Premise], (那/就/那……就……) + [Suggestion/Conclusion]**
+
+* **Clause 1 (Premise):** Specifies a situation that has already happened or is acknowledged as true.
+* **Clause 2 (Conclusion):** Offers a logical response to that reality.
+
+Unlike **因为 (yīnwèi)**, which explains *why* something happened (focus on cause), **既然 (jìrán)** focuses on *what to do now* that the situation exists (focus on response/inference).
+
+### Examples
+
+* **既然**你都知道了，我就不多说了。
+  * *Jìrán nǐ dōu zhīdào le, wǒ jiù bù duō shuō le.*
+  * **Since** you already know everything, I won't say any more.
+  * *(Premise: You know. Conclusion: No need for me to talk.)*
+
+* **既然**他不肯来，**那**我们就不勉强他了。
+  * *Jìrán tā bù kěn lái, nà wǒmen jiù bù miǎnqiǎng tā le.*
+  * **Given that** he's unwilling to come, **then** let's not force him.
+
+* **既然**是你的选择，你**就**要负责到底。
+  * *Jìrán shì nǐ de xuǎnzé, nǐ jiù yào fùzé dàodǐ.*
+  * **Since** it is your choice, you **must** be responsible to the end.
+
+## 2. Linguistic Nuance: Factuality vs. Causality
+
+It is helpful to contrast **既然 (jìrán)** with **因为 (yīnwèi)**:
+
+* **因为 (yīnwèi)**: Answers ""Why?"" The cause might be new information to the listener.
+  * *Context: ""Why aren't you going?""*
+  * 因为下雨了。 (Because it's raining.) — *Explaining the reason.*
+* **既然 (jìrán)**: Answers ""What now?"" The cause is treated as shared ground.
+  * *Context: ""Look, it's raining!""*
+  * 既然下雨了，我们就别去了。 (Since/Given that it's raining, let's not go.) — *Deriving a plan from the fact.*
+
+You generally **cannot** answer a ""Why?"" question with 既然.
+* Q: 你为什么辞职？ (Why did you resign?)
+* A: ❌ **既然**工资太低…… (Incorrect usage)
+* A: ✅ **因为**工资太低…… (Correct)
+
+## 3. Collocations and Registers
+
+**既然** is often paired with specific markers in the second clause to signal the result/inference:
+
+* **就 (jiù)**: ""then..."" (most common)
+* **也 (yě)**: ""even so..."" / ""also...""
+* **还 (hái)**: ""still..."" (often in rhetorical questions)
+* **那 (nà) / 那么 (nàme)**: ""in that case...""
+
+### Rhetorical Force
+It is frequently used in rhetorical questions (反问句) to challenge illogical behavior:
+
+* **既然**你不喜欢，为什么还要买？
+  * *Jìrán nǐ bù xǐhuan, wèishénme hái yào mǎi?*
+  * **Since** you don't like it, why are you still buying it?
+
+## 4. ""Just the facts""
+
+The clause following **既然** must be a declarative statement of fact or a conceded point. It cannot be a question or a conjecture about the future (unless that conjecture is treated as a settled assumption).
+
+* ✅ **既然**明天要考试…… (Since [it is a fact that] there is an exam tomorrow...)
+* ❌ **既然**明天会不会下雨…… (Incorrect: cannot be a question)
+
+## 5. Common Errors
+
+**Mistake:** Using 既然 for simple causality where inference isn't the point.
+* *Bad:* 既然我饿了，我吃了一个苹果。 (Sounds odd: ""Given that I was hungry, I ate an apple."")
+* *Better:* 因为我饿了，所以我吃了一个苹果。 (""Because I was hungry, I ate an apple."")
+* *Correct 既然 context:* 既然你饿了，这里有个苹果，你拿去吃吧。 (""Since you are hungry [accepted fact], here is an apple, go ahead and eat it."")
+
+**Summary:** **因为** looks backward at the cause; **既然** looks forward to the consequence."	"# Character Breakdown: 既然 (jìrán)
+
+## 既 (jì)
+**Core Meaning:** Already; To finish; Since.
+
+* **Etymology:** The ancient form of **既** depicts a person kneeling beside a food vessel (guǐ) with their head turned away/backwards. This vivid imagery suggests someone who has **finished eating** and is turning away from the table.
+* **Semantic Evolution:**
+  1. Finished eating (original meaning).
+  2. Finished / Completed action (generalized).
+  3. Already (temporal aspect: the event is done).
+  4. Since / Given that (logical aspect: the premise is ""already"" established).
+
+* **Key Compounds:**
+  * **既**定 (jìdìng): Already decided / Established (e.g., 既定方针 - established policy).
+  * **既**往不咎 (jìwǎngbùjiù): Let bygones be bygones (literally: [regarding] what is **already** past, do not blame).
+  * **既**……又…… (jì...yòu...): Both... and... (Literally: [It is] already X, [and] also Y).
+
+## 然 (rán)
+**Core Meaning:** Correct; So; Like this; (Suffix for adverbs/adjectives).
+
+* **Etymology:** Originally a pictograph for ""to burn"" (cooking dog meat over fire), which is now written as **燃** (rán). The character was borrowed to serve as a grammatical function word meaning ""yes"", ""correct"", or ""so"".
+* **Function in 既然:** Here, **然** functions as a demonstrative pro-form meaning ""so"" or ""like this"" (similar to 这样 or 如此).
+* **Logic:**
+  * **既** (Already) + **然** (So/Like this)
+  * ""It is **already like this**..."" → ""Since this is the case...""
+
+* **Key Compounds:**
+  * 自**然** (zìrán): Nature / Natural (Self-so; being so of itself).
+  * 当**然** (dāngrán): Of course (Should be so).
+  * 虽**然** (suīrán): Although (Even if [it is] so).
+  * 不**然** (bùrán): Otherwise (If not so).
+
+## Synthesis: 既然
+When you say **既然 (jìrán)**, you are literally saying: **""[The situation] being already so...""** or **""[Since it is] already like this...""**
+
+This etymology explains why **既然** is used to introduce an **accepted fact**. You aren't introducing new information; you are pointing to a situation that is ""already so"" (finished/established) and using it as a stepping stone for your next point."	grammar::四20 word::既然
+<span class="hl">既然</span>你生病了，就在家好好休息吧。	Jìrán nǐ shēngbìng le, jiù zài jiā hǎohǎo xiūxi ba.	<span class="hl">Since</span> you are sick, just rest well at home.	既然	jìrán	四20	"# HSK4-20 既然 (Since; Given that)
+
+**Pinyin:** jìrán (conjunction)
+
+The core function of **既然 (jìrán)** is to introduce a **factual premise** that is already known or accepted by the listener, serving as the basis for a subsequent suggestion, inference, or decision. It belongs to the category of **causal conjunctions** connecting clauses, but unlike simple ""because"" markers, it emphasizes the *givenness* of the situation—""Given that X is the case, [then] Y.""
+
+## 1. The Logical Structure: ""Given X, then Y""
+
+The standard structure connects two clauses:
+
+> **既然 + [Accepted Fact/Premise], (那/就/那……就……) + [Suggestion/Conclusion]**
+
+* **Clause 1 (Premise):** Specifies a situation that has already happened or is acknowledged as true.
+* **Clause 2 (Conclusion):** Offers a logical response to that reality.
+
+Unlike **因为 (yīnwèi)**, which explains *why* something happened (focus on cause), **既然 (jìrán)** focuses on *what to do now* that the situation exists (focus on response/inference).
+
+### Examples
+
+* **既然**你都知道了，我就不多说了。
+  * *Jìrán nǐ dōu zhīdào le, wǒ jiù bù duō shuō le.*
+  * **Since** you already know everything, I won't say any more.
+  * *(Premise: You know. Conclusion: No need for me to talk.)*
+
+* **既然**他不肯来，**那**我们就不勉强他了。
+  * *Jìrán tā bù kěn lái, nà wǒmen jiù bù miǎnqiǎng tā le.*
+  * **Given that** he's unwilling to come, **then** let's not force him.
+
+* **既然**是你的选择，你**就**要负责到底。
+  * *Jìrán shì nǐ de xuǎnzé, nǐ jiù yào fùzé dàodǐ.*
+  * **Since** it is your choice, you **must** be responsible to the end.
+
+## 2. Linguistic Nuance: Factuality vs. Causality
+
+It is helpful to contrast **既然 (jìrán)** with **因为 (yīnwèi)**:
+
+* **因为 (yīnwèi)**: Answers ""Why?"" The cause might be new information to the listener.
+  * *Context: ""Why aren't you going?""*
+  * 因为下雨了。 (Because it's raining.) — *Explaining the reason.*
+* **既然 (jìrán)**: Answers ""What now?"" The cause is treated as shared ground.
+  * *Context: ""Look, it's raining!""*
+  * 既然下雨了，我们就别去了。 (Since/Given that it's raining, let's not go.) — *Deriving a plan from the fact.*
+
+You generally **cannot** answer a ""Why?"" question with 既然.
+* Q: 你为什么辞职？ (Why did you resign?)
+* A: ❌ **既然**工资太低…… (Incorrect usage)
+* A: ✅ **因为**工资太低…… (Correct)
+
+## 3. Collocations and Registers
+
+**既然** is often paired with specific markers in the second clause to signal the result/inference:
+
+* **就 (jiù)**: ""then..."" (most common)
+* **也 (yě)**: ""even so..."" / ""also...""
+* **还 (hái)**: ""still..."" (often in rhetorical questions)
+* **那 (nà) / 那么 (nàme)**: ""in that case...""
+
+### Rhetorical Force
+It is frequently used in rhetorical questions (反问句) to challenge illogical behavior:
+
+* **既然**你不喜欢，为什么还要买？
+  * *Jìrán nǐ bù xǐhuan, wèishénme hái yào mǎi?*
+  * **Since** you don't like it, why are you still buying it?
+
+## 4. ""Just the facts""
+
+The clause following **既然** must be a declarative statement of fact or a conceded point. It cannot be a question or a conjecture about the future (unless that conjecture is treated as a settled assumption).
+
+* ✅ **既然**明天要考试…… (Since [it is a fact that] there is an exam tomorrow...)
+* ❌ **既然**明天会不会下雨…… (Incorrect: cannot be a question)
+
+## 5. Common Errors
+
+**Mistake:** Using 既然 for simple causality where inference isn't the point.
+* *Bad:* 既然我饿了，我吃了一个苹果。 (Sounds odd: ""Given that I was hungry, I ate an apple."")
+* *Better:* 因为我饿了，所以我吃了一个苹果。 (""Because I was hungry, I ate an apple."")
+* *Correct 既然 context:* 既然你饿了，这里有个苹果，你拿去吃吧。 (""Since you are hungry [accepted fact], here is an apple, go ahead and eat it."")
+
+**Summary:** **因为** looks backward at the cause; **既然** looks forward to the consequence."	"# Character Breakdown: 既然 (jìrán)
+
+## 既 (jì)
+**Core Meaning:** Already; To finish; Since.
+
+* **Etymology:** The ancient form of **既** depicts a person kneeling beside a food vessel (guǐ) with their head turned away/backwards. This vivid imagery suggests someone who has **finished eating** and is turning away from the table.
+* **Semantic Evolution:**
+  1. Finished eating (original meaning).
+  2. Finished / Completed action (generalized).
+  3. Already (temporal aspect: the event is done).
+  4. Since / Given that (logical aspect: the premise is ""already"" established).
+
+* **Key Compounds:**
+  * **既**定 (jìdìng): Already decided / Established (e.g., 既定方针 - established policy).
+  * **既**往不咎 (jìwǎngbùjiù): Let bygones be bygones (literally: [regarding] what is **already** past, do not blame).
+  * **既**……又…… (jì...yòu...): Both... and... (Literally: [It is] already X, [and] also Y).
+
+## 然 (rán)
+**Core Meaning:** Correct; So; Like this; (Suffix for adverbs/adjectives).
+
+* **Etymology:** Originally a pictograph for ""to burn"" (cooking dog meat over fire), which is now written as **燃** (rán). The character was borrowed to serve as a grammatical function word meaning ""yes"", ""correct"", or ""so"".
+* **Function in 既然:** Here, **然** functions as a demonstrative pro-form meaning ""so"" or ""like this"" (similar to 这样 or 如此).
+* **Logic:**
+  * **既** (Already) + **然** (So/Like this)
+  * ""It is **already like this**..."" → ""Since this is the case...""
+
+* **Key Compounds:**
+  * 自**然** (zìrán): Nature / Natural (Self-so; being so of itself).
+  * 当**然** (dāngrán): Of course (Should be so).
+  * 虽**然** (suīrán): Although (Even if [it is] so).
+  * 不**然** (bùrán): Otherwise (If not so).
+
+## Synthesis: 既然
+When you say **既然 (jìrán)**, you are literally saying: **""[The situation] being already so...""** or **""[Since it is] already like this...""**
+
+This etymology explains why **既然** is used to introduce an **accepted fact**. You aren't introducing new information; you are pointing to a situation that is ""already so"" (finished/established) and using it as a stepping stone for your next point."	grammar::四20 word::既然
+事情<span class="hl">既然</span>已经发生了，后悔也没用。	Shìqing jìrán yǐjīng fāshēng le, hòuhuǐ yě méi yòng.	<span class="hl">Since</span> the thing has already happened, regretting it is useless.	既然	jìrán	四20	"# HSK4-20 既然 (Since; Given that)
+
+**Pinyin:** jìrán (conjunction)
+
+The core function of **既然 (jìrán)** is to introduce a **factual premise** that is already known or accepted by the listener, serving as the basis for a subsequent suggestion, inference, or decision. It belongs to the category of **causal conjunctions** connecting clauses, but unlike simple ""because"" markers, it emphasizes the *givenness* of the situation—""Given that X is the case, [then] Y.""
+
+## 1. The Logical Structure: ""Given X, then Y""
+
+The standard structure connects two clauses:
+
+> **既然 + [Accepted Fact/Premise], (那/就/那……就……) + [Suggestion/Conclusion]**
+
+* **Clause 1 (Premise):** Specifies a situation that has already happened or is acknowledged as true.
+* **Clause 2 (Conclusion):** Offers a logical response to that reality.
+
+Unlike **因为 (yīnwèi)**, which explains *why* something happened (focus on cause), **既然 (jìrán)** focuses on *what to do now* that the situation exists (focus on response/inference).
+
+### Examples
+
+* **既然**你都知道了，我就不多说了。
+  * *Jìrán nǐ dōu zhīdào le, wǒ jiù bù duō shuō le.*
+  * **Since** you already know everything, I won't say any more.
+  * *(Premise: You know. Conclusion: No need for me to talk.)*
+
+* **既然**他不肯来，**那**我们就不勉强他了。
+  * *Jìrán tā bù kěn lái, nà wǒmen jiù bù miǎnqiǎng tā le.*
+  * **Given that** he's unwilling to come, **then** let's not force him.
+
+* **既然**是你的选择，你**就**要负责到底。
+  * *Jìrán shì nǐ de xuǎnzé, nǐ jiù yào fùzé dàodǐ.*
+  * **Since** it is your choice, you **must** be responsible to the end.
+
+## 2. Linguistic Nuance: Factuality vs. Causality
+
+It is helpful to contrast **既然 (jìrán)** with **因为 (yīnwèi)**:
+
+* **因为 (yīnwèi)**: Answers ""Why?"" The cause might be new information to the listener.
+  * *Context: ""Why aren't you going?""*
+  * 因为下雨了。 (Because it's raining.) — *Explaining the reason.*
+* **既然 (jìrán)**: Answers ""What now?"" The cause is treated as shared ground.
+  * *Context: ""Look, it's raining!""*
+  * 既然下雨了，我们就别去了。 (Since/Given that it's raining, let's not go.) — *Deriving a plan from the fact.*
+
+You generally **cannot** answer a ""Why?"" question with 既然.
+* Q: 你为什么辞职？ (Why did you resign?)
+* A: ❌ **既然**工资太低…… (Incorrect usage)
+* A: ✅ **因为**工资太低…… (Correct)
+
+## 3. Collocations and Registers
+
+**既然** is often paired with specific markers in the second clause to signal the result/inference:
+
+* **就 (jiù)**: ""then..."" (most common)
+* **也 (yě)**: ""even so..."" / ""also...""
+* **还 (hái)**: ""still..."" (often in rhetorical questions)
+* **那 (nà) / 那么 (nàme)**: ""in that case...""
+
+### Rhetorical Force
+It is frequently used in rhetorical questions (反问句) to challenge illogical behavior:
+
+* **既然**你不喜欢，为什么还要买？
+  * *Jìrán nǐ bù xǐhuan, wèishénme hái yào mǎi?*
+  * **Since** you don't like it, why are you still buying it?
+
+## 4. ""Just the facts""
+
+The clause following **既然** must be a declarative statement of fact or a conceded point. It cannot be a question or a conjecture about the future (unless that conjecture is treated as a settled assumption).
+
+* ✅ **既然**明天要考试…… (Since [it is a fact that] there is an exam tomorrow...)
+* ❌ **既然**明天会不会下雨…… (Incorrect: cannot be a question)
+
+## 5. Common Errors
+
+**Mistake:** Using 既然 for simple causality where inference isn't the point.
+* *Bad:* 既然我饿了，我吃了一个苹果。 (Sounds odd: ""Given that I was hungry, I ate an apple."")
+* *Better:* 因为我饿了，所以我吃了一个苹果。 (""Because I was hungry, I ate an apple."")
+* *Correct 既然 context:* 既然你饿了，这里有个苹果，你拿去吃吧。 (""Since you are hungry [accepted fact], here is an apple, go ahead and eat it."")
+
+**Summary:** **因为** looks backward at the cause; **既然** looks forward to the consequence."	"# Character Breakdown: 既然 (jìrán)
+
+## 既 (jì)
+**Core Meaning:** Already; To finish; Since.
+
+* **Etymology:** The ancient form of **既** depicts a person kneeling beside a food vessel (guǐ) with their head turned away/backwards. This vivid imagery suggests someone who has **finished eating** and is turning away from the table.
+* **Semantic Evolution:**
+  1. Finished eating (original meaning).
+  2. Finished / Completed action (generalized).
+  3. Already (temporal aspect: the event is done).
+  4. Since / Given that (logical aspect: the premise is ""already"" established).
+
+* **Key Compounds:**
+  * **既**定 (jìdìng): Already decided / Established (e.g., 既定方针 - established policy).
+  * **既**往不咎 (jìwǎngbùjiù): Let bygones be bygones (literally: [regarding] what is **already** past, do not blame).
+  * **既**……又…… (jì...yòu...): Both... and... (Literally: [It is] already X, [and] also Y).
+
+## 然 (rán)
+**Core Meaning:** Correct; So; Like this; (Suffix for adverbs/adjectives).
+
+* **Etymology:** Originally a pictograph for ""to burn"" (cooking dog meat over fire), which is now written as **燃** (rán). The character was borrowed to serve as a grammatical function word meaning ""yes"", ""correct"", or ""so"".
+* **Function in 既然:** Here, **然** functions as a demonstrative pro-form meaning ""so"" or ""like this"" (similar to 这样 or 如此).
+* **Logic:**
+  * **既** (Already) + **然** (So/Like this)
+  * ""It is **already like this**..."" → ""Since this is the case...""
+
+* **Key Compounds:**
+  * 自**然** (zìrán): Nature / Natural (Self-so; being so of itself).
+  * 当**然** (dāngrán): Of course (Should be so).
+  * 虽**然** (suīrán): Although (Even if [it is] so).
+  * 不**然** (bùrán): Otherwise (If not so).
+
+## Synthesis: 既然
+When you say **既然 (jìrán)**, you are literally saying: **""[The situation] being already so...""** or **""[Since it is] already like this...""**
+
+This etymology explains why **既然** is used to introduce an **accepted fact**. You aren't introducing new information; you are pointing to a situation that is ""already so"" (finished/established) and using it as a stepping stone for your next point."	grammar::四20 word::既然
+<span class="hl">既然</span>票都卖完了，我们只好换个时间去。	Jìrán piào dōu màiwán le, wǒmen zhǐhǎo huàn gè shíjiān qù.	<span class="hl">Since</span> the tickets are all sold out, we have to go at another time.	既然	jìrán	四20	"# HSK4-20 既然 (Since; Given that)
+
+**Pinyin:** jìrán (conjunction)
+
+The core function of **既然 (jìrán)** is to introduce a **factual premise** that is already known or accepted by the listener, serving as the basis for a subsequent suggestion, inference, or decision. It belongs to the category of **causal conjunctions** connecting clauses, but unlike simple ""because"" markers, it emphasizes the *givenness* of the situation—""Given that X is the case, [then] Y.""
+
+## 1. The Logical Structure: ""Given X, then Y""
+
+The standard structure connects two clauses:
+
+> **既然 + [Accepted Fact/Premise], (那/就/那……就……) + [Suggestion/Conclusion]**
+
+* **Clause 1 (Premise):** Specifies a situation that has already happened or is acknowledged as true.
+* **Clause 2 (Conclusion):** Offers a logical response to that reality.
+
+Unlike **因为 (yīnwèi)**, which explains *why* something happened (focus on cause), **既然 (jìrán)** focuses on *what to do now* that the situation exists (focus on response/inference).
+
+### Examples
+
+* **既然**你都知道了，我就不多说了。
+  * *Jìrán nǐ dōu zhīdào le, wǒ jiù bù duō shuō le.*
+  * **Since** you already know everything, I won't say any more.
+  * *(Premise: You know. Conclusion: No need for me to talk.)*
+
+* **既然**他不肯来，**那**我们就不勉强他了。
+  * *Jìrán tā bù kěn lái, nà wǒmen jiù bù miǎnqiǎng tā le.*
+  * **Given that** he's unwilling to come, **then** let's not force him.
+
+* **既然**是你的选择，你**就**要负责到底。
+  * *Jìrán shì nǐ de xuǎnzé, nǐ jiù yào fùzé dàodǐ.*
+  * **Since** it is your choice, you **must** be responsible to the end.
+
+## 2. Linguistic Nuance: Factuality vs. Causality
+
+It is helpful to contrast **既然 (jìrán)** with **因为 (yīnwèi)**:
+
+* **因为 (yīnwèi)**: Answers ""Why?"" The cause might be new information to the listener.
+  * *Context: ""Why aren't you going?""*
+  * 因为下雨了。 (Because it's raining.) — *Explaining the reason.*
+* **既然 (jìrán)**: Answers ""What now?"" The cause is treated as shared ground.
+  * *Context: ""Look, it's raining!""*
+  * 既然下雨了，我们就别去了。 (Since/Given that it's raining, let's not go.) — *Deriving a plan from the fact.*
+
+You generally **cannot** answer a ""Why?"" question with 既然.
+* Q: 你为什么辞职？ (Why did you resign?)
+* A: ❌ **既然**工资太低…… (Incorrect usage)
+* A: ✅ **因为**工资太低…… (Correct)
+
+## 3. Collocations and Registers
+
+**既然** is often paired with specific markers in the second clause to signal the result/inference:
+
+* **就 (jiù)**: ""then..."" (most common)
+* **也 (yě)**: ""even so..."" / ""also...""
+* **还 (hái)**: ""still..."" (often in rhetorical questions)
+* **那 (nà) / 那么 (nàme)**: ""in that case...""
+
+### Rhetorical Force
+It is frequently used in rhetorical questions (反问句) to challenge illogical behavior:
+
+* **既然**你不喜欢，为什么还要买？
+  * *Jìrán nǐ bù xǐhuan, wèishénme hái yào mǎi?*
+  * **Since** you don't like it, why are you still buying it?
+
+## 4. ""Just the facts""
+
+The clause following **既然** must be a declarative statement of fact or a conceded point. It cannot be a question or a conjecture about the future (unless that conjecture is treated as a settled assumption).
+
+* ✅ **既然**明天要考试…… (Since [it is a fact that] there is an exam tomorrow...)
+* ❌ **既然**明天会不会下雨…… (Incorrect: cannot be a question)
+
+## 5. Common Errors
+
+**Mistake:** Using 既然 for simple causality where inference isn't the point.
+* *Bad:* 既然我饿了，我吃了一个苹果。 (Sounds odd: ""Given that I was hungry, I ate an apple."")
+* *Better:* 因为我饿了，所以我吃了一个苹果。 (""Because I was hungry, I ate an apple."")
+* *Correct 既然 context:* 既然你饿了，这里有个苹果，你拿去吃吧。 (""Since you are hungry [accepted fact], here is an apple, go ahead and eat it."")
+
+**Summary:** **因为** looks backward at the cause; **既然** looks forward to the consequence."	"# Character Breakdown: 既然 (jìrán)
+
+## 既 (jì)
+**Core Meaning:** Already; To finish; Since.
+
+* **Etymology:** The ancient form of **既** depicts a person kneeling beside a food vessel (guǐ) with their head turned away/backwards. This vivid imagery suggests someone who has **finished eating** and is turning away from the table.
+* **Semantic Evolution:**
+  1. Finished eating (original meaning).
+  2. Finished / Completed action (generalized).
+  3. Already (temporal aspect: the event is done).
+  4. Since / Given that (logical aspect: the premise is ""already"" established).
+
+* **Key Compounds:**
+  * **既**定 (jìdìng): Already decided / Established (e.g., 既定方针 - established policy).
+  * **既**往不咎 (jìwǎngbùjiù): Let bygones be bygones (literally: [regarding] what is **already** past, do not blame).
+  * **既**……又…… (jì...yòu...): Both... and... (Literally: [It is] already X, [and] also Y).
+
+## 然 (rán)
+**Core Meaning:** Correct; So; Like this; (Suffix for adverbs/adjectives).
+
+* **Etymology:** Originally a pictograph for ""to burn"" (cooking dog meat over fire), which is now written as **燃** (rán). The character was borrowed to serve as a grammatical function word meaning ""yes"", ""correct"", or ""so"".
+* **Function in 既然:** Here, **然** functions as a demonstrative pro-form meaning ""so"" or ""like this"" (similar to 这样 or 如此).
+* **Logic:**
+  * **既** (Already) + **然** (So/Like this)
+  * ""It is **already like this**..."" → ""Since this is the case...""
+
+* **Key Compounds:**
+  * 自**然** (zìrán): Nature / Natural (Self-so; being so of itself).
+  * 当**然** (dāngrán): Of course (Should be so).
+  * 虽**然** (suīrán): Although (Even if [it is] so).
+  * 不**然** (bùrán): Otherwise (If not so).
+
+## Synthesis: 既然
+When you say **既然 (jìrán)**, you are literally saying: **""[The situation] being already so...""** or **""[Since it is] already like this...""**
+
+This etymology explains why **既然** is used to introduce an **accepted fact**. You aren't introducing new information; you are pointing to a situation that is ""already so"" (finished/established) and using it as a stepping stone for your next point."	grammar::四20 word::既然
+<span class="hl">既然</span>答应了他，你就不应该反悔。	Jìrán dāying le tā, nǐ jiù bù yīnggāi fǎnhuǐ.	<span class="hl">Since</span> you promised him, you shouldn't go back on your word.	既然	jìrán	四20	"# HSK4-20 既然 (Since; Given that)
+
+**Pinyin:** jìrán (conjunction)
+
+The core function of **既然 (jìrán)** is to introduce a **factual premise** that is already known or accepted by the listener, serving as the basis for a subsequent suggestion, inference, or decision. It belongs to the category of **causal conjunctions** connecting clauses, but unlike simple ""because"" markers, it emphasizes the *givenness* of the situation—""Given that X is the case, [then] Y.""
+
+## 1. The Logical Structure: ""Given X, then Y""
+
+The standard structure connects two clauses:
+
+> **既然 + [Accepted Fact/Premise], (那/就/那……就……) + [Suggestion/Conclusion]**
+
+* **Clause 1 (Premise):** Specifies a situation that has already happened or is acknowledged as true.
+* **Clause 2 (Conclusion):** Offers a logical response to that reality.
+
+Unlike **因为 (yīnwèi)**, which explains *why* something happened (focus on cause), **既然 (jìrán)** focuses on *what to do now* that the situation exists (focus on response/inference).
+
+### Examples
+
+* **既然**你都知道了，我就不多说了。
+  * *Jìrán nǐ dōu zhīdào le, wǒ jiù bù duō shuō le.*
+  * **Since** you already know everything, I won't say any more.
+  * *(Premise: You know. Conclusion: No need for me to talk.)*
+
+* **既然**他不肯来，**那**我们就不勉强他了。
+  * *Jìrán tā bù kěn lái, nà wǒmen jiù bù miǎnqiǎng tā le.*
+  * **Given that** he's unwilling to come, **then** let's not force him.
+
+* **既然**是你的选择，你**就**要负责到底。
+  * *Jìrán shì nǐ de xuǎnzé, nǐ jiù yào fùzé dàodǐ.*
+  * **Since** it is your choice, you **must** be responsible to the end.
+
+## 2. Linguistic Nuance: Factuality vs. Causality
+
+It is helpful to contrast **既然 (jìrán)** with **因为 (yīnwèi)**:
+
+* **因为 (yīnwèi)**: Answers ""Why?"" The cause might be new information to the listener.
+  * *Context: ""Why aren't you going?""*
+  * 因为下雨了。 (Because it's raining.) — *Explaining the reason.*
+* **既然 (jìrán)**: Answers ""What now?"" The cause is treated as shared ground.
+  * *Context: ""Look, it's raining!""*
+  * 既然下雨了，我们就别去了。 (Since/Given that it's raining, let's not go.) — *Deriving a plan from the fact.*
+
+You generally **cannot** answer a ""Why?"" question with 既然.
+* Q: 你为什么辞职？ (Why did you resign?)
+* A: ❌ **既然**工资太低…… (Incorrect usage)
+* A: ✅ **因为**工资太低…… (Correct)
+
+## 3. Collocations and Registers
+
+**既然** is often paired with specific markers in the second clause to signal the result/inference:
+
+* **就 (jiù)**: ""then..."" (most common)
+* **也 (yě)**: ""even so..."" / ""also...""
+* **还 (hái)**: ""still..."" (often in rhetorical questions)
+* **那 (nà) / 那么 (nàme)**: ""in that case...""
+
+### Rhetorical Force
+It is frequently used in rhetorical questions (反问句) to challenge illogical behavior:
+
+* **既然**你不喜欢，为什么还要买？
+  * *Jìrán nǐ bù xǐhuan, wèishénme hái yào mǎi?*
+  * **Since** you don't like it, why are you still buying it?
+
+## 4. ""Just the facts""
+
+The clause following **既然** must be a declarative statement of fact or a conceded point. It cannot be a question or a conjecture about the future (unless that conjecture is treated as a settled assumption).
+
+* ✅ **既然**明天要考试…… (Since [it is a fact that] there is an exam tomorrow...)
+* ❌ **既然**明天会不会下雨…… (Incorrect: cannot be a question)
+
+## 5. Common Errors
+
+**Mistake:** Using 既然 for simple causality where inference isn't the point.
+* *Bad:* 既然我饿了，我吃了一个苹果。 (Sounds odd: ""Given that I was hungry, I ate an apple."")
+* *Better:* 因为我饿了，所以我吃了一个苹果。 (""Because I was hungry, I ate an apple."")
+* *Correct 既然 context:* 既然你饿了，这里有个苹果，你拿去吃吧。 (""Since you are hungry [accepted fact], here is an apple, go ahead and eat it."")
+
+**Summary:** **因为** looks backward at the cause; **既然** looks forward to the consequence."	"# Character Breakdown: 既然 (jìrán)
+
+## 既 (jì)
+**Core Meaning:** Already; To finish; Since.
+
+* **Etymology:** The ancient form of **既** depicts a person kneeling beside a food vessel (guǐ) with their head turned away/backwards. This vivid imagery suggests someone who has **finished eating** and is turning away from the table.
+* **Semantic Evolution:**
+  1. Finished eating (original meaning).
+  2. Finished / Completed action (generalized).
+  3. Already (temporal aspect: the event is done).
+  4. Since / Given that (logical aspect: the premise is ""already"" established).
+
+* **Key Compounds:**
+  * **既**定 (jìdìng): Already decided / Established (e.g., 既定方针 - established policy).
+  * **既**往不咎 (jìwǎngbùjiù): Let bygones be bygones (literally: [regarding] what is **already** past, do not blame).
+  * **既**……又…… (jì...yòu...): Both... and... (Literally: [It is] already X, [and] also Y).
+
+## 然 (rán)
+**Core Meaning:** Correct; So; Like this; (Suffix for adverbs/adjectives).
+
+* **Etymology:** Originally a pictograph for ""to burn"" (cooking dog meat over fire), which is now written as **燃** (rán). The character was borrowed to serve as a grammatical function word meaning ""yes"", ""correct"", or ""so"".
+* **Function in 既然:** Here, **然** functions as a demonstrative pro-form meaning ""so"" or ""like this"" (similar to 这样 or 如此).
+* **Logic:**
+  * **既** (Already) + **然** (So/Like this)
+  * ""It is **already like this**..."" → ""Since this is the case...""
+
+* **Key Compounds:**
+  * 自**然** (zìrán): Nature / Natural (Self-so; being so of itself).
+  * 当**然** (dāngrán): Of course (Should be so).
+  * 虽**然** (suīrán): Although (Even if [it is] so).
+  * 不**然** (bùrán): Otherwise (If not so).
+
+## Synthesis: 既然
+When you say **既然 (jìrán)**, you are literally saying: **""[The situation] being already so...""** or **""[Since it is] already like this...""**
+
+This etymology explains why **既然** is used to introduce an **accepted fact**. You aren't introducing new information; you are pointing to a situation that is ""already so"" (finished/established) and using it as a stepping stone for your next point."	grammar::四20 word::既然

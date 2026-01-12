@@ -1,0 +1,683 @@
+#separator:Tab
+#html:true
+#notetype:Grammar Sentence
+#columns:SentenceCN	SentencePinyin	SentenceEN	Word	Pinyin	GrammarPoint	GrammarExplanation	CharacterBreakdown	Tags
+"我不想<span class=""hl"">白</span>拿你的礼物。"	"Wǒ bùxiǎng bái ná nǐ de lǐwù."	"I don't want to take your gift <span class=""hl"">for free</span>."	白	bái	三19	"# Grammar Point: 白 (bái)
+
+| Category | Level | Character | Pinyin | Meaning |
+| --- | --- | --- | --- | --- |
+| Mood Adverb | HSK 3 (三19) | 白 | bái | in vain; for nothing; free of charge |
+
+## The Core Concept: ""Blank"" Results
+
+You likely know **白** (bái) as the color ""white."" However, linguistically, ""white"" in Chinese often carries the connotation of ""blank,"" ""empty,"" or ""plain.""
+
+When used as an adverb before a verb, **白** suggests that the action produced a ""blank"" result—it was done **in vain** or **for nothing**. The effort was expended, but the expected outcome was not achieved.
+
+A secondary meaning derives from ""plain"" (without adding anything, like payment)—meaning **for free**.
+
+## 1. Doing Something ""In Vain"" (Wasted Effort)
+
+This is the most common grammatical usage. It emphasizes the speaker's frustration that an action yielded no results.
+
+**Structure:** `Subject + 白 + Verb + (了)`
+
+* **我今天去也没用，真是白跑一趟。**
+  * *Wǒ jīntiān qù yě méiyòng, zhēnshì bái pǎo yí tàng.*
+  * Going today was useless; I really made the trip **for nothing**.
+* **刚才说的话都白说了，他根本没听进去。**
+  * *Gāngcái shuō de huà dōu bái shuō le, tā gēnběn méi tīng jìnqù.*
+  * The words I just said were all **in vain**; he didn't listen at all.
+* **这种药不管用，钱都白花了。**
+  * *Zhè zhǒng yào bù guǎnyòng, qián dōu bái huā le.*
+  * This medicine doesn't work; the money was all spent **for nothing**.
+
+### Nuance Note: The use of 了
+You will often see **了** after the verb because the realization that the effort was wasted usually happens *after* the action is complete.
+
+## 2. Getting Something ""For Free""
+
+Here, ""white"" means ""without compensation"" or ""gratis."" It implies getting something without paying the usual cost (money or effort).
+
+**Structure:** `白 + Verb`
+
+* **天下没有白吃的午餐。**
+  * *Tiānxià méiyǒu bái chī de wǔcān.*
+  * There is no ""free"" lunch in this world. (Lit: No lunch eaten **for free**)
+* **不管是不是朋友，我也不能白拿你的东西。**
+  * *Bùguǎn shìbúshì péngyou, wǒ yě bùnéng bái ná nǐ de dōngxi.*
+  * Friend or not, I can't just take your things **for free**.
+* **白看** (bái kàn) - To watch for free (e.g., sneaking into a show).
+
+## 3. Idiomatic Usage: ""In Vain"" vs. ""Free""
+
+Context is king.
+* **白做** (bái zuò): Usually ""did it in vain"" (wasted work).
+* **白给** (bái gěi): Usually ""give for free.""
+
+## Comparison: 白 (bái) vs. 免费 (miǎnfèi)
+
+| Word | Part of Speech | Usage | Tone |
+| :--- | :--- | :--- | :--- |
+| **免费** | Verb / Adjective | Formal, objective. ""Free of charge."" | Neutral / Positive |
+| **白** | Adverb | Colloquial. ""For nothing"" or ""Without paying."" | Can be negative (freeloading) |
+
+* **这个面包是免费的。** (This bread is complimentary/free.) -> Official policy.
+* **这个面包是白给的。** (This bread was given for free.) -> Describes the action.
+
+## Common Mistakes
+
+**Mistake:** Using 白 to mean ""white"" in an adverbial position incorrectly.
+* *Error:* 他白地跑。 (Trying to use 地 for adverbial marker).
+* *Correction:* 他白跑了。 (Direct adverbial modification is standard for single-syllable adverbs like 白).
+
+**Mistake:** Confusing ""in vain"" with ""fake.""
+* **白** implies the *action* happened but the *result* failed. It does not mean the action didn't happen.
+"	"# Character: 白 (bái)
+
+## Core Meaning: White, Clear, Plain, Empty
+
+The character **白** is a pictograph.
+
+### Etymology & Visuals
+Originally, it depicted an acorn or a thumb, but it was borrowed very early to represent the color ""white"" (perhaps associated with the color of the silkworm or the clear light of the sun).
+* Some interpretations link it to the sun (**日**) with a ray of light bursting forth, symbolizing clarity and brightness.
+
+### Semantic Extensions
+
+1. **Color:** White (白色 - báisè).
+2. **Clear/Understand:** To make clear, or to state clearly.
+    * **明白** (míngbai) = Bright + White = Clear/Understand.
+    * **表白** (biǎobái) = Express + White = To confess (one's feelings/love).
+3. **Plain/Empty:** Without adding anything.
+    * **白开水** (báikāishuǐ) = Plain boiled water (water with nothing added).
+    * **空白** (kòngbái) = Empty + White = Blank space.
+4. **In Vain/Free:** (The grammatical usage). Without result or cost.
+    * **白费** (báifèi) = White + Waste = To waste effort in vain.
+
+### Cultural Context
+* **Red vs. White:** In Chinese culture, **Red** (红) is associated with weddings and celebrations, while **White** (白) is traditionally associated with funerals (""红白喜事"" refers to weddings and funerals).
+* **Politics:** ""White"" can also refer to ""reactionary"" or anti-communist in historical contexts (White Terror - 白色恐怖), contrasting with the ""Red"" (communist).
+"	grammar::三19 word::白
+"如果你不去考试，你这学期的努力就<span class=""hl"">白</span>费了。"	"Rúguǒ nǐ bú qù kǎoshì, nǐ zhè xuéqī de nǔlì jiù báifèi le."	"If you don't take the exam, your efforts this semester will be <span class=""hl"">in vain</span>."	白	bái	三19	"# Grammar Point: 白 (bái)
+
+| Category | Level | Character | Pinyin | Meaning |
+| --- | --- | --- | --- | --- |
+| Mood Adverb | HSK 3 (三19) | 白 | bái | in vain; for nothing; free of charge |
+
+## The Core Concept: ""Blank"" Results
+
+You likely know **白** (bái) as the color ""white."" However, linguistically, ""white"" in Chinese often carries the connotation of ""blank,"" ""empty,"" or ""plain.""
+
+When used as an adverb before a verb, **白** suggests that the action produced a ""blank"" result—it was done **in vain** or **for nothing**. The effort was expended, but the expected outcome was not achieved.
+
+A secondary meaning derives from ""plain"" (without adding anything, like payment)—meaning **for free**.
+
+## 1. Doing Something ""In Vain"" (Wasted Effort)
+
+This is the most common grammatical usage. It emphasizes the speaker's frustration that an action yielded no results.
+
+**Structure:** `Subject + 白 + Verb + (了)`
+
+* **我今天去也没用，真是白跑一趟。**
+  * *Wǒ jīntiān qù yě méiyòng, zhēnshì bái pǎo yí tàng.*
+  * Going today was useless; I really made the trip **for nothing**.
+* **刚才说的话都白说了，他根本没听进去。**
+  * *Gāngcái shuō de huà dōu bái shuō le, tā gēnběn méi tīng jìnqù.*
+  * The words I just said were all **in vain**; he didn't listen at all.
+* **这种药不管用，钱都白花了。**
+  * *Zhè zhǒng yào bù guǎnyòng, qián dōu bái huā le.*
+  * This medicine doesn't work; the money was all spent **for nothing**.
+
+### Nuance Note: The use of 了
+You will often see **了** after the verb because the realization that the effort was wasted usually happens *after* the action is complete.
+
+## 2. Getting Something ""For Free""
+
+Here, ""white"" means ""without compensation"" or ""gratis."" It implies getting something without paying the usual cost (money or effort).
+
+**Structure:** `白 + Verb`
+
+* **天下没有白吃的午餐。**
+  * *Tiānxià méiyǒu bái chī de wǔcān.*
+  * There is no ""free"" lunch in this world. (Lit: No lunch eaten **for free**)
+* **不管是不是朋友，我也不能白拿你的东西。**
+  * *Bùguǎn shìbúshì péngyou, wǒ yě bùnéng bái ná nǐ de dōngxi.*
+  * Friend or not, I can't just take your things **for free**.
+* **白看** (bái kàn) - To watch for free (e.g., sneaking into a show).
+
+## 3. Idiomatic Usage: ""In Vain"" vs. ""Free""
+
+Context is king.
+* **白做** (bái zuò): Usually ""did it in vain"" (wasted work).
+* **白给** (bái gěi): Usually ""give for free.""
+
+## Comparison: 白 (bái) vs. 免费 (miǎnfèi)
+
+| Word | Part of Speech | Usage | Tone |
+| :--- | :--- | :--- | :--- |
+| **免费** | Verb / Adjective | Formal, objective. ""Free of charge."" | Neutral / Positive |
+| **白** | Adverb | Colloquial. ""For nothing"" or ""Without paying."" | Can be negative (freeloading) |
+
+* **这个面包是免费的。** (This bread is complimentary/free.) -> Official policy.
+* **这个面包是白给的。** (This bread was given for free.) -> Describes the action.
+
+## Common Mistakes
+
+**Mistake:** Using 白 to mean ""white"" in an adverbial position incorrectly.
+* *Error:* 他白地跑。 (Trying to use 地 for adverbial marker).
+* *Correction:* 他白跑了。 (Direct adverbial modification is standard for single-syllable adverbs like 白).
+
+**Mistake:** Confusing ""in vain"" with ""fake.""
+* **白** implies the *action* happened but the *result* failed. It does not mean the action didn't happen.
+"	"# Character: 白 (bái)
+
+## Core Meaning: White, Clear, Plain, Empty
+
+The character **白** is a pictograph.
+
+### Etymology & Visuals
+Originally, it depicted an acorn or a thumb, but it was borrowed very early to represent the color ""white"" (perhaps associated with the color of the silkworm or the clear light of the sun).
+* Some interpretations link it to the sun (**日**) with a ray of light bursting forth, symbolizing clarity and brightness.
+
+### Semantic Extensions
+
+1. **Color:** White (白色 - báisè).
+2. **Clear/Understand:** To make clear, or to state clearly.
+    * **明白** (míngbai) = Bright + White = Clear/Understand.
+    * **表白** (biǎobái) = Express + White = To confess (one's feelings/love).
+3. **Plain/Empty:** Without adding anything.
+    * **白开水** (báikāishuǐ) = Plain boiled water (water with nothing added).
+    * **空白** (kòngbái) = Empty + White = Blank space.
+4. **In Vain/Free:** (The grammatical usage). Without result or cost.
+    * **白费** (báifèi) = White + Waste = To waste effort in vain.
+
+### Cultural Context
+* **Red vs. White:** In Chinese culture, **Red** (红) is associated with weddings and celebrations, while **White** (白) is traditionally associated with funerals (""红白喜事"" refers to weddings and funerals).
+* **Politics:** ""White"" can also refer to ""reactionary"" or anti-communist in historical contexts (White Terror - 白色恐怖), contrasting with the ""Red"" (communist).
+"	grammar::三19 word::白
+"那个电影太无聊了，我们简直是<span class=""hl"">白</span>看了一场。"	"Nàge diànyǐng tài wúliáo le, wǒmen jiǎnzhí shì bái kàn le yì chǎng."	"That movie was too boring; we basically watched it <span class=""hl"">for nothing</span>."	白	bái	三19	"# Grammar Point: 白 (bái)
+
+| Category | Level | Character | Pinyin | Meaning |
+| --- | --- | --- | --- | --- |
+| Mood Adverb | HSK 3 (三19) | 白 | bái | in vain; for nothing; free of charge |
+
+## The Core Concept: ""Blank"" Results
+
+You likely know **白** (bái) as the color ""white."" However, linguistically, ""white"" in Chinese often carries the connotation of ""blank,"" ""empty,"" or ""plain.""
+
+When used as an adverb before a verb, **白** suggests that the action produced a ""blank"" result—it was done **in vain** or **for nothing**. The effort was expended, but the expected outcome was not achieved.
+
+A secondary meaning derives from ""plain"" (without adding anything, like payment)—meaning **for free**.
+
+## 1. Doing Something ""In Vain"" (Wasted Effort)
+
+This is the most common grammatical usage. It emphasizes the speaker's frustration that an action yielded no results.
+
+**Structure:** `Subject + 白 + Verb + (了)`
+
+* **我今天去也没用，真是白跑一趟。**
+  * *Wǒ jīntiān qù yě méiyòng, zhēnshì bái pǎo yí tàng.*
+  * Going today was useless; I really made the trip **for nothing**.
+* **刚才说的话都白说了，他根本没听进去。**
+  * *Gāngcái shuō de huà dōu bái shuō le, tā gēnběn méi tīng jìnqù.*
+  * The words I just said were all **in vain**; he didn't listen at all.
+* **这种药不管用，钱都白花了。**
+  * *Zhè zhǒng yào bù guǎnyòng, qián dōu bái huā le.*
+  * This medicine doesn't work; the money was all spent **for nothing**.
+
+### Nuance Note: The use of 了
+You will often see **了** after the verb because the realization that the effort was wasted usually happens *after* the action is complete.
+
+## 2. Getting Something ""For Free""
+
+Here, ""white"" means ""without compensation"" or ""gratis."" It implies getting something without paying the usual cost (money or effort).
+
+**Structure:** `白 + Verb`
+
+* **天下没有白吃的午餐。**
+  * *Tiānxià méiyǒu bái chī de wǔcān.*
+  * There is no ""free"" lunch in this world. (Lit: No lunch eaten **for free**)
+* **不管是不是朋友，我也不能白拿你的东西。**
+  * *Bùguǎn shìbúshì péngyou, wǒ yě bùnéng bái ná nǐ de dōngxi.*
+  * Friend or not, I can't just take your things **for free**.
+* **白看** (bái kàn) - To watch for free (e.g., sneaking into a show).
+
+## 3. Idiomatic Usage: ""In Vain"" vs. ""Free""
+
+Context is king.
+* **白做** (bái zuò): Usually ""did it in vain"" (wasted work).
+* **白给** (bái gěi): Usually ""give for free.""
+
+## Comparison: 白 (bái) vs. 免费 (miǎnfèi)
+
+| Word | Part of Speech | Usage | Tone |
+| :--- | :--- | :--- | :--- |
+| **免费** | Verb / Adjective | Formal, objective. ""Free of charge."" | Neutral / Positive |
+| **白** | Adverb | Colloquial. ""For nothing"" or ""Without paying."" | Can be negative (freeloading) |
+
+* **这个面包是免费的。** (This bread is complimentary/free.) -> Official policy.
+* **这个面包是白给的。** (This bread was given for free.) -> Describes the action.
+
+## Common Mistakes
+
+**Mistake:** Using 白 to mean ""white"" in an adverbial position incorrectly.
+* *Error:* 他白地跑。 (Trying to use 地 for adverbial marker).
+* *Correction:* 他白跑了。 (Direct adverbial modification is standard for single-syllable adverbs like 白).
+
+**Mistake:** Confusing ""in vain"" with ""fake.""
+* **白** implies the *action* happened but the *result* failed. It does not mean the action didn't happen.
+"	"# Character: 白 (bái)
+
+## Core Meaning: White, Clear, Plain, Empty
+
+The character **白** is a pictograph.
+
+### Etymology & Visuals
+Originally, it depicted an acorn or a thumb, but it was borrowed very early to represent the color ""white"" (perhaps associated with the color of the silkworm or the clear light of the sun).
+* Some interpretations link it to the sun (**日**) with a ray of light bursting forth, symbolizing clarity and brightness.
+
+### Semantic Extensions
+
+1. **Color:** White (白色 - báisè).
+2. **Clear/Understand:** To make clear, or to state clearly.
+    * **明白** (míngbai) = Bright + White = Clear/Understand.
+    * **表白** (biǎobái) = Express + White = To confess (one's feelings/love).
+3. **Plain/Empty:** Without adding anything.
+    * **白开水** (báikāishuǐ) = Plain boiled water (water with nothing added).
+    * **空白** (kòngbái) = Empty + White = Blank space.
+4. **In Vain/Free:** (The grammatical usage). Without result or cost.
+    * **白费** (báifèi) = White + Waste = To waste effort in vain.
+
+### Cultural Context
+* **Red vs. White:** In Chinese culture, **Red** (红) is associated with weddings and celebrations, while **White** (白) is traditionally associated with funerals (""红白喜事"" refers to weddings and funerals).
+* **Politics:** ""White"" can also refer to ""reactionary"" or anti-communist in historical contexts (White Terror - 白色恐怖), contrasting with the ""Red"" (communist).
+"	grammar::三19 word::白
+"他忙了一整天，结果什么都没做成，真是<span class=""hl"">白</span>忙了。"	"Tā máng le yì zhěng tiān, jiéguǒ shénme dōu méi zuòchéng, zhēnshì bái máng le."	"He was busy all day but accomplished nothing; he really busied himself <span class=""hl"">in vain</span>."	白	bái	三19	"# Grammar Point: 白 (bái)
+
+| Category | Level | Character | Pinyin | Meaning |
+| --- | --- | --- | --- | --- |
+| Mood Adverb | HSK 3 (三19) | 白 | bái | in vain; for nothing; free of charge |
+
+## The Core Concept: ""Blank"" Results
+
+You likely know **白** (bái) as the color ""white."" However, linguistically, ""white"" in Chinese often carries the connotation of ""blank,"" ""empty,"" or ""plain.""
+
+When used as an adverb before a verb, **白** suggests that the action produced a ""blank"" result—it was done **in vain** or **for nothing**. The effort was expended, but the expected outcome was not achieved.
+
+A secondary meaning derives from ""plain"" (without adding anything, like payment)—meaning **for free**.
+
+## 1. Doing Something ""In Vain"" (Wasted Effort)
+
+This is the most common grammatical usage. It emphasizes the speaker's frustration that an action yielded no results.
+
+**Structure:** `Subject + 白 + Verb + (了)`
+
+* **我今天去也没用，真是白跑一趟。**
+  * *Wǒ jīntiān qù yě méiyòng, zhēnshì bái pǎo yí tàng.*
+  * Going today was useless; I really made the trip **for nothing**.
+* **刚才说的话都白说了，他根本没听进去。**
+  * *Gāngcái shuō de huà dōu bái shuō le, tā gēnběn méi tīng jìnqù.*
+  * The words I just said were all **in vain**; he didn't listen at all.
+* **这种药不管用，钱都白花了。**
+  * *Zhè zhǒng yào bù guǎnyòng, qián dōu bái huā le.*
+  * This medicine doesn't work; the money was all spent **for nothing**.
+
+### Nuance Note: The use of 了
+You will often see **了** after the verb because the realization that the effort was wasted usually happens *after* the action is complete.
+
+## 2. Getting Something ""For Free""
+
+Here, ""white"" means ""without compensation"" or ""gratis."" It implies getting something without paying the usual cost (money or effort).
+
+**Structure:** `白 + Verb`
+
+* **天下没有白吃的午餐。**
+  * *Tiānxià méiyǒu bái chī de wǔcān.*
+  * There is no ""free"" lunch in this world. (Lit: No lunch eaten **for free**)
+* **不管是不是朋友，我也不能白拿你的东西。**
+  * *Bùguǎn shìbúshì péngyou, wǒ yě bùnéng bái ná nǐ de dōngxi.*
+  * Friend or not, I can't just take your things **for free**.
+* **白看** (bái kàn) - To watch for free (e.g., sneaking into a show).
+
+## 3. Idiomatic Usage: ""In Vain"" vs. ""Free""
+
+Context is king.
+* **白做** (bái zuò): Usually ""did it in vain"" (wasted work).
+* **白给** (bái gěi): Usually ""give for free.""
+
+## Comparison: 白 (bái) vs. 免费 (miǎnfèi)
+
+| Word | Part of Speech | Usage | Tone |
+| :--- | :--- | :--- | :--- |
+| **免费** | Verb / Adjective | Formal, objective. ""Free of charge."" | Neutral / Positive |
+| **白** | Adverb | Colloquial. ""For nothing"" or ""Without paying."" | Can be negative (freeloading) |
+
+* **这个面包是免费的。** (This bread is complimentary/free.) -> Official policy.
+* **这个面包是白给的。** (This bread was given for free.) -> Describes the action.
+
+## Common Mistakes
+
+**Mistake:** Using 白 to mean ""white"" in an adverbial position incorrectly.
+* *Error:* 他白地跑。 (Trying to use 地 for adverbial marker).
+* *Correction:* 他白跑了。 (Direct adverbial modification is standard for single-syllable adverbs like 白).
+
+**Mistake:** Confusing ""in vain"" with ""fake.""
+* **白** implies the *action* happened but the *result* failed. It does not mean the action didn't happen.
+"	"# Character: 白 (bái)
+
+## Core Meaning: White, Clear, Plain, Empty
+
+The character **白** is a pictograph.
+
+### Etymology & Visuals
+Originally, it depicted an acorn or a thumb, but it was borrowed very early to represent the color ""white"" (perhaps associated with the color of the silkworm or the clear light of the sun).
+* Some interpretations link it to the sun (**日**) with a ray of light bursting forth, symbolizing clarity and brightness.
+
+### Semantic Extensions
+
+1. **Color:** White (白色 - báisè).
+2. **Clear/Understand:** To make clear, or to state clearly.
+    * **明白** (míngbai) = Bright + White = Clear/Understand.
+    * **表白** (biǎobái) = Express + White = To confess (one's feelings/love).
+3. **Plain/Empty:** Without adding anything.
+    * **白开水** (báikāishuǐ) = Plain boiled water (water with nothing added).
+    * **空白** (kòngbái) = Empty + White = Blank space.
+4. **In Vain/Free:** (The grammatical usage). Without result or cost.
+    * **白费** (báifèi) = White + Waste = To waste effort in vain.
+
+### Cultural Context
+* **Red vs. White:** In Chinese culture, **Red** (红) is associated with weddings and celebrations, while **White** (白) is traditionally associated with funerals (""红白喜事"" refers to weddings and funerals).
+* **Politics:** ""White"" can also refer to ""reactionary"" or anti-communist in historical contexts (White Terror - 白色恐怖), contrasting with the ""Red"" (communist).
+"	grammar::三19 word::白
+"买一送一，这瓶饮料等于是<span class=""hl"">白</span>给的。"	"Mǎi yī sòng yī, zhè píng yǐnliào děngyú shì bái gěi de."	"Buy one get one free; this bottle of drink was practically given <span class=""hl"">for free</span>."	白	bái	三19	"# Grammar Point: 白 (bái)
+
+| Category | Level | Character | Pinyin | Meaning |
+| --- | --- | --- | --- | --- |
+| Mood Adverb | HSK 3 (三19) | 白 | bái | in vain; for nothing; free of charge |
+
+## The Core Concept: ""Blank"" Results
+
+You likely know **白** (bái) as the color ""white."" However, linguistically, ""white"" in Chinese often carries the connotation of ""blank,"" ""empty,"" or ""plain.""
+
+When used as an adverb before a verb, **白** suggests that the action produced a ""blank"" result—it was done **in vain** or **for nothing**. The effort was expended, but the expected outcome was not achieved.
+
+A secondary meaning derives from ""plain"" (without adding anything, like payment)—meaning **for free**.
+
+## 1. Doing Something ""In Vain"" (Wasted Effort)
+
+This is the most common grammatical usage. It emphasizes the speaker's frustration that an action yielded no results.
+
+**Structure:** `Subject + 白 + Verb + (了)`
+
+* **我今天去也没用，真是白跑一趟。**
+  * *Wǒ jīntiān qù yě méiyòng, zhēnshì bái pǎo yí tàng.*
+  * Going today was useless; I really made the trip **for nothing**.
+* **刚才说的话都白说了，他根本没听进去。**
+  * *Gāngcái shuō de huà dōu bái shuō le, tā gēnběn méi tīng jìnqù.*
+  * The words I just said were all **in vain**; he didn't listen at all.
+* **这种药不管用，钱都白花了。**
+  * *Zhè zhǒng yào bù guǎnyòng, qián dōu bái huā le.*
+  * This medicine doesn't work; the money was all spent **for nothing**.
+
+### Nuance Note: The use of 了
+You will often see **了** after the verb because the realization that the effort was wasted usually happens *after* the action is complete.
+
+## 2. Getting Something ""For Free""
+
+Here, ""white"" means ""without compensation"" or ""gratis."" It implies getting something without paying the usual cost (money or effort).
+
+**Structure:** `白 + Verb`
+
+* **天下没有白吃的午餐。**
+  * *Tiānxià méiyǒu bái chī de wǔcān.*
+  * There is no ""free"" lunch in this world. (Lit: No lunch eaten **for free**)
+* **不管是不是朋友，我也不能白拿你的东西。**
+  * *Bùguǎn shìbúshì péngyou, wǒ yě bùnéng bái ná nǐ de dōngxi.*
+  * Friend or not, I can't just take your things **for free**.
+* **白看** (bái kàn) - To watch for free (e.g., sneaking into a show).
+
+## 3. Idiomatic Usage: ""In Vain"" vs. ""Free""
+
+Context is king.
+* **白做** (bái zuò): Usually ""did it in vain"" (wasted work).
+* **白给** (bái gěi): Usually ""give for free.""
+
+## Comparison: 白 (bái) vs. 免费 (miǎnfèi)
+
+| Word | Part of Speech | Usage | Tone |
+| :--- | :--- | :--- | :--- |
+| **免费** | Verb / Adjective | Formal, objective. ""Free of charge."" | Neutral / Positive |
+| **白** | Adverb | Colloquial. ""For nothing"" or ""Without paying."" | Can be negative (freeloading) |
+
+* **这个面包是免费的。** (This bread is complimentary/free.) -> Official policy.
+* **这个面包是白给的。** (This bread was given for free.) -> Describes the action.
+
+## Common Mistakes
+
+**Mistake:** Using 白 to mean ""white"" in an adverbial position incorrectly.
+* *Error:* 他白地跑。 (Trying to use 地 for adverbial marker).
+* *Correction:* 他白跑了。 (Direct adverbial modification is standard for single-syllable adverbs like 白).
+
+**Mistake:** Confusing ""in vain"" with ""fake.""
+* **白** implies the *action* happened but the *result* failed. It does not mean the action didn't happen.
+"	"# Character: 白 (bái)
+
+## Core Meaning: White, Clear, Plain, Empty
+
+The character **白** is a pictograph.
+
+### Etymology & Visuals
+Originally, it depicted an acorn or a thumb, but it was borrowed very early to represent the color ""white"" (perhaps associated with the color of the silkworm or the clear light of the sun).
+* Some interpretations link it to the sun (**日**) with a ray of light bursting forth, symbolizing clarity and brightness.
+
+### Semantic Extensions
+
+1. **Color:** White (白色 - báisè).
+2. **Clear/Understand:** To make clear, or to state clearly.
+    * **明白** (míngbai) = Bright + White = Clear/Understand.
+    * **表白** (biǎobái) = Express + White = To confess (one's feelings/love).
+3. **Plain/Empty:** Without adding anything.
+    * **白开水** (báikāishuǐ) = Plain boiled water (water with nothing added).
+    * **空白** (kòngbái) = Empty + White = Blank space.
+4. **In Vain/Free:** (The grammatical usage). Without result or cost.
+    * **白费** (báifèi) = White + Waste = To waste effort in vain.
+
+### Cultural Context
+* **Red vs. White:** In Chinese culture, **Red** (红) is associated with weddings and celebrations, while **White** (白) is traditionally associated with funerals (""红白喜事"" refers to weddings and funerals).
+* **Politics:** ""White"" can also refer to ""reactionary"" or anti-communist in historical contexts (White Terror - 白色恐怖), contrasting with the ""Red"" (communist).
+"	grammar::三19 word::白
+"你不告诉他地址，他不是<span class=""hl"">白</span>来了吗？"	"Nǐ bú gàosu tā dìzhǐ, tā búshì bái lái le ma?"	"If you don't tell him the address, didn't he come <span class=""hl"">for nothing</span>?"	白	bái	三19	"# Grammar Point: 白 (bái)
+
+| Category | Level | Character | Pinyin | Meaning |
+| --- | --- | --- | --- | --- |
+| Mood Adverb | HSK 3 (三19) | 白 | bái | in vain; for nothing; free of charge |
+
+## The Core Concept: ""Blank"" Results
+
+You likely know **白** (bái) as the color ""white."" However, linguistically, ""white"" in Chinese often carries the connotation of ""blank,"" ""empty,"" or ""plain.""
+
+When used as an adverb before a verb, **白** suggests that the action produced a ""blank"" result—it was done **in vain** or **for nothing**. The effort was expended, but the expected outcome was not achieved.
+
+A secondary meaning derives from ""plain"" (without adding anything, like payment)—meaning **for free**.
+
+## 1. Doing Something ""In Vain"" (Wasted Effort)
+
+This is the most common grammatical usage. It emphasizes the speaker's frustration that an action yielded no results.
+
+**Structure:** `Subject + 白 + Verb + (了)`
+
+* **我今天去也没用，真是白跑一趟。**
+  * *Wǒ jīntiān qù yě méiyòng, zhēnshì bái pǎo yí tàng.*
+  * Going today was useless; I really made the trip **for nothing**.
+* **刚才说的话都白说了，他根本没听进去。**
+  * *Gāngcái shuō de huà dōu bái shuō le, tā gēnběn méi tīng jìnqù.*
+  * The words I just said were all **in vain**; he didn't listen at all.
+* **这种药不管用，钱都白花了。**
+  * *Zhè zhǒng yào bù guǎnyòng, qián dōu bái huā le.*
+  * This medicine doesn't work; the money was all spent **for nothing**.
+
+### Nuance Note: The use of 了
+You will often see **了** after the verb because the realization that the effort was wasted usually happens *after* the action is complete.
+
+## 2. Getting Something ""For Free""
+
+Here, ""white"" means ""without compensation"" or ""gratis."" It implies getting something without paying the usual cost (money or effort).
+
+**Structure:** `白 + Verb`
+
+* **天下没有白吃的午餐。**
+  * *Tiānxià méiyǒu bái chī de wǔcān.*
+  * There is no ""free"" lunch in this world. (Lit: No lunch eaten **for free**)
+* **不管是不是朋友，我也不能白拿你的东西。**
+  * *Bùguǎn shìbúshì péngyou, wǒ yě bùnéng bái ná nǐ de dōngxi.*
+  * Friend or not, I can't just take your things **for free**.
+* **白看** (bái kàn) - To watch for free (e.g., sneaking into a show).
+
+## 3. Idiomatic Usage: ""In Vain"" vs. ""Free""
+
+Context is king.
+* **白做** (bái zuò): Usually ""did it in vain"" (wasted work).
+* **白给** (bái gěi): Usually ""give for free.""
+
+## Comparison: 白 (bái) vs. 免费 (miǎnfèi)
+
+| Word | Part of Speech | Usage | Tone |
+| :--- | :--- | :--- | :--- |
+| **免费** | Verb / Adjective | Formal, objective. ""Free of charge."" | Neutral / Positive |
+| **白** | Adverb | Colloquial. ""For nothing"" or ""Without paying."" | Can be negative (freeloading) |
+
+* **这个面包是免费的。** (This bread is complimentary/free.) -> Official policy.
+* **这个面包是白给的。** (This bread was given for free.) -> Describes the action.
+
+## Common Mistakes
+
+**Mistake:** Using 白 to mean ""white"" in an adverbial position incorrectly.
+* *Error:* 他白地跑。 (Trying to use 地 for adverbial marker).
+* *Correction:* 他白跑了。 (Direct adverbial modification is standard for single-syllable adverbs like 白).
+
+**Mistake:** Confusing ""in vain"" with ""fake.""
+* **白** implies the *action* happened but the *result* failed. It does not mean the action didn't happen.
+"	"# Character: 白 (bái)
+
+## Core Meaning: White, Clear, Plain, Empty
+
+The character **白** is a pictograph.
+
+### Etymology & Visuals
+Originally, it depicted an acorn or a thumb, but it was borrowed very early to represent the color ""white"" (perhaps associated with the color of the silkworm or the clear light of the sun).
+* Some interpretations link it to the sun (**日**) with a ray of light bursting forth, symbolizing clarity and brightness.
+
+### Semantic Extensions
+
+1. **Color:** White (白色 - báisè).
+2. **Clear/Understand:** To make clear, or to state clearly.
+    * **明白** (míngbai) = Bright + White = Clear/Understand.
+    * **表白** (biǎobái) = Express + White = To confess (one's feelings/love).
+3. **Plain/Empty:** Without adding anything.
+    * **白开水** (báikāishuǐ) = Plain boiled water (water with nothing added).
+    * **空白** (kòngbái) = Empty + White = Blank space.
+4. **In Vain/Free:** (The grammatical usage). Without result or cost.
+    * **白费** (báifèi) = White + Waste = To waste effort in vain.
+
+### Cultural Context
+* **Red vs. White:** In Chinese culture, **Red** (红) is associated with weddings and celebrations, while **White** (白) is traditionally associated with funerals (""红白喜事"" refers to weddings and funerals).
+* **Politics:** ""White"" can also refer to ""reactionary"" or anti-communist in historical contexts (White Terror - 白色恐怖), contrasting with the ""Red"" (communist).
+"	grammar::三19 word::白
+"既然是<span class=""hl"">白</span>给的，那我就收下了。"	"Jìrán shì bái gěi de, nà wǒ jiù shōuxià le."	"Since it's given <span class=""hl"">for free</span>, then I'll take it."	白	bái	三19	"# Grammar Point: 白 (bái)
+
+| Category | Level | Character | Pinyin | Meaning |
+| --- | --- | --- | --- | --- |
+| Mood Adverb | HSK 3 (三19) | 白 | bái | in vain; for nothing; free of charge |
+
+## The Core Concept: ""Blank"" Results
+
+You likely know **白** (bái) as the color ""white."" However, linguistically, ""white"" in Chinese often carries the connotation of ""blank,"" ""empty,"" or ""plain.""
+
+When used as an adverb before a verb, **白** suggests that the action produced a ""blank"" result—it was done **in vain** or **for nothing**. The effort was expended, but the expected outcome was not achieved.
+
+A secondary meaning derives from ""plain"" (without adding anything, like payment)—meaning **for free**.
+
+## 1. Doing Something ""In Vain"" (Wasted Effort)
+
+This is the most common grammatical usage. It emphasizes the speaker's frustration that an action yielded no results.
+
+**Structure:** `Subject + 白 + Verb + (了)`
+
+* **我今天去也没用，真是白跑一趟。**
+  * *Wǒ jīntiān qù yě méiyòng, zhēnshì bái pǎo yí tàng.*
+  * Going today was useless; I really made the trip **for nothing**.
+* **刚才说的话都白说了，他根本没听进去。**
+  * *Gāngcái shuō de huà dōu bái shuō le, tā gēnběn méi tīng jìnqù.*
+  * The words I just said were all **in vain**; he didn't listen at all.
+* **这种药不管用，钱都白花了。**
+  * *Zhè zhǒng yào bù guǎnyòng, qián dōu bái huā le.*
+  * This medicine doesn't work; the money was all spent **for nothing**.
+
+### Nuance Note: The use of 了
+You will often see **了** after the verb because the realization that the effort was wasted usually happens *after* the action is complete.
+
+## 2. Getting Something ""For Free""
+
+Here, ""white"" means ""without compensation"" or ""gratis."" It implies getting something without paying the usual cost (money or effort).
+
+**Structure:** `白 + Verb`
+
+* **天下没有白吃的午餐。**
+  * *Tiānxià méiyǒu bái chī de wǔcān.*
+  * There is no ""free"" lunch in this world. (Lit: No lunch eaten **for free**)
+* **不管是不是朋友，我也不能白拿你的东西。**
+  * *Bùguǎn shìbúshì péngyou, wǒ yě bùnéng bái ná nǐ de dōngxi.*
+  * Friend or not, I can't just take your things **for free**.
+* **白看** (bái kàn) - To watch for free (e.g., sneaking into a show).
+
+## 3. Idiomatic Usage: ""In Vain"" vs. ""Free""
+
+Context is king.
+* **白做** (bái zuò): Usually ""did it in vain"" (wasted work).
+* **白给** (bái gěi): Usually ""give for free.""
+
+## Comparison: 白 (bái) vs. 免费 (miǎnfèi)
+
+| Word | Part of Speech | Usage | Tone |
+| :--- | :--- | :--- | :--- |
+| **免费** | Verb / Adjective | Formal, objective. ""Free of charge."" | Neutral / Positive |
+| **白** | Adverb | Colloquial. ""For nothing"" or ""Without paying."" | Can be negative (freeloading) |
+
+* **这个面包是免费的。** (This bread is complimentary/free.) -> Official policy.
+* **这个面包是白给的。** (This bread was given for free.) -> Describes the action.
+
+## Common Mistakes
+
+**Mistake:** Using 白 to mean ""white"" in an adverbial position incorrectly.
+* *Error:* 他白地跑。 (Trying to use 地 for adverbial marker).
+* *Correction:* 他白跑了。 (Direct adverbial modification is standard for single-syllable adverbs like 白).
+
+**Mistake:** Confusing ""in vain"" with ""fake.""
+* **白** implies the *action* happened but the *result* failed. It does not mean the action didn't happen.
+"	"# Character: 白 (bái)
+
+## Core Meaning: White, Clear, Plain, Empty
+
+The character **白** is a pictograph.
+
+### Etymology & Visuals
+Originally, it depicted an acorn or a thumb, but it was borrowed very early to represent the color ""white"" (perhaps associated with the color of the silkworm or the clear light of the sun).
+* Some interpretations link it to the sun (**日**) with a ray of light bursting forth, symbolizing clarity and brightness.
+
+### Semantic Extensions
+
+1. **Color:** White (白色 - báisè).
+2. **Clear/Understand:** To make clear, or to state clearly.
+    * **明白** (míngbai) = Bright + White = Clear/Understand.
+    * **表白** (biǎobái) = Express + White = To confess (one's feelings/love).
+3. **Plain/Empty:** Without adding anything.
+    * **白开水** (báikāishuǐ) = Plain boiled water (water with nothing added).
+    * **空白** (kòngbái) = Empty + White = Blank space.
+4. **In Vain/Free:** (The grammatical usage). Without result or cost.
+    * **白费** (báifèi) = White + Waste = To waste effort in vain.
+
+### Cultural Context
+* **Red vs. White:** In Chinese culture, **Red** (红) is associated with weddings and celebrations, while **White** (白) is traditionally associated with funerals (""红白喜事"" refers to weddings and funerals).
+* **Politics:** ""White"" can also refer to ""reactionary"" or anti-communist in historical contexts (White Terror - 白色恐怖), contrasting with the ""Red"" (communist).
+"	grammar::三19 word::白

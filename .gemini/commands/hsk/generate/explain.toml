@@ -15,7 +15,11 @@ First, find the grammar point entry in the HSK reference files:
 
 linguistics/hsk/grammar/HSK3.0-Level*-Grammar.md
 
-if you do NOT find it, that's fine, continue.
+**If you find MORE THAN ONE grammar point** that matches the word (e.g., the same word appears at different HSK levels or with different meanings), **STOP and ask the user** which specific grammar point they want explained. List all matches with their HSK level, ID, and brief description so the user can choose.
+
+If you find exactly one match, proceed with the explanation.
+
+If you do NOT find it, that's fine, continue without the reference.
 
 ## Your Approach
 

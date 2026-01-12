@@ -1,0 +1,641 @@
+#separator:Tab
+#html:true
+#notetype:Grammar Sentence
+#columns:SentenceCN	SentencePinyin	SentenceEN	Word	Pinyin	GrammarPoint	GrammarExplanation	CharacterBreakdown	Tags
+"我<span class=""hl"">并</span>不想打扰你，只是想问个问题。"	"Wǒ bìng bùxiǎng dǎrǎo nǐ, zhǐshì xiǎng wèn gè wèntí."	"I <span class=""hl"">actually</span> don't want to disturb you; I just want to ask a question."	并	bìng	三19	"# Grammar Point: 并 (bìng)
+
+| Category | Level | Character | Pinyin | Meaning |
+| --- | --- | --- | --- | --- |
+| Mood Adverb / Conjunction | HSK 3 (三19) | 并 | bìng | actually; definitely (used with negative); and |
+
+## The Core Concept: ""Side by Side"" -> ""Reinforcement""
+
+The character **并** primarily means ""combine"" or ""side by side.""
+1. **Conjunction:** It links two verbs/clauses side by side (""and"").
+2. **Adverb:** It reinforces a negative statement. This is the **tricky HSK 3 usage**.
+
+## 1. Emphatic Negation (The ""Actually"" Usage)
+
+This is the most critical usage for learners to master at the intermediate level. **并** is placed before a negative word (**不** or **没/没有**) to emphasize that a certain fact or assumption is **not true**.
+
+It conveys a tone of ""contrary to what you might expect"" or ""contrary to what was said.""
+
+**Structure:** `Subject + 并 + 不 / 没(有) + Verb/Adj`
+
+* **大家都以为他生气了，其实他并没有生气。**
+  * *Dàjiā dōu yǐwéi tā shēngqì le, qíshí tā bìng méiyǒu shēngqì.*
+  * Everyone thought he was angry, but actually, he was **not** angry **at all**.
+  * *(Context: Correcting a false assumption.)*
+* **这个任务并不容易。**
+  * *Zhè ge rènwu bìng bù róngyì.*
+  * This task is **actually not** easy.
+  * *(Context: It might look easy, but I'm telling you it isn't.)*
+* **我并不认识他。**
+  * *Wǒ bìng bú rènshi tā.*
+  * I **really don't** know him.
+  * *(Context: You imply I know him, but I simply don't.)*
+
+### Why use it?
+If you remove **并**, the sentence remains grammatically correct but loses its ""punch.""
+* **他不胖。** (He isn't fat.) -> Simple fact.
+* **他并不胖。** (He isn't [actually] fat.) -> Defensive/Corrective. Maybe someone called him fat, and you are disagreeing.
+
+## 2. Connecting Actions (The ""And"" Usage)
+
+This is the HSK 4 usage (四19), but it's worth noting here. **并** connects two verbs or clauses, often suggesting that the two actions happen together or logically follow one another. It is more formal than **和** (which connects nouns).
+
+**Structure:** `Verb Phrase 1 + 并(且) + Verb Phrase 2`
+
+* **他们讨论并通过了这个计划。**
+  * *Tāmen tǎolùn bìng tōngguò le zhège jìhuà.*
+  * They discussed **and** passed this plan.
+* **请阅读并签字。**
+  * *Qǐng yuèdú bìng qiānzì.*
+  * Please read **and** sign.
+
+## Common Mistakes
+
+**Mistake:** Using 并 to connect nouns like ""Apple and Banana"".
+* *Error:* 我喜欢苹果并香蕉。
+* *Correction:* 我喜欢苹果**和**香蕉。
+* *Rule:* **和** (hé) connects nouns. **并** (bìng) connects verbs/clauses (or reinforces negation).
+
+**Mistake:** Using 并 in a positive adjective sentence for emphasis.
+* *Error:* 这是一个并好的主意。
+* *Correction:* 这是一个**很好的**主意。
+* *Rule:* As an intensifier, **并** is almost exclusively used with **negatives** (并不/并没有). You rarely hear ""并好"" or ""并去"".
+"	"# Character: 并 (bìng)
+
+## Core Meaning: Combine, Side-by-Side
+
+The character **并** (Traditional: 並/併) depicts two people standing side by side or two objects placed together.
+
+### Etymology & Visuals
+* **Original Form (並):** Showed two human figures (人) standing on the ground (一), symbolizing ""together"" or ""side by side.""
+* **Variant (併):** Added the person radical (亻) to emphasize the human action of merging or combining.
+* **Simplified (并):** Derived from the cursive form, merging the top components into two dots/horns.
+
+### Semantic Extensions
+
+1. **Side by Side / Equal:**
+    * **并列** (bìngliè) = Side-by-side + Line up = Juxtapose / Coordinate / Tie (for first place).
+    * **并排** (bìngpái) = Side-by-side + Row = Side by side.
+2. **Combine / Merge:**
+    * **合并** (hébìng) = Join + Combine = Merge (companies, folders).
+    * **吞并** (tūnbìng) = Swallow + Combine = Annex (territory).
+3. **Simultaneously:** Doing two things at once (from ""side by side"").
+    * **并且** (bìngqiě) = Moreover / Furthermore.
+    * **并重** (bìngzhòng) = Equally important (pay equal attention to).
+4. **Intensifier (Negative):** (The grammar point).
+    * **并不** (bìngbù) = ""Combined with 'not'"" -> Actually not / Not at all.
+    * (The logic is likely: ""Taken all together -> Not X"" or an evolution of ""Even"" -> ""Even not"" -> ""Actually not"").
+
+### Usage Note
+In Traditional Chinese, **並** is often used for ""side-by-side/and"" and **併** for ""merge/combine,"" though they overlap. Simplified Chinese merged them both into **并**.
+"	grammar::三19 word::并
+"这道菜看着很辣，但<span class=""hl"">并</span>不辣。"	"Zhè dào cài kànzhe hěn là, dàn bìng bú là."	"This dish looks very spicy, but it's <span class=""hl"">actually not</span> spicy."	并	bìng	三19	"# Grammar Point: 并 (bìng)
+
+| Category | Level | Character | Pinyin | Meaning |
+| --- | --- | --- | --- | --- |
+| Mood Adverb / Conjunction | HSK 3 (三19) | 并 | bìng | actually; definitely (used with negative); and |
+
+## The Core Concept: ""Side by Side"" -> ""Reinforcement""
+
+The character **并** primarily means ""combine"" or ""side by side.""
+1. **Conjunction:** It links two verbs/clauses side by side (""and"").
+2. **Adverb:** It reinforces a negative statement. This is the **tricky HSK 3 usage**.
+
+## 1. Emphatic Negation (The ""Actually"" Usage)
+
+This is the most critical usage for learners to master at the intermediate level. **并** is placed before a negative word (**不** or **没/没有**) to emphasize that a certain fact or assumption is **not true**.
+
+It conveys a tone of ""contrary to what you might expect"" or ""contrary to what was said.""
+
+**Structure:** `Subject + 并 + 不 / 没(有) + Verb/Adj`
+
+* **大家都以为他生气了，其实他并没有生气。**
+  * *Dàjiā dōu yǐwéi tā shēngqì le, qíshí tā bìng méiyǒu shēngqì.*
+  * Everyone thought he was angry, but actually, he was **not** angry **at all**.
+  * *(Context: Correcting a false assumption.)*
+* **这个任务并不容易。**
+  * *Zhè ge rènwu bìng bù róngyì.*
+  * This task is **actually not** easy.
+  * *(Context: It might look easy, but I'm telling you it isn't.)*
+* **我并不认识他。**
+  * *Wǒ bìng bú rènshi tā.*
+  * I **really don't** know him.
+  * *(Context: You imply I know him, but I simply don't.)*
+
+### Why use it?
+If you remove **并**, the sentence remains grammatically correct but loses its ""punch.""
+* **他不胖。** (He isn't fat.) -> Simple fact.
+* **他并不胖。** (He isn't [actually] fat.) -> Defensive/Corrective. Maybe someone called him fat, and you are disagreeing.
+
+## 2. Connecting Actions (The ""And"" Usage)
+
+This is the HSK 4 usage (四19), but it's worth noting here. **并** connects two verbs or clauses, often suggesting that the two actions happen together or logically follow one another. It is more formal than **和** (which connects nouns).
+
+**Structure:** `Verb Phrase 1 + 并(且) + Verb Phrase 2`
+
+* **他们讨论并通过了这个计划。**
+  * *Tāmen tǎolùn bìng tōngguò le zhège jìhuà.*
+  * They discussed **and** passed this plan.
+* **请阅读并签字。**
+  * *Qǐng yuèdú bìng qiānzì.*
+  * Please read **and** sign.
+
+## Common Mistakes
+
+**Mistake:** Using 并 to connect nouns like ""Apple and Banana"".
+* *Error:* 我喜欢苹果并香蕉。
+* *Correction:* 我喜欢苹果**和**香蕉。
+* *Rule:* **和** (hé) connects nouns. **并** (bìng) connects verbs/clauses (or reinforces negation).
+
+**Mistake:** Using 并 in a positive adjective sentence for emphasis.
+* *Error:* 这是一个并好的主意。
+* *Correction:* 这是一个**很好的**主意。
+* *Rule:* As an intensifier, **并** is almost exclusively used with **negatives** (并不/并没有). You rarely hear ""并好"" or ""并去"".
+"	"# Character: 并 (bìng)
+
+## Core Meaning: Combine, Side-by-Side
+
+The character **并** (Traditional: 並/併) depicts two people standing side by side or two objects placed together.
+
+### Etymology & Visuals
+* **Original Form (並):** Showed two human figures (人) standing on the ground (一), symbolizing ""together"" or ""side by side.""
+* **Variant (併):** Added the person radical (亻) to emphasize the human action of merging or combining.
+* **Simplified (并):** Derived from the cursive form, merging the top components into two dots/horns.
+
+### Semantic Extensions
+
+1. **Side by Side / Equal:**
+    * **并列** (bìngliè) = Side-by-side + Line up = Juxtapose / Coordinate / Tie (for first place).
+    * **并排** (bìngpái) = Side-by-side + Row = Side by side.
+2. **Combine / Merge:**
+    * **合并** (hébìng) = Join + Combine = Merge (companies, folders).
+    * **吞并** (tūnbìng) = Swallow + Combine = Annex (territory).
+3. **Simultaneously:** Doing two things at once (from ""side by side"").
+    * **并且** (bìngqiě) = Moreover / Furthermore.
+    * **并重** (bìngzhòng) = Equally important (pay equal attention to).
+4. **Intensifier (Negative):** (The grammar point).
+    * **并不** (bìngbù) = ""Combined with 'not'"" -> Actually not / Not at all.
+    * (The logic is likely: ""Taken all together -> Not X"" or an evolution of ""Even"" -> ""Even not"" -> ""Actually not"").
+
+### Usage Note
+In Traditional Chinese, **並** is often used for ""side-by-side/and"" and **併** for ""merge/combine,"" though they overlap. Simplified Chinese merged them both into **并**.
+"	grammar::三19 word::并
+"我们公司已经开发<span class=""hl"">并</span>测试了这个新软件。"	"Wǒmen gōngsī yǐjīng kāifā bìng cèshì le zhège xīn ruǎnjiàn."	"Our company has already developed <span class=""hl"">and</span> tested this new software."	并	bìng	三19	"# Grammar Point: 并 (bìng)
+
+| Category | Level | Character | Pinyin | Meaning |
+| --- | --- | --- | --- | --- |
+| Mood Adverb / Conjunction | HSK 3 (三19) | 并 | bìng | actually; definitely (used with negative); and |
+
+## The Core Concept: ""Side by Side"" -> ""Reinforcement""
+
+The character **并** primarily means ""combine"" or ""side by side.""
+1. **Conjunction:** It links two verbs/clauses side by side (""and"").
+2. **Adverb:** It reinforces a negative statement. This is the **tricky HSK 3 usage**.
+
+## 1. Emphatic Negation (The ""Actually"" Usage)
+
+This is the most critical usage for learners to master at the intermediate level. **并** is placed before a negative word (**不** or **没/没有**) to emphasize that a certain fact or assumption is **not true**.
+
+It conveys a tone of ""contrary to what you might expect"" or ""contrary to what was said.""
+
+**Structure:** `Subject + 并 + 不 / 没(有) + Verb/Adj`
+
+* **大家都以为他生气了，其实他并没有生气。**
+  * *Dàjiā dōu yǐwéi tā shēngqì le, qíshí tā bìng méiyǒu shēngqì.*
+  * Everyone thought he was angry, but actually, he was **not** angry **at all**.
+  * *(Context: Correcting a false assumption.)*
+* **这个任务并不容易。**
+  * *Zhè ge rènwu bìng bù róngyì.*
+  * This task is **actually not** easy.
+  * *(Context: It might look easy, but I'm telling you it isn't.)*
+* **我并不认识他。**
+  * *Wǒ bìng bú rènshi tā.*
+  * I **really don't** know him.
+  * *(Context: You imply I know him, but I simply don't.)*
+
+### Why use it?
+If you remove **并**, the sentence remains grammatically correct but loses its ""punch.""
+* **他不胖。** (He isn't fat.) -> Simple fact.
+* **他并不胖。** (He isn't [actually] fat.) -> Defensive/Corrective. Maybe someone called him fat, and you are disagreeing.
+
+## 2. Connecting Actions (The ""And"" Usage)
+
+This is the HSK 4 usage (四19), but it's worth noting here. **并** connects two verbs or clauses, often suggesting that the two actions happen together or logically follow one another. It is more formal than **和** (which connects nouns).
+
+**Structure:** `Verb Phrase 1 + 并(且) + Verb Phrase 2`
+
+* **他们讨论并通过了这个计划。**
+  * *Tāmen tǎolùn bìng tōngguò le zhège jìhuà.*
+  * They discussed **and** passed this plan.
+* **请阅读并签字。**
+  * *Qǐng yuèdú bìng qiānzì.*
+  * Please read **and** sign.
+
+## Common Mistakes
+
+**Mistake:** Using 并 to connect nouns like ""Apple and Banana"".
+* *Error:* 我喜欢苹果并香蕉。
+* *Correction:* 我喜欢苹果**和**香蕉。
+* *Rule:* **和** (hé) connects nouns. **并** (bìng) connects verbs/clauses (or reinforces negation).
+
+**Mistake:** Using 并 in a positive adjective sentence for emphasis.
+* *Error:* 这是一个并好的主意。
+* *Correction:* 这是一个**很好的**主意。
+* *Rule:* As an intensifier, **并** is almost exclusively used with **negatives** (并不/并没有). You rarely hear ""并好"" or ""并去"".
+"	"# Character: 并 (bìng)
+
+## Core Meaning: Combine, Side-by-Side
+
+The character **并** (Traditional: 並/併) depicts two people standing side by side or two objects placed together.
+
+### Etymology & Visuals
+* **Original Form (並):** Showed two human figures (人) standing on the ground (一), symbolizing ""together"" or ""side by side.""
+* **Variant (併):** Added the person radical (亻) to emphasize the human action of merging or combining.
+* **Simplified (并):** Derived from the cursive form, merging the top components into two dots/horns.
+
+### Semantic Extensions
+
+1. **Side by Side / Equal:**
+    * **并列** (bìngliè) = Side-by-side + Line up = Juxtapose / Coordinate / Tie (for first place).
+    * **并排** (bìngpái) = Side-by-side + Row = Side by side.
+2. **Combine / Merge:**
+    * **合并** (hébìng) = Join + Combine = Merge (companies, folders).
+    * **吞并** (tūnbìng) = Swallow + Combine = Annex (territory).
+3. **Simultaneously:** Doing two things at once (from ""side by side"").
+    * **并且** (bìngqiě) = Moreover / Furthermore.
+    * **并重** (bìngzhòng) = Equally important (pay equal attention to).
+4. **Intensifier (Negative):** (The grammar point).
+    * **并不** (bìngbù) = ""Combined with 'not'"" -> Actually not / Not at all.
+    * (The logic is likely: ""Taken all together -> Not X"" or an evolution of ""Even"" -> ""Even not"" -> ""Actually not"").
+
+### Usage Note
+In Traditional Chinese, **並** is often used for ""side-by-side/and"" and **併** for ""merge/combine,"" though they overlap. Simplified Chinese merged them both into **并**.
+"	grammar::三19 word::并
+"他说他会来，但他<span class=""hl"">并</span>没有出现。"	"Tā shuō tā huì lái, dàn tā bìng méiyǒu chūxiàn."	"He said he would come, but he <span class=""hl"">actually</span> didn't show up."	并	bìng	三19	"# Grammar Point: 并 (bìng)
+
+| Category | Level | Character | Pinyin | Meaning |
+| --- | --- | --- | --- | --- |
+| Mood Adverb / Conjunction | HSK 3 (三19) | 并 | bìng | actually; definitely (used with negative); and |
+
+## The Core Concept: ""Side by Side"" -> ""Reinforcement""
+
+The character **并** primarily means ""combine"" or ""side by side.""
+1. **Conjunction:** It links two verbs/clauses side by side (""and"").
+2. **Adverb:** It reinforces a negative statement. This is the **tricky HSK 3 usage**.
+
+## 1. Emphatic Negation (The ""Actually"" Usage)
+
+This is the most critical usage for learners to master at the intermediate level. **并** is placed before a negative word (**不** or **没/没有**) to emphasize that a certain fact or assumption is **not true**.
+
+It conveys a tone of ""contrary to what you might expect"" or ""contrary to what was said.""
+
+**Structure:** `Subject + 并 + 不 / 没(有) + Verb/Adj`
+
+* **大家都以为他生气了，其实他并没有生气。**
+  * *Dàjiā dōu yǐwéi tā shēngqì le, qíshí tā bìng méiyǒu shēngqì.*
+  * Everyone thought he was angry, but actually, he was **not** angry **at all**.
+  * *(Context: Correcting a false assumption.)*
+* **这个任务并不容易。**
+  * *Zhè ge rènwu bìng bù róngyì.*
+  * This task is **actually not** easy.
+  * *(Context: It might look easy, but I'm telling you it isn't.)*
+* **我并不认识他。**
+  * *Wǒ bìng bú rènshi tā.*
+  * I **really don't** know him.
+  * *(Context: You imply I know him, but I simply don't.)*
+
+### Why use it?
+If you remove **并**, the sentence remains grammatically correct but loses its ""punch.""
+* **他不胖。** (He isn't fat.) -> Simple fact.
+* **他并不胖。** (He isn't [actually] fat.) -> Defensive/Corrective. Maybe someone called him fat, and you are disagreeing.
+
+## 2. Connecting Actions (The ""And"" Usage)
+
+This is the HSK 4 usage (四19), but it's worth noting here. **并** connects two verbs or clauses, often suggesting that the two actions happen together or logically follow one another. It is more formal than **和** (which connects nouns).
+
+**Structure:** `Verb Phrase 1 + 并(且) + Verb Phrase 2`
+
+* **他们讨论并通过了这个计划。**
+  * *Tāmen tǎolùn bìng tōngguò le zhège jìhuà.*
+  * They discussed **and** passed this plan.
+* **请阅读并签字。**
+  * *Qǐng yuèdú bìng qiānzì.*
+  * Please read **and** sign.
+
+## Common Mistakes
+
+**Mistake:** Using 并 to connect nouns like ""Apple and Banana"".
+* *Error:* 我喜欢苹果并香蕉。
+* *Correction:* 我喜欢苹果**和**香蕉。
+* *Rule:* **和** (hé) connects nouns. **并** (bìng) connects verbs/clauses (or reinforces negation).
+
+**Mistake:** Using 并 in a positive adjective sentence for emphasis.
+* *Error:* 这是一个并好的主意。
+* *Correction:* 这是一个**很好的**主意。
+* *Rule:* As an intensifier, **并** is almost exclusively used with **negatives** (并不/并没有). You rarely hear ""并好"" or ""并去"".
+"	"# Character: 并 (bìng)
+
+## Core Meaning: Combine, Side-by-Side
+
+The character **并** (Traditional: 並/併) depicts two people standing side by side or two objects placed together.
+
+### Etymology & Visuals
+* **Original Form (並):** Showed two human figures (人) standing on the ground (一), symbolizing ""together"" or ""side by side.""
+* **Variant (併):** Added the person radical (亻) to emphasize the human action of merging or combining.
+* **Simplified (并):** Derived from the cursive form, merging the top components into two dots/horns.
+
+### Semantic Extensions
+
+1. **Side by Side / Equal:**
+    * **并列** (bìngliè) = Side-by-side + Line up = Juxtapose / Coordinate / Tie (for first place).
+    * **并排** (bìngpái) = Side-by-side + Row = Side by side.
+2. **Combine / Merge:**
+    * **合并** (hébìng) = Join + Combine = Merge (companies, folders).
+    * **吞并** (tūnbìng) = Swallow + Combine = Annex (territory).
+3. **Simultaneously:** Doing two things at once (from ""side by side"").
+    * **并且** (bìngqiě) = Moreover / Furthermore.
+    * **并重** (bìngzhòng) = Equally important (pay equal attention to).
+4. **Intensifier (Negative):** (The grammar point).
+    * **并不** (bìngbù) = ""Combined with 'not'"" -> Actually not / Not at all.
+    * (The logic is likely: ""Taken all together -> Not X"" or an evolution of ""Even"" -> ""Even not"" -> ""Actually not"").
+
+### Usage Note
+In Traditional Chinese, **並** is often used for ""side-by-side/and"" and **併** for ""merge/combine,"" though they overlap. Simplified Chinese merged them both into **并**.
+"	grammar::三19 word::并
+"医生检查了病人，<span class=""hl"">并</span>开了一些药。"	"Yīshēng jiǎnchá le bìngrén, bìng kāi le yìxiē yào."	"The doctor examined the patient <span class=""hl"">and</span> prescribed some medicine."	并	bìng	三19	"# Grammar Point: 并 (bìng)
+
+| Category | Level | Character | Pinyin | Meaning |
+| --- | --- | --- | --- | --- |
+| Mood Adverb / Conjunction | HSK 3 (三19) | 并 | bìng | actually; definitely (used with negative); and |
+
+## The Core Concept: ""Side by Side"" -> ""Reinforcement""
+
+The character **并** primarily means ""combine"" or ""side by side.""
+1. **Conjunction:** It links two verbs/clauses side by side (""and"").
+2. **Adverb:** It reinforces a negative statement. This is the **tricky HSK 3 usage**.
+
+## 1. Emphatic Negation (The ""Actually"" Usage)
+
+This is the most critical usage for learners to master at the intermediate level. **并** is placed before a negative word (**不** or **没/没有**) to emphasize that a certain fact or assumption is **not true**.
+
+It conveys a tone of ""contrary to what you might expect"" or ""contrary to what was said.""
+
+**Structure:** `Subject + 并 + 不 / 没(有) + Verb/Adj`
+
+* **大家都以为他生气了，其实他并没有生气。**
+  * *Dàjiā dōu yǐwéi tā shēngqì le, qíshí tā bìng méiyǒu shēngqì.*
+  * Everyone thought he was angry, but actually, he was **not** angry **at all**.
+  * *(Context: Correcting a false assumption.)*
+* **这个任务并不容易。**
+  * *Zhè ge rènwu bìng bù róngyì.*
+  * This task is **actually not** easy.
+  * *(Context: It might look easy, but I'm telling you it isn't.)*
+* **我并不认识他。**
+  * *Wǒ bìng bú rènshi tā.*
+  * I **really don't** know him.
+  * *(Context: You imply I know him, but I simply don't.)*
+
+### Why use it?
+If you remove **并**, the sentence remains grammatically correct but loses its ""punch.""
+* **他不胖。** (He isn't fat.) -> Simple fact.
+* **他并不胖。** (He isn't [actually] fat.) -> Defensive/Corrective. Maybe someone called him fat, and you are disagreeing.
+
+## 2. Connecting Actions (The ""And"" Usage)
+
+This is the HSK 4 usage (四19), but it's worth noting here. **并** connects two verbs or clauses, often suggesting that the two actions happen together or logically follow one another. It is more formal than **和** (which connects nouns).
+
+**Structure:** `Verb Phrase 1 + 并(且) + Verb Phrase 2`
+
+* **他们讨论并通过了这个计划。**
+  * *Tāmen tǎolùn bìng tōngguò le zhège jìhuà.*
+  * They discussed **and** passed this plan.
+* **请阅读并签字。**
+  * *Qǐng yuèdú bìng qiānzì.*
+  * Please read **and** sign.
+
+## Common Mistakes
+
+**Mistake:** Using 并 to connect nouns like ""Apple and Banana"".
+* *Error:* 我喜欢苹果并香蕉。
+* *Correction:* 我喜欢苹果**和**香蕉。
+* *Rule:* **和** (hé) connects nouns. **并** (bìng) connects verbs/clauses (or reinforces negation).
+
+**Mistake:** Using 并 in a positive adjective sentence for emphasis.
+* *Error:* 这是一个并好的主意。
+* *Correction:* 这是一个**很好的**主意。
+* *Rule:* As an intensifier, **并** is almost exclusively used with **negatives** (并不/并没有). You rarely hear ""并好"" or ""并去"".
+"	"# Character: 并 (bìng)
+
+## Core Meaning: Combine, Side-by-Side
+
+The character **并** (Traditional: 並/併) depicts two people standing side by side or two objects placed together.
+
+### Etymology & Visuals
+* **Original Form (並):** Showed two human figures (人) standing on the ground (一), symbolizing ""together"" or ""side by side.""
+* **Variant (併):** Added the person radical (亻) to emphasize the human action of merging or combining.
+* **Simplified (并):** Derived from the cursive form, merging the top components into two dots/horns.
+
+### Semantic Extensions
+
+1. **Side by Side / Equal:**
+    * **并列** (bìngliè) = Side-by-side + Line up = Juxtapose / Coordinate / Tie (for first place).
+    * **并排** (bìngpái) = Side-by-side + Row = Side by side.
+2. **Combine / Merge:**
+    * **合并** (hébìng) = Join + Combine = Merge (companies, folders).
+    * **吞并** (tūnbìng) = Swallow + Combine = Annex (territory).
+3. **Simultaneously:** Doing two things at once (from ""side by side"").
+    * **并且** (bìngqiě) = Moreover / Furthermore.
+    * **并重** (bìngzhòng) = Equally important (pay equal attention to).
+4. **Intensifier (Negative):** (The grammar point).
+    * **并不** (bìngbù) = ""Combined with 'not'"" -> Actually not / Not at all.
+    * (The logic is likely: ""Taken all together -> Not X"" or an evolution of ""Even"" -> ""Even not"" -> ""Actually not"").
+
+### Usage Note
+In Traditional Chinese, **並** is often used for ""side-by-side/and"" and **併** for ""merge/combine,"" though they overlap. Simplified Chinese merged them both into **并**.
+"	grammar::三19 word::并
+"他虽然说没时间，但<span class=""hl"">并</span>不是真的忙。"	"Tā suīrán shuō méi shíjiān, dàn bìng búshì zhēnde máng."	"Although he said he has no time, he's <span class=""hl"">actually</span> not really busy."	并	bìng	三19	"# Grammar Point: 并 (bìng)
+
+| Category | Level | Character | Pinyin | Meaning |
+| --- | --- | --- | --- | --- |
+| Mood Adverb / Conjunction | HSK 3 (三19) | 并 | bìng | actually; definitely (used with negative); and |
+
+## The Core Concept: ""Side by Side"" -> ""Reinforcement""
+
+The character **并** primarily means ""combine"" or ""side by side.""
+1. **Conjunction:** It links two verbs/clauses side by side (""and"").
+2. **Adverb:** It reinforces a negative statement. This is the **tricky HSK 3 usage**.
+
+## 1. Emphatic Negation (The ""Actually"" Usage)
+
+This is the most critical usage for learners to master at the intermediate level. **并** is placed before a negative word (**不** or **没/没有**) to emphasize that a certain fact or assumption is **not true**.
+
+It conveys a tone of ""contrary to what you might expect"" or ""contrary to what was said.""
+
+**Structure:** `Subject + 并 + 不 / 没(有) + Verb/Adj`
+
+* **大家都以为他生气了，其实他并没有生气。**
+  * *Dàjiā dōu yǐwéi tā shēngqì le, qíshí tā bìng méiyǒu shēngqì.*
+  * Everyone thought he was angry, but actually, he was **not** angry **at all**.
+  * *(Context: Correcting a false assumption.)*
+* **这个任务并不容易。**
+  * *Zhè ge rènwu bìng bù róngyì.*
+  * This task is **actually not** easy.
+  * *(Context: It might look easy, but I'm telling you it isn't.)*
+* **我并不认识他。**
+  * *Wǒ bìng bú rènshi tā.*
+  * I **really don't** know him.
+  * *(Context: You imply I know him, but I simply don't.)*
+
+### Why use it?
+If you remove **并**, the sentence remains grammatically correct but loses its ""punch.""
+* **他不胖。** (He isn't fat.) -> Simple fact.
+* **他并不胖。** (He isn't [actually] fat.) -> Defensive/Corrective. Maybe someone called him fat, and you are disagreeing.
+
+## 2. Connecting Actions (The ""And"" Usage)
+
+This is the HSK 4 usage (四19), but it's worth noting here. **并** connects two verbs or clauses, often suggesting that the two actions happen together or logically follow one another. It is more formal than **和** (which connects nouns).
+
+**Structure:** `Verb Phrase 1 + 并(且) + Verb Phrase 2`
+
+* **他们讨论并通过了这个计划。**
+  * *Tāmen tǎolùn bìng tōngguò le zhège jìhuà.*
+  * They discussed **and** passed this plan.
+* **请阅读并签字。**
+  * *Qǐng yuèdú bìng qiānzì.*
+  * Please read **and** sign.
+
+## Common Mistakes
+
+**Mistake:** Using 并 to connect nouns like ""Apple and Banana"".
+* *Error:* 我喜欢苹果并香蕉。
+* *Correction:* 我喜欢苹果**和**香蕉。
+* *Rule:* **和** (hé) connects nouns. **并** (bìng) connects verbs/clauses (or reinforces negation).
+
+**Mistake:** Using 并 in a positive adjective sentence for emphasis.
+* *Error:* 这是一个并好的主意。
+* *Correction:* 这是一个**很好的**主意。
+* *Rule:* As an intensifier, **并** is almost exclusively used with **negatives** (并不/并没有). You rarely hear ""并好"" or ""并去"".
+"	"# Character: 并 (bìng)
+
+## Core Meaning: Combine, Side-by-Side
+
+The character **并** (Traditional: 並/併) depicts two people standing side by side or two objects placed together.
+
+### Etymology & Visuals
+* **Original Form (並):** Showed two human figures (人) standing on the ground (一), symbolizing ""together"" or ""side by side.""
+* **Variant (併):** Added the person radical (亻) to emphasize the human action of merging or combining.
+* **Simplified (并):** Derived from the cursive form, merging the top components into two dots/horns.
+
+### Semantic Extensions
+
+1. **Side by Side / Equal:**
+    * **并列** (bìngliè) = Side-by-side + Line up = Juxtapose / Coordinate / Tie (for first place).
+    * **并排** (bìngpái) = Side-by-side + Row = Side by side.
+2. **Combine / Merge:**
+    * **合并** (hébìng) = Join + Combine = Merge (companies, folders).
+    * **吞并** (tūnbìng) = Swallow + Combine = Annex (territory).
+3. **Simultaneously:** Doing two things at once (from ""side by side"").
+    * **并且** (bìngqiě) = Moreover / Furthermore.
+    * **并重** (bìngzhòng) = Equally important (pay equal attention to).
+4. **Intensifier (Negative):** (The grammar point).
+    * **并不** (bìngbù) = ""Combined with 'not'"" -> Actually not / Not at all.
+    * (The logic is likely: ""Taken all together -> Not X"" or an evolution of ""Even"" -> ""Even not"" -> ""Actually not"").
+
+### Usage Note
+In Traditional Chinese, **並** is often used for ""side-by-side/and"" and **併** for ""merge/combine,"" though they overlap. Simplified Chinese merged them both into **并**.
+"	grammar::三19 word::并
+"请核对信息<span class=""hl"">并</span>确认。"	"Qǐng héduì xìnxī bìng quèrèn."	"Please verify the information <span class=""hl"">and</span> confirm."	并	bìng	三19	"# Grammar Point: 并 (bìng)
+
+| Category | Level | Character | Pinyin | Meaning |
+| --- | --- | --- | --- | --- |
+| Mood Adverb / Conjunction | HSK 3 (三19) | 并 | bìng | actually; definitely (used with negative); and |
+
+## The Core Concept: ""Side by Side"" -> ""Reinforcement""
+
+The character **并** primarily means ""combine"" or ""side by side.""
+1. **Conjunction:** It links two verbs/clauses side by side (""and"").
+2. **Adverb:** It reinforces a negative statement. This is the **tricky HSK 3 usage**.
+
+## 1. Emphatic Negation (The ""Actually"" Usage)
+
+This is the most critical usage for learners to master at the intermediate level. **并** is placed before a negative word (**不** or **没/没有**) to emphasize that a certain fact or assumption is **not true**.
+
+It conveys a tone of ""contrary to what you might expect"" or ""contrary to what was said.""
+
+**Structure:** `Subject + 并 + 不 / 没(有) + Verb/Adj`
+
+* **大家都以为他生气了，其实他并没有生气。**
+  * *Dàjiā dōu yǐwéi tā shēngqì le, qíshí tā bìng méiyǒu shēngqì.*
+  * Everyone thought he was angry, but actually, he was **not** angry **at all**.
+  * *(Context: Correcting a false assumption.)*
+* **这个任务并不容易。**
+  * *Zhè ge rènwu bìng bù róngyì.*
+  * This task is **actually not** easy.
+  * *(Context: It might look easy, but I'm telling you it isn't.)*
+* **我并不认识他。**
+  * *Wǒ bìng bú rènshi tā.*
+  * I **really don't** know him.
+  * *(Context: You imply I know him, but I simply don't.)*
+
+### Why use it?
+If you remove **并**, the sentence remains grammatically correct but loses its ""punch.""
+* **他不胖。** (He isn't fat.) -> Simple fact.
+* **他并不胖。** (He isn't [actually] fat.) -> Defensive/Corrective. Maybe someone called him fat, and you are disagreeing.
+
+## 2. Connecting Actions (The ""And"" Usage)
+
+This is the HSK 4 usage (四19), but it's worth noting here. **并** connects two verbs or clauses, often suggesting that the two actions happen together or logically follow one another. It is more formal than **和** (which connects nouns).
+
+**Structure:** `Verb Phrase 1 + 并(且) + Verb Phrase 2`
+
+* **他们讨论并通过了这个计划。**
+  * *Tāmen tǎolùn bìng tōngguò le zhège jìhuà.*
+  * They discussed **and** passed this plan.
+* **请阅读并签字。**
+  * *Qǐng yuèdú bìng qiānzì.*
+  * Please read **and** sign.
+
+## Common Mistakes
+
+**Mistake:** Using 并 to connect nouns like ""Apple and Banana"".
+* *Error:* 我喜欢苹果并香蕉。
+* *Correction:* 我喜欢苹果**和**香蕉。
+* *Rule:* **和** (hé) connects nouns. **并** (bìng) connects verbs/clauses (or reinforces negation).
+
+**Mistake:** Using 并 in a positive adjective sentence for emphasis.
+* *Error:* 这是一个并好的主意。
+* *Correction:* 这是一个**很好的**主意。
+* *Rule:* As an intensifier, **并** is almost exclusively used with **negatives** (并不/并没有). You rarely hear ""并好"" or ""并去"".
+"	"# Character: 并 (bìng)
+
+## Core Meaning: Combine, Side-by-Side
+
+The character **并** (Traditional: 並/併) depicts two people standing side by side or two objects placed together.
+
+### Etymology & Visuals
+* **Original Form (並):** Showed two human figures (人) standing on the ground (一), symbolizing ""together"" or ""side by side.""
+* **Variant (併):** Added the person radical (亻) to emphasize the human action of merging or combining.
+* **Simplified (并):** Derived from the cursive form, merging the top components into two dots/horns.
+
+### Semantic Extensions
+
+1. **Side by Side / Equal:**
+    * **并列** (bìngliè) = Side-by-side + Line up = Juxtapose / Coordinate / Tie (for first place).
+    * **并排** (bìngpái) = Side-by-side + Row = Side by side.
+2. **Combine / Merge:**
+    * **合并** (hébìng) = Join + Combine = Merge (companies, folders).
+    * **吞并** (tūnbìng) = Swallow + Combine = Annex (territory).
+3. **Simultaneously:** Doing two things at once (from ""side by side"").
+    * **并且** (bìngqiě) = Moreover / Furthermore.
+    * **并重** (bìngzhòng) = Equally important (pay equal attention to).
+4. **Intensifier (Negative):** (The grammar point).
+    * **并不** (bìngbù) = ""Combined with 'not'"" -> Actually not / Not at all.
+    * (The logic is likely: ""Taken all together -> Not X"" or an evolution of ""Even"" -> ""Even not"" -> ""Actually not"").
+
+### Usage Note
+In Traditional Chinese, **並** is often used for ""side-by-side/and"" and **併** for ""merge/combine,"" though they overlap. Simplified Chinese merged them both into **并**.
+"	grammar::三19 word::并
