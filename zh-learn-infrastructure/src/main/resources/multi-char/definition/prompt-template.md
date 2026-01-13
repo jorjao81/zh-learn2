@@ -4,20 +4,25 @@ Format the definition for Chinese word: **{WORD}**
 {CONTEXT}
 
 ## Task
+
 ONLY format the provided raw definition - DO NOT generate new content under any circumstances. Focus on clean HTML presentation and expanding abbreviations to full words.
 
 ## Input Definition
+
 {RAW_DEFINITION}
 
 ## Output Format
+
 Return your response as well-structured HTML using the following patterns:
 
 ### Simple Definition
+
 ```html
 <span class="part-of-speech">part of speech</span> definition text
 ```
 
 ### Complex Definition with Multiple Meanings
+
 ```html
 <span class="part-of-speech">verb</span> <span class="usage">colloquial</span>
 <ol>
@@ -27,11 +32,13 @@ Return your response as well-structured HTML using the following patterns:
 ```
 
 ### Domain-Specific Definitions
+
 ```html
 <span class="part-of-speech">noun</span> <span class="domain">anatomy</span> vein
 ```
 
 ### Multiple Parts of Speech
+
 ```html
 <span class="part-of-speech">noun</span>
 <ol>
@@ -47,6 +54,7 @@ Return your response as well-structured HTML using the following patterns:
 ## Guidelines
 
 ### Multi-Character Processing
+
 - Use numbered lists (`<ol>`) for distinct meanings
 - Add part-of-speech tagging using `<span class="part-of-speech">` tags
 - Mark usage notes with `<span class="usage">` or specific classes like `<span class="usage dialect">`
@@ -55,6 +63,7 @@ Return your response as well-structured HTML using the following patterns:
 - Use semantic HTML structure
 
 ### HTML Structure Rules
+
 - Use proper HTML5 semantics
 - Ensure all tags are properly closed
 - Use `<ol>` for ordered lists of meanings
@@ -62,6 +71,7 @@ Return your response as well-structured HTML using the following patterns:
 - Nest spans appropriately for usage/domain markers
 
 ### Class Names
+
 - `part-of-speech`: For grammatical categories
 - `usage`: For general usage notes
 - `usage dialect`: For dialect-specific usage
@@ -70,7 +80,9 @@ Return your response as well-structured HTML using the following patterns:
 - `domain`: For subject domains
 
 ### Domain Expansion
+
 Expand domain abbreviations:
+
 - math. → mathematics
 - med. → medicine
 - anat. → anatomy
@@ -81,7 +93,9 @@ Expand domain abbreviations:
 - phys. → physics
 
 ### Abbreviation Expansion - MANDATORY
+
 ALWAYS expand the following abbreviations to their full word forms:
+
 - adj. → adjective
 - adv. → adverb
 - conj. → conjunction
@@ -94,17 +108,21 @@ ALWAYS expand the following abbreviations to their full word forms:
 - e.g. → for example
 
 ### Parentheses Handling
+
 Remove parentheses from usage/domain markers:
+
 - Input: "(math.) higher dimensional"
 - Output: `<span class="domain">mathematics</span> higher dimensional`
 
 ### Content Preservation - CRITICAL
+
 - IMPORTANT: Preserve the original meaning exactly. Only add HTML formatting and expand abbreviations.
 - NEVER add new definitions, meanings, or explanations not present in the original.
 - If the original definition is brief or simple, keep it brief - only format what's provided.
 - DO NOT elaborate, expand, or add examples unless they exist in the original.
 
 ### What NOT To Do
+
 - WRONG: Generate new definitions for words like 牙套
 - WRONG: Keep abbreviations like "adj." or "n." in their abbreviated form
 - WRONG: Add meanings not present in the original definition

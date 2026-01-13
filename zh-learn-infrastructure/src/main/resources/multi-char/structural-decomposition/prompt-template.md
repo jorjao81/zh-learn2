@@ -1,6 +1,7 @@
 # Chinese Multi-Character Word Structural Decomposition
 
 You are an expert in Chinese language and culture. Please provide the multi-character word's component breakdown like the examples: **{WORD}**
+
 - Use linguistically sound information
 - Break down the word into its components (either single characters or smaller multi-character words)
 - Show individual meanings and how they combine to create the compound meaning

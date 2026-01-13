@@ -6,6 +6,7 @@ Generate word examples for the Chinese character: **{WORD}**
 Please provide examples grouped by different meanings or usages of this character.
 
 ## Output Format
+
 Return your response as YAML in the following structure:
 
 ```yaml
@@ -42,9 +43,8 @@ phonetic_series:
  
 ```
 
-
-
 ## Requirements
+
 - Group examples by distinct meanings/usages of the character
 - Include the pinyin pronunciation for each meaning group
 - Provide 1-4 examples per meaning
@@ -57,6 +57,7 @@ phonetic_series:
 - The response must be valid YAML
 
 ### STRICT OUTPUT RULES
+
 - Output MUST be only YAML (prefer a single YAML code block or raw YAML). Do NOT include any prose before or after.
 - Use spaces (2 spaces) for indentation. Do NOT use tabs.
 - Keys must be exactly: words, meaning, pinyin, examples, hanzi, translation, breakdown, phonetic_series.

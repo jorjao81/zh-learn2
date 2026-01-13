@@ -5,11 +5,13 @@
 This document is the contributor guide for this repository. It defines project structure, coding standards, build/test workflows, and agent-specific rules. For AI agents and humans alike, follow the Constitution first, then this guide.
 
 ## Overview
+
 - Language/tooling: Java 25 (preview features enabled) + Maven multi-module + Java Platform Module System (JPMS).
 - Primary goal: CLI for Chinese learning with modular architecture and clean boundaries.
 - Entrypoint: `com.zhlearn.cli.ZhLearnApplication` (Picocli). Run via `./zh-learn.sh` or the native binary under `zh-learn-cli/target`.
 
 ## Modules & Boundaries
+
 - `zh-learn-domain`: immutable core types and provider interfaces. Keep public API here and free of external concerns.
 - `zh-learn-pinyin`: standalone Pinyin utilities (e.g., numbered → tone-mark conversion). Export only `com.zhlearn.pinyin`.
 - `zh-learn-infrastructure`: provider implementations (LLM/dictionary/audio), configuration, caching, filesystem, adapters. No UI/CLI code.
@@ -17,17 +19,20 @@ This document is the contributor guide for this repository. It defines project s
 - `zh-learn-cli`: Picocli commands and terminal formatting. No business logic; delegate to `application` services.
 
 Boundary rules
+
 - Respect module boundaries; don’t cross layers. Move code to the right module instead of adding illegal dependencies.
 - Keep `module-info.java` exports minimal. Export only packages that must be consumed by other modules.
 - Prefer immutable domain types and explicit value objects. Avoid leaking infrastructure types into domain/application.
 
 ## Development Setup
+
 - JDK: Install Java 25; ensure `--enable-preview` is used by Maven (already configured in root `pom.xml`).
 - Maven: 3.8+.
 - Optional: GraalVM for native builds.
 - Env management: `direnv` + 1Password via `.envrc`. Do not commit secrets.
 
 ## Build & Run
+
 - Build all modules: `mvn clean package`
 - Quick build (CLI and deps): `mvn -pl zh-learn-cli -am package`
 - Run (modular JVM): `./zh-learn.sh parse-pleco input.tsv --export-anki=output.tsv`
@@ -35,6 +40,7 @@ Boundary rules
 - Run native: `./zh-learn-cli/target/zh-learn parse-pleco input.tsv --export-anki=output.tsv`
 
 ## Testing
+
 - Frameworks: JUnit 5, AssertJ, Mockito, Cucumber.
 - Naming: unit `*Test.java`; integration `*IT.java`; Cucumber runner `RunCucumberTest.java`.
 - Features: `src/test/resources/features` in the relevant module.
@@ -47,6 +53,7 @@ Boundary rules
 **Constitution First**: All coding standards must comply with `constitution.md`. In case of conflicts, the Constitution takes precedence.
 
 Core Rules:
+
 - Never add fallbacks unless explicitly told to do so
 - Never catch exceptions unless explicitly told to do so. Let them bubble up and crash the application.
 - If you cannot implement something as instructed, don't implement it differently, let me know
@@ -54,6 +61,7 @@ Core Rules:
 - NEVER disable or bypass Java modules to try to make something work. We added modules for a reason.
 
 Style Guidelines:
+
 - Style: 4-space indentation, UTF-8, standard Java conventions.
 - Packages: `com.zhlearn.<module>…` (lowercase). Classes: PascalCase. Methods/fields: camelCase. Constants: UPPER_SNAKE_CASE.
 - Nullability: avoid `null` in public APIs; prefer `Optional` or documented preconditions.
@@ -63,6 +71,7 @@ Style Guidelines:
 - CLI: keep command classes thin; delegate to `application` services.
 
 ## Providers & Infrastructure
+
 - Implement provider specifics (LLM/dictionary/audio, caching, config) under `zh-learn-infrastructure`.
 - Add new providers behind `domain` interfaces; wire via `application` services, and expose selection in CLI where relevant.
 - Configuration belongs in infrastructure adapters; application code should consume typed config, not raw environment variables.
@@ -77,6 +86,7 @@ All AI providers are managed through `AIProviderFactory`. There are two patterns
 For providers that work with OpenAI-compatible APIs:
 
 1. **Create a Config class** - Handle API keys and base URLs:
+
 ```java
 public class NewProviderConfig {
     public static final String API_KEY_ENVIRONMENT_VARIABLE = "NEW_PROVIDER_API_KEY";
@@ -92,7 +102,8 @@ public class NewProviderConfig {
 }
 ```
 
-2. **Add cases to AIProviderFactory** - Add to all three factory methods:
+1. **Add cases to AIProviderFactory** - Add to all three factory methods:
+
 ```java
 case "new-model" -> {
     requireAPIKey("NEW_PROVIDER_API_KEY", providerName);
@@ -116,6 +127,7 @@ For providers needing custom HTTP handling (like Zhipu):
 
 1. **Create a custom provider class** like `ZhipuChatModelProvider`
 2. **Use delegate pattern** in AIProviderFactory:
+
 ```java
 case "custom-model" -> {
     requireAPIKey("CUSTOM_API_KEY", providerName);
@@ -125,7 +137,7 @@ case "custom-model" -> {
 }
 ```
 
-#### Steps for Both Patterns:
+#### Steps for Both Patterns
 
 1. Add the new provider to all three methods: `createExampleProvider()`, `createExplanationProvider()`, `createDecompositionProvider()`
 2. Update the error messages to include the new provider name
@@ -136,6 +148,7 @@ case "custom-model" -> {
 Audio providers are simpler - they're instantiated directly in MainCommand:
 
 1. **Implement AudioProvider interface**:
+
 ```java
 public class NewAudioProvider implements AudioProvider {
     @Override
@@ -154,7 +167,8 @@ public class NewAudioProvider implements AudioProvider {
 }
 ```
 
-2. **Add to MainCommand constructor**:
+1. **Add to MainCommand constructor**:
+
 ```java
 this.audioProviders = List.of(
     new AnkiPronunciationProvider(),
@@ -164,13 +178,15 @@ this.audioProviders = List.of(
 );
 ```
 
-3. **Test thoroughly** - Audio providers are used in interactive audio selection
+1. **Test thoroughly** - Audio providers are used in interactive audio selection
 
 ## Configuration & Secrets
+
 - Source secrets from env vars: e.g., `OPENAI_API_KEY`, `DEEPSEEK_API_KEY`, `DASHSCOPE_API_KEY` (required for Qwen text-to-speech and must target Alibaba's international Singapore region endpoint). See `.envrc` for local setup patterns.
 - Don’t commit secrets or sensitive files. Avoid printing keys, prompts, or provider responses containing PII.
 
 ## CLI Usage (quick reference)
+
 - Main: `./zh-learn.sh` (modular JVM) or `./zh-learn-cli/target/zh-learn` (native).
 - Examples:
   - Parse Pleco export: `./zh-learn.sh parse-pleco input.tsv --export-anki=output.tsv`
@@ -192,10 +208,12 @@ this.audioProviders = List.of(
   - Include CLI examples or screenshots for notable output changes.
 
 ## Performance & Native Image
+
 - Use native profile for best startup and small footprint: `cd zh-learn-cli && mvn native:compile-no-fork -Pnative`.
 - Keep reflection to a minimum; rely on JPMS-friendly libraries and explicit configuration when needed.
 
 ## Security & Privacy
+
 - Least-privilege configuration; avoid broad filesystem or network access in providers unless required.
 - Sanitize logs and user-facing output; never echo secrets.
 - Validate all external inputs (files, env vars, provider responses) before use.
@@ -212,12 +230,14 @@ this.audioProviders = List.of(
 - Before significant changes, review the Constitution and ensure your plan and PR explicitly pass the Constitution Check.
 
 ## Constitution
+
 - Location: `constitution.md` in project root (version 1.0.0).
 - Principle: "This constitution supersedes all other development practices. All code changes must comply with these principles. Any deviation requires explicit documentation and justification."
 - Core principles: Modular Architecture, Fail-Fast Philosophy, Test-First Development, CLI-First Interface, Provider Pattern
 - Requirement: All code changes must comply with Constitutional principles or provide explicit documentation and justification for deviations.
 
 ## Common Tasks
+
 - Add a new provider:
   - Define/extend interfaces in `zh-learn-domain` if needed.
   - Implement in `zh-learn-infrastructure` and register wiring in `zh-learn-application`.
@@ -229,11 +249,13 @@ this.audioProviders = List.of(
   - Implement in `zh-learn-pinyin`; export minimal API via `module-info.java`.
 
 ## Troubleshooting
+
 - Preview features: ensure Java 25 is active; Maven compiler plugin already passes `--enable-preview`.
 - Native image issues: verify GraalVM and `native` profile; reduce reflection and ensure JPMS compatibility.
 - Test discovery: unit tests run via Surefire (`*Test.java`), IT via Failsafe (`*IT.java`), Cucumber via `RunCucumberTest.java`.
 
 ## License & Governance
+
 - See `LICENSE` for licensing.
 - Architectural direction: follow this guide and the Constitution in `.specify`.
 

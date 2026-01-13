@@ -3,7 +3,9 @@
 ## Core Principles
 
 ### I. Modular Architecture (NON-NEGOTIABLE)
+
 Java modules are strictly enforced for separation of concerns, in a Clean Code Architecture:
+
 - Domain layer contains only business logic and interfaces - no external dependencies except Java base
 - Infrastructure layer implements domain/application interfaces - can have external dependencies
 - Application layer orchestrates domain logic - depends on domain only, NOT infrastructure
@@ -24,7 +26,9 @@ zh-learn-cli:            → all modules (wires everything together)
 The application layer must NEVER depend on infrastructure. Infrastructure concerns (file I/O, environment variables, platform-specific paths, external APIs) belong in the infrastructure module. The CLI module is responsible for wiring all layers together.
 
 ### II. Fail-Fast Philosophy (NON-NEGOTIABLE)
+
 Never add fallbacks, error handling, or graceful degradation unless explicitly told to do so:
+
 - Let exceptions bubble up and crash the application - debugging is more important than graceful degradation
 - No defensive programming - if something is wrong, fail immediately and visibly
 - No "best effort" implementations - either work correctly or fail clearly
@@ -34,14 +38,18 @@ Never add fallbacks, error handling, or graceful degradation unless explicitly t
 - Error handling is ONLY added when explicitly told to handle specific errors
 
 ### III. Test-First Development (NON-NEGOTIABLE)
+
 All functionality must have tests before implementation:
+
 - All features must start with Cucumber acceptance tests
 - Unit tests for domain logic using JUnit 5 and AssertJ
 - All tests must pass before commits - no exceptions
 - Test structure follows modular boundaries
 
 ### IV. Always-Passing Tests (NON-NEGOTIABLE)
+
 The codebase always starts with passing tests - any test failure is developer fault:
+
 - NEVER claim a task is complete while tests are failing
 - All tests must pass at all times - if a test breaks, it is your responsibility to fix it
 - No work is considered done until the full test suite passes
@@ -49,20 +57,26 @@ The codebase always starts with passing tests - any test failure is developer fa
 - When tests fail, stop all other work and fix them immediately
 
 ### V. CLI-First Interface
+
 All functionality exposed via command-line interface:
+
 - Text in/out protocol: arguments → stdout, errors → stderr
 - Support both human-readable and structured output
 - GraalVM native compilation required for distribution
 
 ### VI. Provider Pattern for Extensions
+
 External integrations implemented as providers:
+
 - Providers follow consistent interface
 - Service loader pattern for runtime discovery
 - Each provider is self-contained and independently testable
 - Clear separation between core logic and external service integration
 
 ### VI. Module Preference over Implementation
+
 Always prefer existing modules and libraries over custom implementations:
+
 - Search the web thoroughly to find existing solutions before implementing any feature
 - Use existing libraries and modules unless there's a compelling reason not to
 - Never implement functionality that already exists in well-maintained open source modules
@@ -72,6 +86,7 @@ Always prefer existing modules and libraries over custom implementations:
 ## Technical Standards
 
 ### Java Platform Requirements
+
 - Java 25+ with preview features enabled
 - Maven 3.8+ for build management
 - GraalVM for native compilation
@@ -79,6 +94,7 @@ Always prefer existing modules and libraries over custom implementations:
 - PicoCLI for command-line interface
 
 ### Dependencies and Libraries
+
 - LangChain4J for AI model integration
 - SLF4J with simple implementation for logging
 - Cucumber for integration testing
@@ -91,17 +107,20 @@ Always prefer existing modules and libraries over custom implementations:
 ## Development Workflow
 
 ### Testing Gates
+
 - All unit tests must pass before any commit
 - All acceptance tests must pass for new features
 - No test-skipping or test-disabling allowed
 - Cucumber scenarios must be green for domain behavior
 
 ### Code Quality
+
 - Follow existing code conventions and patterns
 - No code comments unless documenting non-obvious behaviour
 - Keep classes focused and modules cohesive
 
 #### Java Style Guide
+
 - **Never use Java's `var` keyword** - always use explicit type declarations for better code readability and maintainability
 - **Always use Records** when possible - prefer immutable data carriers over traditional classes
 - **Prefer switch expressions** over long if-else chains for better readability and maintainability
@@ -111,12 +130,14 @@ Always prefer existing modules and libraries over custom implementations:
 - **Use pattern matching** where appropriate - instanceof patterns, record patterns, etc.
 
 ### Documentation Standards
+
 - Documentation must be informational, not promotional
 - Avoid hyperbole and self-promotion in all documentation
 - Focus on how to use the application, not how awesome it is
 - Provide clear, factual instructions without marketing language
 
 ### Exception Handling (NON-NEGOTIABLE)
+
 - Never catch exceptions unless explicitly instructed to handle specific exceptions
 - No generic exception handlers, no try-catch blocks without explicit instruction
 - Let application crash on unexpected conditions - this is the desired behavior

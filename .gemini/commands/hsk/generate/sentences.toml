@@ -1,11 +1,11 @@
 # /hsk:generate:sentences — Generate HSK grammar exercise sentences
 
-description = "Generate Anki-ready TSV exercises for an HSK grammar point with highlighted translation cards"
+description = "Generate exercise sentences markdown for an HSK grammar point (parseable for TSV conversion)"
 
 prompt = """
 @{linguistics/llm/system-prompt.md}
 
-You are generating exercise sentences for Chinese grammar practice. Your output will be a TSV file for Anki import.
+You are generating exercise sentences for Chinese grammar practice. Your output will be a markdown file that can be parsed by a script to generate TSV for Anki import.
 
 ## Task
 
@@ -17,7 +17,7 @@ The second argument (optional) is the **number of exercises** to generate (defau
 ## Step 1: Find the Grammar File
 
 Search for the grammar explanation file matching the word in:
-```
+```text
 linguistics/hsk/grammar/*-<WORD>.md
 ```
 
@@ -30,11 +30,11 @@ If the file is not found, **STOP and inform the user** that they need to run `/h
 ## Step 2: Find the Character Breakdown
 
 Look for the character breakdown at:
-```
+```text
 linguistics/hsk/grammar/characters/<WORD>.md
 ```
 
-If not found, leave the CharacterBreakdown field empty.
+Note if it exists or not.
 
 ## Step 3: Extract Metadata
 
@@ -47,91 +47,96 @@ From the grammar file name, extract:
 
 Create exercise sentences following these rules:
 
-1. **NO DUPLICATES**: Do NOT use any sentences that already appear as examples in the grammar explanation file. These are for practice, not repetition of what the learner already saw.
+1. **NO DUPLICATES**: Do NOT use any sentences that already appear as examples in the grammar explanation file
 2. **Variety**: Each sentence should demonstrate the grammar point in a different context
 3. **Natural**: Use realistic, everyday scenarios
-4. **Appropriate level**: Match HSK level vocabulary (HSK 4 for 四11, etc.)
-5. **Highlight the target**: Wrap the target word with `<span class="hl">...</span>` in both Chinese and English
+4. **Appropriate level**: Match HSK level vocabulary
+5. **Focus**: The sentences should demonstrate the word in the specific grammar point context
 
 ### Sentence Requirements
 
 - Chinese sentence: natural usage of the grammar point
-- Sentence pinyin: full pinyin of the Chinese sentence with tone marks (no highlighting)
-- English translation: natural English (not word-for-word), with the equivalent expression highlighted
-- The highlighted portion in English should correspond semantically to the Chinese target word
+- Sentence pinyin: full pinyin with tone marks
+- English translation: natural English with the equivalent expression identified
 
-### Example Format
+## Step 5: Output Markdown File
 
-| Chinese (with highlight) | Pinyin | English (with highlight) |
-|--------------------------|--------|--------------------------|
-| `天<span class="hl">似乎</span>要下雨了。` | `Tiān sìhū yào xiàyǔ le.` | `It <span class="hl">seems like</span> it is going to rain.` |
-| `他<span class="hl">似乎</span>不太想去。` | `Tā sìhū bù tài xiǎng qù.` | `He doesn't <span class="hl">seem</span> to want to go.` |
-
-## Step 5: Output TSV File
-
-Create the TSV file at:
-```
-linguistics/hsk/grammar/sentences/<GRAMMAR_FILENAME>.tsv
+Create the markdown file at:
+```text
+linguistics/hsk/grammar/sentences/<GRAMMAR_FILENAME>.md
 ```
 
-Where `<GRAMMAR_FILENAME>` is the same as the grammar file without the `.md` extension.
-Example: `linguistics/hsk/grammar/sentences/HSK4-11-似乎.tsv`
+Where `<GRAMMAR_FILENAME>` matches the grammar file without `.md`.
+Example: `linguistics/hsk/grammar/sentences/HSK4-11-似乎.md`
 
-### TSV Format
+### Markdown Format
 
-The file MUST start with these exact header directives:
+```markdown
+# <Word> (<Pinyin>) — <GrammarPoint>
+
+- **Grammar**: [<GRAMMAR_FILENAME>](../<GRAMMAR_FILENAME>.md)
+- **Characters**: [<WORD>](../characters/<WORD>.md)
+
+## Sentence Exercises
+
+- Chinese sentence with ==highlight==
+  - *Pinyin with tone marks*
+  - English translation with ==highlight==
 ```
-#separator:Tab
-#html:true
-#notetype:Grammar Sentence
-#columns:SentenceCN	SentencePinyin	SentenceEN	Word	Pinyin	GrammarPoint	GrammarExplanation	CharacterBreakdown	Tags
+
+### Structure
+
+Each sentence is a nested list:
+- **Top level**: Chinese sentence with highlighted grammar word
+- **First sub-item**: Pinyin in italics
+- **Second sub-item**: English translation with highlighted equivalent
+
+### Highlighting
+
+Use the `==text==` markdown extension to mark highlights:
+- In Chinese: wrap the target grammar word with `==word==`
+- In Pinyin: wrap the pinyin of the target with `==pinyin==`
+- In English: wrap the corresponding translation with `==equivalent==`
+
+### Example Output
+
+```markdown
+# 似乎 (sìhū) — 四11
+
+- **Grammar**: [HSK4-11-似乎](../HSK4-11-似乎.md)
+- **Characters**: [似乎](../characters/似乎.md)
+
+## Sentence Exercises
+
+- 天==似乎==要下雨了。
+  - *Tiān ==sìhū== yào xiàyǔ le.*
+  - It ==seems like== it's going to rain.
+
+- 他==似乎==不太想去。
+  - *Tā ==sìhū== bù tài xiǎng qù.*
+  - He doesn't ==seem== to want to go.
+
+- 她==似乎==生气了。
+  - *Tā ==sìhū== shēngqì le.*
+  - She ==seems== to be angry.
 ```
 
-**CRITICAL: Tab Separation**
-- The `#columns:` line must use ACTUAL TAB characters between field names
-- Each data row must use ACTUAL TAB characters between fields
+### Important Rules
 
-### Field Values
-
-| Field | Content |
-|-------|---------|
-| SentenceCN | Chinese sentence with `<span class="hl">` around target word |
-| SentencePinyin | Full pinyin of the sentence with tone marks, no highlighting (e.g., `Tiān sìhū yào xiàyǔ le.`) |
-| SentenceEN | English translation with `<span class="hl">` around equivalent |
-| Word | The target word (plain text) |
-| Pinyin | Pinyin of the target word with tone marks (e.g., sìhū) |
-| GrammarPoint | Grammar ID (e.g., 四11, NON-HSK) |
-| GrammarExplanation | **VERBATIM** copy of the entire grammar file content |
-| CharacterBreakdown | **VERBATIM** copy of the character breakdown file content |
-| Tags | `grammar::<GrammarPoint> word::<Word>` (space-separated) |
-
-### TSV Escaping Rules (CRITICAL)
-
-Follow these escaping rules exactly:
-
-1. **Quotes inside fields**: Double all quote characters (`"` → `""`)
-2. **Fields with special characters**: Wrap in double quotes if the field contains:
-   - Newlines
-   - Tabs
-   - Double quotes
-3. **Newlines**: Keep actual newlines within quoted fields (not `\n` literals)
-
-Example of a properly escaped field with newlines:
-```
-"# HSK 4 Grammar: 似乎
-
-This is the first paragraph.
-
-This is the second paragraph with a ""quoted word"" inside."
-```
+1. **Inline highlights**: Use `==text==` syntax for highlights in Chinese and English.
+2. **One highlight per sentence**: Each sentence should have exactly one highlighted portion in Chinese and one in English.
+3. **Consistent structure**: Always use the nested list format (Chinese → Pinyin → English).
+4. **Italicize pinyin**: Wrap pinyin in `*asterisks*` for italics.
+5. **Relative links**: Use relative paths for the Grammar and Characters links.
 
 ## Quality Checks
 
 Before outputting:
 1. Verify the grammar file exists
-2. Ensure all sentences are unique and demonstrate different uses
-3. Confirm TSV escaping is correct
-4. Check that GrammarExplanation and CharacterBreakdown are VERBATIM copies
+2. Ensure all sentences are unique (not from the grammar explanation)
+3. Confirm each SentenceCN has exactly one `==highlighted==` portion
+4. Confirm each SentenceEN has exactly one `==highlighted==` portion
+5. Verify markdown table is properly formatted
 
 ## Output Summary
 
@@ -139,5 +144,5 @@ After creating the file, report:
 - File path created
 - Number of exercises generated
 - The GrammarPoint ID used
-- Any warnings (e.g., missing character breakdown)
+- Whether character breakdown exists
 """

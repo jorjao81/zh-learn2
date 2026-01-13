@@ -4,17 +4,21 @@ Generate a dictionary-style definition for Chinese word: **{WORD}**
 {CONTEXT}
 
 ## Task
+
 Generate a concise, dictionary-style definition for this Chinese word. The definition should be similar to what you would find in a Chinese-English dictionary like Pleco or CC-CEDICT.
 
 ## Output Format
+
 Return your response as plain HTML using the following patterns:
 
 ### Simple Definition
+
 ```html
 <span class="part-of-speech">part of speech</span> definition text
 ```
 
 ### Definition with Multiple Meanings
+
 ```html
 <span class="part-of-speech">verb</span>
 <ol>
@@ -24,11 +28,13 @@ Return your response as plain HTML using the following patterns:
 ```
 
 ### Domain-Specific Definitions
+
 ```html
 <span class="part-of-speech">noun</span> <span class="domain">domain</span> definition
 ```
 
 ### Multiple Parts of Speech
+
 ```html
 <span class="part-of-speech">noun</span>
 <ol>
@@ -44,6 +50,7 @@ Return your response as plain HTML using the following patterns:
 ## Guidelines
 
 ### Content Requirements
+
 - Generate concise, dictionary-style definitions
 - Focus on the most common meanings first
 - Use clear, simple English
@@ -52,6 +59,7 @@ Return your response as plain HTML using the following patterns:
 - For compound words, consider the meaning formed by the constituent characters
 
 ### HTML Structure Rules
+
 - Use proper HTML5 semantics
 - Ensure all tags are properly closed
 - Use `<ol>` for ordered lists of meanings when there are multiple
@@ -61,6 +69,7 @@ Return your response as plain HTML using the following patterns:
 - Use `<span class="usage">` for usage notes (colloquial, formal, dialect, etc.)
 
 ### Class Names
+
 - `part-of-speech`: For grammatical categories (noun, verb, adjective, adverb, etc.)
 - `usage`: For usage notes (colloquial, formal, literary, etc.)
 - `usage dialect`: For dialect-specific usage
@@ -69,6 +78,7 @@ Return your response as plain HTML using the following patterns:
 - `domain`: For subject domains (medicine, law, mathematics, physics, etc.)
 
 ### Style Guidelines
+
 - Keep definitions concise and clear
 - Use semicolons to separate synonyms
 - Use numbered lists for distinct meanings
@@ -76,6 +86,7 @@ Return your response as plain HTML using the following patterns:
 - Focus on practical, commonly-used meanings
 
 ### What NOT To Do
+
 - WRONG: Generate verbose, encyclopedic explanations
 - WRONG: Include etymology or character breakdowns (that's a separate field)
 - WRONG: Add usage examples (those go in the examples field)

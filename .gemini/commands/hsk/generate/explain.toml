@@ -46,11 +46,13 @@ If grammar point in HSK:
 
 Create a markdown file at: `linguistics/hsk/grammar/HSK{level}-{id}-{word}.md`
 Use the grammar point ID from the reference files (e.g., 四14 → HSK4-14).
+Mention the other grammar points for completeness, but focus your explanation
+on the selected point.
 
 If the grammar point was NOT found in HSK, 
 create a markdown file at: `linguistics/hsk/grammar/NON-HSK-{word}.md`
 
-Also create a character breakdown at `linguistics/hsk/grammar/characters/{word}.md` if the characters have interesting etymology or semantic components worth understanding. Skip this if the breakdown would be trivial or unhelpful.
+Also create a character breakdown of the full word at `linguistics/hsk/grammar/characters/{word}.md` if the characters have interesting etymology or semantic components worth understanding. Skip this if the breakdown would be trivial or unhelpful.
 
 ## Style Guidelines
 

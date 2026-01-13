@@ -6,6 +6,7 @@ Generate sentence examples for the Chinese multi-character word: **{WORD}**
 Please provide sentence examples grouped by different meanings or parts-of-speech of this word.
 
 ## Output Format
+
 Return your response as YAML in the following structure:
 
 ```yaml
@@ -33,6 +34,7 @@ phonetic_series: []
 ```
 
 ## Requirements
+
 - Group examples by distinct meanings or parts-of-speech of the multi-character word
 - Include the pinyin pronunciation for each meaning group
 - Provide 2-4 sentence examples per meaning/part-of-speech
@@ -46,6 +48,7 @@ phonetic_series: []
 - The response must be valid YAML
 
 ### STRICT OUTPUT RULES
+
 - Output MUST be only YAML (prefer a single YAML code block or raw YAML). Do NOT include any prose before or after.
 - Use spaces (2 spaces) for indentation. Do NOT use tabs.
 - Keys must be exactly: words, meaning, pinyin, examples, hanzi, translation, breakdown, phonetic_series.

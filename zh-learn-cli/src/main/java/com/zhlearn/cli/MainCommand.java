@@ -32,6 +32,7 @@ import picocli.CommandLine.ScopeType;
             ImproveAnkiCommand.class,
             AudioCommand.class,
             AudioSelectCommand.class,
+            ExportSentencesCommand.class,
             picocli.CommandLine.HelpCommand.class
         },
         scope = ScopeType.INHERIT)

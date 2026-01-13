@@ -4,17 +4,21 @@ Generate a dictionary-style definition for Chinese character: **{WORD}**
 {CONTEXT}
 
 ## Task
+
 Generate a concise, dictionary-style definition for this single Chinese character. The definition should be similar to what you would find in a Chinese-English dictionary like Pleco or CC-CEDICT.
 
 ## Output Format
+
 Return your response as plain HTML using the following patterns:
 
 ### Simple Definition
+
 ```html
 <span class="part-of-speech">part of speech</span> definition text
 ```
 
 ### Definition with Multiple Meanings
+
 ```html
 <span class="part-of-speech">noun</span>
 <ol>
@@ -24,6 +28,7 @@ Return your response as plain HTML using the following patterns:
 ```
 
 ### Multiple Parts of Speech
+
 ```html
 <span class="part-of-speech">noun</span> primary meaning
 <span class="part-of-speech">adjective</span> adjectival meaning
@@ -32,6 +37,7 @@ Return your response as plain HTML using the following patterns:
 ## Guidelines
 
 ### Content Requirements
+
 - Generate concise, dictionary-style definitions
 - Focus on the character's standalone meanings (not just compound word meanings)
 - Include both common modern meanings and relevant classical meanings
@@ -40,6 +46,7 @@ Return your response as plain HTML using the following patterns:
 - For characters used primarily as components, note their component meaning
 
 ### HTML Structure Rules
+
 - Use proper HTML5 semantics
 - Ensure all tags are properly closed
 - Use `<ol>` for ordered lists of meanings when there are multiple distinct meanings
@@ -48,12 +55,14 @@ Return your response as plain HTML using the following patterns:
 - Use `<span class="usage">` for usage notes (classical, literary, archaic, etc.)
 
 ### Class Names
+
 - `part-of-speech`: For grammatical categories (noun, verb, adjective, etc.)
 - `usage`: For usage notes (classical, literary, archaic, etc.)
 - `usage classical`: For classical Chinese usage
 - `usage literary`: For literary usage
 
 ### Style Guidelines
+
 - Keep definitions concise and clear
 - Use semicolons to separate synonyms
 - Use numbered lists for distinct meanings
@@ -61,6 +70,7 @@ Return your response as plain HTML using the following patterns:
 - Focus on practical, commonly-understood meanings
 
 ### What NOT To Do
+
 - WRONG: Generate verbose explanations
 - WRONG: Include etymology or character structure analysis (that's a separate field)
 - WRONG: Add usage examples (those go in the examples field)
