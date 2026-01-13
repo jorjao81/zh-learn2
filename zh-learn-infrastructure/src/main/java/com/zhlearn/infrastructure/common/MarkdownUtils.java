@@ -6,6 +6,27 @@ public final class MarkdownUtils {
     private MarkdownUtils() {}
 
     /**
+     * Normalizes LaTeX arrow notations to Unicode arrows. Converts common LaTeX arrow commands
+     * like $\rightarrow$, $\to$, $\leftarrow$, and $\leftrightarrow$ to their Unicode equivalents.
+     *
+     * @param input the markdown text potentially containing LaTeX arrows
+     * @return the text with LaTeX arrows replaced by Unicode arrows
+     */
+    public static String normalizeArrows(String input) {
+        if (input == null) {
+            return null;
+        }
+
+        return input.replace("$\\rightarrow$", "→")
+                .replace("$\\to$", "→")
+                .replace("$\\leftarrow$", "←")
+                .replace("$\\leftrightarrow$", "↔")
+                .replace("$\\Rightarrow$", "⇒")
+                .replace("$\\Leftarrow$", "⇐")
+                .replace("$\\Leftrightarrow$", "⇔");
+    }
+
+    /**
      * Strips markdown code block delimiters from input text. Handles code blocks with or without
      * language specifiers (e.g., ```yaml, ```html, or plain ```).
      *

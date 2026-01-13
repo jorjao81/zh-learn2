@@ -8,7 +8,8 @@ public class SingleCharExplanationProviderConfig {
 
     private static final String TEMPLATE_PATH = "/single-char/explanation/prompt-template.md";
     private static final String EXAMPLES_DIRECTORY = "/single-char/explanation/examples/";
-    private static final Function<String, Explanation> RESPONSE_MAPPER = Explanation::new;
+    private static final Function<String, Explanation> RESPONSE_MAPPER =
+            response -> new Explanation(MarkdownUtils.normalizeArrows(response));
     private static final Double DEFAULT_TEMPERATURE = 0.3;
     private static final Integer DEFAULT_MAX_TOKENS = 8000;
 
