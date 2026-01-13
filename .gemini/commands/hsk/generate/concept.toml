@@ -87,4 +87,5 @@ Create both files, then provide a summary of what was created and any interestin
 - Use pinyin with tone marks (jīhū) not numbers (ji1hu1)
 - Be thorough but not verbose — every sentence should add value
 - Use proper linguistic terminology
+- Use Unicode arrows (→, ←, ↔) instead of LaTeX notation ($\\rightarrow$, $\\to$, etc.)
 """

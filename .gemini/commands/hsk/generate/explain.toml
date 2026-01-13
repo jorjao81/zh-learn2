@@ -62,4 +62,5 @@ Also create a character breakdown of the full word at `linguistics/hsk/grammar/c
 - Be substantive, not verbose — every sentence should teach something
 - Assume intelligence, don't over-explain basics
 - Be linguistically accurate — no folk etymologies or invented mnemonics
+- Use Unicode arrows (→, ←, ↔) instead of LaTeX notation ($\\rightarrow$, $\\to$, etc.)
 """
