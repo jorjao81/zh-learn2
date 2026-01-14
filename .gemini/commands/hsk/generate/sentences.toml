@@ -102,8 +102,8 @@ The `==text==` is a markdown extension for highlighting. This is **NOT** the sam
 
 Apply highlights:
 - In Chinese: wrap the target grammar word with `==word==`
+- In Pinyin: wrap the pinyin of the target word with `==pinyin==`
 - In English: wrap the corresponding translation with `==equivalent==`
-- In Pinyin: do NOT highlight (just plain italic text)
 
 ### Example Output
 
@@ -116,23 +116,21 @@ Apply highlights:
 ## Sentence Exercises
 
 - 天==似乎==要下雨了。
-  - *Tiān sìhū yào xiàyǔ le.*
+  - *Tiān ==sìhū== yào xiàyǔ le.*
   - It ==seems like== it's going to rain.
 
 - 他==似乎==不太想去。
-  - *Tā sìhū bù tài xiǎng qù.*
+  - *Tā ==sìhū== bù tài xiǎng qù.*
   - He doesn't ==seem== to want to go.
 
 - 她==似乎==生气了。
-  - *Tā sìhū shēngqì le.*
+  - *Tā ==sìhū== shēngqì le.*
   - She ==seems== to be angry.
 ```
 
-Note: Pinyin is plain italic text (no == markers).
-
 ### Important Rules
 
-1. **Inline highlights**: Use `==text==` syntax for highlights in Chinese and English.
+1. **Inline highlights**: Use `==text==` syntax for highlights in Chinese, Pinyin, and English.
 2. **One highlight per sentence**: Each sentence should have exactly one highlighted portion in Chinese and one in English.
 3. **Consistent structure**: Always use the nested list format (Chinese → Pinyin → English).
 4. **Italicize pinyin**: Wrap pinyin in `*asterisks*` for italics.
@@ -144,8 +142,8 @@ Before outputting:
 1. Verify the grammar file exists
 2. Ensure all sentences are unique (not from the grammar explanation)
 3. Confirm each Chinese sentence has exactly one `==highlighted==` portion (NOT **bold**)
-4. Confirm each English sentence has exactly one `==highlighted==` portion (NOT **bold**)
-5. Verify pinyin is plain italic text (no == markers)
+4. Confirm each Pinyin has exactly one `==highlighted==` portion (NOT **bold**)
+5. Confirm each English sentence has exactly one `==highlighted==` portion (NOT **bold**)
 
 ## Validation
 
