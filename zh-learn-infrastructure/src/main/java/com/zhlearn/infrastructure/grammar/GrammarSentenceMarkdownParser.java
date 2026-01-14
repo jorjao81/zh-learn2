@@ -37,8 +37,8 @@ public class GrammarSentenceMarkdownParser {
     // Pattern to match sub-item (indented with spaces): - *pinyin* or - English
     private static final Pattern SUB_ITEM_PATTERN = Pattern.compile("^\\s+-\\s+(.+)$");
 
-    // Pattern to extract italic content: *text*
-    private static final Pattern ITALIC_PATTERN = Pattern.compile("^\\*(.+)\\*$");
+    // Pattern to extract italic content: *text* or _text_
+    private static final Pattern ITALIC_PATTERN = Pattern.compile("^[*_](.+)[*_]$");
 
     /**
      * Parse a grammar sentence markdown file from a path.
