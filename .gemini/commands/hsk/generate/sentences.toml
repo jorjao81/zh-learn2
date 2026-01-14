@@ -93,10 +93,17 @@ Each sentence is a nested list:
 
 ### Highlighting
 
-Use the `==text==` markdown extension to mark highlights:
+**CRITICAL**: Use `==text==` (double equals) for highlights, NOT `**text**` (bold).
+
+The `==text==` is a markdown extension for highlighting. This is **NOT** the same as bold.
+
+- ✅ CORRECT: `==似乎==` (double equals signs)
+- ❌ WRONG: `**似乎**` (asterisks for bold)
+
+Apply highlights:
 - In Chinese: wrap the target grammar word with `==word==`
-- In Pinyin: wrap the pinyin of the target with `==pinyin==`
 - In English: wrap the corresponding translation with `==equivalent==`
+- In Pinyin: do NOT highlight (just plain italic text)
 
 ### Example Output
 
@@ -109,17 +116,19 @@ Use the `==text==` markdown extension to mark highlights:
 ## Sentence Exercises
 
 - 天==似乎==要下雨了。
-  - *Tiān ==sìhū== yào xiàyǔ le.*
+  - *Tiān sìhū yào xiàyǔ le.*
   - It ==seems like== it's going to rain.
 
 - 他==似乎==不太想去。
-  - *Tā ==sìhū== bù tài xiǎng qù.*
+  - *Tā sìhū bù tài xiǎng qù.*
   - He doesn't ==seem== to want to go.
 
 - 她==似乎==生气了。
-  - *Tā ==sìhū== shēngqì le.*
+  - *Tā sìhū shēngqì le.*
   - She ==seems== to be angry.
 ```
+
+Note: Pinyin is plain italic text (no == markers).
 
 ### Important Rules
 
@@ -134,15 +143,25 @@ Use the `==text==` markdown extension to mark highlights:
 Before outputting:
 1. Verify the grammar file exists
 2. Ensure all sentences are unique (not from the grammar explanation)
-3. Confirm each SentenceCN has exactly one `==highlighted==` portion
-4. Confirm each SentenceEN has exactly one `==highlighted==` portion
-5. Verify markdown table is properly formatted
+3. Confirm each Chinese sentence has exactly one `==highlighted==` portion (NOT **bold**)
+4. Confirm each English sentence has exactly one `==highlighted==` portion (NOT **bold**)
+5. Verify pinyin is plain italic text (no == markers)
+
+## Validation
+
+After creating the file, run the validation command:
+```bash
+./zh-learn.sh export-sentences <created-file-path> --dry-run
+```
+
+If validation fails with "Chinese sentence must contain highlight markers", you used `**bold**` instead of `==highlight==`. Fix the file and re-validate.
 
 ## Output Summary
 
-After creating the file, report:
+After creating the file and validating, report:
 - File path created
 - Number of exercises generated
 - The GrammarPoint ID used
 - Whether character breakdown exists
+- Validation result (pass/fail)
 """
