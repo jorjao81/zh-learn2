@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "AfterTool": [
+      {
+        "matcher": "write_file|edit_file|replace",
+        "hooks": [
+          {
+            "name": "markdown-formatter",
+            "type": "command",
+            "command": "$GEMINI_PROJECT_DIR/.gemini/hooks/format-markdown.sh",
+            "description": "Auto-format markdown files after saves"
+          }
+        ]
+      }
+    ]
+  }
+}
