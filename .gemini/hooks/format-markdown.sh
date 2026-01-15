@@ -21,8 +21,10 @@ if [[ "$FILE_PATH" == *.md ]]; then
         npx markdownlint-cli2 --fix "$FILE_PATH" 2>/dev/null || true
 
         # Check for LaTeX notation - these should use Unicode instead
-        # Pattern matches $\command$ style LaTeX (e.g., $\times$, $\to$)
-        LATEX_MATCHES=$(grep -nE '\$\\[a-zA-Z]+\$' "$FILE_PATH" 2>/dev/null || true)
+        # Pattern 1: $\command$ style (e.g., $\times$, $\to$)
+        # Pattern 2: $$...$$ block LaTeX with \text{} or other commands
+        # Pattern 3: $...$ inline with any backslash
+        LATEX_MATCHES=$(grep -nE '\$\$.*\\.*\$\$|\$[^$]*\\[a-zA-Z]+[^$]*\$' "$FILE_PATH" 2>/dev/null || true)
 
         if [[ -n "$LATEX_MATCHES" ]]; then
             echo "ERROR: LaTeX notation detected in $FILE_PATH"
@@ -34,6 +36,9 @@ if [[ "$FILE_PATH" == *.md ]]; then
             echo "  \$\\checkmark\$           → use: ✓"
             echo "  \$\\approx\$              → use: ≈"
             echo "  \$\\neq\$                 → use: ≠"
+            echo "  \$\\dots\$                → use: …"
+            echo "  \$\\text{...}\$           → use: plain text or **bold**"
+            echo "  \$\$ ... \$\$             → use: > blockquote or **bold**"
             echo ""
             echo "Found LaTeX at:"
             echo "$LATEX_MATCHES"
