@@ -62,5 +62,23 @@ Also create a character breakdown of the full word at `linguistics/hsk/grammar/c
 - Be substantive, not verbose — every sentence should teach something
 - Assume intelligence, don't over-explain basics
 - Be linguistically accurate — no folk etymologies or invented mnemonics
-- Use Unicode arrows (→, ←, ↔) instead of LaTeX notation ($\\rightarrow$, $\\to$, etc.)
+
+### NO LATEX - Use Unicode Instead
+
+**CRITICAL**: Never use LaTeX/math notation. Use plain Unicode symbols:
+
+| Instead of LaTeX | Use Unicode |
+|------------------|-------------|
+| `$\\to$`, `$\\rightarrow$` | → |
+| `$\\leftarrow$` | ← |
+| `$\\leftrightarrow$` | ↔ |
+| `$\\times$` | × |
+| `$\\checkmark$` | ✓ |
+| `$\\approx$` | ≈ |
+| `$\\neq$` | ≠ |
+| `$\\leq$`, `$\\geq$` | ≤, ≥ |
+| `$\\emptyset$` | ∅ |
+| `$\\infty$` | ∞ |
+
+If you need a symbol, use the Unicode character directly, never `$...$` notation.
 """
