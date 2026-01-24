@@ -22,12 +22,14 @@ This is the most critical linguistic distinction for this word. Both describe qu
 | **武断** (wǔduàn) | Arbitrary | Subjectivity + Arrogance | **Negative** (Criticism) |
 
 **Diagnostic Test:**
+
 * If a leader makes a quick choice that saves the company, they are **果断**.
 * If a leader makes a quick choice ignoring the data and experts, they are **武断**.
 
 ## 3. Syntactic Usage
 
 ### A. As a Predicative Adjective
+
 It is most commonly used to criticize a statement or person.
 
 > 你这样说是很**武断**的。
@@ -38,6 +40,7 @@ It is most commonly used to criticize a statement or person.
 > Don't be too **rash/subjective** when drawing conclusions.
 
 ### B. As an Adverbial Modifier
+
 Modifies verbs of cognition (thinking, concluding, denying).
 
 > 他**武断**地认为我是错的。

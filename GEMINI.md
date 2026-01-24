@@ -1,6 +1,7 @@
 # GEMINI.md — Chinese Learning Project
 
-This project contains linguistic resources for learning Chinese, including HSK grammar references, exercises, and Anki card generation.
+This project contains linguistic resources for learning Chinese, including
+HSK grammar references, exercises, and Anki card generation.
 
 ## Project Structure
 
@@ -32,20 +33,24 @@ linguistics/
 When generating content for this project:
 
 1. **Language**: Explain everything in English
-2. **Linguistic Accuracy**: Use proper linguistic terminology and avoid simplifications
-3. **Cultural Authenticity**: Avoid Western-created mnemonics; explain Chinese as Chinese speakers understand it
+2. **Linguistic Accuracy**: Use proper linguistic terminology and avoid
+   simplifications
+3. **Cultural Authenticity**: Avoid Western-created mnemonics; explain Chinese
+   as Chinese speakers understand it
 4. **Pinyin Format**: Use tone marks (jīhū) not numbers (ji1hu1)
 
 ## HSK Grammar Point Format
 
 Grammar points in HSK3.0-Level*.md files follow this format:
 
-| # | Category | Chinese | Pinyin | Examples |
-|---|----------|---------|--------|----------|
-| 四14 | Regarding/As for | 对于 | duìyú | Example sentences... |
+| #    | Category         | Chinese | Pinyin | Examples             |
+| ---- | ---------------- | ------- | ------ | -------------------- |
+| 四14 | Regarding/As for | 对于    | duìyú  | Example sentences... |
 
-The ID format is: `{level}{number}` where level is 三/四/五 (3/4/5) and number is 01-99.
+The ID format is: `{level}{number}` where level is 三/四/五 (3/4/5) and number
+is 01-99.
 
 ## Custom Commands
 
-- `/hsk:generate:concept <word>` — Generate detailed grammar explanation and character breakdown
+- `/hsk:generate:concept <word>` — Generate detailed grammar explanation and
+  character breakdown

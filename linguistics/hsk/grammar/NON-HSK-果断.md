@@ -16,6 +16,7 @@
 As with many Chinese adjectives/stative verbs, `果断` is flexible.
 
 ### A. As a Predicate (Adjective)
+
 Used to describe a person's character or a specific action.
 
 > 他处理这件事非常**果断**。
@@ -23,6 +24,7 @@ Used to describe a person's character or a specific action.
 > He handled this matter very **decisively**. (Lit: He handling this matter [was] very decisive.)
 
 ### B. As an Adverbial Modifier (The "Decisively" Construction)
+
 This is arguably the most productive pattern for learners. When a decision point is reached, one acts `果断`. Note that while `地` (de) can be used (`果断地`), it is frequently omitted in 4-character prosodic chunks or distinct VP structures.
 
 **Structure**: `Subject + (毫不) + 果断 + Verb`
@@ -33,6 +35,7 @@ This is arguably the most productive pattern for learners. When a decision point
 > *Facing danger, the police **resolutely** opened fire.*
 
 ### C. Negation: 不够果断 vs. 犹豫不决
+
 You can say someone is `不果断` (not decisive), but often the criticism is softened to `不够果断` (not decisive enough) or synonymous with `优柔寡断` (yōuróuguǎduàn - irresolute/indecisive).
 
 ## 3. Important Contrast: 果断 vs. 武断

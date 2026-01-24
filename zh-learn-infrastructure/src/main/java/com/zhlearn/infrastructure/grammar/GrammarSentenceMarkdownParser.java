@@ -65,6 +65,9 @@ public class GrammarSentenceMarkdownParser {
         return parseContent(content);
     }
 
+    // Pattern to match continuation lines (indented text that's not a list item)
+    private static final Pattern CONTINUATION_PATTERN = Pattern.compile("^\\s{4,}(.+)$");
+
     /**
      * Parse grammar sentence markdown from a string.
      *
@@ -84,13 +87,24 @@ public class GrammarSentenceMarkdownParser {
         boolean inExercisesSection = false;
         String currentChinese = null;
         String currentPinyin = null;
+        StringBuilder currentEnglish = null;
 
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
             String trimmed = line.trim();
 
-            // Skip empty lines
+            // Skip empty lines (but finalize any pending English sentence first)
             if (trimmed.isEmpty()) {
+                if (currentEnglish != null && currentChinese != null && currentPinyin != null) {
+                    exercises.add(
+                            new GrammarSentenceExercise(
+                                    currentChinese,
+                                    currentPinyin,
+                                    currentEnglish.toString().trim()));
+                    currentChinese = null;
+                    currentPinyin = null;
+                    currentEnglish = null;
+                }
                 continue;
             }
 
@@ -134,9 +148,13 @@ public class GrammarSentenceMarkdownParser {
                 // Check if this is a top-level list item (Chinese sentence)
                 if (line.matches("^-\\s+.+$")) {
                     // Save previous exercise if complete
-                    if (currentChinese != null && currentPinyin != null) {
-                        // We need the English sentence too, but we'll get it from the next lines
-                        // This case shouldn't happen if format is correct
+                    if (currentEnglish != null && currentChinese != null && currentPinyin != null) {
+                        exercises.add(
+                                new GrammarSentenceExercise(
+                                        currentChinese,
+                                        currentPinyin,
+                                        currentEnglish.toString().trim()));
+                        currentEnglish = null;
                     }
 
                     Matcher chineseMatcher = CHINESE_SENTENCE_PATTERN.matcher(line);
@@ -150,6 +168,18 @@ public class GrammarSentenceMarkdownParser {
                 // Check if this is a sub-item
                 Matcher subMatcher = SUB_ITEM_PATTERN.matcher(line);
                 if (subMatcher.matches()) {
+                    // Finalize previous English if starting a new sub-item
+                    if (currentEnglish != null && currentChinese != null && currentPinyin != null) {
+                        exercises.add(
+                                new GrammarSentenceExercise(
+                                        currentChinese,
+                                        currentPinyin,
+                                        currentEnglish.toString().trim()));
+                        currentChinese = null;
+                        currentPinyin = null;
+                        currentEnglish = null;
+                    }
+
                     String subContent = subMatcher.group(1).trim();
 
                     // Check if it's pinyin (italicized)
@@ -157,18 +187,30 @@ public class GrammarSentenceMarkdownParser {
                     if (italicMatcher.matches()) {
                         currentPinyin = italicMatcher.group(1).trim();
                     } else {
-                        // It's the English sentence
+                        // It's the English sentence - start accumulating
                         if (currentChinese != null && currentPinyin != null) {
-                            String currentEnglish = subContent;
-                            exercises.add(
-                                    new GrammarSentenceExercise(
-                                            currentChinese, currentPinyin, currentEnglish));
-                            currentChinese = null;
-                            currentPinyin = null;
+                            currentEnglish = new StringBuilder(subContent);
                         }
+                    }
+                    continue;
+                }
+
+                // Check if this is a continuation line (for multi-line English sentences)
+                if (currentEnglish != null) {
+                    Matcher contMatcher = CONTINUATION_PATTERN.matcher(line);
+                    if (contMatcher.matches()) {
+                        currentEnglish.append(" ").append(contMatcher.group(1).trim());
+                        continue;
                     }
                 }
             }
+        }
+
+        // Finalize any remaining exercise
+        if (currentEnglish != null && currentChinese != null && currentPinyin != null) {
+            exercises.add(
+                    new GrammarSentenceExercise(
+                            currentChinese, currentPinyin, currentEnglish.toString().trim()));
         }
 
         // Validate required fields

@@ -181,7 +181,7 @@
 | 七45 | 不知……好 | 不知如何解决才好。*Don't know how to solve it.* / 不知该怎么说才好。*Don't know what to say.* / 不知选哪个好。*Don't know which one to choose.* |
 | 七46 | 所谓……就是…… | 所谓成功，就是不断努力。*So-called success means continuous effort.* / 所谓家具就是这几把椅子。*The so-called furniture is just these few chairs.* |
 | 七47 | 无非/不过/只不过/只是……而已/罢了 | 他无非是想引起注意而已。*He merely wants to attract attention.* / 我只不过开个玩笑罢了。*I was just joking.* / 这不过是小问题而已。*This is just a small problem.* |
-| 七48 | 以……为…… | 以自己为中心。*Put oneself at the center.* / 以北京为例。*Taking Beijing as an example.* / 以诚信为本。*Take integrity as the foundation.* |
+| 七48 | 以…为… | 以自己为中心。*Put oneself at the center.* / 以北京为例。*Taking Beijing as an example.* / 以诚信为本。*Take integrity as the foundation.* |
 | 七49 | 因……而…… | 因一件小事而快乐。*Happy because of a small thing.* / 因努力而成功。*Succeeded because of hard work.* / 因你而改变。*Changed because of you.* |
 
 ---
