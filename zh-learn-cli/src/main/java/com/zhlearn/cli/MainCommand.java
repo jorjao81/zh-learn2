@@ -33,6 +33,7 @@ import picocli.CommandLine.ScopeType;
             AudioCommand.class,
             AudioSelectCommand.class,
             ExportSentencesCommand.class,
+            ExportExplanationsCommand.class,
             picocli.CommandLine.HelpCommand.class
         },
         scope = ScopeType.INHERIT)

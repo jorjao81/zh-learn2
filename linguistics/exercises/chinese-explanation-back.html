@@ -1,0 +1,20 @@
+<script src="_marked.min.js"></script>
+
+<div class="sentence-section">
+  <div class="sentence-content chinese">{{Simplified}}</div>
+  <div class="sentence-pinyin">{{Pinyin}}</div>
+</div>
+
+<hr class="divider" />
+
+<div class="explanation-details">
+  <div class="explanation-content md">{{Explanation}}</div>
+</div>
+
+<script>
+  document.querySelectorAll(".md").forEach((el) => {
+    let decoder = document.createElement("textarea");
+    decoder.innerHTML = el.innerHTML;
+    el.innerHTML = marked.parse(decoder.value);
+  });
+</script>

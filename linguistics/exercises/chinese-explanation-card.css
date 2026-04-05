@@ -1,0 +1,232 @@
+/* Chinese Explanation Card — Catppuccin Minimal (Cold) */
+/* Extends grammar-sentence-card.css conventions */
+
+/* === Catppuccin Palette === */
+:root {
+  /* Latte (Light) - Cold colors */
+  --base: #eff1f5;
+  --mantle: #e6e9ef;
+  --surface: #dce0e8;
+  --overlay: #9ca0b0;
+  --text: #4c4f69;
+  --subtext: #6c6f85;
+
+  /* Cold accent colors */
+  --blue: #1e66f5;
+  --sapphire: #209fb5;
+  --sky: #04a5e5;
+  --teal: #179299;
+  --lavender: #7287fd;
+  --mauve: #8839ef;
+}
+
+/* === Card Base === */
+.card {
+  background: var(--base);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.7;
+  padding: 24px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* === Main Term === */
+.sentence-section {
+  margin: 0 0 20px 0;
+}
+
+.sentence-content {
+  padding: 0;
+  background: none;
+  border: none;
+}
+
+.sentence-content.chinese {
+  font-family: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-size: 1.7em;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+/* === Pinyin === */
+.sentence-pinyin {
+  font-size: 1.05em;
+  color: var(--sapphire);
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+/* === Entry Type Badge === */
+.entry-type-badge {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 4px 12px;
+  background: var(--mantle);
+  border-radius: 6px;
+  font-size: 0.8em;
+  font-weight: 600;
+  color: var(--overlay);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* === Divider === */
+hr.divider {
+  border: none;
+  height: 1px;
+  background: var(--surface);
+  margin: 24px 0;
+}
+
+/* === Explanation Section === */
+.explanation-details {
+  margin-top: 8px;
+}
+
+/* === Explanation Content (rendered from markdown by marked.js) === */
+.explanation-content {
+  font-size: 0.95em;
+  color: var(--text);
+  line-height: 1.8;
+}
+
+.explanation-content p {
+  margin: 0 0 16px 0;
+}
+
+.explanation-content p:last-child {
+  margin-bottom: 0;
+}
+
+.explanation-content strong {
+  color: var(--sapphire);
+  font-weight: 600;
+}
+
+.explanation-content em {
+  color: var(--subtext);
+}
+
+/* Headings */
+.explanation-content h2 {
+  font-size: 1.05em;
+  font-weight: 700;
+  color: var(--blue);
+  margin: 28px 0 12px 0;
+  padding: 0;
+  border: none;
+}
+
+.explanation-content h2:first-child {
+  margin-top: 0;
+}
+
+.explanation-content h3 {
+  font-size: 1em;
+  font-weight: 600;
+  color: var(--lavender);
+  margin: 20px 0 8px 0;
+}
+
+/* Lists */
+.explanation-content ul,
+.explanation-content ol {
+  margin: 12px 0;
+  padding-left: 24px;
+}
+
+.explanation-content li {
+  margin: 8px 0;
+  line-height: 1.7;
+}
+
+.explanation-content li::marker {
+  color: var(--sky);
+}
+
+/* Blockquotes */
+.explanation-content blockquote {
+  margin: 16px 0;
+  padding: 16px 20px;
+  background: var(--mantle);
+  border-radius: 8px;
+  border-left: 3px solid var(--lavender);
+  color: var(--text);
+  font-style: normal;
+}
+
+.explanation-content blockquote strong {
+  color: var(--lavender);
+}
+
+/* Horizontal rules */
+.explanation-content hr {
+  border: none;
+  height: 1px;
+  background: var(--surface);
+  margin: 28px 0;
+}
+
+/* Code */
+.explanation-content code {
+  background: var(--mantle);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: "SF Mono", "Fira Code", monospace;
+  font-size: 0.9em;
+  color: var(--sky);
+}
+
+/* Tables */
+.explanation-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 0.9em;
+}
+
+.explanation-content th,
+.explanation-content td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--surface);
+}
+
+.explanation-content th {
+  font-weight: 600;
+  color: var(--blue);
+}
+
+/* === Dark Mode (Catppuccin Mocha - Cold) === */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --base: #1e1e2e;
+    --mantle: #181825;
+    --surface: #313244;
+    --overlay: #6c7086;
+    --text: #cdd6f4;
+    --subtext: #a6adc8;
+
+    /* Cold accent colors - Mocha */
+    --blue: #89b4fa;
+    --sapphire: #74c7ec;
+    --sky: #89dceb;
+    --teal: #94e2d5;
+    --lavender: #b4befe;
+    --mauve: #cba6f7;
+  }
+}
+
+/* === Mobile === */
+@media (max-width: 600px) {
+  .card {
+    padding: 16px;
+  }
+
+  .sentence-content.chinese {
+    font-size: 1.4em;
+  }
+}

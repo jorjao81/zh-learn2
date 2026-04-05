@@ -52,4 +52,5 @@ module com.zhlearn.infrastructure {
     exports com.zhlearn.infrastructure.ratelimit;
     exports com.zhlearn.infrastructure.minimax;
     exports com.zhlearn.infrastructure.grammar;
+    exports com.zhlearn.infrastructure.explanation;
 }
