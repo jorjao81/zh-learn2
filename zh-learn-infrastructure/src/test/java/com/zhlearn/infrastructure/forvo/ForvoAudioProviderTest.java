@@ -28,6 +28,7 @@ class ForvoAudioProviderTest {
     void tearDown() {
         System.clearProperty("zhlearn.home");
         System.clearProperty("forvo.api.key");
+        System.clearProperty("zhlearn.disable.ffmpeg");
     }
 
     @Test
@@ -69,6 +70,7 @@ class ForvoAudioProviderTest {
                 .thenReturn((HttpResponse) resp4);
 
         System.setProperty("zhlearn.home", tmpHome.toString());
+        System.setProperty("zhlearn.disable.ffmpeg", "1");
         System.setProperty("forvo.api.key", "test-key");
         ForvoAudioProvider provider = new ForvoAudioProvider(http, new ObjectMapper());
 

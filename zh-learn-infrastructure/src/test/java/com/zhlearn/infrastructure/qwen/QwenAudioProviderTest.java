@@ -36,6 +36,7 @@ class QwenAudioProviderTest {
     @AfterEach
     void tearDown() {
         System.clearProperty("zhlearn.home");
+        System.clearProperty("zhlearn.disable.ffmpeg");
     }
 
     private QwenAudioProvider createProvider(QwenTtsClient client, HttpClient http) {
@@ -48,6 +49,7 @@ class QwenAudioProviderTest {
     @Test
     void returnsFiveVoicesAndCachesResults() throws Exception {
         System.setProperty("zhlearn.home", tmpHome.toString());
+        System.setProperty("zhlearn.disable.ffmpeg", "1");
 
         FakeQwenClient client = new FakeQwenClient();
         HttpClient http = mock(HttpClient.class);

@@ -5,11 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class AudioNormalizer {
-    private final Logger log = LoggerFactory.getLogger(AudioNormalizer.class);
 
     public AudioNormalizer() {}
 
@@ -18,8 +14,9 @@ public class AudioNormalizer {
             throw new IOException("input not found: " + input);
         Files.createDirectories(output.getParent());
 
-        // Allow disabling external tools in tests/CI
-        String disable = System.getenv("ZHLEARN_DISABLE_FFMPEG");
+        // Allow disabling external tools in tests/CI (env var or system property)
+        String disable = System.getProperty("zhlearn.disable.ffmpeg");
+        if (disable == null) disable = System.getenv("ZHLEARN_DISABLE_FFMPEG");
         if (disable != null && (disable.equals("1") || disable.equalsIgnoreCase("true"))) {
             Files.copy(input, output, StandardCopyOption.REPLACE_EXISTING);
             return;
@@ -50,12 +47,13 @@ public class AudioNormalizer {
             if (code == 0 && Files.exists(output)) {
                 return;
             }
-            log.warn("ffmpeg normalization failed with code {} — falling back to copy", code);
+            throw new IOException(
+                    "ffmpeg normalization failed with exit code " + code + " for: " + input);
         } else {
-            log.debug("ffmpeg not found on PATH — falling back to copy");
+            throw new IOException(
+                    "ffmpeg not found on PATH. Install it (e.g. 'brew install ffmpeg') "
+                            + "or set ZHLEARN_DISABLE_FFMPEG=1 to skip normalization.");
         }
-        // Fallback: straight copy
-        Files.copy(input, output, StandardCopyOption.REPLACE_EXISTING);
     }
 
     private boolean isOnPath(String tool) {

@@ -27,6 +27,7 @@ class MiniMaxAudioProviderTest {
     @AfterEach
     void tearDown() {
         System.clearProperty("zhlearn.home");
+        System.clearProperty("zhlearn.disable.ffmpeg");
     }
 
     private MiniMaxAudioProvider createProvider(MiniMaxTtsClient client) {
@@ -40,6 +41,7 @@ class MiniMaxAudioProviderTest {
     @Test
     void returnsFourVoicesAndCachesResults() throws Exception {
         System.setProperty("zhlearn.home", tmpHome.toString());
+        System.setProperty("zhlearn.disable.ffmpeg", "1");
 
         FakeMiniMaxClient client = new FakeMiniMaxClient();
         MiniMaxAudioProvider provider = createProvider(client);

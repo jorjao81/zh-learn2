@@ -29,6 +29,7 @@ class PrePlaybackTest {
     void setup() throws Exception {
         tmpHome = Files.createTempDirectory("zhlearn-cli-test-home");
         System.setProperty("zhlearn.home", tmpHome.toString());
+        System.setProperty("zhlearn.disable.ffmpeg", "1");
 
         audioPaths = new AudioPaths();
         AudioNormalizer audioNormalizer = new AudioNormalizer();
@@ -39,6 +40,7 @@ class PrePlaybackTest {
     @AfterEach
     void tearDown() {
         System.clearProperty("zhlearn.home");
+        System.clearProperty("zhlearn.disable.ffmpeg");
         try {
             Files.walk(tmpHome)
                     .sorted(Comparator.reverseOrder())

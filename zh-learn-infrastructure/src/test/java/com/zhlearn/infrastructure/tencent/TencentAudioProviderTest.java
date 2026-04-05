@@ -27,6 +27,7 @@ class TencentAudioProviderTest {
     @AfterEach
     void tearDown() {
         System.clearProperty("zhlearn.home");
+        System.clearProperty("zhlearn.disable.ffmpeg");
     }
 
     private TencentAudioProvider createProvider(TencentTtsClient client) {
@@ -39,6 +40,7 @@ class TencentAudioProviderTest {
     @Test
     void returnsTwoVoicesAndCachesResults() {
         System.setProperty("zhlearn.home", tmpHome.toString());
+        System.setProperty("zhlearn.disable.ffmpeg", "1");
 
         FakeTencentClient client = new FakeTencentClient();
         TencentAudioProvider provider = createProvider(client);
@@ -118,6 +120,7 @@ class TencentAudioProviderTest {
     @Test
     void handlesVoiceMappingCorrectly() {
         System.setProperty("zhlearn.home", tmpHome.toString());
+        System.setProperty("zhlearn.disable.ffmpeg", "1");
 
         FakeTencentClient client = new FakeTencentClient();
         TencentAudioProvider provider = createProvider(client);

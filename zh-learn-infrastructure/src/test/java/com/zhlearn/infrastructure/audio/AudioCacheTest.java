@@ -19,11 +19,7 @@ class AudioCacheTest {
     void setup() throws Exception {
         tmpHome = Files.createTempDirectory("zhlearn-test-home");
         System.setProperty("zhlearn.home", tmpHome.toString());
-        // Disable ffmpeg to make test stable in CI
-        // Note: we cannot set env vars reliably in JVM; AudioNormalizer checks env at runtime.
-        // We'll rely on copy fallback by ensuring ffmpeg is likely absent, but create mp3-like
-        // file.
-        // To be robust, write a tiny file and let fallback copy handle it if ffmpeg not present.
+        System.setProperty("zhlearn.disable.ffmpeg", "1");
 
         audioPaths = new AudioPaths();
         AudioNormalizer audioNormalizer = new AudioNormalizer();
@@ -33,6 +29,7 @@ class AudioCacheTest {
     @AfterEach
     void tearDown() throws Exception {
         System.clearProperty("zhlearn.home");
+        System.clearProperty("zhlearn.disable.ffmpeg");
         // best-effort cleanup
         try {
             Files.walk(tmpHome)
