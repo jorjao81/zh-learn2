@@ -56,10 +56,10 @@ class MiniMaxAudioProviderTest {
             assertThat(path).isAbsolute();
         }
 
-        assertThat(pronunciations.get(0).getFileName().toString()).contains("Wise_Woman");
-        assertThat(pronunciations.get(1).getFileName().toString()).contains("Deep_Voice_Man");
-        assertThat(pronunciations.get(2).getFileName().toString()).contains("Young_Knight");
-        assertThat(pronunciations.get(3).getFileName().toString()).contains("Calm_Woman");
+        assertThat(pronunciations.get(0).getFileName().toString()).contains("Male_Announcer");
+        assertThat(pronunciations.get(1).getFileName().toString()).contains("News_Anchor");
+        assertThat(pronunciations.get(2).getFileName().toString()).contains("IntellectualGirl");
+        assertThat(pronunciations.get(3).getFileName().toString()).contains("Crisp_Girl");
 
         for (Path path : pronunciations) {
             assertThat(Files.exists(path)).isTrue();
@@ -99,12 +99,11 @@ class MiniMaxAudioProviderTest {
         assertThat(provider.getType()).isEqualTo(ProviderType.AI);
         assertThat(provider.getDescription())
                 .contains("MiniMax")
-                .contains("Speech-2.6-HD")
-                .contains("Wise_Woman")
-                .contains("Deep_Voice_Man")
-                .contains("Young_Knight")
-                .contains("Calm_Woman")
-                .doesNotContain("Lovely_Girl");
+                .contains("Speech-2.8-HD")
+                .contains("Male_Announcer")
+                .contains("News_Anchor")
+                .contains("IntellectualGirl")
+                .contains("Crisp_Girl");
     }
 
     /** Fake client that returns valid MP3-like data for testing. */
@@ -117,7 +116,7 @@ class MiniMaxAudioProviderTest {
                     "test-api-key",
                     "test-group-id",
                     "https://api.test.com",
-                    "speech-2.6-hd");
+                    "speech-2.8-hd");
         }
 
         @Override
@@ -139,7 +138,7 @@ class MiniMaxAudioProviderTest {
                     "test-api-key",
                     "test-group-id",
                     "https://api.test.com",
-                    "speech-2.6-hd");
+                    "speech-2.8-hd");
         }
 
         @Override

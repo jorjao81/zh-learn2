@@ -9,5 +9,5 @@ Feature: Providers listing includes Qwen TTS audio provider
       | substring |
       | qwen-tts |
       | Cherry |
-      | Serena |
-      | Chelsie |
+      | Ethan |
+      | Nofish |

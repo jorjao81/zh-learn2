@@ -90,7 +90,7 @@ class TencentTtsClient {
             req.setSessionId(UUID.randomUUID().toString());
             req.setVoiceType((long) voiceType);
             req.setCodec("mp3");
-            req.setSampleRate(16000L);
+            req.setSampleRate(24000L);
 
             TextToVoiceResponse resp = client.TextToVoice(req);
 

@@ -21,7 +21,7 @@ public record RateLimiterConfig(
         double recoveryMultiplier,
         Duration defaultBackoff) {
 
-    /** Configuration for Qwen TTS - 180 RPM limit for qwen3-tts-flash-2025-11-27. */
+    /** Configuration for Qwen TTS - 180 RPM limit for qwen3-tts-flash. */
     public static RateLimiterConfig forQwen() {
         return new RateLimiterConfig(
                 3, // 3 concurrent requests burst (conservative)

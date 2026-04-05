@@ -21,7 +21,7 @@ Feature: Parse Pleco Command
       秽	hui4	(orig.) to be overrun with weeds → weeds ⇒ dirty, filthy => debauchery
       液态	ye4tai4	noun liquid state; liquidness
       """
-    When I run parse-pleco with audio parameters "--explanation-provider=openrouter --definition-formatter-provider=openrouter --example-provider=openrouter --decomposition-provider=openrouter --parallel-threads=10 --model=google/gemini-2.5-flash-lite-preview-09-2025 --audio-provider=minimax-tts --audio-selections=秽:minimax-tts:Wise_Woman;液态:minimax-tts:Wise_Woman"
+    When I run parse-pleco with audio parameters "--explanation-provider=openrouter --definition-formatter-provider=openrouter --example-provider=openrouter --decomposition-provider=openrouter --parallel-threads=10 --model=google/gemini-2.5-flash-lite-preview-09-2025 --audio-provider=minimax-tts --audio-selections=秽:minimax-tts:Chinese (Mandarin)_Male_Announcer;液态:minimax-tts:Chinese (Mandarin)_Male_Announcer"
     Then the exit code should be 0
     And the Anki export file should exist
     And the audio cache should contain files for word "秽" from provider "minimax-tts"

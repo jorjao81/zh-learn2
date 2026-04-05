@@ -17,7 +17,7 @@ public final class MiniMaxConfig {
     public static final String GROUP_ID_ENV = "MINIMAX_GROUP_ID";
     public static final String BASE_URL_ENV = "MINIMAX_BASE_URL";
     public static final String DEFAULT_BASE_URL = "https://api.minimaxi.chat";
-    public static final String DEFAULT_MODEL = "speech-2.6-hd";
+    public static final String DEFAULT_MODEL = "speech-2.8-hd";
 
     private MiniMaxConfig() {}
 

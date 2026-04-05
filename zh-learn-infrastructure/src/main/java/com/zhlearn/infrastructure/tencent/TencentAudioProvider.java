@@ -20,7 +20,7 @@ import com.zhlearn.infrastructure.ratelimit.ProviderRateLimiter;
 public class TencentAudioProvider extends AbstractTtsAudioProvider {
     private static final String NAME = "tencent-tts";
 
-    // Voice mapping as specified by user
+    // Premium voices at 24kHz sample rate for improved pronunciation quality
     private static final Map<Integer, String> VOICES = new LinkedHashMap<>();
 
     static {

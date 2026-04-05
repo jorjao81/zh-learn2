@@ -170,7 +170,7 @@ public class ProvidersCommand implements Runnable {
         providers.add(
                 new ProviderInfo(
                         "qwen-tts",
-                        "Qwen text-to-speech (voices: Cherry, Serena, Chelsie)",
+                        "Qwen text-to-speech (voices: Cherry, Ethan, Nofish, Jennifer, Elias)",
                         ProviderType.AI,
                         EnumSet.of(ProviderClass.AUDIO)));
         providers.add(
@@ -182,7 +182,7 @@ public class ProvidersCommand implements Runnable {
         providers.add(
                 new ProviderInfo(
                         "minimax-tts",
-                        "MiniMax Speech-2.6-HD (voices: Wise_Woman, Deep_Voice_Man, Lovely_Girl, Young_Knight, Calm_Woman)",
+                        "MiniMax Speech-2.8-HD (voices: Male_Announcer, News_Anchor, IntellectualGirl, Crisp_Girl)",
                         ProviderType.AI,
                         EnumSet.of(ProviderClass.AUDIO)));
 

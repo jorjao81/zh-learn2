@@ -9,7 +9,7 @@ Feature: MiniMax TTS end-to-end audio generation
       """
       学习	xue2xi2	to study; to learn
       """
-    When I run parse-pleco with audio parameters "--explanation-provider=openrouter --definition-formatter-provider=openrouter --example-provider=openrouter --decomposition-provider=openrouter --model=google/gemini-2.5-flash-lite-preview-09-2025 --audio-selections=学习:minimax-tts:Wise_Woman"
+    When I run parse-pleco with audio parameters "--explanation-provider=openrouter --definition-formatter-provider=openrouter --example-provider=openrouter --decomposition-provider=openrouter --model=google/gemini-2.5-flash-lite-preview-09-2025 --audio-selections=学习:minimax-tts:Chinese (Mandarin)_Male_Announcer"
     Then the exit code should be 0
     And the Anki export file should exist
     And the audio cache should contain files for word "学习" from provider "minimax-tts"

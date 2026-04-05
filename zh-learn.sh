@@ -29,5 +29,6 @@ exec java $JAVA_OPTS \
     --module-path "$MODULE_PATH" \
     --enable-preview \
     --enable-native-access=org.fusesource.jansi,org.jline.nativ,ALL-UNNAMED \
+    --add-opens tencentcloud.sdk.java.common/com.tencentcloudapi.common=com.google.gson \
     --module com.zhlearn.cli/com.zhlearn.cli.ZhLearnApplication \
     "$@"

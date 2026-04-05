@@ -23,7 +23,7 @@ import com.zhlearn.infrastructure.ratelimit.ProviderRateLimiter;
 import io.helidon.faulttolerance.Retry;
 
 /**
- * HTTP client for MiniMax TTS API (speech-2.6-hd model). Uses synchronous mode with hex-encoded
+ * HTTP client for MiniMax TTS API (speech-2.8-hd model). Uses synchronous mode with hex-encoded
  * audio response for simplicity.
  */
 class MiniMaxTtsClient {

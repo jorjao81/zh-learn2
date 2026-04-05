@@ -19,7 +19,7 @@ import com.zhlearn.infrastructure.audio.AudioPaths;
 import com.zhlearn.infrastructure.ratelimit.ProviderRateLimiter;
 
 /**
- * Audio provider using MiniMax's TTS API (speech-2.6-hd model). MiniMax is ranked #1 globally for
+ * Audio provider using MiniMax's TTS API (speech-2.8-hd model). MiniMax is ranked #1 globally for
  * TTS quality, with particularly excellent Chinese/Mandarin support.
  *
  * <p>Requires environment variables:
@@ -32,9 +32,13 @@ import com.zhlearn.infrastructure.ratelimit.ProviderRateLimiter;
 public class MiniMaxAudioProvider extends AbstractTtsAudioProvider {
     private static final String NAME = "minimax-tts";
 
-    // Selected voices for diverse Mandarin Chinese coverage
+    // Selected voices for clear standard Mandarin pronunciation (official 2.8 voice IDs)
     private static final List<String> VOICES =
-            List.of("Wise_Woman", "Deep_Voice_Man", "Young_Knight", "Calm_Woman");
+            List.of(
+                    "Chinese (Mandarin)_Male_Announcer",
+                    "Chinese (Mandarin)_News_Anchor",
+                    "Chinese (Mandarin)_IntellectualGirl",
+                    "Chinese (Mandarin)_Crisp_Girl");
 
     private MiniMaxTtsClient client;
     private final HttpClient httpClient;
@@ -61,7 +65,7 @@ public class MiniMaxAudioProvider extends AbstractTtsAudioProvider {
 
     @Override
     public String getDescription() {
-        return "MiniMax Speech-2.6-HD with 4 Mandarin voices (" + String.join(", ", VOICES) + ")";
+        return "MiniMax Speech-2.8-HD with 4 Mandarin voices (" + String.join(", ", VOICES) + ")";
     }
 
     @Override

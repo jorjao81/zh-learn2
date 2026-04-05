@@ -8,17 +8,17 @@ Feature: MiniMax TTS audio provider integration
     Then the command output should include lines:
       | substring |
       | minimax-tts |
-      | Wise_Woman |
-      | Deep_Voice_Man |
-      | Young_Knight |
-      | Calm_Woman |
+      | Male_Announcer |
+      | News_Anchor |
+      | IntellectualGirl |
+      | Crisp_Girl |
 
   Scenario: MiniMax TTS provider appears in AI provider list
     When I execute the CLI command "providers --type AI"
     Then the command output should include lines:
       | substring |
       | minimax-tts |
-      | MiniMax Speech-2.6-HD |
+      | MiniMax Speech-2.8-HD |
 
   Scenario: MiniMax TTS provider shows audio capability
     When I execute the CLI command "providers --detailed"
