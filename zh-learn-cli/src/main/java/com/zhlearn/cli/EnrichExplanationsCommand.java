@@ -57,6 +57,13 @@ public class EnrichExplanationsCommand implements Runnable {
                     "Pre-configured audio selections (format: term:provider:description;term:provider:description)")
     private String audioSelectionsParam;
 
+    @Option(
+            names = {"--exclude-provider"},
+            description =
+                    "Exclude audio providers by name (repeatable, e.g. --exclude-provider qwen-tts)",
+            split = ",")
+    private List<String> excludeProviders = List.of();
+
     @ParentCommand private MainCommand parent;
 
     @Override
@@ -90,13 +97,19 @@ public class EnrichExplanationsCommand implements Runnable {
             throw new UncheckedIOException("Failed to create audio directory: " + audioDir, e);
         }
 
+        // Filter providers if --exclude-provider specified
+        var providers =
+                parent.getAudioProviders().stream()
+                        .filter(p -> !excludeProviders.contains(p.getName()))
+                        .toList();
+
         // Download audio for each entry via interactive selection
         Map<String, AudioSelection> preSelections =
                 AudioSelectionUtils.parseAudioSelections(audioSelectionsParam);
         AudioOrchestrator orchestrator =
-                new AudioOrchestrator(
-                        parent.getAudioProviders(), parent.getAudioExecutor().getExecutor());
+                new AudioOrchestrator(providers, parent.getAudioExecutor().getExecutor());
 
+        Path output = outputPath != null ? outputPath : inputPath;
         Map<String, Path> audioFiles = new HashMap<>(); // term -> local audio path
 
         for (int i = 0; i < entriesToEnrich.size(); i++) {
@@ -124,24 +137,25 @@ public class EnrichExplanationsCommand implements Runnable {
                 }
                 audioFiles.put(entry.term, localPath);
                 System.out.println("  -> " + localPath.getFileName());
+
+                // Write output after each successful selection so progress is not lost
+                writeEnrichedOutput(lines, audioFiles, output);
             } else {
                 System.out.println("  Skipped.");
             }
         }
 
-        // Pass 2: insert ## Pronunciation sections
-        String enriched = insertPronunciationSections(lines, audioFiles);
+        System.out.println(
+                "\nEnriched " + audioFiles.size() + " entries with audio. Written to: " + output);
+    }
 
-        // Write output
-        Path output = outputPath != null ? outputPath : inputPath;
+    private void writeEnrichedOutput(String[] lines, Map<String, Path> audioFiles, Path output) {
+        String enriched = insertPronunciationSections(lines, audioFiles);
         try {
             Files.writeString(output, enriched, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new UncheckedIOException("Failed to write output: " + output, e);
         }
-
-        System.out.println(
-                "\nEnriched " + audioFiles.size() + " entries with audio. Written to: " + output);
     }
 
     private Path selectAudio(

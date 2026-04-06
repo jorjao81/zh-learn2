@@ -175,12 +175,6 @@ public class ProvidersCommand implements Runnable {
                         EnumSet.of(ProviderClass.AUDIO)));
         providers.add(
                 new ProviderInfo(
-                        "tencent-tts",
-                        "Tencent text-to-speech (voices: zhiwei, zhiling)",
-                        ProviderType.AI,
-                        EnumSet.of(ProviderClass.AUDIO)));
-        providers.add(
-                new ProviderInfo(
                         "minimax-tts",
                         "MiniMax Speech-2.8-HD (voices: Male_Announcer, News_Anchor, IntellectualGirl, Crisp_Girl)",
                         ProviderType.AI,

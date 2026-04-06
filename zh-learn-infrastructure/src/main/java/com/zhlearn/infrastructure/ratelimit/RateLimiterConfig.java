@@ -33,7 +33,7 @@ public record RateLimiterConfig(
                 );
     }
 
-    /** Configuration for Tencent TTS - more permissive. */
+    /** Configuration for Tencent TTS - premium voices have 20 concurrent limit. */
     public static RateLimiterConfig forTencent() {
         return new RateLimiterConfig(
                 10, // 10 concurrent requests burst

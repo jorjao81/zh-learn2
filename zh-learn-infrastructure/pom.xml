@@ -78,41 +78,7 @@
             <version>2.5.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.tencentcloudapi</groupId>
-            <artifactId>tencentcloud-sdk-java-tts</artifactId>
-            <version>3.1.880</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.squareup.okio</groupId>
-                    <artifactId>okio</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.squareup.okio</groupId>
-                    <artifactId>okio-jvm</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>com.squareup.okio</groupId>
-            <artifactId>okio-jvm</artifactId>
-            <version>3.4.0</version>
-        </dependency>
-
-        <!-- Gson - required by Tencent Cloud SDK internally -->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.10.1</version>
-        </dependency>
-
-        <!-- Kotlin stdlib - required by OkHttp (used by Tencent SDK) -->
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
-            <version>1.9.22</version>
-        </dependency>
+        <!-- Tencent TTS uses direct HTTP calls - no SDK dependency needed -->
 
         <!-- Testing -->
         <dependency>

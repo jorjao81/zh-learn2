@@ -20,7 +20,6 @@ import com.zhlearn.infrastructure.qwen.QwenAudioProvider;
 import com.zhlearn.infrastructure.ratelimit.ProviderRateLimiter;
 import com.zhlearn.infrastructure.ratelimit.RateLimiterConfig;
 import com.zhlearn.infrastructure.ratelimit.RateLimiterRegistry;
-import com.zhlearn.infrastructure.tencent.TencentAudioProvider;
 
 /**
  * Application context for centralized dependency injection and bean management. Provides explicit,
@@ -63,8 +62,10 @@ public class ApplicationContext {
         this.rateLimiterRegistry = new RateLimiterRegistry();
         ProviderRateLimiter qwenRateLimiter =
                 rateLimiterRegistry.getOrCreate("qwen-tts", RateLimiterConfig.forQwen());
-        ProviderRateLimiter tencentRateLimiter =
-                rateLimiterRegistry.getOrCreate("tencent-tts", RateLimiterConfig.forTencent());
+        // TODO: Re-enable Tencent TTS with ap-guangzhou region for ultra-natural voices
+        // (502xxx/602xxx)
+        // The international endpoint (ap-singapore) only supports premium voices (101xxx).
+        // Ultra-natural voices require mainland China servers.
         ProviderRateLimiter minimaxRateLimiter =
                 rateLimiterRegistry.getOrCreate("minimax-tts", RateLimiterConfig.forMiniMax());
 
@@ -87,13 +88,7 @@ public class ApplicationContext {
                                 audioExecutor.getExecutor(),
                                 HttpClient.newHttpClient(),
                                 null,
-                                qwenRateLimiter),
-                        new TencentAudioProvider(
-                                audioCache,
-                                audioPaths,
-                                audioExecutor.getExecutor(),
-                                null,
-                                tencentRateLimiter));
+                                qwenRateLimiter));
     }
 
     /** Create a new ApplicationContext. */

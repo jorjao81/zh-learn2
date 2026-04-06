@@ -3,6 +3,7 @@ package com.zhlearn.infrastructure.tencent;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
+import java.net.http.HttpClient;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -34,11 +35,12 @@ class TencentAudioProviderTest {
         AudioPaths audioPaths = new AudioPaths();
         AudioNormalizer normalizer = new AudioNormalizer();
         AudioCache audioCache = new AudioCache(audioPaths, normalizer);
-        return new TencentAudioProvider(audioCache, audioPaths, null, client, null);
+        return new TencentAudioProvider(
+                audioCache, audioPaths, null, HttpClient.newHttpClient(), client, null);
     }
 
     @Test
-    void returnsTwoVoicesAndCachesResults() {
+    void returnsFourVoicesAndCachesResults() {
         System.setProperty("zhlearn.home", tmpHome.toString());
         System.setProperty("zhlearn.disable.ffmpeg", "1");
 
@@ -50,17 +52,18 @@ class TencentAudioProviderTest {
 
         List<Path> pronunciations = provider.getPronunciations(word, pinyin);
 
-        assertThat(pronunciations).hasSize(2);
-        assertThat(pronunciations.get(0)).isAbsolute();
-        assertThat(pronunciations.get(1)).isAbsolute();
+        assertThat(pronunciations).hasSize(4);
+        for (Path path : pronunciations) {
+            assertThat(path).isAbsolute();
+            assertThat(Files.exists(path)).isTrue();
+        }
 
         assertThat(pronunciations.get(0).getFileName().toString())
                 .contains("zhiwei")
                 .doesNotContain("xuéxí");
         assertThat(pronunciations.get(1).getFileName().toString()).contains("zhiling");
-
-        assertThat(Files.exists(pronunciations.get(0))).isTrue();
-        assertThat(Files.exists(pronunciations.get(1))).isTrue();
+        assertThat(pronunciations.get(2).getFileName().toString()).contains("zhiyun");
+        assertThat(pronunciations.get(3).getFileName().toString()).contains("zhihua");
 
         assertThat(provider.getPronunciation(word, pinyin)).contains(pronunciations.get(0));
 
@@ -68,8 +71,8 @@ class TencentAudioProviderTest {
         List<Path> cached = provider.getPronunciations(word, pinyin);
         assertThat(cached).containsExactlyElementsOf(pronunciations);
 
-        // Verify client was only called twice (once per voice) due to caching
-        assertThat(client.callCount).isEqualTo(2);
+        // Verify client was only called four times (once per voice) due to caching
+        assertThat(client.callCount).isEqualTo(4);
     }
 
     @Test
@@ -94,7 +97,11 @@ class TencentAudioProviderTest {
         TencentAudioProvider provider = createProvider(new FakeTencentClient());
         assertThat(provider.getName()).isEqualTo("tencent-tts");
         assertThat(provider.getType()).isEqualTo(ProviderType.AI);
-        assertThat(provider.getDescription()).contains("zhiwei").contains("zhiling");
+        assertThat(provider.getDescription())
+                .contains("zhiwei")
+                .contains("zhiling")
+                .contains("zhiyun")
+                .contains("zhihua");
     }
 
     @Test
@@ -133,8 +140,8 @@ class TencentAudioProviderTest {
 
         provider.getPronunciations(word, pinyin);
 
-        // Should have called with both voice IDs: 101052 (zhiwei) and 101002 (zhiling)
-        assertThat(client.receivedVoiceTypes).containsExactly(101052, 101002);
+        // Should have called with all four ultra-natural voice IDs
+        assertThat(client.receivedVoiceTypes).containsExactly(101052, 101002, 101004, 101010);
     }
 
     private static class FakeTencentClient extends TencentTtsClient {
@@ -143,11 +150,12 @@ class TencentAudioProviderTest {
 
         FakeTencentClient() {
             super(
+                    HttpClient.newHttpClient(),
                     "test-secret-id",
                     "test-secret-key",
                     "ap-singapore",
                     "test.endpoint.com",
-                    "https://",
+                    "https://test.endpoint.com",
                     null);
         }
 
@@ -166,11 +174,12 @@ class TencentAudioProviderTest {
     private static class FailingTencentClient extends TencentTtsClient {
         FailingTencentClient() {
             super(
+                    HttpClient.newHttpClient(),
                     "test-secret-id",
                     "test-secret-key",
                     "ap-singapore",
                     "test.endpoint.com",
-                    "https://",
+                    "https://test.endpoint.com",
                     null);
         }
 
@@ -183,11 +192,12 @@ class TencentAudioProviderTest {
     private static class EmptyTencentClient extends TencentTtsClient {
         EmptyTencentClient() {
             super(
+                    HttpClient.newHttpClient(),
                     "test-secret-id",
                     "test-secret-key",
                     "ap-singapore",
                     "test.endpoint.com",
-                    "https://",
+                    "https://test.endpoint.com",
                     null);
         }
 

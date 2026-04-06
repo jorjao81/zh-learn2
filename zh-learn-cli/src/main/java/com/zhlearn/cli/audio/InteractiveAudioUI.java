@@ -146,7 +146,6 @@ public class InteractiveAudioUI {
             case "anki" -> "Anki";
             case "forvo" -> "Forvo";
             case "qwen-tts" -> "Qwen TTS";
-            case "tencent-tts" -> "Tencent TTS";
             default -> providerLabel;
         };
     }

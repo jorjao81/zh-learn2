@@ -27,11 +27,7 @@ module com.zhlearn.infrastructure {
     // Pinyin4j for Chinese to Pinyin conversion
     requires pinyin4j;
 
-    // Tencent Cloud SDK for TTS (SDK uses Gson and OkHttp/Kotlin internally)
-    requires tencentcloud.sdk.java.common;
-    requires tencentcloud.sdk.java.tts;
-    requires com.google.gson;
-    requires kotlin.stdlib;
+    // Tencent TTS uses direct HTTP calls with TC3-HMAC-SHA256 signing (no SDK)
 
     // Internal pinyin utilities (tone converter)
     requires com.zhlearn.pinyin;
