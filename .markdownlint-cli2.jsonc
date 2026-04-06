@@ -81,6 +81,8 @@
     "target/**",
     "**/target/**",
     "**/.git/**",
-    "**/resources/**/prompt-template.md"
+    "**/resources/**/prompt-template.md",
+    "guided-reading/**",
+    "enriched.md"
   ]
 }
