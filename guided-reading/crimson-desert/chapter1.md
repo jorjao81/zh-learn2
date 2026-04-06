@@ -3942,6 +3942,10 @@ In an RPG or open-world game, this likely appears as:
 ## Pinyin
 huàng you
 
+## Pronunciation
+
+[huàng you](audio/forvo_晃悠_Rhapsodia_E214EC8CF3.mp3)
+
 ## Literal Translation
 "To sway / to wander / to stroll aimlessly."
 
@@ -4000,6 +4004,10 @@ In a game context, this likely appears as:
 
 ## Pinyin
 què rèn wán bì
+
+## Pronunciation
+
+[què rèn wán bì](audio/minimax-tts_确认完毕_Chinese__Mandarin__News_Anchor_A462393BC8.mp3)
 
 ## Literal Translation
 "Confirmation complete." / "Verified."
@@ -4086,6 +4094,10 @@ In a game like Crimson Desert, this likely appears as:
 ## Pinyin
 bié rě shì
 
+## Pronunciation
+
+[bié rě shì](audio/minimax-tts_别惹事_Chinese__Mandarin__Male_Announcer_81D74DA419.mp3)
+
 ## Literal Translation
 "Don't cause trouble." / "Don't stir up problems."
 
@@ -4159,6 +4171,10 @@ In a game narrative, this likely appears as:
 ## Pinyin
 lǐ yí tīng
 
+## Pronunciation
+
+[lǐ yí tīng](audio/minimax-tts_礼仪厅_Chinese__Mandarin__Male_Announcer_53FE8E491F.mp3)
+
 ## Literal Translation
 "Etiquette hall / Protocol office / Ceremonial chamber."
 
@@ -4226,6 +4242,10 @@ In a game like Crimson Desert, this likely refers to:
 
 ## Pinyin
 xǔ kě
+
+## Pronunciation
+
+[xǔ kě](audio/forvo_许可_MarvinMeow_4BCEB2EB64.mp3)
 
 ## Literal Translation
 "Permission / Authorization / To permit."
@@ -4297,6 +4317,10 @@ Note the connection to **通行证** (pass/permit): 许可 is the abstract *auth
 
 ## Pinyin
 jī huó gāi dì diǎn
+
+## Pronunciation
+
+[jī huó gāi dì diǎn](audio/minimax-tts_激活该地点_Chinese__Mandarin__Male_Announcer_537D8234E0.mp3)
 
 ## Literal Translation
 "Activate that location." / "Unlock this location."
@@ -4383,6 +4407,10 @@ In an open-world game like Crimson Desert, this almost certainly refers to:
 ## Pinyin
 gǔ lì liàng
 
+## Pronunciation
+
+[gǔ lì liàng](audio/minimax-tts_股力量_Chinese__Mandarin__Male_Announcer_EC58CB60FE.mp3)
+
 ## Literal Translation
 "[A measure word] force/power."
 
@@ -4441,6 +4469,10 @@ In a fantasy or open-world game like Crimson Desert, **股力量** likely appear
 
 ## Pinyin
 sù zào yuán fèn
+
+## Pronunciation
+
+[sù zào yuán fèn](audio/minimax-tts_塑造缘分_Chinese__Mandarin__News_Anchor_1BD5B3181D.mp3)
 
 ## Literal Translation
 "To shape fate." / "To mold karmic connections."
@@ -4515,6 +4547,10 @@ In a game like Crimson Desert, this likely refers to:
 ## Pinyin
 fǎ zé
 
+## Pronunciation
+
+[fǎ zé](audio/minimax-tts_法则_Chinese__Mandarin__Male_Announcer_C1F86C39FA.mp3)
+
 ## Literal Translation
 "Law / Principle / Canon."
 
@@ -4574,6 +4610,10 @@ In a fantasy RPG like Crimson Desert, **法则** likely appears in:
 
 ## Pinyin
 gù ér zhèr yě bèi yù wéi shì jiè de gēn yuán
+
+## Pronunciation
+
+[gù ér zhèr yě bèi yù wéi shì jiè de gēn yuán](audio/minimax-tts_故而这儿也被誉为世界的根源_Chinese__Mandarin__Male_Announcer_2662153E71.mp3)
 
 ## Literal Translation
 "Therefore, here also is praised as the world's origin."
@@ -4637,6 +4677,10 @@ This is likely **flavor text** or a **lore description** found on a map, in a lo
 
 ## Pinyin
 zhèng tuō mìng yùn shù fù zhī rén
+
+## Pronunciation
+
+[zhèng tuō mìng yùn shù fù zhī rén](audio/minimax-tts_挣脱命运束缚之人_Chinese__Mandarin__Crisp_Girl_43A0F251C5.mp3)
 
 ## Literal Translation
 "The person who breaks free from fate's bindings." / "The one who shatters the shackles of destiny."
@@ -4712,6 +4756,10 @@ This is almost certainly the core theme of the game's narrative.
 
 ## Pinyin
 zài wèi lái de lǚ chéng zhōng zì huì chóng féng
+
+## Pronunciation
+
+[zài wèi lái de lǚ chéng zhōng zì huì chóng féng](audio/minimax-tts_在未来的旅程中自会重逢_Chinese__Mandarin__News_Anchor_46037412B1.mp3)
 
 ## Literal Translation
 "In the future journey, [we] will naturally reunite." / "Our paths will cross again as we travel on."
@@ -4806,6 +4854,10 @@ In a narrative-driven RPG, this is a classic **companion parting line**. It like
 ## Pinyin
 zhì xù
 
+## Pronunciation
+
+[zhì xù](audio/forvo_秩序_PLZZ_05C7D6AD80.mp3)
+
 ## Literal Translation
 "Order / System / Regularity."
 
@@ -4862,6 +4914,10 @@ In a fantasy RPG, 秩序 likely refers to:
 
 ## Pinyin
 chè dǐ xiāo shī
+
+## Pronunciation
+
+[chè dǐ xiāo shī](audio/minimax-tts_彻底消失_Chinese__Mandarin__Male_Announcer_BD3EAF04C1.mp3)
 
 ## Literal Translation
 "Thoroughly disappear." / "Vanish completely."
@@ -4927,6 +4983,10 @@ In a narrative or lore context, this likely describes:
 ## Pinyin
 zhèng guǐ
 
+## Pronunciation
+
+[zhèng guǐ](audio/forvo_正轨_MarvinMeow_48AF399EFF.mp3)
+
 ## Literal Translation
 "Right track / Correct path."
 
@@ -4980,6 +5040,10 @@ In an RPG narrative, this likely appears when:
 
 ## Pinyin
 xiū fù
+
+## Pronunciation
+
+[xiū fù](audio/minimax-tts_修复_Chinese__Mandarin__News_Anchor_C63879F55F.mp3)
 
 ## Literal Translation
 "Repair / Restore."
@@ -5038,6 +5102,10 @@ In a game like Crimson Desert, this likely appears as:
 
 ## Pinyin
 jiāng jìn lì níng jù yú zhǎng xīn shùn jiān bào fā, jiàng dī qí fáng yù lì
+
+## Pronunciation
+
+[jiāng jìn lì níng jù yú zhǎng xīn shùn jiān bào fā, jiàng dī qí fáng yù lì](audio/minimax-tts_将劲力凝聚于掌心瞬间爆发_降低其防御力_Chinese__Mandarin__News_Anchor_16D151342A.mp3)
 
 ## Literal Translation
 "Condense force into the palm [and] instantly erupt, reducing its defense power."
@@ -5126,6 +5194,10 @@ In a game context, this describes a **combat skill** or **passive ability**:
 ## Pinyin
 jìng fǎ
 
+## Pronunciation
+
+[jìng fǎ](audio/minimax-tts_劲法_Chinese__Mandarin__Crisp_Girl_37E8B7591C.mp3)
+
 ## Literal Translation
 "Method of power / Technique of internal force."
 
@@ -5163,6 +5235,10 @@ This likely refers to a **skill tree category**, a specific **combat style**, or
 
 ## Pinyin
 kuī jiàn
+
+## Pronunciation
+
+[kuī jiàn](audio/forvo_窥见_snklm_C03C906193.mp3)
 
 ## Literal Translation
 "To catch a glimpse of / To perceive."
@@ -5210,6 +5286,10 @@ Likely appears in lore text or quest dialogue about discovering secrets, seeing 
 ## Pinyin
 jiān shì zhě
 
+## Pronunciation
+
+[jiān shì zhě](audio/minimax-tts_监视者_Chinese__Mandarin__Crisp_Girl_950670EE67.mp3)
+
 ## Literal Translation
 "Observer / Watcher / Monitor."
 
@@ -5254,6 +5334,10 @@ Likely refers to an **enemy type** (e.g., a floating eye, a sniper, a guard), a 
 ## Pinyin
 shàn yì
 
+## Pronunciation
+
+[shàn yì](audio/forvo_善意_ZITSYZE_69869DA2D6.mp3)
+
 ## Literal Translation
 "Goodwill / Good intentions."
 
@@ -5297,6 +5381,10 @@ Common in dialogue ("I come with **善意**" / "I mean no harm") or as a **Reput
 
 ## Pinyin
 yǔ yì
+
+## Pronunciation
+
+[yǔ yì](audio/forvo_羽翼_295842264_83A9277C25.mp3)
 
 ## Literal Translation
 "Wings / Plumage."
@@ -5343,6 +5431,10 @@ Metaphorical meaning: **Allies, support, or protection.**
 ## Pinyin
 shān chún
 
+## Pronunciation
+
+[shān chún](audio/minimax-tts_山鹑_Chinese__Mandarin__Male_Announcer_15B3E5C5EE.mp3)
+
 ## Literal Translation
 "Partridge / Mountain Quail."
 
@@ -5387,6 +5479,10 @@ Likely refers to:
 
 ## Pinyin
 huá lì
+
+## Pronunciation
+
+[huá lì](audio/minimax-tts_华丽_Chinese__Mandarin__Male_Announcer_92096EBAAB.mp3)
 
 ## Literal Translation
 "Magnificent / Gorgeous / Resplendent."
@@ -5442,6 +5538,10 @@ Describes something visually stunning, usually with rich colors, intricate detai
 
 ## Pinyin
 bèng tiào
+
+## Pronunciation
+
+[bèng tiào](audio/forvo_蹦跳_MarvinMeow_65475C261B.mp3)
 
 ## Literal Translation
 "To hop and skip / To jump around."
@@ -5499,6 +5599,10 @@ Likely appears in:
 
 ## Pinyin
 āi shēng tàn qì
+
+## Pronunciation
+
+[āi shēng tàn qì](audio/forvo_唉声叹气_Rhapsodia_68F2DA86D6.mp3)
 
 ## Literal Translation
 "Making sighing sounds and breathing out heavily."
@@ -5559,6 +5663,10 @@ In a narrative or game world, this likely appears in:
 ## Pinyin
 míng kè
 
+## Pronunciation
+
+[míng kè](audio/forvo_铭刻_gstanley_7DA32A32A1.mp3)
+
 ## Literal Translation
 "To engrave / To inscribe."
 
@@ -5605,6 +5713,10 @@ míng kè
 
 ## Pinyin
 shū tan xǔ duō
+
+## Pronunciation
+
+[shū tan xǔ duō](audio/minimax-tts_舒坦许多_Chinese__Mandarin__News_Anchor_CB5737A7A1.mp3)
 
 ## Literal Translation
 "Much more comfortable." / "A lot more at ease."
@@ -5672,6 +5784,10 @@ In a survival context, this is the "relief" phase after the "crisis" phase.
 ## Pinyin
 tí dāo shàng zhèn
 
+## Pronunciation
+
+[tí dāo shàng zhèn](audio/minimax-tts_提刀上阵_Chinese__Mandarin__News_Anchor_7A3924F231.mp3)
+
 ## Literal Translation
 "Lift the blade [and] enter the battle formation."
 
@@ -5733,6 +5849,10 @@ In a narrative or gameplay context, this likely appears when:
 
 ## Pinyin
 bó jué jiā
+
+## Pronunciation
+
+[bó jué jiā](audio/minimax-tts_伯爵家_Chinese__Mandarin__News_Anchor_014BCA7308.mp3)
 
 ## Literal Translation
 "The Count's family / House of the Count / The Earl's household."
@@ -5802,6 +5922,10 @@ Likely refers to:
 ## Pinyin
 dà fā léi tíng
 
+## Pronunciation
+
+[dà fā léi tíng](audio/forvo_大发雷霆_zhangchaont_98EB0CEBF6.mp3)
+
 ## Literal Translation
 "To emit a great thunderbolt of rage." / "To thunder furiously."
 
@@ -5859,6 +5983,10 @@ Likely describes the reaction of a powerful figure (like the **Count / 伯爵** 
 
 ## Pinyin
 jí hóng le yǎn
+
+## Pronunciation
+
+[jí hóng le yǎn](audio/minimax-tts_急红了眼_Chinese__Mandarin__Crisp_Girl_71BBFA312E.mp3)
 
 ## Literal Translation
 "Anxious until the eyes turned red."
@@ -5927,6 +6055,10 @@ Likely describes:
 ## Pinyin
 shè xián lì yòng
 
+## Pronunciation
+
+[shè xián lì yòng](audio/minimax-tts_涉嫌利用_Chinese__Mandarin__Crisp_Girl_D20F35AFF5.mp3)
+
 ## Literal Translation
 "Suspected of exploiting..." / "Under suspicion of using..."
 
@@ -5990,6 +6122,10 @@ In a narrative involving politics, crime, or guilds:
 ## Pinyin
 zhì zhì ān shì wù suǒ zhě
 
+## Pronunciation
+
+[zhì zhì ān shì wù suǒ zhě](audio/minimax-tts_至治安事务所者_Chinese__Mandarin__News_Anchor_06756F9985.mp3)
+
 ## Literal Translation
 "Those who arrive at the Public Security Office..." / "To visitors of the Constabulary..."
 
@@ -6050,6 +6186,10 @@ Likely appears as:
 ## Pinyin
 zuì fàn
 
+## Pronunciation
+
+[zuì fàn](audio/minimax-tts_罪犯_Chinese__Mandarin__Male_Announcer_F79EF60370.mp3)
+
 ## Literal Translation
 "Criminal / Offender."
 
@@ -6107,6 +6247,10 @@ Likely appears in:
 
 ## Pinyin
 zài zhōu biān qū yù pái huái
+
+## Pronunciation
+
+[zài zhōu biān qū yù pái huái](audio/minimax-tts_在周边区域徘徊_Chinese__Mandarin__Male_Announcer_B70DFAAD0C.mp3)
 
 ## Literal Translation
 "Loitering in the surrounding area." / "Wandering around the vicinity."
@@ -6173,6 +6317,10 @@ Likely appears in:
 ## Pinyin
 xíng dòng guǐ jì
 
+## Pronunciation
+
+[xíng dòng guǐ jì](audio/minimax-tts_行动轨迹_Chinese__Mandarin__Male_Announcer_B22B565E99.mp3)
+
 ## Literal Translation
 "Movement trajectory." / "Track of activities."
 
@@ -6235,6 +6383,10 @@ Likely appears in an **investigation or tracking quest**:
 
 ## Pinyin
 yìng fù bù liǎo
+
+## Pronunciation
+
+[yìng fù bù liǎo](audio/minimax-tts_应付不了_Chinese__Mandarin__Male_Announcer_3E86CDF53B.mp3)
 
 ## Literal Translation
 "Cannot handle / Unable to cope with."
@@ -6301,6 +6453,10 @@ Likely appears in dialogue or quest text involving:
 ## Pinyin
 jǔ jiàn
 
+## Pronunciation
+
+[jǔ jiàn](audio/forvo_举荐_duxiaodu_C8E4FA7F7B.mp3)
+
 ## Literal Translation
 "To recommend / To nominate."
 
@@ -6356,6 +6512,10 @@ Likely appears in dialogue regarding faction dynamics or character advancement:
 ## Pinyin
 shè xián
 
+## Pronunciation
+
+[shè xián](audio/minimax-tts_涉嫌_Chinese__Mandarin__Male_Announcer_8471985AAA.mp3)
+
 ## Literal Translation
 "Suspected of / Under suspicion of."
 
@@ -6408,6 +6568,10 @@ Likely appears on:
 
 ## Pinyin
 dāng chǎng jī bì
+
+## Pronunciation
+
+[dāng chǎng jī bì](audio/minimax-tts_当场击毙_Chinese__Mandarin__Male_Announcer_53AA1DFC7D.mp3)
 
 ## Literal Translation
 "At the scene, shoot to kill."
@@ -6478,6 +6642,10 @@ Likely appears on:
 ## Pinyin
 zé jǐn
 
+## Pronunciation
+
+[zé jǐn](audio/minimax-tts_则仅_Chinese__Mandarin__Male_Announcer_C470812901.mp3)
+
 ## Literal Translation
 "Then only..." / "In that case, only..."
 
@@ -6528,6 +6696,10 @@ Likely part of a complex sentence in a legal decree, rule, or quest instruction:
 
 ## Pinyin
 zhī shēn shè xiǎn
+
+## Pronunciation
+
+[zhī shēn shè xiǎn](audio/minimax-tts_只身涉险_Chinese__Mandarin__Male_Announcer_A10F0E2B9F.mp3)
 
 ## Literal Translation
 "To wade into danger with only one's body."
@@ -6592,6 +6764,10 @@ This phrase describes a heroic, reckless, or desperate act of facing a threat co
 ## Pinyin
 è de qián xiōng tiē hòu bèi
 
+## Pronunciation
+
+[è de qián xiōng tiē hòu bèi](audio/minimax-tts_饿得前胸贴后背_Chinese__Mandarin__News_Anchor_2F1E6C6069.mp3)
+
 ## Literal Translation
 "So hungry that the front chest sticks to the back."
 
@@ -6651,6 +6827,10 @@ In a survival game context, this is a clear status effect description. It implie
 ## Pinyin
 bào yǒu qī dài
 
+## Pronunciation
+
+[bào yǒu qī dài](audio/minimax-tts_抱有期待_Chinese__Mandarin__Male_Announcer_255F572027.mp3)
+
 ## Literal Translation
 "To hold expectation / To harbor hope."
 
@@ -6701,6 +6881,10 @@ In the context of the game, this might appear:
 ## Pinyin
 xìn lài
 
+## Pronunciation
+
+[xìn lài](audio/minimax-tts_信赖_Chinese__Mandarin__Crisp_Girl_9F53E92C66.mp3)
+
 ## Literal Translation
 "To trust and rely on."
 
@@ -6745,6 +6929,10 @@ In the context of the game, this is a core theme for building the player's netwo
 
 ## Pinyin
 tuō fù
+
+## Pronunciation
+
+[tuō fù](audio/forvo_托付_zhangchaont_A7E008A3FC.mp3)
 
 ## Literal Translation
 "To entrust / To commit to the care of."
@@ -6794,6 +6982,10 @@ In a game context, this is a powerful narrative tool:
 ## Pinyin
 bài tuō nǐ le
 
+## Pronunciation
+
+[bài tuō nǐ le](audio/minimax-tts_拜托你了_Chinese__Mandarin__Male_Announcer_0152D9DBC1.mp3)
+
 ## Literal Translation
 "I'm entrusting this to you." / "Please, I'm counting on you."
 
@@ -6838,6 +7030,10 @@ This likely appears when an NPC is entrusting the player with an important task,
 
 ## Pinyin
 duó huí
+
+## Pronunciation
+
+[duó huí](audio/forvo_夺回_MarvinMeow_3197A21B5E.mp3)
 
 ## Literal Translation
 "To take back / to recapture / to reclaim."
@@ -6886,6 +7082,10 @@ This is a quintessential quest/motivation word in an action-adventure game. It l
 
 ## Pinyin
 nǐ guǒ rán yǔ zhòng bù tóng
+
+## Pronunciation
+
+[nǐ guǒ rán yǔ zhòng bù tóng](audio/minimax-tts_你果然与众不同_Chinese__Mandarin__News_Anchor_3F8E3E38C3.mp3)
 
 ## Literal Translation
 "As expected, you are different from the crowd."
@@ -6938,6 +7138,10 @@ This likely appears in dialogue when an NPC observes the player doing something 
 ## Pinyin
 rào wān zi
 
+## Pronunciation
+
+[rào wān zi](audio/forvo_绕弯子_aaronran_0198F0415F.mp3)
+
 ## Literal Translation
 "To beat around the bush / to speak indirectly."
 
@@ -6983,6 +7187,10 @@ This likely appears in dialogue when a character is frustrated with someone who 
 
 ## Pinyin
 zhàn jù
+
+## Pronunciation
+
+[zhàn jù](audio/minimax-tts_占据_Chinese__Mandarin__Male_Announcer_CE292C665B.mp3)
 
 ## Literal Translation
 "To occupy / to seize / to take hold of."
@@ -7037,6 +7245,10 @@ In the game, 占据 almost certainly describes an enemy faction, rival clan, or 
 ## Pinyin
 cǎi shí chǎng
 
+## Pronunciation
+
+[cǎi shí chǎng](audio/forvo_采石场_aaronran_739FEB0CDF.mp3)
+
 ## Literal Translation
 "Quarry / stone pit."
 
@@ -7084,6 +7296,10 @@ In the game, a 采石场 is a **resource node** — a strategic economic asset. 
 ## Pinyin
 pán jù
 
+## Pronunciation
+
+[pán jù](audio/forvo_盘踞_Rhapsodia_72350CC772.mp3)
+
 ## Literal Translation
 "To entrench / to be dug in / to occupy firmly."
 
@@ -7127,6 +7343,10 @@ This likely describes an enemy faction, monster nest, or hostile group that has 
 
 ## Pinyin
 tú móu
+
+## Pronunciation
+
+[tú móu](audio/forvo_图谋_phantomwh_5AC2EF6D7D.mp3)
 
 ## Literal Translation
 "To scheme / to plot / to scheme for."
@@ -7176,6 +7396,10 @@ This likely appears in dialogue warning the player about an enemy faction's **se
 
 ## Pinyin
 cháng shí jiān áo zhǔ hòu, lián tāng lǐ dōu jìn zhe nóng nóng de ròu wèi
+
+## Pronunciation
+
+[cháng shí jiān áo zhǔ hòu, lián tāng lǐ dōu jìn zhe nóng nóng de ròu wèi](audio/minimax-tts_长时间熬煮后_连汤里都浸着浓浓的肉味_Chinese__Mandarin__News_Anchor_39CEB51AFC.mp3)
 
 ## Literal Translation
 "After long simmering, even the soup is soaked with a rich, meaty flavor."
@@ -7238,6 +7462,10 @@ This likely appears as part of a **cooking mechanic** or environmental narration
 ## Pinyin
 qián táo
 
+## Pronunciation
+
+[qián táo](audio/minimax-tts_潜逃_Chinese__Mandarin__Male_Announcer_61EB36E9F7.mp3)
+
 ## Literal Translation
 "To abscond / to flee secretly / to escape unnoticed."
 
@@ -7281,6 +7509,10 @@ This likely describes an antagonist, a thief, or a traitor who has **fled with s
 ## Pinyin
 yā sòng
 
+## Pronunciation
+
+[yā sòng](audio/forvo_押送_Rhapsodia_277E720946.mp3)
+
 ## Literal Translation
 "To escort (under guard) / to transport (prisoners or valuables)."
 
@@ -7322,6 +7554,10 @@ This likely refers to a **caravan quest**, a **prisoner transport mission**, or 
 
 ## Pinyin
 dàn ruò wèi néng shēng qín ér jiāng qí dāng chǎng jī bì, zé jǐn zhī fù shǎng jīn de yī bàn
+
+## Pronunciation
+
+[dàn ruò wèi néng shēng qín ér jiāng qí dāng chǎng jī bì, zé jǐn zhī fù shǎng jīn de yī bàn](audio/minimax-tts_但若未能生擒而将其当场击毙_则仅支付赏金的一半_Chinese__Mandarin__Male_Announcer_2F13ADADEC.mp3)
 
 ## Literal Translation
 "However, if [you] fail to capture [them] alive and instead kill [them] on the spot, then only half the bounty will be paid."
@@ -7392,6 +7628,10 @@ This is likely text from a **bounty board** or a **quest giver**. It tells the p
 ## Pinyin
 bù bì dān xīn bèi kè kòu
 
+## Pronunciation
+
+[bù bì dān xīn bèi kè kòu](audio/minimax-tts_不必担心被克扣_Chinese__Mandarin__News_Anchor_BD90934A3D.mp3)
+
 ## Literal Translation
 "No need to worry about [it] being deducted or withheld."
 
@@ -7437,6 +7677,10 @@ This likely follows the explanation of the bounty rules (half pay for a dead tar
 ## Pinyin
 shǔ bèi
 
+## Pronunciation
+
+[shǔ bèi](audio/forvo_鼠辈_skyhiker_10223DC7C2.mp3)
+
 ## Literal Translation
 "Rats / Cowards / Scum (derogatory term for a group of people)."
 
@@ -7476,6 +7720,10 @@ Likely a **battle cry** or **taunt** used by the player or a boss character when
 
 ## Pinyin
 dào qiè
+
+## Pronunciation
+
+[dào qiè](audio/forvo_盗窃_MarvinMeow_DD4EC259C3.mp3)
 
 ## Literal Translation
 "To steal / to pilfer / larceny / theft."
@@ -7522,6 +7770,10 @@ In a game setting, this likely appears in a legal context (accusing someone of a
 ## Pinyin
 gǔ wù
 
+## Pronunciation
+
+[gǔ wù](audio/forvo_谷物_Molang_7FC7B6FC9B.mp3)
+
 ## Literal Translation
 "Grains / Cereals / Crops."
 
@@ -7566,6 +7818,10 @@ This likely appears in an economic, farming, or resource management context. It 
 ## Pinyin
 hóng biǎn dòu
 
+## Pronunciation
+
+[hóng biǎn dòu](audio/minimax-tts_红扁豆_Chinese__Mandarin__Male_Announcer_A22EFED03D.mp3)
+
 ## Literal Translation
 "Red lentil."
 
@@ -7598,6 +7854,10 @@ Likely a **cooking ingredient** or a **resource** found in the game. It represen
 
 ## Pinyin
 yú ròu niē suì chéng tuán
+
+## Pronunciation
+
+[yú ròu niē suì chéng tuán](audio/minimax-tts_鱼肉捏碎成团_Chinese__Mandarin__News_Anchor_C6B1B85ADD.mp3)
 
 ## Literal Translation
 "Fish meat crushed and kneaded into a ball."
@@ -7641,6 +7901,10 @@ This describes a **cooking action** or **recipe step**. It suggests a survival m
 ## Pinyin
 zhǔ chéng dàn yǎ tāng pǐn
 
+## Pronunciation
+
+[zhǔ chéng dàn yǎ tāng pǐn](audio/minimax-tts_煮成淡雅汤品_Chinese__Mandarin__Male_Announcer_B8D0ACF7AB.mp3)
+
 ## Literal Translation
 "Boiled into a light and elegant soup."
 
@@ -7678,3 +7942,4 @@ This phrase describes a dish that values **delicacy** over heaviness. Unlike the
 ## Contextual Note (Crimson Desert)
 
 This describes the result of a cooking recipe. It suggests a high-quality consumable item—perhaps one that provides a specific buff like "health regeneration over time" or "stress relief"—associated with refinement or nobility rather than mere survival.
+
