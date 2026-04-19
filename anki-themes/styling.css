@@ -1,0 +1,50 @@
+/* Chinese 2 Note Type — Card Styling */
+/* Uses word-memo.css as @import in Anki, this file adds audio + layout tweaks */
+
+/* Audio Section */
+.audio-section {
+  margin: 8px 0;
+  text-align: center;
+}
+
+.audio-section .replay-button {
+  margin: 0 4px;
+}
+
+.front-audio {
+  margin-top: 16px;
+}
+
+.alternate-audio {
+  margin-top: 8px;
+  opacity: 0.8;
+}
+
+.audio-label {
+  font-size: 0.8em;
+  color: #7f8c8d;
+  font-weight: 500;
+  margin-right: 4px;
+}
+
+/* Similar section */
+.similar-content {
+  font-size: 1em;
+  color: #2c3e50;
+  line-height: 1.7;
+}
+
+.similar-content .hanzi {
+  font-size: 1.1em;
+}
+
+/* Dark mode additions */
+@media (prefers-color-scheme: dark) {
+  .audio-label {
+    color: #bdc3c7;
+  }
+
+  .similar-content {
+    color: #ecf0f1;
+  }
+}

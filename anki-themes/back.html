@@ -1,0 +1,54 @@
+<div class="card-container">
+  <div class="chinese-header">
+    <div class="chinese-main">{{Simplified}}</div>
+    <div class="chinese-side">
+      <div class="pinyin-main">{{Pinyin}}</div>
+      {{#Pronunciation}}
+      <div class="audio-section">
+        {{Pronunciation}}
+      </div>
+      {{/Pronunciation}}
+    </div>
+  </div>
+
+  {{#AlternatePronunciations}}
+  <div class="audio-section alternate-audio">
+    <span class="audio-label">Alt:</span> {{AlternatePronunciations}}
+  </div>
+  {{/AlternatePronunciations}}
+
+  <hr class="divider" />
+
+  <div class="definition-section">
+    <h2 class="section-title">Definition</h2>
+    <div class="definition-content">{{Definition}}</div>
+  </div>
+
+  {{#Examples}}
+  <div class="examples-section">
+    <h2 class="section-title">Examples</h2>
+    <div class="examples-content">{{Examples}}</div>
+  </div>
+  {{/Examples}}
+
+  {{#Components}}
+  <div class="components-section">
+    <h2 class="section-title">Structure</h2>
+    <div class="components-content">{{Components}}</div>
+  </div>
+  {{/Components}}
+
+  {{#Etymology}}
+  <div class="etymology-section">
+    <h2 class="section-title">Etymology</h2>
+    <div class="etymology-content">{{Etymology}}</div>
+  </div>
+  {{/Etymology}}
+
+  {{#Similar}}
+  <div class="similar-section">
+    <h2 class="section-title">Similar</h2>
+    <div class="similar-content">{{Similar}}</div>
+  </div>
+  {{/Similar}}
+</div>
