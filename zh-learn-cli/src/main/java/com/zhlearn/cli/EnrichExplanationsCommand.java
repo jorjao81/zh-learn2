@@ -89,8 +89,9 @@ public class EnrichExplanationsCommand implements Runnable {
             return;
         }
 
-        // Resolve audio output directory
-        Path audioDir = inputPath.getParent().resolve("audio");
+        // Resolve audio output directory (toAbsolutePath ensures getParent() is non-null
+        // when the input is given as a bare filename like "test.md").
+        Path audioDir = inputPath.toAbsolutePath().getParent().resolve("audio");
         try {
             Files.createDirectories(audioDir);
         } catch (IOException e) {
