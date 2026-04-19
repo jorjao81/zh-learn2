@@ -82,6 +82,9 @@ public class ExplanationMarkdownParser {
         return entries;
     }
 
+    // Matches markdown links like [shuǐ yù](audio/file.mp3)
+    private static final Pattern AUDIO_LINK_PATTERN = Pattern.compile("^\\[.+\\]\\((.+\\.mp3)\\)$");
+
     /** Parse a single entry block into an ExplanationEntry. */
     private ExplanationEntry parseSingleEntry(String entryContent) {
         String[] lines = entryContent.split("\n");
@@ -89,10 +92,12 @@ public class ExplanationMarkdownParser {
         String term = null;
         String entryType = null;
         String pinyin = null;
+        String audioPath = null;
         StringBuilder explanation = new StringBuilder();
 
         boolean pastPinyinSection = false;
         boolean inPinyinSection = false;
+        boolean inPronunciationSection = false;
 
         for (String line : lines) {
             String trimmed = line.trim();
@@ -119,10 +124,29 @@ public class ExplanationMarkdownParser {
                     // Hit next section — pinyin section is done
                     inPinyinSection = false;
                     pastPinyinSection = true;
-                    // This line is part of the explanation
+
+                    // Check if next section is Pronunciation (skip it from explanation)
+                    if (trimmed.equals("## Pronunciation")) {
+                        inPronunciationSection = true;
+                        continue;
+                    }
                     explanation.append(line).append("\n");
                 } else if (!trimmed.isEmpty() && pinyin == null) {
                     pinyin = trimmed;
+                }
+                continue;
+            }
+
+            // Inside pronunciation section: extract audio link
+            if (inPronunciationSection) {
+                if (trimmed.startsWith("## ")) {
+                    inPronunciationSection = false;
+                    explanation.append(line).append("\n");
+                } else if (audioPath == null && !trimmed.isEmpty()) {
+                    Matcher audioMatcher = AUDIO_LINK_PATTERN.matcher(trimmed);
+                    if (audioMatcher.matches()) {
+                        audioPath = audioMatcher.group(1);
+                    }
                 }
                 continue;
             }
@@ -137,8 +161,6 @@ public class ExplanationMarkdownParser {
             }
         }
 
-        // Handle case where pinyin was the last section (shouldn't happen but be safe)
-
         if (term == null) {
             throw new IllegalArgumentException("No H1 title found");
         }
@@ -151,6 +173,6 @@ public class ExplanationMarkdownParser {
             throw new IllegalArgumentException("No explanation content for: " + term);
         }
 
-        return new ExplanationEntry(term, pinyin, explanationText, entryType);
+        return new ExplanationEntry(term, pinyin, explanationText, entryType, audioPath);
     }
 }

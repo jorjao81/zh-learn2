@@ -176,6 +176,37 @@ class ExplanationMarkdownParserTest {
     }
 
     @Test
+    void shouldParseAudioPath() {
+        String withAudio =
+                """
+                # Word Analysis: 水域
+
+                ## Pinyin
+                shuǐ yù
+
+                ## Pronunciation
+
+                [shuǐ yù](audio/minimax-tts_水域_Male_Announcer_ABC123.mp3)
+
+                ## Literal Translation
+                "Waters / water area"
+                """;
+        List<ExplanationEntry> entries = parser.parseContent(withAudio);
+        assertThat(entries).hasSize(1);
+        assertThat(entries.getFirst().audioPath())
+                .isEqualTo("audio/minimax-tts_水域_Male_Announcer_ABC123.mp3");
+        // Pronunciation section should not leak into explanation
+        assertThat(entries.getFirst().explanation()).doesNotContain("## Pronunciation");
+        assertThat(entries.getFirst().explanation()).contains("## Literal Translation");
+    }
+
+    @Test
+    void shouldReturnNullAudioPathWhenNoPronunciation() {
+        List<ExplanationEntry> entries = parser.parseContent(WORD_ENTRY);
+        assertThat(entries.getFirst().audioPath()).isNull();
+    }
+
+    @Test
     void shouldHandleMultipleEntriesWithoutSeparator() {
         // Two entries back to back with no --- between them
         String noSeparator =

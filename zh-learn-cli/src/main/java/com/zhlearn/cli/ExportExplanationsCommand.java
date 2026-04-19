@@ -15,6 +15,7 @@ import com.zhlearn.infrastructure.explanation.ExplanationTsvExporter;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
+import picocli.CommandLine.ParentCommand;
 
 /** CLI command to parse Chinese explanation markdown and export to Anki TSV format. */
 @Command(
@@ -39,6 +40,8 @@ public class ExportExplanationsCommand implements Runnable {
             names = {"--type"},
             description = "Filter by entry type (e.g. word, phrase, sentence, idiom)")
     private String typeFilter;
+
+    @ParentCommand private MainCommand parent;
 
     @Override
     public void run() {
@@ -110,8 +113,17 @@ public class ExportExplanationsCommand implements Runnable {
 
     private void exportToTsv(
             ExplanationTsvExporter exporter, List<ExplanationEntry> entries, Path output) {
+        Path markdownDir = inputPath.getParent();
+        Path ankiMediaDir = parent.getAnkiMediaLocator().locate().orElse(null);
+        if (ankiMediaDir != null) {
+            System.out.println("Anki media directory: " + ankiMediaDir);
+        } else {
+            System.out.println(
+                    "Anki media directory not found"
+                            + " - audio references will be set but files not copied");
+        }
         try {
-            exporter.exportToTsv(entries, output);
+            exporter.exportToTsv(entries, output, markdownDir, ankiMediaDir);
         } catch (IOException e) {
             throw new UncheckedIOException("Failed to write TSV: " + output, e);
         }
