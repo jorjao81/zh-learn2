@@ -1719,6 +1719,10 @@ Smooth surface. (Adjective Phrase). Used to describe the physical texture of an 
 
 Wēimiào wénlù
 
+## Pronunciation
+
+[Wēimiào wénlù](audio/minimax-tts_微妙纹路_Chinese__Mandarin__Male_Announcer_09F4F70FF2.mp3)
+
 ## Meaning & Usage
 
 Subtle patterns / intricate veins. (Noun Phrase). Describes fine, delicate, or magical textures on an object, piece of armor, or environmental element.
@@ -1736,6 +1740,10 @@ Subtle patterns / intricate veins. (Noun Phrase). Describes fine, delicate, or m
 ## Pinyin
 
 Liángyì
+
+## Pronunciation
+
+[Liángyì](audio/forvo_凉意_cccyyyyh_031B782A8C.mp3)
 
 ## Meaning & Usage
 
@@ -1755,6 +1763,10 @@ A hint of coolness; a chill. (Noun). Can refer to a physical drop in temperature
 
 Mó dāo
 
+## Pronunciation
+
+[Mó dāo](audio/forvo_磨刀_MarvinMeow_C6165B633A.mp3)
+
 ## Meaning & Usage
 
 To sharpen a weapon/knife. (Verb Object Phrase). In an RPG, this often refers to a gameplay mechanic for maintaining weapon durability, applying temporary combat buffs, or crafting.
@@ -1772,6 +1784,10 @@ To sharpen a weapon/knife. (Verb Object Phrase). In an RPG, this often refers to
 ## Pinyin
 
 Jiǎn lòu
+
+## Pronunciation
+
+[Jiǎn lòu](audio/minimax-tts_捡漏_Chinese__Mandarin__Male_Announcer_5B0F4454DC.mp3)
 
 ## Meaning & Usage
 
@@ -1791,6 +1807,10 @@ To pick up a bargain; to capitalize on an oversight. (Verb). In gaming, it means
 
 Míngbiàn shìfēi
 
+## Pronunciation
+
+[Míngbiàn shìfēi](audio/forvo_明辨是非_VitaminO_18C561551F.mp3)
+
 ## Meaning & Usage
 
 To clearly distinguish right from wrong. (Idiom). Describes a character with strong moral clarity and judgment, typical for a paladin, judge, or wise leader figure.
@@ -1808,6 +1828,10 @@ To clearly distinguish right from wrong. (Idiom). Describes a character with str
 ## Pinyin
 
 Zhìhuì yùnyù shànyì
+
+## Pronunciation
+
+[Zhìhuì yùnyù shànyì](audio/minimax-tts_智慧孕育善意_Chinese__Mandarin__News_Anchor_F19456FBDA.mp3)
 
 ## Meaning & Usage
 
@@ -1827,6 +1851,10 @@ Wisdom breeds goodwill. (Phrase). A philosophical or lore statement from the gam
 
 Jībàn yóucǐ ér shēng
 
+## Pronunciation
+
+[Jībàn yóucǐ ér shēng](audio/minimax-tts_羁绊由此而生_Chinese__Mandarin__News_Anchor_CFBA52DE0C.mp3)
+
 ## Meaning & Usage
 
 Bonds are born from this. (Phrase). "羁绊" refers to emotional ties, connections, or fetters forged between characters, a very common and important thematic element in RPGs.
@@ -1844,6 +1872,10 @@ Bonds are born from this. (Phrase). "羁绊" refers to emotional ties, connectio
 ## Pinyin
 
 Pòhuài nà chù jì shì wǒmen lìliàng zhī yuán
+
+## Pronunciation
+
+[Pòhuài nà chù jì shì wǒmen lìliàng zhī yuán](audio/minimax-tts_破坏那处既是我们力量之源_Chinese__Mandarin__News_Anchor_4E676BEE37.mp3)
 
 ## Meaning & Usage
 
@@ -1863,6 +1895,10 @@ Destroying that place is the source of our power. (Sentence). A piece of lore, i
 
 Yíchú
 
+## Pronunciation
+
+[Yíchú](audio/minimax-tts_移除_Chinese__Mandarin__Male_Announcer_09705069C5.mp3)
+
 ## Meaning & Usage
 
 To remove; to clear away. (Verb). A standard UI or gameplay term, such as removing an item from a slot, clearing a debuff, or deleting a structure.
@@ -1880,6 +1916,10 @@ To remove; to clear away. (Verb). A standard UI or gameplay term, such as removi
 ## Pinyin
 
 Dǎ kǒng
+
+## Pronunciation
+
+[Dǎ kǒng](audio/minimax-tts_打孔_Chinese__Mandarin__News_Anchor_C85FEDB98C.mp3)
 
 ## Meaning & Usage
 
