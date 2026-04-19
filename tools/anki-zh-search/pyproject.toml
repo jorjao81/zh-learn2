@@ -1,0 +1,19 @@
+[project]
+name = "anki-zh-search"
+version = "0.1.0"
+description = "Search the Chinese deck in a local Anki collection from the command line."
+requires-python = ">=3.10"
+dependencies = [
+    "anki>=24.04",
+    "rich>=13.7",
+]
+
+[project.scripts]
+anki-zh = "anki_zh_search.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/anki_zh_search"]
