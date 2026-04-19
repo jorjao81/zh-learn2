@@ -46,6 +46,7 @@ public class AudioOrchestrator {
                 futures.stream()
                         .map(CompletableFuture::join)
                         .flatMap(List::stream)
+                        .sorted(AudioOrchestrator::forvoFirst)
                         .collect(Collectors.toList());
 
         log.info(
@@ -83,6 +84,16 @@ public class AudioOrchestrator {
                 candidates.size());
 
         return candidates;
+    }
+
+    /** Sort forvo candidates before all others so native speaker audio appears first. */
+    private static int forvoFirst(PronunciationCandidate a, PronunciationCandidate b) {
+        boolean aForvo = "forvo".equals(a.label());
+        boolean bForvo = "forvo".equals(b.label());
+        if (aForvo == bForvo) {
+            return 0;
+        }
+        return aForvo ? -1 : 1;
     }
 
     static Path validateAbsolutePath(String providerName, Path provided) {
