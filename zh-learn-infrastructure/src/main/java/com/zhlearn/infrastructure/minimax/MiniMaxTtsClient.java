@@ -85,6 +85,11 @@ class MiniMaxTtsClient {
 
     public MiniMaxTtsResult synthesize(String voiceId, String text)
             throws IOException, InterruptedException, UnrecoverableProviderException {
+        return synthesize(voiceId, text, "neutral", 1.0);
+    }
+
+    public MiniMaxTtsResult synthesize(String voiceId, String text, String emotion, double speed)
+            throws IOException, InterruptedException, UnrecoverableProviderException {
         // Acquire rate limit permit before making request (if rate limiter configured)
         if (rateLimiter != null) {
             boolean acquired = rateLimiter.acquire(RATE_LIMIT_ACQUIRE_TIMEOUT);
@@ -101,7 +106,7 @@ class MiniMaxTtsClient {
                     retry.invoke(
                             () -> {
                                 try {
-                                    return synthesizeOnce(voiceId, text);
+                                    return synthesizeOnce(voiceId, text, emotion, speed);
                                 } catch (IOException e) {
                                     throw CheckedExceptionWrapper.wrap(e);
                                 } catch (InterruptedException e) {
@@ -135,7 +140,8 @@ class MiniMaxTtsClient {
         }
     }
 
-    private MiniMaxTtsResult synthesizeOnce(String voiceId, String text)
+    private MiniMaxTtsResult synthesizeOnce(
+            String voiceId, String text, String emotion, double speed)
             throws IOException, InterruptedException, UnrecoverableProviderException {
         ObjectNode payload = mapper.createObjectNode();
         payload.put("model", model);
@@ -147,10 +153,10 @@ class MiniMaxTtsClient {
         // Voice settings
         ObjectNode voiceSetting = payload.putObject("voice_setting");
         voiceSetting.put("voice_id", voiceId);
-        voiceSetting.put("speed", 1.0);
+        voiceSetting.put("speed", speed);
         voiceSetting.put("vol", 1.0);
         voiceSetting.put("pitch", 0);
-        voiceSetting.put("emotion", "neutral");
+        voiceSetting.put("emotion", emotion);
 
         // Audio settings
         ObjectNode audioSetting = payload.putObject("audio_setting");

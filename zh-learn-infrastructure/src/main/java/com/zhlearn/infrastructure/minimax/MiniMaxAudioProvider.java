@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.net.http.HttpClient;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhlearn.domain.exception.UnrecoverableProviderException;
@@ -32,13 +35,42 @@ import com.zhlearn.infrastructure.ratelimit.ProviderRateLimiter;
 public class MiniMaxAudioProvider extends AbstractTtsAudioProvider {
     private static final String NAME = "minimax-tts";
 
-    // Selected voices for clear standard Mandarin pronunciation (official 2.8 voice IDs)
-    private static final List<String> VOICES =
+    private record VoiceVariant(String key, String voiceId, String emotion, double speed) {
+        /** Build a variant whose key equals the voice_id (preserves cache for baseline voices). */
+        static VoiceVariant baseline(String voiceId) {
+            return new VoiceVariant(voiceId, voiceId, "neutral", 1.0);
+        }
+
+        /** Build a variant with a distinct key encoding emotion + speed. */
+        static VoiceVariant tuned(String voiceId, String emotion, double speed) {
+            return new VoiceVariant(voiceId + "|" + emotion + "|" + speed, voiceId, emotion, speed);
+        }
+    }
+
+    // All voice_ids and speed/emotion combinations below were verified live against
+    // speech-2.8-hd (HTTP 200 with audio payload) before being committed.
+    private static final List<VoiceVariant> VARIANTS =
             List.of(
-                    "Chinese (Mandarin)_Male_Announcer",
-                    "Chinese (Mandarin)_News_Anchor",
-                    "Chinese (Mandarin)_IntellectualGirl",
-                    "Chinese (Mandarin)_Crisp_Girl");
+                    VoiceVariant.baseline("Chinese (Mandarin)_Male_Announcer"),
+                    VoiceVariant.baseline("Chinese (Mandarin)_News_Anchor"),
+                    VoiceVariant.baseline("Chinese (Mandarin)_Gentle_Senior"),
+                    VoiceVariant.tuned("Chinese (Mandarin)_Sincere_Adult", "calm", 1.0),
+                    VoiceVariant.baseline("Chinese (Mandarin)_Reliable_Executive"));
+
+    private static final Map<String, VoiceVariant> BY_KEY =
+            VARIANTS.stream()
+                    .collect(
+                            Collectors.toMap(
+                                    VoiceVariant::key, v -> v, (a, b) -> a, LinkedHashMap::new));
+
+    private static final List<String> VOICE_KEYS =
+            VARIANTS.stream().map(VoiceVariant::key).toList();
+
+    private static final List<String> BASE_VOICE_IDS =
+            VARIANTS.stream()
+                    .map(VoiceVariant::voiceId)
+                    .distinct()
+                    .collect(Collectors.toUnmodifiableList());
 
     private MiniMaxTtsClient client;
     private final HttpClient httpClient;
@@ -65,7 +97,13 @@ public class MiniMaxAudioProvider extends AbstractTtsAudioProvider {
 
     @Override
     public String getDescription() {
-        return "MiniMax Speech-2.8-HD with 4 Mandarin voices (" + String.join(", ", VOICES) + ")";
+        return "MiniMax Speech-2.8-HD with "
+                + VARIANTS.size()
+                + " voice variants across "
+                + BASE_VOICE_IDS.size()
+                + " base voices ("
+                + String.join(", ", BASE_VOICE_IDS)
+                + ")";
     }
 
     @Override
@@ -75,13 +113,18 @@ public class MiniMaxAudioProvider extends AbstractTtsAudioProvider {
 
     @Override
     protected List<String> getVoices() {
-        return VOICES;
+        return VOICE_KEYS;
     }
 
     @Override
     protected Path synthesizeVoice(String voice, String text)
             throws IOException, InterruptedException, UnrecoverableProviderException {
-        MiniMaxTtsResult result = getClient().synthesize(voice, text);
+        VoiceVariant variant = BY_KEY.get(voice);
+        if (variant == null) {
+            throw new IllegalStateException("Unknown MiniMax voice variant: " + voice);
+        }
+        MiniMaxTtsResult result =
+                getClient().synthesize(variant.voiceId(), text, variant.emotion(), variant.speed());
         Path tmp = Files.createTempFile(NAME + "-", ".mp3");
         Files.write(tmp, result.audioData());
         return tmp;
@@ -109,7 +152,14 @@ public class MiniMaxAudioProvider extends AbstractTtsAudioProvider {
 
     @Override
     protected String formatDescription(String voice) {
-        return voice + " 🤖";
+        VoiceVariant variant = BY_KEY.get(voice);
+        if (variant == null) {
+            return voice + " 🤖";
+        }
+        if (variant.key().equals(variant.voiceId())) {
+            return variant.voiceId() + " 🤖";
+        }
+        return variant.voiceId() + " · " + variant.emotion() + " @" + variant.speed() + "× 🤖";
     }
 
     @Override

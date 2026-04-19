@@ -176,7 +176,7 @@ public class ProvidersCommand implements Runnable {
         providers.add(
                 new ProviderInfo(
                         "minimax-tts",
-                        "MiniMax Speech-2.8-HD (voices: Male_Announcer, News_Anchor, IntellectualGirl, Crisp_Girl)",
+                        "MiniMax Speech-2.8-HD (voices: Male_Announcer, News_Anchor, Gentle_Senior, Sincere_Adult, Reliable_Executive)",
                         ProviderType.AI,
                         EnumSet.of(ProviderClass.AUDIO)));
 

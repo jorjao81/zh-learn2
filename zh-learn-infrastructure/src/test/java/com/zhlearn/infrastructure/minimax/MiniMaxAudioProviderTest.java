@@ -39,7 +39,7 @@ class MiniMaxAudioProviderTest {
     }
 
     @Test
-    void returnsFourVoicesAndCachesResults() throws Exception {
+    void returnsAllVariantsAndCachesResults() throws Exception {
         System.setProperty("zhlearn.home", tmpHome.toString());
         System.setProperty("zhlearn.disable.ffmpeg", "1");
 
@@ -49,21 +49,21 @@ class MiniMaxAudioProviderTest {
         Hanzi word = new Hanzi("学习");
         Pinyin pinyin = new Pinyin("xuéxí");
 
+        int expectedVariantCount = 5;
+
         List<Path> pronunciations = provider.getPronunciations(word, pinyin);
 
-        assertThat(pronunciations).hasSize(4);
+        assertThat(pronunciations).hasSize(expectedVariantCount);
         for (Path path : pronunciations) {
             assertThat(path).isAbsolute();
+            assertThat(Files.exists(path)).isTrue();
         }
 
         assertThat(pronunciations.get(0).getFileName().toString()).contains("Male_Announcer");
         assertThat(pronunciations.get(1).getFileName().toString()).contains("News_Anchor");
-        assertThat(pronunciations.get(2).getFileName().toString()).contains("IntellectualGirl");
-        assertThat(pronunciations.get(3).getFileName().toString()).contains("Crisp_Girl");
-
-        for (Path path : pronunciations) {
-            assertThat(Files.exists(path)).isTrue();
-        }
+        assertThat(pronunciations.get(2).getFileName().toString()).contains("Gentle_Senior");
+        assertThat(pronunciations.get(3).getFileName().toString()).contains("Sincere_Adult");
+        assertThat(pronunciations.get(4).getFileName().toString()).contains("Reliable_Executive");
 
         assertThat(provider.getPronunciation(word, pinyin)).contains(pronunciations.get(0));
 
@@ -71,8 +71,8 @@ class MiniMaxAudioProviderTest {
         List<Path> cached = provider.getPronunciations(word, pinyin);
         assertThat(cached).containsExactlyElementsOf(pronunciations);
 
-        // Verify client was only called 4 times (once per voice)
-        assertThat(client.callCount).isEqualTo(4);
+        // Verify client was called once per variant
+        assertThat(client.callCount).isEqualTo(expectedVariantCount);
     }
 
     @Test
@@ -102,8 +102,9 @@ class MiniMaxAudioProviderTest {
                 .contains("Speech-2.8-HD")
                 .contains("Male_Announcer")
                 .contains("News_Anchor")
-                .contains("IntellectualGirl")
-                .contains("Crisp_Girl");
+                .contains("Gentle_Senior")
+                .contains("Sincere_Adult")
+                .contains("Reliable_Executive");
     }
 
     /** Fake client that returns valid MP3-like data for testing. */
@@ -120,7 +121,8 @@ class MiniMaxAudioProviderTest {
         }
 
         @Override
-        public MiniMaxTtsResult synthesize(String voiceId, String text) {
+        public MiniMaxTtsResult synthesize(
+                String voiceId, String text, String emotion, double speed) {
             callCount++;
             // Return fake MP3 data (ID3 header + some bytes)
             byte[] fakeMp3 = new byte[] {'I', 'D', '3', 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5};
@@ -142,7 +144,8 @@ class MiniMaxAudioProviderTest {
         }
 
         @Override
-        public MiniMaxTtsResult synthesize(String voiceId, String text) throws IOException {
+        public MiniMaxTtsResult synthesize(
+                String voiceId, String text, String emotion, double speed) throws IOException {
             throw new IOException("Simulated MiniMax failure for voice: " + voiceId);
         }
     }

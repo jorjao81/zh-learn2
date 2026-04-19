@@ -10,8 +10,9 @@ Feature: MiniMax TTS audio provider integration
       | minimax-tts |
       | Male_Announcer |
       | News_Anchor |
-      | IntellectualGirl |
-      | Crisp_Girl |
+      | Gentle_Senior |
+      | Sincere_Adult |
+      | Reliable_Executive |
 
   Scenario: MiniMax TTS provider appears in AI provider list
     When I execute the CLI command "providers --type AI"
